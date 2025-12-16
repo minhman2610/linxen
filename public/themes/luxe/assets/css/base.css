@@ -1,0 +1,258 @@
+/* -------------------------------------------------------
+   LUXE — BASE.CSS
+   Mobile-First Foundation Styles
+-------------------------------------------------------- */
+
+/* RESET CSS CƠ BẢN */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+        "Roboto", "Segoe UI", sans-serif;
+    background: #ffffff;
+    color: #111;
+}
+
+/* Ẩn scroll bounce trên iOS */
+body {
+    overscroll-behavior-y: none;
+}
+
+/* LINK */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* IMAGE */
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* BUTTON */
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* UTILS */
+.hidden {
+    display: none !important;
+}
+
+.flex {
+    display: flex;
+}
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* -------------------------------------------------------
+   CONTAINER & SPACING
+-------------------------------------------------------- */
+
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin: auto;
+}
+
+.px-12 {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.mt-12 { margin-top: 12px; }
+.mb-12 { margin-bottom: 12px; }
+
+/* -------------------------------------------------------
+   TYPOGRAPHY
+-------------------------------------------------------- */
+
+h1, h2, h3 {
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 26px;
+}
+h2 {
+    font-size: 22px;
+}
+h3 {
+    font-size: 18px;
+}
+
+/* -------------------------------------------------------
+   HEADER (Mobile First)
+-------------------------------------------------------- */
+
+.lx-header {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lx-header-logo {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.lx-header-btn img {
+    width: 22px;
+}
+
+/* CART BADGE */
+.cart-btn {
+    position: relative;
+}
+.cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: black;
+    color: white;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* -------------------------------------------------------
+   ANNOUNCEMENT BAR
+-------------------------------------------------------- */
+
+.lx-announcement-bar {
+    width: 100%;
+    background: black;
+    color: white;
+    padding: 6px 12px;
+    text-align: center;
+    font-size: 12px;
+}
+.lx-announcement-bar a {
+    color: white;
+    text-decoration: underline;
+}
+
+/* -------------------------------------------------------
+   HERO SECTION
+-------------------------------------------------------- */
+
+.lx-hero {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    overflow: hidden;
+}
+.lx-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lx-hero-text {
+    position: absolute;
+    bottom: 16%;
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+.lx-hero-text h1 {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.lx-btn-primary {
+    display: inline-block;
+    margin-top: 12px;
+    background: white;
+    padding: 10px 22px;
+    color: black;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+/* -------------------------------------------------------
+   TWO BANNERS
+-------------------------------------------------------- */
+
+.lx-two-banners {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+}
+.lx-two-banners img {
+    width: 100%;
+    border-radius: 6px;
+}
+
+/* -------------------------------------------------------
+   BOTTOM NAV (Mobile Navigation Bar)
+-------------------------------------------------------- */
+
+.lx-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 999;
+}
+
+.lx-bottom-nav a {
+    text-align: center;
+    font-size: 11px;
+    color: #333;
+}
+
+.lx-bottom-nav img {
+    width: 22px;
+    margin-bottom: 4px;
+}
+
+/* Active state */
+.lx-bottom-nav .active {
+    color: black;
+    font-weight: 600;
+}
+
+/* -------------------------------------------------------
+   DESKTOP OVERRIDES
+-------------------------------------------------------- */
+
+@media (min-width: 768px) {
+    .lx-bottom-nav {
+        display: none;
+    }
+
+    .lx-header-btn img {
+        width: 26px;
+    }
+
+    .lx-header-logo {
+        font-size: 28px;
+    }
+}
