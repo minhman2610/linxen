@@ -37,7 +37,7 @@ Route::domain('linxen.vn')->group(function () {
         ->name('linxen.collection');
 
     // =====================================================
-    // 🛒 CART
+    // 🛒 CART s
     // =====================================================
     Route::get('/cart', [StorefrontController::class, 'cart'])
         ->name('linxen.cart');
