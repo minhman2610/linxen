@@ -1,0 +1,77 @@
+/* -----------------------------------------------------
+   LUXE THEME — ICON SYSTEM
+   Tối ưu cho SVG dùng fill="currentColor"
+------------------------------------------------------ */
+
+/* Icon mặc định */
+.icon {
+    width: 22px;
+    height: 22px;
+    display: inline-block;
+    color: #000;
+    fill: currentColor;
+}
+
+/* Icon trong header */
+.lx-header-btn img.icon,
+.lx-header-btn svg.icon {
+    width: 22px;
+    height: 22px;
+    color: #000 !important;
+    fill: #000 !important;
+}
+
+/* Icon nhỏ trong bottom navigation */
+.lx-bottom-nav .icon {
+    width: 20px;
+    height: 20px;
+    color: #000;
+    fill: currentColor;
+}
+
+/* Khi active → đậm màu */
+.lx-nav-item.active .icon {
+    color: #000;
+    opacity: 1;
+}
+
+/* Icon trong sidebar menu */
+.mobile-menu-sidebar .menu-link .icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    color: #000;
+}
+
+/* Avatar-style vòng tròn (nếu menu dùng ảnh) */
+.icon-circle img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Icon nhỏ mũi tên / caret */
+.icon-caret {
+    font-size: 16px;
+    color: #999;
+}
+
+/* Hover effect nhẹ cho icon */
+.lx-header-btn:hover .icon,
+.lx-nav-item:hover .icon {
+    opacity: 0.8;
+}
+
+.lx-header .lx-icon {
+    color: #000 !important;
+}
+
+
+/* Responsive */
+@media (min-width: 768px) {
+    .icon {
+        width: 24px;
+        height: 24px;
+    }
+}

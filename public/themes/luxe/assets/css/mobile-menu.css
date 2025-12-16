@@ -1,0 +1,156 @@
+/* Brand Highlight Zone */
+.lx-menu-brand-zone {
+    position: relative;
+    padding: 28px 20px;
+    background: linear-gradient(135deg, #000, #2b2b2b);
+    color: #fff;
+    text-align: left;
+}
+
+.lx-brand-logo {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+}
+
+.lx-brand-tagline {
+    font-size: 13px;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+}
+
+/* Close button */
+.lx-menu-brand-zone .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #fff;
+}
+
+/* Overlay */
+.lx-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+    z-index: 2000;
+}
+
+.lx-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sidebar */
+.lx-mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -85%;
+    width: 85%;
+    max-width: 320px;
+    height: 100vh;
+    background: #fff;
+    z-index: 2001;
+    transition: 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.lx-mobile-menu.active {
+    left: 0;
+}
+
+/* Profile zone */
+.lx-menu-profile {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #efefef;
+    position: relative;
+}
+
+.lx-menu-profile .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.lx-menu-profile .hello {
+    font-size: 14px;
+    color: #555;
+}
+
+.lx-menu-profile .login-link {
+    display: block;
+    font-size: 15px;
+    color: #000;
+    font-weight: 600;
+}
+
+.close-btn {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    border: none;
+    background: none;
+    font-size: 22px;
+}
+
+/* Menu list */
+.lx-menu-list {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.lx-menu-item {
+    padding: 0;
+}
+
+.lx-menu-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: #000;
+    font-size: 15px;
+    gap: 12px;
+}
+
+.menu-icon {
+    width: 22px;
+    opacity: 0.85;
+}
+
+/* Submenus */
+.has-sub .caret {
+    margin-left: auto;
+    width: 14px;
+    transform: rotate(0deg);
+    transition: 0.25s;
+}
+
+.lx-submenu {
+    display: none;
+    padding-left: 52px;
+    flex-direction: column;
+}
+
+.lx-submenu.show {
+    display: flex;
+}
+
+.has-sub.open .caret {
+    transform: rotate(90deg);
+}
