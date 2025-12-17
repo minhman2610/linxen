@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('storefront.luxe.layouts.app')
 
 @section('content')
 
