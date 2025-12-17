@@ -111,8 +111,7 @@
 
             <button class="lx-btn-primary lx-btn-full"
                     id="lxAddToCartBtn"
-                    onclick="addToCart()"
-                    disabled>
+                    onclick="addToCart()">
                 THÊM VÀO GIỎ
             </button>
         </div>
@@ -195,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.entries(selectedAttrs)
                 .every(([k, val]) => v._attrs?.[k] === val)
         );
+        window.__selectedVariant = selectedVariant;
 
         const stockEl = document.getElementById('lxStock');
         const btn     = document.getElementById('lxAddToCartBtn');
@@ -217,34 +217,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addToCart = async function () {
-        if (!selectedVariant) {
-            showToast("Vui lòng chọn biến thể", true);
-            return;
-        }
+    if (!window.__selectedVariant) {
+        showToast("Vui lòng chọn biến thể", true);
+        return;
+    }
 
-        const qty = parseInt(document.getElementById("lxQty").value || 1);
+    const qty = parseInt(document.getElementById("lxQty").value || 1);
 
-        const res = await fetch("{{ route('linxen.cart.add') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({
-                sku: selectedVariant.sku || selectedVariant.code,
-                qty: qty
-            })
-        });
+    const res = await fetch("{{ route('linxen.cart.add') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({
+            sku: window.__selectedVariant.sku,
+            qty: qty
+        })
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        if (!res.ok || !data.success) {
-            showToast(data.message || "Không thể thêm vào giỏ", true);
-            return;
-        }
+    if (!res.ok || !data.success) {
+        showToast(data.message || "Không thể thêm vào giỏ", true);
+        return;
+    }
 
-        showToast("Đã thêm vào giỏ hàng");
-    };
+    showToast("Đã thêm vào giỏ hàng");
+};
+
 });
 
 function previewImage(src){
