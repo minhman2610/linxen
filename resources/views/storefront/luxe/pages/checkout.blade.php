@@ -39,7 +39,7 @@
 
         @csrf
 
-        {{-- LEFT: CUSTOMER INFO --}}
+        {{-- ================= LEFT: SHIPPING INFO ================= --}}
         <div class="lx-checkout-left">
 
             <h3>Thông tin giao hàng</h3>
@@ -49,21 +49,48 @@
                 <input type="text" name="name" required placeholder="Nguyễn Văn A">
             </div>
 
-            <div class="lx-form-group">
-                <label>Số điện thoại</label>
-                <input type="tel" name="phone" required placeholder="09xxxxxxxx">
+            <div class="lx-form-row">
+                <div class="lx-form-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" name="phone" required placeholder="09xxxxxxxx">
+                </div>
+
+                <div class="lx-form-group">
+                    <label>Email (không bắt buộc)</label>
+                    <input type="email" name="email" placeholder="email@example.com">
+                </div>
             </div>
 
-            <div class="lx-form-group">
-                <label>Email (không bắt buộc)</label>
-                <input type="email" name="email" placeholder="email@example.com">
+            {{-- ADDRESS --}}
+            <div class="lx-form-row">
+                <div class="lx-form-group">
+                    <label>Tỉnh / Thành phố</label>
+                    <select name="province" required>
+                        <option value="">-- Chọn Tỉnh / Thành --</option>
+                        {{-- load bằng JS sau --}}
+                    </select>
+                </div>
+
+                <div class="lx-form-group">
+                    <label>Quận / Huyện</label>
+                    <select name="district" required>
+                        <option value="">-- Chọn Quận / Huyện --</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="lx-form-group">
-                <label>Địa chỉ giao hàng</label>
-                <textarea name="address" rows="3"
-                          required
-                          placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"></textarea>
+            <div class="lx-form-row">
+                <div class="lx-form-group">
+                    <label>Phường / Xã</label>
+                    <select name="ward" required>
+                        <option value="">-- Chọn Phường / Xã --</option>
+                    </select>
+                </div>
+
+                <div class="lx-form-group">
+                    <label>Số nhà, tên đường</label>
+                    <input type="text" name="street" required placeholder="Số nhà, tên đường">
+                </div>
             </div>
 
             <div class="lx-form-group">
@@ -74,27 +101,51 @@
 
         </div>
 
-        {{-- RIGHT: ORDER SUMMARY --}}
+        {{-- ================= RIGHT: ORDER SUMMARY ================= --}}
         <div class="lx-checkout-right">
 
             <h3>Đơn hàng của bạn</h3>
 
             <div class="lx-checkout-items">
+
                 @foreach($cartItems as $item)
                     <div class="lx-checkout-item">
-                        <div class="lx-checkout-item-name">
-                            {{ $item['name'] }}
-                            <span class="lx-checkout-item-qty">
-                                × {{ $item['qty'] }}
-                            </span>
+
+                        {{-- IMAGE --}}
+                        <div class="lx-checkout-item-thumb">
+                            <img
+                                src="{{ $item['image'] ?? '/themes/luxe/assets/images/placeholder-product.jpg' }}"
+                                alt="{{ $item['name'] }}">
                         </div>
+
+                        {{-- INFO --}}
+                        <div class="lx-checkout-item-info">
+                            <div class="lx-checkout-item-name">
+                                {{ $item['name'] }}
+                            </div>
+
+                            @if(!empty($item['variant']))
+                                <div class="lx-checkout-item-variant">
+                                    {{ $item['variant'] }}
+                                </div>
+                            @endif
+
+                            <div class="lx-checkout-item-qty">
+                                Số lượng: {{ $item['qty'] }}
+                            </div>
+                        </div>
+
+                        {{-- PRICE --}}
                         <div class="lx-checkout-item-price">
                             {{ number_format($item['price'] * $item['qty']) }}₫
                         </div>
+
                     </div>
                 @endforeach
+
             </div>
 
+            {{-- SUMMARY --}}
             <div class="lx-checkout-summary-row">
                 <span>Tạm tính</span>
                 <span>{{ number_format($subtotal) }}₫</span>
@@ -114,9 +165,9 @@
 
             {{-- PAYMENT --}}
             <div class="lx-checkout-payment">
-                <label>
+                <label class="lx-radio">
                     <input type="radio" name="payment_method" value="cod" checked>
-                    Thanh toán khi nhận hàng (COD)
+                    <span>Thanh toán khi nhận hàng (COD)</span>
                 </label>
             </div>
 
