@@ -22,11 +22,14 @@ class StorefrontController extends Controller
      * 🏠 HOME
      * =====================================================
      */
-    public function home()
+    public function home(ErpStorefrontApi $erp)
 {
-    return view("storefront.{$this->theme}.pages.home");
+    $home = $erp->home($this->brand);
+
+    return view(
+        "storefront.{$this->theme}.pages.home",
+        compact('home')
+    );
 }
-
-
 
 }

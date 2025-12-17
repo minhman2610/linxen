@@ -17,9 +17,9 @@ class ErpStorefrontApi
     }
 
     /**
-     * ===========================
-     * HOME DATA
-     * ===========================
+     * =====================================================
+     * 🏠 HOME DATA
+     * =====================================================
      */
     public function home(string $brand): array
     {
@@ -27,9 +27,9 @@ class ErpStorefrontApi
     }
 
     /**
-     * ===========================
-     * PRODUCT DETAIL
-     * ===========================
+     * =====================================================
+     * 👗 PRODUCT DETAIL
+     * =====================================================
      */
     public function product(string $brand, string $slug): ?array
     {
@@ -37,9 +37,9 @@ class ErpStorefrontApi
     }
 
     /**
-     * ===========================
-     * COLLECTION
-     * ===========================
+     * =====================================================
+     * 📦 COLLECTION
+     * =====================================================
      */
     public function collection(string $brand, string $slug): ?array
     {
@@ -47,15 +47,16 @@ class ErpStorefrontApi
     }
 
     /**
-     * ===========================
-     * CORE REQUEST
-     * ===========================
+     * =====================================================
+     * 🔌 CORE REQUEST
+     * =====================================================
      */
     protected function get(string $uri): array
     {
         try {
             $res = Http::withToken($this->token)
                 ->timeout(5)
+                ->acceptJson()
                 ->get($this->baseUrl . $uri);
 
             if ($res->failed()) {
