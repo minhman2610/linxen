@@ -22,28 +22,11 @@ class StorefrontController extends Controller
      * 🏠 HOME
      * =====================================================
      */
-    public function home(ErpStorefrontApi $erp)
+    public function home()
 {
-    try {
-        $products = $erp->products($this->brand, [
-            'limit' => 12,
-            'sort'  => 'newest',
-        ]);
-
-        return view(
-            "storefront.{$this->theme}.pages.home",
-            compact('products')
-        );
-
-    } catch (\Throwable $e) {
-
-        Log::error('[LINXEN][HOME]', [
-            'message' => $e->getMessage(),
-        ]);
-
-        return response()->view('errors.500', [], 500);
-    }
+    return view("storefront.{$this->theme}.pages.home");
 }
+
 
 
     /**
