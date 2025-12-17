@@ -190,6 +190,40 @@
     SCRIPT (FINAL – FIXED)
 ========================= --}}
 <script>
+/* =====================================================
+   GLOBAL TOAST
+===================================================== */
+function showToast(message, isError = false) {
+    let toast = document.getElementById('lxToast');
+
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'lxToast';
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.className = 'lx-toast';
+    if (isError) toast.classList.add('error');
+
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-10px)';
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    });
+
+    clearTimeout(window.__lxToastTimer);
+    window.__lxToastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+    }, 2500);
+}
+
+/* =====================================================
+   PRODUCT PAGE SCRIPT
+===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
 
     /* =====================================================
@@ -235,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const attrKey = el.dataset.attrKey;
             const value   = el.dataset.value;
 
-            // reset active trong cùng nhóm
             document
                 .querySelectorAll(`.variant-option[data-attr-key="${attrKey}"]`)
                 .forEach(x => x.classList.remove('active'));
@@ -272,12 +305,11 @@ document.addEventListener('DOMContentLoaded', () => {
             btnAdd.disabled = true;
         }
 
-        // expose global cho add cart
         window.__selectedVariant = selectedVariant;
     }
 
     /* =====================================================
-     * 5️⃣ ADD TO CART (SYNC VỚI CART CONTROLLER CŨ)
+     * 5️⃣ ADD TO CART
      * ===================================================== */
     btnAdd.addEventListener('click', async () => {
 
@@ -323,7 +355,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             showToast('Đã thêm vào giỏ hàng');
 
-            // optional: update mini cart nếu có
             if (typeof updateMiniCart === 'function') {
                 updateMiniCart(data.cart_count || 0);
             }
@@ -337,8 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =====================================================
- * 6️⃣ CHANGE QTY (GLOBAL – DÙNG CHO HTML CŨ)
- * ===================================================== */
+ * 6️⃣ CHANGE QTY (GLOBAL)
+===================================================== */
 function changeQty(step) {
     const qtyInput = document.getElementById('lxQty');
     if (!qtyInput) return;
@@ -350,5 +381,30 @@ function changeQty(step) {
     qtyInput.value = qty;
 }
 </script>
+
+<style>
+/* =====================================================
+   TOAST STYLE
+===================================================== */
+.lx-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+
+    background: #111;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+
+    opacity: 0;
+    transition: all .25s ease;
+}
+.lx-toast.error {
+    background: #c62828;
+}
+</style>
+
 
 
