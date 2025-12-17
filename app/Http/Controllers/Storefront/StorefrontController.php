@@ -24,26 +24,7 @@ class StorefrontController extends Controller
      */
     public function home(ErpStorefrontApi $erp)
     {
-        try {
-            $data = cache()->remember(
-                "{$this->brand}_home",
-                60,
-                fn () => $erp->home($this->brand)
-            );
-
-            return view(
-                "storefront.{$this->theme}.pages.home",
-                $data
-            );
-
-        } catch (\Throwable $e) {
-
-            Log::error('[LINXEN][HOME]', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return response()->view('errors.500', [], 500);
-        }
+        
     }
 
     /**
