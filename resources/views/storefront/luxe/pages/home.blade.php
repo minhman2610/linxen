@@ -30,9 +30,21 @@
     <div class="lx-product-grid">
         @foreach($home['featured_products'] as $product)
 
-            @continue(empty($product['code']) || empty($product['thumb_url']))
+            @continue(
+                empty($product['product_id'])
+                || empty($product['name'])
+                || empty($product['thumb_url'])
+            )
 
-            <a href="{{ route('linxen.product', ['slug' => $product['code']]) }}"
+            @php
+                /**
+                 * Build slug: ten-san-pham-product_id
+                 */
+                $slug = \Illuminate\Support\Str::slug($product['name'])
+                        . '-' . $product['product_id'];
+            @endphp
+
+            <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                class="lx-product-card">
 
                 <div class="lx-product-image">
@@ -44,7 +56,9 @@
                 </div>
 
                 <div class="lx-product-info">
-                    <p class="lx-product-name">{{ $product['name'] }}</p>
+                    <p class="lx-product-name">
+                        {{ $product['name'] }}
+                    </p>
                     <p class="lx-product-price">
                         {{ number_format($product['price']) }}₫
                     </p>
@@ -56,6 +70,7 @@
 
 </section>
 @endif
+
 
 @endsection
 <style>
