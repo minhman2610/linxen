@@ -288,5 +288,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+function changeQty(step) {
+    const qtyInput = document.getElementById('lxQty');
+    if (!qtyInput) return;
+
+    let qty = parseInt(qtyInput.value || 1);
+    qty = isNaN(qty) ? 1 : qty;
+    qty = Math.max(1, qty + step);
+
+    qtyInput.value = qty;
+}
 </script>
 
