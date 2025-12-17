@@ -28,11 +28,10 @@ class StorefrontController extends Controller
 
         // Normalize data cho Blade
         $home = [
-            // hero hiện tại đang dùng video cố định trong blade
-            // để sẵn key này cho tương lai
+            // để sẵn cho tương lai (hiện hero video hard-code trong blade)
             'hero' => $rawHome['hero'] ?? null,
 
-            // QUAN TRỌNG: map đúng key từ API
+            // QUAN TRỌNG: ERP trả products → map sang featured_products
             'featured_products' => $rawHome['products'] ?? [],
         ];
 
@@ -48,10 +47,13 @@ class StorefrontController extends Controller
     /**
      * =====================================================
      * 👗 PRODUCT DETAIL
+     * slug format: ten-san-pham-product_id
      * =====================================================
      */
     public function product(string $slug, ErpStorefrontApi $erp)
     {
+        // Chỉ forward slug sang ERP
+        // ERP sẽ tự parse product_id ở cuối slug
         $product = $erp->product($this->brand, $slug);
 
         if (empty($product)) {
@@ -59,7 +61,10 @@ class StorefrontController extends Controller
         }
 
         // Debug khi cần
-        // Log::info('[LINXEN][PRODUCT]', $product);
+        // Log::info('[LINXEN][PRODUCT]', [
+        //     'slug'    => $slug,
+        //     'product' => $product,
+        // ]);
 
         return view(
             "storefront.{$this->theme}.pages.product",

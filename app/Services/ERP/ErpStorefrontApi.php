@@ -35,13 +35,15 @@ class ErpStorefrontApi
     /**
      * =====================================================
      * 👗 PRODUCT DETAIL
+     * slug format: ten-san-pham-product_id
      * =====================================================
      */
     public function product(string $brand, string $slug): ?array
     {
+        // Brand chỉ là context hiển thị, không dùng để filter
         $data = $this->get("/api/storefront/{$brand}/product/{$slug}");
 
-        // Nếu API không trả hoặc trả rỗng → coi như không tồn tại
+        // Không có dữ liệu → coi như không tồn tại
         if (empty($data) || !is_array($data)) {
             return null;
         }
