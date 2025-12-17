@@ -151,6 +151,39 @@
 .lx-toast{position:fixed;top:20px;right:20px;background:#111;color:#fff;padding:12px 18px;border-radius:6px;opacity:0;transition:.3s;z-index:9999}
 .lx-toast.show{opacity:1}
 .lx-toast.error{background:#c62828}
+/* =========================
+   CLICK DEBUG – FORCE FIX
+========================= */
+
+/* HERO KHÔNG ĂN CLICK */
+.lx-hero,
+.lx-hero * {
+    pointer-events: none !important;
+}
+
+/* MOBILE MENU CHỈ ĂN CLICK KHI OPEN */
+.mobile-menu {
+    pointer-events: none !important;
+}
+.mobile-menu.is-open {
+    pointer-events: auto !important;
+}
+
+/* BOTTOM NAV KHÔNG ĐÈ DESKTOP */
+.bottom-nav {
+    pointer-events: none;
+}
+
+/* ĐẢM BẢO PRODUCT NẰM TRÊN */
+.lx-product-detail,
+.lx-product-info,
+.lx-product-actions,
+#lxAddToCartBtn {
+    position: relative;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+}
+
 </style>
 
 {{-- =========================
