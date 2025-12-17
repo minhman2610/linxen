@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Storefront\StorefrontController;
+use App\Http\Controllers\Storefront\PageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,66 +12,49 @@ use App\Http\Controllers\Storefront\StorefrontController;
 
 Route::domain('linxen.vn')->group(function () {
 
-    // =====================================================
     // 🏠 HOME
-    // =====================================================
-    Route::get('/', [StorefrontController::class, 'home'])
+    Route::get('/', [PageController::class, 'home'])
         ->name('linxen.home');
 
-    // =====================================================
     // 🔍 SEARCH
-    // =====================================================
-    Route::get('/search', [StorefrontController::class, 'search'])
+    Route::get('/search', [PageController::class, 'search'])
         ->name('linxen.search');
 
-    // =====================================================
     // 👗 PRODUCT
-    // =====================================================
-    Route::get('/p/{slug}', [StorefrontController::class, 'product'])
+    Route::get('/p/{slug}', [PageController::class, 'product'])
         ->name('linxen.product');
 
-    // =====================================================
-    // 📦 COLLECTION / CATEGORY
-    // =====================================================
-    Route::get('/c/{slug}', [StorefrontController::class, 'collection'])
+    // 📦 COLLECTION
+    Route::get('/c/{slug}', [PageController::class, 'collection'])
         ->name('linxen.collection');
 
-    // =====================================================
     // 🛒 CART
-    // =====================================================
-    Route::get('/cart', [StorefrontController::class, 'cart'])
+    Route::get('/cart', [PageController::class, 'cart'])
         ->name('linxen.cart');
 
-    // ➕ ADD TO CART (AJAX)
-    Route::post('/cart/add', [StorefrontController::class, 'addToCart'])
+    Route::post('/cart/add', [PageController::class, 'addToCart'])
         ->name('linxen.cart.add');
 
-    // 🔄 UPDATE QTY (AJAX)
-    Route::post('/cart/update', [StorefrontController::class, 'updateCart'])
+    Route::post('/cart/update', [PageController::class, 'updateCart'])
         ->name('linxen.cart.update');
 
-    // ❌ REMOVE ITEM (AJAX)
-    Route::post('/cart/remove', [StorefrontController::class, 'removeFromCart'])
+    Route::post('/cart/remove', [PageController::class, 'removeFromCart'])
         ->name('linxen.cart.remove');
 
-    // =====================================================
     // 💳 CHECKOUT
-    // =====================================================
-    Route::get('/checkout', [StorefrontController::class, 'checkout'])
+    Route::get('/checkout', [PageController::class, 'checkout'])
         ->name('linxen.checkout');
 
-    Route::post('/checkout/place-order', [StorefrontController::class, 'placeOrder'])
+    Route::post('/checkout/place-order', [PageController::class, 'placeOrder'])
         ->name('linxen.checkout.place_order');
 
-    // =====================================================
     // 👤 ACCOUNT
-    // =====================================================
-    Route::get('/account', [StorefrontController::class, 'account'])
+    Route::get('/account', [PageController::class, 'account'])
         ->name('linxen.account');
 
-    Route::get('/account/orders', [StorefrontController::class, 'orders'])
+    Route::get('/account/orders', [PageController::class, 'orders'])
         ->name('linxen.account.orders');
 
-    Route::get('/account/orders/{code}', [StorefrontController::class, 'orderDetail'])
+    Route::get('/account/orders/{code}', [PageController::class, 'orderDetail'])
         ->name('linxen.account.order_detail');
 });
