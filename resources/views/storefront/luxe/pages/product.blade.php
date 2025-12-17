@@ -150,7 +150,9 @@
     SCRIPT
 ========================= --}}
 <script>
-const VARIANTS = @json($variants);
+const VARIANTS = (@json($variants) || [])
+    .filter(v => !v.is_master && v.attrs && Object.keys(v.attrs).length);
+
 let selectedAttrs = {};
 let selectedVariant = null;
 
@@ -166,37 +168,40 @@ document.querySelectorAll('.variant-option').forEach(el => {
         el.classList.add('active');
         selectedAttrs[attr] = val;
 
+        selectedVariant = null;
+        document.getElementById('lxAddToCartBtn').disabled = true;
+
         resolveVariant();
     });
 });
 
-function resolveVariant(){
+function resolveVariant() {
     selectedVariant = VARIANTS.find(v => {
-        return Object.keys(selectedAttrs)
-            .every(k => v.attrs?.[k] === selectedAttrs[k]);
+        return Object.entries(selectedAttrs)
+            .every(([k, val]) => v.attrs?.[k] === val);
     });
 
     const stockEl = document.getElementById('lxStock');
     const btn     = document.getElementById('lxAddToCartBtn');
 
-    if (!selectedVariant) return;
+    if (!selectedVariant) {
+        stockEl.innerHTML = "Vui lòng chọn đầy đủ biến thể";
+        btn.disabled = true;
+        return;
+    }
 
-    if (parseInt(selectedVariant.stock) > 0) {
-        stockEl.innerHTML = `✔ Còn ${selectedVariant.stock} sản phẩm`;
+    const stock = parseInt(selectedVariant.stock || 0);
+
+    if (stock > 0) {
+        stockEl.innerHTML = `✔ Còn ${stock} sản phẩm`;
         btn.disabled = false;
     } else {
-        stockEl.innerHTML = `❌ Hết hàng`;
+        stockEl.innerHTML = "❌ Hết hàng";
         btn.disabled = true;
     }
 }
 
-function previewImage(src){ document.getElementById("lxMainImage").src = src; }
-function changeQty(step){
-    const i=document.getElementById("lxQty");
-    i.value=Math.max(1,parseInt(i.value||1)+step);
-}
-
-async function addToCart(){
+async function addToCart() {
     if (!selectedVariant) {
         showToast("Vui lòng chọn biến thể", true);
         return;
@@ -211,7 +216,7 @@ async function addToCart(){
             "X-CSRF-TOKEN": "{{ csrf_token() }}"
         },
         body: JSON.stringify({
-            sku: selectedVariant.sku,
+            sku: selectedVariant.sku || selectedVariant.code,
             qty: qty
         })
     });
@@ -225,11 +230,24 @@ async function addToCart(){
 
     showToast("Đã thêm vào giỏ hàng");
 }
+function showToast(message, isError = false) {
+    const toast = document.getElementById('lxToast');
+    if (!toast) return;
 
-function showToast(msg, error=false){
-    const t=document.getElementById("lxToast");
-    t.textContent=msg;
-    t.className="lx-toast show"+(error?" error":"");
-    setTimeout(()=>t.classList.remove("show"),2500);
+    toast.textContent = message;
+
+    toast.classList.remove('show', 'error');
+    if (isError) toast.classList.add('error');
+
+    // Force reflow để reset animation
+    void toast.offsetWidth;
+
+    toast.classList.add('show');
+
+    clearTimeout(window.__lxToastTimer);
+    window.__lxToastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
 }
 </script>
+
