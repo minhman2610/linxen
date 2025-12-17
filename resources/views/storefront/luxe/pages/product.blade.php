@@ -109,9 +109,12 @@
                 <button type="button" onclick="changeQty(1)">+</button>
             </div>
 
-            <button class="lx-btn-primary lx-btn-full"
-                    id="lxAddToCartBtn"
-                    onclick="addToCart()">
+            <button
+    class="lx-btn-primary lx-btn-full"
+    id="lxAddToCartBtn"
+    type="button"
+>
+
                 THÊM VÀO GIỎ
             </button>
         </div>
@@ -156,121 +159,134 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ===== Normalize variants từ ERP =====
-    const VARIANTS = (@json($variants) || [])
-        .filter(v => !v.is_master && v.attrs)
+    /* =====================================================
+     * 1️⃣ NORMALIZE VARIANTS FROM ERP
+     * ===================================================== */
+    const RAW_VARIANTS = @json($variants ?? []);
+
+    const VARIANTS = RAW_VARIANTS
+        .filter(v => !v.is_master && v.attrs && typeof v.attrs === 'object')
         .map(v => {
-            const normalized = {};
-            Object.entries(v.attrs).forEach(([k, val]) => {
-                const key = k.toLowerCase()
-                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                    .replace(/\s+/g, "_");
-                normalized[key] = val;
+            const normalizedAttrs = {};
+            Object.entries(v.attrs).forEach(([key, val]) => {
+                const normalizedKey = key
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/\s+/g, '_');
+                normalizedAttrs[normalizedKey] = val;
             });
-            return { ...v, _attrs: normalized };
+            return {
+                ...v,
+                _attrs: normalizedAttrs,
+                _stock: parseInt(v.stock || 0)
+            };
         });
 
+    /* =====================================================
+     * 2️⃣ STATE
+     * ===================================================== */
     let selectedAttrs = {};
     let selectedVariant = null;
 
+    const stockEl = document.getElementById('lxStock');
+    const btnAdd  = document.getElementById('lxAddToCartBtn');
+    const qtyEl   = document.getElementById('lxQty');
+
+    /* =====================================================
+     * 3️⃣ BIND VARIANT CLICK
+     * ===================================================== */
     document.querySelectorAll('.variant-option').forEach(el => {
         el.addEventListener('click', () => {
-            const attrKey = el.dataset.attrKey;
-            const val     = el.dataset.value;
 
+            const attrKey = el.dataset.attrKey;
+            const value   = el.dataset.value;
+
+            // reset active trong cùng nhóm
             document
                 .querySelectorAll(`.variant-option[data-attr-key="${attrKey}"]`)
                 .forEach(x => x.classList.remove('active'));
 
             el.classList.add('active');
-            selectedAttrs[attrKey] = val;
+            selectedAttrs[attrKey] = value;
 
             resolveVariant();
         });
     });
 
+    /* =====================================================
+     * 4️⃣ RESOLVE VARIANT
+     * ===================================================== */
     function resolveVariant() {
+
         selectedVariant = VARIANTS.find(v =>
-            Object.entries(selectedAttrs)
-                .every(([k, val]) => v._attrs?.[k] === val)
+            Object.entries(selectedAttrs).every(
+                ([k, val]) => v._attrs[k] === val
+            )
         );
-        window.__selectedVariant = selectedVariant;
 
-        const stockEl = document.getElementById('lxStock');
-        const btn     = document.getElementById('lxAddToCartBtn');
-
+        // chưa chọn đủ
         if (!selectedVariant) {
-            stockEl.innerHTML = "Vui lòng chọn đầy đủ biến thể";
-            btn.disabled = true;
+            stockEl.textContent = 'Vui lòng chọn đầy đủ biến thể';
+            btnAdd.disabled = true;
             return;
         }
 
-        const stock = parseInt(selectedVariant.stock || 0);
-
-        if (stock > 0) {
-            stockEl.innerHTML = `✔ Còn ${stock} sản phẩm`;
-            btn.disabled = false;
+        // có variant
+        if (selectedVariant._stock > 0) {
+            stockEl.textContent = `✔ Còn ${selectedVariant._stock} sản phẩm`;
+            btnAdd.disabled = false;
         } else {
-            stockEl.innerHTML = "❌ Hết hàng";
-            btn.disabled = true;
+            stockEl.textContent = '❌ Hết hàng';
+            btnAdd.disabled = true;
         }
+
+        // expose global cho debug
+        window.__selectedVariant = selectedVariant;
     }
 
-    window.addToCart = async function () {
-    if (!window.__selectedVariant) {
-        showToast("Vui lòng chọn biến thể", true);
-        return;
-    }
+    /* =====================================================
+     * 5️⃣ ADD TO CART (BIND CLICK – KHÔNG INLINE)
+     * ===================================================== */
+    btnAdd.addEventListener('click', async () => {
 
-    const qty = parseInt(document.getElementById("lxQty").value || 1);
+        console.log('[ADD TO CART CLICKED]');
 
-    const res = await fetch("{{ route('linxen.cart.add') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-        },
-        body: JSON.stringify({
-            sku: window.__selectedVariant.sku,
-            qty: qty
-        })
+        if (!selectedVariant) {
+            showToast('Vui lòng chọn biến thể', true);
+            return;
+        }
+
+        const qty = Math.max(1, parseInt(qtyEl.value || 1));
+
+        try {
+            const res = await fetch("{{ route('linxen.cart.add') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    sku: selectedVariant.sku || selectedVariant.code,
+                    qty: qty
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                showToast(data.message || 'Không thể thêm vào giỏ', true);
+                return;
+            }
+
+            showToast('Đã thêm vào giỏ hàng');
+
+        } catch (err) {
+            console.error(err);
+            showToast('Lỗi hệ thống, vui lòng thử lại', true);
+        }
     });
 
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-        showToast(data.message || "Không thể thêm vào giỏ", true);
-        return;
-    }
-
-    showToast("Đã thêm vào giỏ hàng");
-};
-
 });
-
-function previewImage(src){
-    document.getElementById("lxMainImage").src = src;
-}
-
-function changeQty(step){
-    const i=document.getElementById("lxQty");
-    i.value=Math.max(1,parseInt(i.value||1)+step);
-}
-
-function showToast(message, isError = false) {
-    const toast = document.getElementById('lxToast');
-    if (!toast) return;
-
-    toast.textContent = message;
-    toast.classList.remove('show','error');
-    if (isError) toast.classList.add('error');
-
-    void toast.offsetWidth;
-    toast.classList.add('show');
-
-    clearTimeout(window.__lxToastTimer);
-    window.__lxToastTimer = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 2500);
-}
 </script>
+
