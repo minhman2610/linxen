@@ -3,6 +3,8 @@
 @section('content')
 
 @php
+    use Illuminate\Support\Str;
+
     // ============================
     // NORMALIZE DATA FROM API
     // ============================
@@ -67,12 +69,19 @@
         @if(!empty($attributes))
             <div class="lx-product-variants" id="lxVariants">
                 @foreach($attributes as $attr => $values)
-                    <div class="lx-attr-group" data-attr="{{ $attr }}">
+                    @php
+                        // normalize key để JS match chính xác
+                        $attrKey = Str::slug($attr, '_');
+                    @endphp
+                    <div class="lx-attr-group"
+                         data-attr="{{ $attr }}"
+                         data-attr-key="{{ $attrKey }}">
                         <label>{{ $attr }}</label>
                         <div class="lx-attr-values">
                             @foreach($values as $val)
                                 <div class="variant-option"
                                      data-attr="{{ $attr }}"
+                                     data-attr-key="{{ $attrKey }}"
                                      data-value="{{ $val }}">
                                     {{ $val }}
                                 </div>
@@ -84,14 +93,10 @@
         @endif
 
         {{-- =========================
-            STOCK
+            STOCK (INIT UX ĐÚNG)
         ========================= --}}
         <p class="lx-product-stock" id="lxStock">
-            @if(($product['available'] ?? 0) > 0)
-                ✔ Còn {{ $product['available'] }} sản phẩm
-            @else
-                ❌ Hết hàng
-            @endif
+            Vui lòng chọn biến thể
         </p>
 
         {{-- =========================
@@ -107,7 +112,7 @@
             <button class="lx-btn-primary lx-btn-full"
                     id="lxAddToCartBtn"
                     onclick="addToCart()"
-                    {{ ($product['available'] ?? 0) <= 0 ? 'disabled' : '' }}>
+                    disabled>
                 THÊM VÀO GIỎ
             </button>
         </div>
@@ -125,7 +130,7 @@
 @endsection
 
 {{-- =========================
-    STYLE (GIỮ GỌN)
+    STYLE
 ========================= --}}
 <style>
 .lx-product-detail{max-width:1200px;margin:auto;padding:40px 16px;display:grid;gap:40px}
@@ -137,111 +142,129 @@
 .lx-attr-values{display:flex;gap:8px;flex-wrap:wrap}
 .variant-option{border:1px solid #ddd;padding:6px 14px;cursor:pointer}
 .variant-option.active{background:#111;color:#fff;border-color:#111}
-.variant-option.disabled{opacity:.4;pointer-events:none}
 .lx-product-actions{margin-top:24px;display:flex;gap:16px}
 .lx-qty{display:flex;border:1px solid #ddd}
 .lx-qty button{width:36px;background:#fff;border:none}
 .lx-qty input{width:50px;text-align:center;border:none}
-.lx-toast{position:fixed;top:20px;right:20px;background:#111;color:#fff;padding:12px 18px;border-radius:6px;opacity:0;transition:.3s}
+.lx-toast{position:fixed;top:20px;right:20px;background:#111;color:#fff;padding:12px 18px;border-radius:6px;opacity:0;transition:.3s;z-index:9999}
 .lx-toast.show{opacity:1}
+.lx-toast.error{background:#c62828}
 </style>
 
 {{-- =========================
-    SCRIPT
+    SCRIPT (FIXED)
 ========================= --}}
 <script>
-const VARIANTS = (@json($variants) || [])
-    .filter(v => !v.is_master && v.attrs && Object.keys(v.attrs).length);
+document.addEventListener('DOMContentLoaded', () => {
 
-let selectedAttrs = {};
-let selectedVariant = null;
+    // ===== Normalize variants từ ERP =====
+    const VARIANTS = (@json($variants) || [])
+        .filter(v => !v.is_master && v.attrs)
+        .map(v => {
+            const normalized = {};
+            Object.entries(v.attrs).forEach(([k, val]) => {
+                const key = k.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/\s+/g, "_");
+                normalized[key] = val;
+            });
+            return { ...v, _attrs: normalized };
+        });
 
-document.querySelectorAll('.variant-option').forEach(el => {
-    el.addEventListener('click', () => {
-        const attr = el.dataset.attr;
-        const val  = el.dataset.value;
+    let selectedAttrs = {};
+    let selectedVariant = null;
 
-        document
-            .querySelectorAll(`.variant-option[data-attr="${attr}"]`)
-            .forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.variant-option').forEach(el => {
+        el.addEventListener('click', () => {
+            const attrKey = el.dataset.attrKey;
+            const val     = el.dataset.value;
 
-        el.classList.add('active');
-        selectedAttrs[attr] = val;
+            document
+                .querySelectorAll(`.variant-option[data-attr-key="${attrKey}"]`)
+                .forEach(x => x.classList.remove('active'));
 
-        selectedVariant = null;
-        document.getElementById('lxAddToCartBtn').disabled = true;
+            el.classList.add('active');
+            selectedAttrs[attrKey] = val;
 
-        resolveVariant();
+            resolveVariant();
+        });
     });
+
+    function resolveVariant() {
+        selectedVariant = VARIANTS.find(v =>
+            Object.entries(selectedAttrs)
+                .every(([k, val]) => v._attrs?.[k] === val)
+        );
+
+        const stockEl = document.getElementById('lxStock');
+        const btn     = document.getElementById('lxAddToCartBtn');
+
+        if (!selectedVariant) {
+            stockEl.innerHTML = "Vui lòng chọn đầy đủ biến thể";
+            btn.disabled = true;
+            return;
+        }
+
+        const stock = parseInt(selectedVariant.stock || 0);
+
+        if (stock > 0) {
+            stockEl.innerHTML = `✔ Còn ${stock} sản phẩm`;
+            btn.disabled = false;
+        } else {
+            stockEl.innerHTML = "❌ Hết hàng";
+            btn.disabled = true;
+        }
+    }
+
+    window.addToCart = async function () {
+        if (!selectedVariant) {
+            showToast("Vui lòng chọn biến thể", true);
+            return;
+        }
+
+        const qty = parseInt(document.getElementById("lxQty").value || 1);
+
+        const res = await fetch("{{ route('linxen.cart.add') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                sku: selectedVariant.sku || selectedVariant.code,
+                qty: qty
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            showToast(data.message || "Không thể thêm vào giỏ", true);
+            return;
+        }
+
+        showToast("Đã thêm vào giỏ hàng");
+    };
 });
 
-function resolveVariant() {
-    selectedVariant = VARIANTS.find(v => {
-        return Object.entries(selectedAttrs)
-            .every(([k, val]) => v.attrs?.[k] === val);
-    });
-
-    const stockEl = document.getElementById('lxStock');
-    const btn     = document.getElementById('lxAddToCartBtn');
-
-    if (!selectedVariant) {
-        stockEl.innerHTML = "Vui lòng chọn đầy đủ biến thể";
-        btn.disabled = true;
-        return;
-    }
-
-    const stock = parseInt(selectedVariant.stock || 0);
-
-    if (stock > 0) {
-        stockEl.innerHTML = `✔ Còn ${stock} sản phẩm`;
-        btn.disabled = false;
-    } else {
-        stockEl.innerHTML = "❌ Hết hàng";
-        btn.disabled = true;
-    }
+function previewImage(src){
+    document.getElementById("lxMainImage").src = src;
 }
 
-async function addToCart() {
-    if (!selectedVariant) {
-        showToast("Vui lòng chọn biến thể", true);
-        return;
-    }
-
-    const qty = parseInt(document.getElementById("lxQty").value || 1);
-
-    const res = await fetch("{{ route('linxen.cart.add') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-        },
-        body: JSON.stringify({
-            sku: selectedVariant.sku || selectedVariant.code,
-            qty: qty
-        })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-        showToast(data.message || "Không thể thêm vào giỏ", true);
-        return;
-    }
-
-    showToast("Đã thêm vào giỏ hàng");
+function changeQty(step){
+    const i=document.getElementById("lxQty");
+    i.value=Math.max(1,parseInt(i.value||1)+step);
 }
+
 function showToast(message, isError = false) {
     const toast = document.getElementById('lxToast');
     if (!toast) return;
 
     toast.textContent = message;
-
-    toast.classList.remove('show', 'error');
+    toast.classList.remove('show','error');
     if (isError) toast.classList.add('error');
 
-    // Force reflow để reset animation
     void toast.offsetWidth;
-
     toast.classList.add('show');
 
     clearTimeout(window.__lxToastTimer);
@@ -250,4 +273,3 @@ function showToast(message, isError = false) {
     }, 2500);
 }
 </script>
-
