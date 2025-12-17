@@ -48,20 +48,25 @@ class ErpStorefrontApi
 
     /**
      * =====================================================
-     * 🔌 CORE REQUEST
+     * 🔌 CORE REQUEST (SSL VERIFY OFF – INTERNAL USE)
      * =====================================================
      */
     protected function get(string $uri): array
     {
+        $url = $this->baseUrl . $uri;
+
         try {
             $res = Http::withToken($this->token)
-                ->timeout(5)
+                ->withOptions([
+                    'verify' => false,   // 🔥 CHỐT: bỏ verify SSL
+                    'timeout' => 5,
+                ])
                 ->acceptJson()
-                ->get($this->baseUrl . $uri);
+                ->get($url);
 
             if ($res->failed()) {
                 Log::error('[LINXEN][ERP_API_FAIL]', [
-                    'url'    => $this->baseUrl . $uri,
+                    'url'    => $url,
                     'status' => $res->status(),
                     'body'   => $res->body(),
                 ]);
@@ -74,7 +79,7 @@ class ErpStorefrontApi
         } catch (\Throwable $e) {
 
             Log::error('[LINXEN][ERP_API_EXCEPTION]', [
-                'url'     => $this->baseUrl . $uri,
+                'url'     => $url,
                 'message' => $e->getMessage(),
             ]);
 
