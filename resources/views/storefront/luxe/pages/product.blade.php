@@ -1,6 +1,22 @@
-@extends('storefront.luxe.layouts.master')
+@extends('storefront.luxe.layouts.app')
 
 @section('content')
+
+@php
+    // ============================
+    // NORMALIZE DATA FROM API
+    // ============================
+    $images = [];
+
+    if (!empty($product['images']) && is_array($product['images'])) {
+        $images = $product['images'];
+    } elseif (!empty($product['thumb_url'])) {
+        $images = [$product['thumb_url']];
+    }
+
+    $mainImage = $images[0] ?? '';
+@endphp
+
 
 <section class="lx-product-detail">
 
@@ -8,82 +24,92 @@
         PRODUCT GALLERY
     ========================= --}}
     <div class="lx-product-gallery">
+
         <div class="lx-product-main-image">
-            <img id="lxMainImage"
-                 src="{{ $mainImage }}"
-                 alt="{{ $product->name }}">
+            <img
+                id="lxMainImage"
+                src="{{ $mainImage }}"
+                alt="{{ $product['name'] ?? '' }}"
+            >
         </div>
 
-        @if(!empty($photos) && count($photos) > 1)
+        @if(count($images) > 1)
             <div class="lx-product-thumbs">
-                @foreach($photos as $photo)
-                    <img src="{{ $photo }}"
-                         onclick="previewImage('{{ $photo }}')"
-                         alt="{{ $product->name }}">
+                @foreach($images as $img)
+                    <img
+                        src="{{ $img }}"
+                        onclick="previewImage('{{ $img }}')"
+                        alt="{{ $product['name'] ?? '' }}"
+                    >
                 @endforeach
             </div>
         @endif
+
     </div>
+
 
     {{-- =========================
         PRODUCT INFO
     ========================= --}}
     <div class="lx-product-info">
 
-        <h1 class="lx-product-title">{{ $product->name }}</h1>
+        <h1 class="lx-product-title">
+            {{ $product['name'] ?? '' }}
+        </h1>
 
         <div class="lx-product-meta">
-            <span>Mã SP: <strong>{{ $product->code }}</strong></span>
+            @if(!empty($product['code']))
+                <span>Mã SP: <strong>{{ $product['code'] }}</strong></span>
+            @endif
+
             @if(!empty($brand))
-                <span class="lx-badge">{{ $brand }}</span>
+                <span class="lx-badge">{{ strtoupper($brand) }}</span>
             @endif
         </div>
 
         <div class="lx-product-price">
-            {{ number_format($product->retail_price ?? $product->base_price ?? 0) }}₫
+            {{ number_format($product['price'] ?? 0) }}₫
         </div>
 
         <div class="lx-product-description">
-            {!! !empty($product->description)
-                ? nl2br(e($product->description))
+            {!! !empty($product['description'])
+                ? nl2br(e($product['description']))
                 : 'Thiết kế tinh tế – phom dáng hiện đại, phù hợp phong cách LIN XÉN.' !!}
         </div>
 
         {{-- =========================
-            VARIANT ATTRIBUTES
+            STOCK
         ========================= --}}
-        @if(!empty($attributes))
-            <div class="lx-product-attrs" id="lxVariantAttrs">
-                @foreach($attributes as $attrName => $values)
-                    <div class="lx-attr-group attr-group" data-attr="{{ $attrName }}">
-                        <label>{{ $attrName }}</label>
-                        <div class="lx-attr-values">
-                            @foreach($values as $val)
-                                <div class="variant-option"
-                                     data-attr="{{ $attrName }}"
-                                     data-value="{{ $val }}">
-                                    <span>{{ $val }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+        @if(isset($product['available']))
+            <p class="lx-product-stock">
+                @if($product['available'] > 0)
+                    ✔ Còn {{ $product['available'] }} sản phẩm
+                @else
+                    ❌ Hết hàng
+                @endif
+            </p>
         @endif
+
 
         {{-- =========================
             QUANTITY + ADD TO CART
         ========================= --}}
         <div class="lx-product-actions">
+
             <div class="lx-qty">
                 <button type="button" onclick="changeQty(-1)">−</button>
                 <input type="number" id="lxQty" value="1" min="1">
                 <button type="button" onclick="changeQty(1)">+</button>
             </div>
 
-            <button class="lx-btn-primary lx-btn-full" onclick="addToCart()">
+            <button
+                class="lx-btn-primary lx-btn-full"
+                onclick="addToCart()"
+                {{ ($product['available'] ?? 0) <= 0 ? 'disabled' : '' }}
+            >
                 THÊM VÀO GIỎ
             </button>
+
         </div>
 
         <ul class="lx-product-trust">
@@ -93,12 +119,12 @@
         </ul>
 
     </div>
+
 </section>
 
 <div id="lxToast" class="lx-toast"></div>
 
 @endsection
-
 {{-- =========================
     STYLE
 ========================= --}}
@@ -173,118 +199,7 @@
 .lx-toast.show{opacity:1;transform:translateY(0)}
 .lx-toast.error{background:#c0392b}
 </style>
-
-{{-- =========================
-    SCRIPT (FIXED)
-========================= --}}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    // ===============================
-    // DATA
-    // ===============================
-    const VARIANTS = @json($variants)
-        .filter(v => v && v.attrs && Object.keys(v.attrs).length);
-
-    const container = document.getElementById("lxVariantAttrs");
-    const qtyInput  = document.getElementById("lxQty");
-    let selectedAttrs = {};
-
-    if (!container || VARIANTS.length === 0) return;
-
-    // ===============================
-    // CHỌN BIẾN THỂ
-    // ===============================
-    container.querySelectorAll(".variant-option").forEach(opt => {
-        opt.addEventListener("click", () => {
-            const group = opt.closest(".attr-group");
-            const attr  = group.dataset.attr;
-            const val   = opt.dataset.value;
-
-            selectedAttrs[attr] = val;
-
-            group.querySelectorAll(".variant-option")
-                 .forEach(o => o.classList.remove("active"));
-            opt.classList.add("active");
-        });
-    });
-
-    // ===============================
-    // TÌM VARIANT KHỚP
-    // ===============================
-    function findVariant() {
-        return VARIANTS.find(v =>
-            Object.entries(selectedAttrs)
-                .every(([k,val]) => v.attrs[k] === val)
-        );
-    }
-
-    // ===============================
-    // ADD TO CART (AJAX)
-    // ===============================
-    window.addToCart = async function () {
-
-        const requiredCount = container.querySelectorAll(".attr-group").length;
-        if (Object.keys(selectedAttrs).length < requiredCount) {
-            showToast("Vui lòng chọn đầy đủ biến thể", true);
-            return;
-        }
-
-        const variant = findVariant();
-        if (!variant) {
-            showToast("Không tìm thấy biến thể phù hợp", true);
-            return;
-        }
-
-        if ((variant.stock ?? 0) <= 0) {
-            showToast("Biến thể đã hết hàng", true);
-            return;
-        }
-
-        const qty = Math.max(1, parseInt(qtyInput.value) || 1);
-
-        try {
-            const res = await fetch("{{ route('linxen.cart') }}/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({
-                    sku: variant.sku,
-                    name: "{{ $product->name }}",
-                    price: variant.price,
-                    image: "{{ $mainImage }}",
-                    qty: qty,
-                    attrs: selectedAttrs
-                })
-            });
-
-            const data = await res.json();
-
-            if (!res.ok || !data.success) {
-                showToast(data.message || "Không thể thêm vào giỏ", true);
-                return;
-            }
-
-            showToast("Đã thêm sản phẩm vào giỏ hàng");
-
-            // 👉 Optional: update mini cart count
-            if (typeof updateMiniCart === "function") {
-                updateMiniCart(data.cart_count);
-            }
-
-        } catch (err) {
-            console.error(err);
-            showToast("Lỗi kết nối. Vui lòng thử lại.", true);
-        }
-    };
-
-});
-
-// ===============================
-// UTILS
-// ===============================
 function previewImage(src){
     const img = document.getElementById("lxMainImage");
     if (img) img.src = src;
@@ -293,7 +208,46 @@ function previewImage(src){
 function changeQty(step){
     const input = document.getElementById("lxQty");
     if (!input) return;
-    input.value = Math.max(1, parseInt(input.value) + step);
+    input.value = Math.max(1, parseInt(input.value || 1) + step);
+}
+
+async function addToCart(){
+
+    const qty = Math.max(1, parseInt(document.getElementById("lxQty").value || 1));
+
+    try {
+        const res = await fetch("{{ route('linxen.cart.add') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                code: "{{ $product['code'] ?? '' }}",
+                name: "{{ $product['name'] ?? '' }}",
+                price: {{ $product['price'] ?? 0 }},
+                image: "{{ $mainImage }}",
+                qty: qty
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            showToast(data.message || "Không thể thêm vào giỏ", true);
+            return;
+        }
+
+        showToast("Đã thêm sản phẩm vào giỏ hàng");
+
+        if (typeof updateMiniCart === "function") {
+            updateMiniCart(data.cart_count);
+        }
+
+    } catch (e) {
+        console.error(e);
+        showToast("Lỗi kết nối. Vui lòng thử lại.", true);
+    }
 }
 
 function showToast(msg, error=false){
@@ -304,4 +258,3 @@ function showToast(msg, error=false){
     setTimeout(()=>t.classList.remove("show"), 2500);
 }
 </script>
-
