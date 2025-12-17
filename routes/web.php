@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Storefront\PageController;
-
+use App\Http\Controllers\Storefront\Api\LocationProxyController;
 /*
 |--------------------------------------------------------------------------
 | 🌐 STOREFRONT – LIN XÉN
@@ -57,4 +57,16 @@ Route::domain('linxen.vn')->group(function () {
 
     Route::get('/account/orders/{code}', [PageController::class, 'orderDetail'])
         ->name('linxen.account.order_detail');
+});
+Route::domain('linxen.vn')->group(function () {
+
+    Route::prefix('api')->group(function () {
+
+        Route::get('/locations', [LocationProxyController::class, 'locations'])
+            ->name('linxen.api.locations');
+
+        Route::get('/locations/{locationId}/wards', [LocationProxyController::class, 'wards'])
+            ->name('linxen.api.wards');
+    });
+
 });

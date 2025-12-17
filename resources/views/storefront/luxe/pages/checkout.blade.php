@@ -219,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const districtSelect = document.getElementById('lx-district');
     const wardSelect     = document.getElementById('lx-ward');
 
+    // 🔗 JS chỉ gọi về LIN XÉN (BE proxy sang ERP)
     const API_BASE = '/api/locations';
 
     /**
@@ -236,81 +237,113 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch(url, {
             headers: { 'Accept': 'application/json' }
         });
+
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         return res.json();
     }
 
     /**
-     * Load Provinces / Locations
+     * =====================================================
+     * 📍 Load Provinces / Locations
+     * =====================================================
      */
     async function loadProvinces() {
-        resetSelect(provinceSelect, '-- Đang tải khu vực --', true);
+        resetSelect(provinceSelect, '-- Đang tải Tỉnh / Thành --', true);
 
-        const res = await fetchJSON(`${API_BASE}?mode=raw`);
+        try {
+            const res = await fetchJSON(`${API_BASE}?mode=raw`);
 
-        if (!res.success) return;
+            if (!res.success || !Array.isArray(res.data)) return;
 
-        resetSelect(provinceSelect, '-- Chọn Tỉnh / Thành --', false);
+            resetSelect(provinceSelect, '-- Chọn Tỉnh / Thành --', false);
 
-        res.data.forEach(loc => {
-            const opt = document.createElement('option');
-            opt.value = loc.id;
-            opt.textContent = loc.name;
-            provinceSelect.appendChild(opt);
-        });
+            res.data.forEach(loc => {
+                const opt = document.createElement('option');
+                opt.value = loc.id;
+                opt.textContent = loc.name;
+                provinceSelect.appendChild(opt);
+            });
+
+        } catch (e) {
+            console.error('Load provinces error:', e);
+        }
     }
 
     /**
-     * Load Districts (reuse kv_locations)
+     * =====================================================
+     * 🏙️ Load Districts (kv_locations / kv_wards theo thiết kế ERP)
+     * =====================================================
      */
     async function loadDistricts(locationId) {
         resetSelect(districtSelect, '-- Đang tải Quận / Huyện --', true);
         resetSelect(wardSelect, '-- Chọn Phường / Xã --', true);
 
-        const res = await fetchJSON(`${API_BASE}/${locationId}/wards?mode=raw`);
+        try {
+            const res = await fetchJSON(`${API_BASE}/${locationId}/wards?mode=raw`);
 
-        // 🔴 Location đã sáp nhập
-        if (res.error && res.merged_into) {
-            alert(res.message);
-            provinceSelect.value = '';
-            return;
+            // 🔴 Khu vực đã sáp nhập
+            if (res.error && res.merged_into) {
+                alert(res.message);
+                provinceSelect.value = '';
+                return;
+            }
+
+            if (!res.success || !Array.isArray(res.data)) return;
+
+            resetSelect(districtSelect, '-- Chọn Quận / Huyện --', false);
+
+            res.data.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = d.name;
+                districtSelect.appendChild(opt);
+            });
+
+        } catch (e) {
+            console.error('Load districts error:', e);
         }
-
-        resetSelect(districtSelect, '-- Chọn Quận / Huyện --', false);
-
-        res.data.forEach(d => {
-            const opt = document.createElement('option');
-            opt.value = d.id;
-            opt.textContent = d.name;
-            districtSelect.appendChild(opt);
-        });
     }
 
     /**
-     * Load Wards
+     * =====================================================
+     * 🏠 Load Wards
+     * =====================================================
      */
     async function loadWards(districtId) {
         resetSelect(wardSelect, '-- Đang tải Phường / Xã --', true);
 
-        const res = await fetchJSON(`${API_BASE}/${districtId}/wards?mode=raw`);
+        try {
+            const res = await fetchJSON(`${API_BASE}/${districtId}/wards?mode=raw`);
 
-        if (res.error && res.merged_into) {
-            alert(res.message);
-            districtSelect.value = '';
-            return;
+            if (res.error && res.merged_into) {
+                alert(res.message);
+                districtSelect.value = '';
+                return;
+            }
+
+            if (!res.success || !Array.isArray(res.data)) return;
+
+            resetSelect(wardSelect, '-- Chọn Phường / Xã --', false);
+
+            res.data.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w.id;
+                opt.textContent = w.name;
+                wardSelect.appendChild(opt);
+            });
+
+        } catch (e) {
+            console.error('Load wards error:', e);
         }
-
-        resetSelect(wardSelect, '-- Chọn Phường / Xã --', false);
-
-        res.data.forEach(w => {
-            const opt = document.createElement('option');
-            opt.value = w.id;
-            opt.textContent = w.name;
-            wardSelect.appendChild(opt);
-        });
     }
 
     /**
+     * =====================================================
      * EVENTS
+     * =====================================================
      */
     provinceSelect.addEventListener('change', e => {
         const id = e.target.value;
@@ -324,8 +357,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loadWards(id);
     });
 
-    // INIT
+    /**
+     * INIT
+     */
     loadProvinces();
 });
 </script>
 @endpush
+
