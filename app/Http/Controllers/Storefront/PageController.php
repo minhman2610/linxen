@@ -192,19 +192,41 @@ public function checkout()
 {
     $cart = session('cart', []);
 
-    // 1️⃣ Giỏ hàng trống → quay về trang giỏ
-    if (empty($cart)) {
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ Giỏ hàng trống → quay về trang giỏ
+    |--------------------------------------------------------------------------
+    */
+    if (empty($cart) || !is_array($cart)) {
         return redirect()
             ->route('linxen.cart')
             ->with('warning', 'Giỏ hàng của bạn đang trống.');
     }
 
-    // 2️⃣ Chuẩn hoá dữ liệu (phòng trường hợp session lỗi)
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ Chuẩn hoá & validate dữ liệu giỏ hàng
+    |    (phòng session lỗi / data cũ)
+    |--------------------------------------------------------------------------
+    */
     $cartItems = array_filter($cart, function ($item) {
-        return isset($item['sku'], $item['name'], $item['price'], $item['qty'])
+        return is_array($item)
+            && isset(
+                $item['sku'],
+                $item['name'],
+                $item['price'],
+                $item['qty']
+            )
+            && is_numeric($item['price'])
+            && is_numeric($item['qty'])
             && $item['qty'] > 0;
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | 3️⃣ Giỏ hàng không hợp lệ → clear session
+    |--------------------------------------------------------------------------
+    */
     if (empty($cartItems)) {
         session()->forget('cart');
 
@@ -213,11 +235,15 @@ public function checkout()
             ->with('warning', 'Giỏ hàng không hợp lệ, vui lòng chọn lại sản phẩm.');
     }
 
-    // 3️⃣ Trả view checkout
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ Trả view checkout
+    |--------------------------------------------------------------------------
+    */
     return view(
         "storefront.{$this->theme}.pages.checkout",
         [
-            'cart' => $cartItems,
+            'cart'  => $cartItems,
             'brand' => $this->brand,
         ]
     );
