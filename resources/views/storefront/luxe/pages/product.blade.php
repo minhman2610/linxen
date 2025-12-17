@@ -154,7 +154,7 @@
 </style>
 
 {{-- =========================
-    SCRIPT (FIXED)
+    SCRIPT (FINAL – FIXED)
 ========================= --}}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* =====================================================
      * 2️⃣ STATE
      * ===================================================== */
-    let selectedAttrs = {};
+    let selectedAttrs   = {};
     let selectedVariant = null;
 
     const stockEl = document.getElementById('lxStock');
@@ -225,14 +225,12 @@ document.addEventListener('DOMContentLoaded', () => {
             )
         );
 
-        // chưa chọn đủ
         if (!selectedVariant) {
             stockEl.textContent = 'Vui lòng chọn đầy đủ biến thể';
             btnAdd.disabled = true;
             return;
         }
 
-        // có variant
         if (selectedVariant._stock > 0) {
             stockEl.textContent = `✔ Còn ${selectedVariant._stock} sản phẩm`;
             btnAdd.disabled = false;
@@ -241,34 +239,45 @@ document.addEventListener('DOMContentLoaded', () => {
             btnAdd.disabled = true;
         }
 
-        // expose global cho debug
+        // expose global cho add cart
         window.__selectedVariant = selectedVariant;
     }
 
     /* =====================================================
-     * 5️⃣ ADD TO CART (BIND CLICK – KHÔNG INLINE)
+     * 5️⃣ ADD TO CART (SYNC VỚI CART CONTROLLER CŨ)
      * ===================================================== */
     btnAdd.addEventListener('click', async () => {
 
         console.log('[ADD TO CART CLICKED]');
 
-        if (!selectedVariant) {
+        if (!window.__selectedVariant) {
             showToast('Vui lòng chọn biến thể', true);
+            return;
+        }
+
+        const variant = window.__selectedVariant;
+
+        if (variant._stock <= 0) {
+            showToast('Biến thể đã hết hàng', true);
             return;
         }
 
         const qty = Math.max(1, parseInt(qtyEl.value || 1));
 
         try {
-            const res = await fetch("{{ route('linxen.cart.add') }}", {
+            const res = await fetch("{{ route('linxen.cart') }}/add", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 },
                 body: JSON.stringify({
-                    sku: selectedVariant.sku || selectedVariant.code,
-                    qty: qty
+                    sku: variant.sku || variant.code,
+                    name: @json($product['name'] ?? ''),
+                    price: parseFloat(variant.price || {{ $product['price'] ?? 0 }}),
+                    image: @json($mainImage ?? ''),
+                    qty: qty,
+                    attrs: variant.attrs || {}
                 })
             });
 
@@ -281,6 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             showToast('Đã thêm vào giỏ hàng');
 
+            // optional: update mini cart nếu có
+            if (typeof updateMiniCart === 'function') {
+                updateMiniCart(data.cart_count || 0);
+            }
+
         } catch (err) {
             console.error(err);
             showToast('Lỗi hệ thống, vui lòng thử lại', true);
@@ -288,6 +302,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+/* =====================================================
+ * 6️⃣ CHANGE QTY (GLOBAL – DÙNG CHO HTML CŨ)
+ * ===================================================== */
 function changeQty(step) {
     const qtyInput = document.getElementById('lxQty');
     if (!qtyInput) return;
@@ -299,4 +317,5 @@ function changeQty(step) {
     qtyInput.value = qty;
 }
 </script>
+
 
