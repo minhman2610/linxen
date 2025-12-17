@@ -23,7 +23,13 @@ class ErpStorefrontApi
      */
     public function home(string $brand): array
     {
-        return $this->get("/api/storefront/{$brand}/home");
+        $data = $this->get("/api/storefront/{$brand}/home");
+
+        // Normalize để frontend dùng ổn định
+        return [
+            'hero'     => $data['hero'] ?? null,
+            'products' => $data['products'] ?? [],
+        ];
     }
 
     /**
@@ -33,7 +39,14 @@ class ErpStorefrontApi
      */
     public function product(string $brand, string $slug): ?array
     {
-        return $this->get("/api/storefront/{$brand}/product/{$slug}");
+        $data = $this->get("/api/storefront/{$brand}/product/{$slug}");
+
+        // Nếu API không trả hoặc trả rỗng → coi như không tồn tại
+        if (empty($data) || !is_array($data)) {
+            return null;
+        }
+
+        return $data;
     }
 
     /**
@@ -41,14 +54,21 @@ class ErpStorefrontApi
      * 📦 COLLECTION
      * =====================================================
      */
-    public function collection(string $brand, string $slug): ?array
+    public function collection(string $brand, string $slug): array
     {
-        return $this->get("/api/storefront/{$brand}/collection/{$slug}");
+        $data = $this->get("/api/storefront/{$brand}/collection/{$slug}");
+
+        return [
+            'collection' => $data['collection'] ?? null,
+            'products'   => $data['products'] ?? [],
+        ];
     }
 
     /**
      * =====================================================
-     * 🔌 CORE REQUEST (SSL VERIFY OFF – INTERNAL USE)
+     * 🔌 CORE REQUEST
+     *  - Internal ERP
+     *  - SSL verify OFF
      * =====================================================
      */
     protected function get(string $uri): array
@@ -58,8 +78,8 @@ class ErpStorefrontApi
         try {
             $res = Http::withToken($this->token)
                 ->withOptions([
-                    'verify' => false,   // 🔥 CHỐT: bỏ verify SSL
-                    'timeout' => 5,
+                    'verify'  => false, // 🔥 internal ERP – bỏ SSL verify
+                    'timeout' => 8,
                 ])
                 ->acceptJson()
                 ->get($url);
@@ -74,7 +94,17 @@ class ErpStorefrontApi
                 return [];
             }
 
-            return $res->json() ?? [];
+            $json = $res->json();
+
+            if (!is_array($json)) {
+                Log::error('[LINXEN][ERP_API_INVALID_JSON]', [
+                    'url'  => $url,
+                    'body' => $res->body(),
+                ]);
+                return [];
+            }
+
+            return $json;
 
         } catch (\Throwable $e) {
 
