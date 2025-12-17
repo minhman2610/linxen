@@ -1,39 +1,40 @@
 <header class="lx-header {{ request()->routeIs('linxen.home') ? 'lx-header--transparent' : '' }}">
 
-    {{-- Nút mở menu mobile --}}
-    <button class="lx-header-btn lx-header-btn-menu" data-menu-open>
+    {{-- MENU (MOBILE) --}}
+    <button class="lx-header-btn lx-header-btn-menu" data-menu-open type="button">
         <img src="{{ asset('themes/luxe/assets/icons/icon-hamburger.svg') }}" alt="Menu">
     </button>
 
-    {{-- Search --}}
-    <button class="lx-header-btn" onclick="window.location='/linxen/search'">
+    {{-- SEARCH --}}
+    <a href="{{ route('linxen.search') }}" class="lx-header-btn">
         <img src="{{ asset('themes/luxe/assets/icons/icon-search.svg') }}" class="lx-icon" alt="Search">
-    </button>
-
-    {{-- Logo trung tâm --}}
-<div class="lx-header-logo">
-    <a href="{{ url('/') }}" class="lx-header-logo-link">
-        LIN XÉN
     </a>
-</div>
 
+    {{-- LOGO --}}
+    <div class="lx-header-logo">
+        <a href="{{ route('linxen.home') }}" class="lx-header-logo-link">
+            LIN XÉN
+        </a>
+    </div>
 
-    {{-- Tài khoản --}}
-    <button class="lx-header-btn" onclick="window.location='/linxen/account'">
+    {{-- ACCOUNT --}}
+    <a href="{{ route('linxen.account') }}" class="lx-header-btn">
         <img src="{{ asset('themes/luxe/assets/icons/icon-account.svg') }}" alt="Account">
-    </button>
+    </a>
 
-    {{-- Giỏ hàng --}}
-    <button class="lx-header-btn cart-btn" onclick="window.location='/linxen/cart'">
+    {{-- CART --}}
+    <a href="{{ route('linxen.cart') }}" class="lx-header-btn cart-btn">
         <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
-        <span class="cart-count">0</span>
-    </button>
+
+        <span class="cart-count" id="lxHeaderCartCount">
+            {{ array_sum(array_column(session('cart', []), 'qty')) }}
+        </span>
+    </a>
 
 </header>
-
 <style>
-/* -----------------------------------------------
-   LUXE HEADER — Mobile First
+    /* -----------------------------------------------
+   LUXE HEADER — Mobile First (UPDATED)
 -----------------------------------------------*/
 .lx-header {
     display: flex;
@@ -48,13 +49,16 @@
 
     position: sticky;
     top: 0;
-    z-index: 20; /* thấp hơn hero video overlay nếu cần */
+    z-index: 40; /* cao hơn content, thấp hơn overlay/menu */
 }
 
 .lx-header-btn {
     background: none;
     border: none;
     padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .lx-header-btn img {
@@ -65,9 +69,19 @@
 .lx-header-logo {
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 2px;
 }
 
+.lx-header-logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.lx-header-logo-link:hover {
+    opacity: .85;
+}
+
+/* CART BADGE */
 .cart-btn {
     position: relative;
 }
@@ -90,23 +104,16 @@
     border-radius: 50%;
 }
 
+/* HOME — TRANSPARENT HEADER */
 .lx-header--transparent {
     background: transparent !important;
     border-bottom: none !important;
 
-    position: absolute !important;
-    top: 20;
+    position: absolute;
+    top: 0;
     left: 0;
     width: 100%;
-    z-index: 30;
-
-    color: #fff; /* icon + text trắng */
-}
-
-.lx-header--transparent .lx-header-btn {
-    background: transparent;
-    opacity: 1;
-    pointer-events: auto;
+    z-index: 50;
 }
 
 .lx-header--transparent .lx-header-logo {
@@ -116,16 +123,6 @@
 .lx-header--transparent .cart-count {
     background: #fff;
     color: #000;
-}
-
-.lx-header-logo-link{
-    text-decoration:none;
-    color:inherit;
-    font-weight:700;
-    letter-spacing:2px;
-}
-.lx-header-logo-link:hover{
-    opacity:.85;
 }
 
 @media (min-width: 768px) {
@@ -138,4 +135,5 @@
         font-size: 26px;
     }
 }
+
 </style>
