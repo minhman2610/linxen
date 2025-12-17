@@ -6,26 +6,31 @@
 
     <title>{{ $brand ?? 'LUXE' }} — 3MG Storefront</title>
 
-    {{-- Base CSS --}}
+    {{-- ============================
+        BASE CSS
+    ============================= --}}
     <link rel="stylesheet" href="/themes/luxe/assets/css/base.css">
     <link rel="stylesheet" href="/themes/luxe/assets/css/theme.css">
     <link rel="stylesheet" href="/themes/luxe/assets/css/icons.css">
 
-    {{-- Mobile menu CSS --}}
+    {{-- ============================
+        MOBILE MENU CSS
+    ============================= --}}
     <link rel="stylesheet" href="/themes/luxe/assets/css/mobile-menu.css">
 
+    {{-- Page-specific head --}}
     @stack('head')
 </head>
 
 <body class="luxe-body">
 
     {{-- ============================
-        Announcement Bar
+        ANNOUNCEMENT BAR
     ============================= --}}
     @include('storefront.luxe.components.announcement')
 
     {{-- ============================
-        HEADER (ONLY ONCE)
+        HEADER (GLOBAL)
     ============================= --}}
     @include('storefront.luxe.components.header')
 
@@ -52,6 +57,8 @@
     <script src="/themes/luxe/assets/js/theme.js"></script>
     <script src="/themes/luxe/assets/js/mobile-menu.js"></script>
 
+    {{-- Page-specific scripts --}}
     @stack('scripts')
+
 </body>
 </html>
