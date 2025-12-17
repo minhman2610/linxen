@@ -21,6 +21,7 @@ class LocationProxyController extends Controller
     /**
      * =====================================================
      * 📍 Proxy locations từ ERP
+     * ERP: GET /api/locations
      * =====================================================
      */
     public function locations(Request $request): JsonResponse
@@ -29,17 +30,17 @@ class LocationProxyController extends Controller
 
         try {
             $response = Http::withOptions([
-                    'verify' => false, // 🔧 fix curl 60
+                    'verify' => false, // fix curl 60
                 ])
                 ->timeout(8)
                 ->get($url, $request->query());
 
             if ($response->failed()) {
                 Log::error('❌ ERP locations API failed', [
-                    'url'      => $url,
-                    'query'    => $request->query(),
-                    'status'   => $response->status(),
-                    'body'     => $response->body(),
+                    'url'    => $url,
+                    'query'  => $request->query(),
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
                 ]);
 
                 return response()->json([
@@ -52,10 +53,9 @@ class LocationProxyController extends Controller
 
         } catch (Throwable $e) {
             Log::error('🔥 ERP locations API exception', [
-                'url'    => $url,
-                'query'  => $request->query(),
-                'error'  => $e->getMessage(),
-                'trace'  => $e->getTraceAsString(),
+                'url'   => $url,
+                'query' => $request->query(),
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
@@ -67,16 +67,18 @@ class LocationProxyController extends Controller
 
     /**
      * =====================================================
-     * 🏠 Proxy wards theo location từ ERP
+     * 🏠 Proxy wards theo location
+     * ERP: GET /api/locations/wards/{locationId}
      * =====================================================
      */
     public function wards(Request $request, int $locationId): JsonResponse
     {
-        $url = "{$this->erpBaseUrl}/api/locations/{$locationId}/wards";
+        // ✅ FIX ĐÚNG ROUTE ERP
+        $url = "{$this->erpBaseUrl}/api/locations/wards/{$locationId}";
 
         try {
             $response = Http::withOptions([
-                    'verify' => false, // 🔧 fix curl 60
+                    'verify' => false, // fix curl 60
                 ])
                 ->timeout(8)
                 ->get($url, $request->query());
@@ -104,7 +106,6 @@ class LocationProxyController extends Controller
                 'locationId' => $locationId,
                 'query'      => $request->query(),
                 'error'      => $e->getMessage(),
-                'trace'      => $e->getTraceAsString(),
             ]);
 
             return response()->json([
