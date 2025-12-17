@@ -23,15 +23,21 @@ class LocationProxyController extends Controller
      */
     public function locations(Request $request): JsonResponse
     {
-        $response = Http::timeout(5)->get(
-            "{$this->erpBaseUrl}/api/locations",
-            $request->query()
-        );
+        $response = Http::withOptions([
+                // 🔧 FIX curl error 60 (SSL certificate problem)
+                'verify' => false,
+            ])
+            ->timeout(8)
+            ->get(
+                "{$this->erpBaseUrl}/api/locations",
+                $request->query()
+            );
 
         if ($response->failed()) {
             return response()->json([
                 'error'   => true,
                 'message' => 'Không lấy được dữ liệu khu vực từ ERP.',
+                'status'  => $response->status(),
             ], 500);
         }
 
@@ -45,15 +51,21 @@ class LocationProxyController extends Controller
      */
     public function wards(Request $request, int $locationId): JsonResponse
     {
-        $response = Http::timeout(5)->get(
-            "{$this->erpBaseUrl}/api/locations/{$locationId}/wards",
-            $request->query()
-        );
+        $response = Http::withOptions([
+                // 🔧 FIX curl error 60 (SSL certificate problem)
+                'verify' => false,
+            ])
+            ->timeout(8)
+            ->get(
+                "{$this->erpBaseUrl}/api/locations/{$locationId}/wards",
+                $request->query()
+            );
 
         if ($response->failed()) {
             return response()->json([
                 'error'   => true,
                 'message' => 'Không lấy được dữ liệu phường/xã từ ERP.',
+                'status'  => $response->status(),
             ], 500);
         }
 
