@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Storefront\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class LocationProxyController extends Controller
 {
@@ -23,25 +25,44 @@ class LocationProxyController extends Controller
      */
     public function locations(Request $request): JsonResponse
     {
-        $response = Http::withOptions([
-                // 🔧 FIX curl error 60 (SSL certificate problem)
-                'verify' => false,
-            ])
-            ->timeout(8)
-            ->get(
-                "{$this->erpBaseUrl}/api/locations",
-                $request->query()
-            );
+        $url = "{$this->erpBaseUrl}/api/locations";
 
-        if ($response->failed()) {
+        try {
+            $response = Http::withOptions([
+                    'verify' => false, // 🔧 fix curl 60
+                ])
+                ->timeout(8)
+                ->get($url, $request->query());
+
+            if ($response->failed()) {
+                Log::error('❌ ERP locations API failed', [
+                    'url'      => $url,
+                    'query'    => $request->query(),
+                    'status'   => $response->status(),
+                    'body'     => $response->body(),
+                ]);
+
+                return response()->json([
+                    'error'   => true,
+                    'message' => 'ERP trả về lỗi khi lấy danh sách khu vực.',
+                ], 500);
+            }
+
+            return response()->json($response->json());
+
+        } catch (Throwable $e) {
+            Log::error('🔥 ERP locations API exception', [
+                'url'    => $url,
+                'query'  => $request->query(),
+                'error'  => $e->getMessage(),
+                'trace'  => $e->getTraceAsString(),
+            ]);
+
             return response()->json([
                 'error'   => true,
-                'message' => 'Không lấy được dữ liệu khu vực từ ERP.',
-                'status'  => $response->status(),
+                'message' => 'Không thể kết nối ERP (locations).',
             ], 500);
         }
-
-        return response()->json($response->json());
     }
 
     /**
@@ -51,24 +72,45 @@ class LocationProxyController extends Controller
      */
     public function wards(Request $request, int $locationId): JsonResponse
     {
-        $response = Http::withOptions([
-                // 🔧 FIX curl error 60 (SSL certificate problem)
-                'verify' => false,
-            ])
-            ->timeout(8)
-            ->get(
-                "{$this->erpBaseUrl}/api/locations/{$locationId}/wards",
-                $request->query()
-            );
+        $url = "{$this->erpBaseUrl}/api/locations/{$locationId}/wards";
 
-        if ($response->failed()) {
+        try {
+            $response = Http::withOptions([
+                    'verify' => false, // 🔧 fix curl 60
+                ])
+                ->timeout(8)
+                ->get($url, $request->query());
+
+            if ($response->failed()) {
+                Log::error('❌ ERP wards API failed', [
+                    'url'        => $url,
+                    'locationId' => $locationId,
+                    'query'      => $request->query(),
+                    'status'     => $response->status(),
+                    'body'       => $response->body(),
+                ]);
+
+                return response()->json([
+                    'error'   => true,
+                    'message' => 'ERP trả về lỗi khi lấy danh sách phường/xã.',
+                ], 500);
+            }
+
+            return response()->json($response->json());
+
+        } catch (Throwable $e) {
+            Log::error('🔥 ERP wards API exception', [
+                'url'        => $url,
+                'locationId' => $locationId,
+                'query'      => $request->query(),
+                'error'      => $e->getMessage(),
+                'trace'      => $e->getTraceAsString(),
+            ]);
+
             return response()->json([
                 'error'   => true,
-                'message' => 'Không lấy được dữ liệu phường/xã từ ERP.',
-                'status'  => $response->status(),
+                'message' => 'Không thể kết nối ERP (wards).',
             ], 500);
         }
-
-        return response()->json($response->json());
     }
 }
