@@ -1,42 +1,40 @@
 <footer class="lx-footer">
 
-    {{-- BRAND TITLE --}}
+    {{-- BRAND --}}
     <div class="lx-footer-brand">
-        LUXE
+        LIN XÉN
     </div>
 
     {{-- QUICK LINKS --}}
-    <div class="lx-footer-links">
+    <nav class="lx-footer-links">
         <a href="/linxen/about">Về chúng tôi</a>
         <a href="/linxen/contact">Liên hệ</a>
         <a href="/linxen/policy">Chính sách</a>
         <a href="/linxen/returns">Đổi trả & Hoàn tiền</a>
-    </div>
+    </nav>
 
-    {{-- SOCIAL ICONS --}}
+    {{-- SOCIAL --}}
     <div class="lx-footer-social">
-        <a href="#" class="social-item">
-            <img src="/themes/luxe/assets/icons/icon-facebook.svg" alt="Facebook">
+        <a href="#" class="social-item" aria-label="Facebook">
+            <img src="/themes/luxe/assets/icons/icon-facebook.svg" alt="">
         </a>
-        <a href="#" class="social-item">
-            <img src="/themes/luxe/assets/icons/icon-instagram.svg" alt="Instagram">
+        <a href="#" class="social-item" aria-label="Instagram">
+            <img src="/themes/luxe/assets/icons/icon-instagram.svg" alt="">
         </a>
-        <a href="#" class="social-item">
-            <img src="/themes/luxe/assets/icons/icon-tiktok.svg" alt="TikTok">
+        <a href="#" class="social-item" aria-label="TikTok">
+            <img src="/themes/luxe/assets/icons/icon-tiktok.svg" alt="">
         </a>
     </div>
 
     {{-- COPYRIGHT --}}
     <div class="lx-footer-copy">
-        © {{ date('Y') }} LUXE · Powered by 3MG
+        © {{ date('Y') }} LIN XÉN · Powered by 3MG
     </div>
 
 </footer>
-
-
 <style>
-/* ---------------------------------------------------
-   LUXE FOOTER — Minimal, Mobile-first
+    /* ---------------------------------------------------
+   LUXE FOOTER — Minimal, Mobile-first (UPDATED)
 ----------------------------------------------------*/
 
 .lx-footer {
@@ -44,13 +42,15 @@
     background: #fafafa;
     color: #000;
     text-align: center;
-    margin-bottom: 60px; /* chừa khoảng cho bottom nav */
+
+    /* chừa chỗ cho bottom nav mobile */
+    margin-bottom: 80px;
 }
 
 .lx-footer-brand {
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     margin-bottom: 14px;
 }
 
@@ -72,20 +72,23 @@
     text-decoration: underline;
 }
 
-
 /* SOCIAL */
 .lx-footer-social {
     display: flex;
     justify-content: center;
-    gap: 14px;
+    gap: 16px;
     margin-bottom: 20px;
 }
 
 .lx-footer-social img {
     width: 20px;
     height: 20px;
+    opacity: .85;
 }
 
+.lx-footer-social a:hover img {
+    opacity: 1;
+}
 
 /* COPYRIGHT */
 .lx-footer-copy {
@@ -96,6 +99,7 @@
 @media (min-width: 768px) {
     .lx-footer {
         padding: 50px 20px;
+        margin-bottom: 0; /* desktop không cần chừa bottom nav */
     }
 
     .lx-footer-brand {
@@ -106,4 +110,5 @@
         font-size: 14px;
     }
 }
+
 </style>
