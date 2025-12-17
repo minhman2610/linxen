@@ -34,7 +34,7 @@
         <img src="/themes/luxe/assets/icons/icon-cart.svg" class="icon">
         <span>Giỏ hàng</span>
 
-        {{-- Cart count (JS update) --}}
+        {{-- Cart count --}}
         <span class="cart-count" id="lxCartCount">
             {{ array_sum(array_column(session('cart', []), 'qty')) }}
         </span>
@@ -42,12 +42,15 @@
 
 </div>
 
-
-
 <style>
 /* -----------------------------------------------------
-   LUXE — Mobile Bottom Navigation
+   LUXE — Mobile Bottom Navigation (FIXED)
 ------------------------------------------------------*/
+
+/* ❗ QUAN TRỌNG:
+   - Mặc định KHÔNG ăn click
+   - Chỉ mobile mới ăn click
+*/
 
 .lx-bottom-nav {
     position: fixed;
@@ -64,6 +67,16 @@
     align-items: center;
 
     z-index: 999;
+
+    /* 🔥 FIX CHẶN CLICK */
+    pointer-events: none;
+}
+
+/* Chỉ mobile mới cho phép click bottom-nav */
+@media (max-width: 767px) {
+    .lx-bottom-nav {
+        pointer-events: auto;
+    }
 }
 
 .lx-nav-item {
@@ -114,6 +127,7 @@
     border-radius: 50%;
 }
 
+/* Desktop: ẩn hoàn toàn */
 @media (min-width: 768px) {
     .lx-bottom-nav {
         display: none;
