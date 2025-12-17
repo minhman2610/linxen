@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Storefront;
 
 use App\Http\Controllers\Controller;
-
+use App\Services\ERP\ErpStorefrontApi;   // 🔥 DÒNG QUAN TRỌNG
 use Illuminate\Support\Facades\Log;
 
 class StorefrontController extends Controller
@@ -23,13 +23,12 @@ class StorefrontController extends Controller
      * =====================================================
      */
     public function home(ErpStorefrontApi $erp)
-{
-    $home = $erp->home($this->brand);
+    {
+        $home = $erp->home($this->brand);
 
-    return view(
-        "storefront.{$this->theme}.pages.home",
-        compact('home')
-    );
-}
-
+        return view(
+            "storefront.{$this->theme}.pages.home",
+            compact('home')
+        );
+    }
 }
