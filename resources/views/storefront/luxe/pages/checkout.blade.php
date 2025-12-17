@@ -61,37 +61,23 @@
                 </div>
             </div>
 
-            {{-- ADDRESS --}}
+            {{-- ADDRESS (2-level: Location → Ward) --}}
 <div class="lx-form-row">
     <div class="lx-form-group">
-        <label>Tỉnh / Thành phố</label>
+        <label>Khu vực (Tỉnh / Quận)</label>
         <select
-            name="province"
-            id="lx-province"
+            name="location_id"
+            id="lx-location"
             required
         >
-            <option value="">-- Chọn Tỉnh / Thành --</option>
+            <option value="">-- Chọn Khu vực --</option>
         </select>
     </div>
 
-    <div class="lx-form-group">
-        <label>Quận / Huyện</label>
-        <select
-            name="district"
-            id="lx-district"
-            required
-            disabled
-        >
-            <option value="">-- Chọn Quận / Huyện --</option>
-        </select>
-    </div>
-</div>
-
-<div class="lx-form-row">
     <div class="lx-form-group">
         <label>Phường / Xã</label>
         <select
-            name="ward"
+            name="ward_id"
             id="lx-ward"
             required
             disabled
@@ -99,7 +85,9 @@
             <option value="">-- Chọn Phường / Xã --</option>
         </select>
     </div>
+</div>
 
+<div class="lx-form-row">
     <div class="lx-form-group">
         <label>Số nhà, tên đường</label>
         <input
@@ -119,6 +107,7 @@
         placeholder="Ghi chú cho shop (nếu có)"
     ></textarea>
 </div>
+
 
 
         </div>
@@ -215,15 +204,14 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    const provinceSelect = document.getElementById('lx-province');
-    const districtSelect = document.getElementById('lx-district');
+    const locationSelect = document.getElementById('lx-location');
     const wardSelect     = document.getElementById('lx-ward');
 
-    // 🔗 JS chỉ gọi về LIN XÉN (BE proxy sang ERP)
+    // 🔗 JS chỉ gọi LIN XÉN (BE proxy sang ERP)
     const API_BASE = '/api/locations';
 
     /**
-     * Reset select
+     * Reset select helper
      */
     function resetSelect(select, placeholder, disabled = true) {
         select.innerHTML = `<option value="">${placeholder}</option>`;
@@ -239,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (!res.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network error');
         }
 
         return res.json();
@@ -247,80 +235,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * =====================================================
-     * 📍 Load Provinces / Locations
+     * 📍 Load Locations (City + District)
      * =====================================================
      */
-    async function loadProvinces() {
-        resetSelect(provinceSelect, '-- Đang tải Tỉnh / Thành --', true);
+    async function loadLocations() {
+        resetSelect(locationSelect, '-- Đang tải khu vực --', true);
+        resetSelect(wardSelect, '-- Chọn Phường / Xã --', true);
 
         try {
             const res = await fetchJSON(`${API_BASE}?mode=raw`);
 
             if (!res.success || !Array.isArray(res.data)) return;
 
-            resetSelect(provinceSelect, '-- Chọn Tỉnh / Thành --', false);
+            resetSelect(locationSelect, '-- Chọn Khu vực --', false);
 
             res.data.forEach(loc => {
                 const opt = document.createElement('option');
                 opt.value = loc.id;
                 opt.textContent = loc.name;
-                provinceSelect.appendChild(opt);
+                locationSelect.appendChild(opt);
             });
 
         } catch (e) {
-            console.error('Load provinces error:', e);
+            console.error('Load locations error:', e);
         }
     }
 
     /**
      * =====================================================
-     * 🏙️ Load Districts (kv_locations / kv_wards theo thiết kế ERP)
+     * 🏠 Load Wards theo Location
+     * ERP: /api/locations/wards/{locationId}
      * =====================================================
      */
-    async function loadDistricts(locationId) {
-        resetSelect(districtSelect, '-- Đang tải Quận / Huyện --', true);
-        resetSelect(wardSelect, '-- Chọn Phường / Xã --', true);
+    async function loadWards(locationId) {
+        resetSelect(wardSelect, '-- Đang tải Phường / Xã --', true);
 
         try {
             const res = await fetchJSON(`${API_BASE}/${locationId}/wards?mode=raw`);
 
-            // 🔴 Khu vực đã sáp nhập
+            // 🔴 Location đã sáp nhập
             if (res.error && res.merged_into) {
                 alert(res.message);
-                provinceSelect.value = '';
-                return;
-            }
-
-            if (!res.success || !Array.isArray(res.data)) return;
-
-            resetSelect(districtSelect, '-- Chọn Quận / Huyện --', false);
-
-            res.data.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d.id;
-                opt.textContent = d.name;
-                districtSelect.appendChild(opt);
-            });
-
-        } catch (e) {
-            console.error('Load districts error:', e);
-        }
-    }
-
-    /**
-     * =====================================================
-     * 🏠 Load Wards
-     * =====================================================
-     */
-    async function loadWards(districtId) {
-        resetSelect(wardSelect, '-- Đang tải Phường / Xã --', true);
-
-        try {
-            const res = await fetchJSON(`${API_BASE}/${districtId}/wards?mode=raw`);
-
-            if (res.error && res.merged_into) {
-                alert(res.message);
-                districtSelect.value = '';
+                locationSelect.value = '';
+                resetSelect(wardSelect, '-- Chọn Phường / Xã --', true);
                 return;
             }
 
@@ -345,13 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * EVENTS
      * =====================================================
      */
-    provinceSelect.addEventListener('change', e => {
-        const id = e.target.value;
-        if (!id) return;
-        loadDistricts(id);
-    });
-
-    districtSelect.addEventListener('change', e => {
+    locationSelect.addEventListener('change', e => {
         const id = e.target.value;
         if (!id) return;
         loadWards(id);
@@ -360,8 +311,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * INIT
      */
-    loadProvinces();
+    loadLocations();
 });
 </script>
 @endpush
+
 
