@@ -186,17 +186,43 @@ class PageController extends Controller
     }
 
     /* =====================================================
-     * 💳 CHECKOUT (placeholder)
-     * ===================================================== */
-    public function checkout()
-    {
-        $cart = session('cart', []);
+ * 💳 CHECKOUT
+ * ===================================================== */
+public function checkout()
+{
+    $cart = session('cart', []);
 
-        return view(
-            "storefront.{$this->theme}.pages.checkout",
-            compact('cart')
-        );
+    // 1️⃣ Giỏ hàng trống → quay về trang giỏ
+    if (empty($cart)) {
+        return redirect()
+            ->route('linxen.cart')
+            ->with('warning', 'Giỏ hàng của bạn đang trống.');
     }
+
+    // 2️⃣ Chuẩn hoá dữ liệu (phòng trường hợp session lỗi)
+    $cartItems = array_filter($cart, function ($item) {
+        return isset($item['sku'], $item['name'], $item['price'], $item['qty'])
+            && $item['qty'] > 0;
+    });
+
+    if (empty($cartItems)) {
+        session()->forget('cart');
+
+        return redirect()
+            ->route('linxen.cart')
+            ->with('warning', 'Giỏ hàng không hợp lệ, vui lòng chọn lại sản phẩm.');
+    }
+
+    // 3️⃣ Trả view checkout
+    return view(
+        "storefront.{$this->theme}.pages.checkout",
+        [
+            'cart' => $cartItems,
+            'brand' => $this->brand,
+        ]
+    );
+}
+
 
     public function placeOrder(Request $request)
     {
