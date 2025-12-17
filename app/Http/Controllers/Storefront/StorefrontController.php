@@ -17,18 +17,19 @@ class StorefrontController extends Controller
         $this->brand = config('storefront.brand', 'linxen');
     }
 
-    /**
-     * =====================================================
-     * 🏠 HOME
-     * =====================================================
-     */
     public function home(ErpStorefrontApi $erp)
-    {
-        $home = $erp->home($this->brand);
+{
+    $home = $erp->home($this->brand);
 
-        return view(
-            "storefront.{$this->theme}.pages.home",
-            compact('home')
-        );
-    }
+    Log::error('[LINXEN][HOME_API]', [
+        'brand' => $this->brand,
+        'home'  => $home,
+    ]);
+
+    return view(
+        "storefront.{$this->theme}.pages.home",
+        compact('home')
+    );
+}
+
 }
