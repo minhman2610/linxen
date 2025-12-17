@@ -19,17 +19,18 @@ class StorefrontController extends Controller
 
     public function home(ErpStorefrontApi $erp)
 {
-    $home = $erp->home($this->brand);
+    $rawHome = $erp->home($this->brand);
 
-    Log::error('[LINXEN][HOME_API]', [
-        'brand' => $this->brand,
-        'home'  => $home,
-    ]);
+    $home = [
+        'hero' => $rawHome['hero'] ?? null,
+        'featured_products' => $rawHome['products'] ?? [],
+    ];
 
     return view(
         "storefront.{$this->theme}.pages.home",
         compact('home')
     );
 }
+
 
 }

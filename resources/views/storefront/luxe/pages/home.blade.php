@@ -22,16 +22,14 @@
 
 </section>
 @endif
-
-
 {{-- ===================================================== --}}
 {{-- 👗 FEATURED PRODUCTS --}}
 {{-- ===================================================== --}}
-@if(!empty($home['featured_products']))
+@if(!empty($home['products']))
 <section class="lx-product-section">
 
     <div class="lx-section-header">
-        <h2 class="lx-section-title">GỢI Ý CHO BẠN 1235ss</h2>
+        <h2 class="lx-section-title">GỢI Ý CHO BẠN</h2>
         <a href="{{ route('linxen.collection', ['slug' => 'all']) }}"
            class="lx-section-link">
             Xem tất cả
@@ -39,7 +37,7 @@
     </div>
 
     <div class="lx-product-grid">
-        @foreach($home['featured_products'] as $product)
+        @foreach($home['products'] as $product)
             <a href="{{ route('linxen.product', ['slug' => $product['code']]) }}"
                class="lx-product-card">
 
@@ -64,5 +62,6 @@
 
 </section>
 @endif
+
 
 @endsection
