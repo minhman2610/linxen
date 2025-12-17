@@ -31,7 +31,7 @@
 <section class="lx-product-section">
 
     <div class="lx-section-header">
-        <h2 class="lx-section-title">GỢI Ý CHO BẠN</h2>
+        <h2 class="lx-section-title">GỢI Ý CHO BẠN 1</h2>
         <a href="{{ route('linxen.collection', ['slug' => 'all']) }}"
            class="lx-section-link">
             Xem tất cả
