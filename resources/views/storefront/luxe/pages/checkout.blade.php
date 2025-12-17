@@ -62,42 +62,64 @@
             </div>
 
             {{-- ADDRESS --}}
-            <div class="lx-form-row">
-                <div class="lx-form-group">
-                    <label>Tỉnh / Thành phố</label>
-                    <select name="province" required>
-                        <option value="">-- Chọn Tỉnh / Thành --</option>
-                        {{-- load bằng JS sau --}}
-                    </select>
-                </div>
+<div class="lx-form-row">
+    <div class="lx-form-group">
+        <label>Tỉnh / Thành phố</label>
+        <select
+            name="province"
+            id="lx-province"
+            required
+        >
+            <option value="">-- Chọn Tỉnh / Thành --</option>
+        </select>
+    </div>
 
-                <div class="lx-form-group">
-                    <label>Quận / Huyện</label>
-                    <select name="district" required>
-                        <option value="">-- Chọn Quận / Huyện --</option>
-                    </select>
-                </div>
-            </div>
+    <div class="lx-form-group">
+        <label>Quận / Huyện</label>
+        <select
+            name="district"
+            id="lx-district"
+            required
+            disabled
+        >
+            <option value="">-- Chọn Quận / Huyện --</option>
+        </select>
+    </div>
+</div>
 
-            <div class="lx-form-row">
-                <div class="lx-form-group">
-                    <label>Phường / Xã</label>
-                    <select name="ward" required>
-                        <option value="">-- Chọn Phường / Xã --</option>
-                    </select>
-                </div>
+<div class="lx-form-row">
+    <div class="lx-form-group">
+        <label>Phường / Xã</label>
+        <select
+            name="ward"
+            id="lx-ward"
+            required
+            disabled
+        >
+            <option value="">-- Chọn Phường / Xã --</option>
+        </select>
+    </div>
 
-                <div class="lx-form-group">
-                    <label>Số nhà, tên đường</label>
-                    <input type="text" name="street" required placeholder="Số nhà, tên đường">
-                </div>
-            </div>
+    <div class="lx-form-group">
+        <label>Số nhà, tên đường</label>
+        <input
+            type="text"
+            name="street"
+            required
+            placeholder="Số nhà, tên đường"
+        >
+    </div>
+</div>
 
-            <div class="lx-form-group">
-                <label>Ghi chú đơn hàng</label>
-                <textarea name="note" rows="2"
-                          placeholder="Ghi chú cho shop (nếu có)"></textarea>
-            </div>
+<div class="lx-form-group">
+    <label>Ghi chú đơn hàng</label>
+    <textarea
+        name="note"
+        rows="2"
+        placeholder="Ghi chú cho shop (nếu có)"
+    ></textarea>
+</div>
+
 
         </div>
 
@@ -189,3 +211,121 @@
 
 </section>
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const provinceSelect = document.getElementById('lx-province');
+    const districtSelect = document.getElementById('lx-district');
+    const wardSelect     = document.getElementById('lx-ward');
+
+    const API_BASE = '/api/locations';
+
+    /**
+     * Reset select
+     */
+    function resetSelect(select, placeholder, disabled = true) {
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        select.disabled = disabled;
+    }
+
+    /**
+     * Fetch JSON helper
+     */
+    async function fetchJSON(url) {
+        const res = await fetch(url, {
+            headers: { 'Accept': 'application/json' }
+        });
+        return res.json();
+    }
+
+    /**
+     * Load Provinces / Locations
+     */
+    async function loadProvinces() {
+        resetSelect(provinceSelect, '-- Đang tải khu vực --', true);
+
+        const res = await fetchJSON(`${API_BASE}?mode=raw`);
+
+        if (!res.success) return;
+
+        resetSelect(provinceSelect, '-- Chọn Tỉnh / Thành --', false);
+
+        res.data.forEach(loc => {
+            const opt = document.createElement('option');
+            opt.value = loc.id;
+            opt.textContent = loc.name;
+            provinceSelect.appendChild(opt);
+        });
+    }
+
+    /**
+     * Load Districts (reuse kv_locations)
+     */
+    async function loadDistricts(locationId) {
+        resetSelect(districtSelect, '-- Đang tải Quận / Huyện --', true);
+        resetSelect(wardSelect, '-- Chọn Phường / Xã --', true);
+
+        const res = await fetchJSON(`${API_BASE}/${locationId}/wards?mode=raw`);
+
+        // 🔴 Location đã sáp nhập
+        if (res.error && res.merged_into) {
+            alert(res.message);
+            provinceSelect.value = '';
+            return;
+        }
+
+        resetSelect(districtSelect, '-- Chọn Quận / Huyện --', false);
+
+        res.data.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.id;
+            opt.textContent = d.name;
+            districtSelect.appendChild(opt);
+        });
+    }
+
+    /**
+     * Load Wards
+     */
+    async function loadWards(districtId) {
+        resetSelect(wardSelect, '-- Đang tải Phường / Xã --', true);
+
+        const res = await fetchJSON(`${API_BASE}/${districtId}/wards?mode=raw`);
+
+        if (res.error && res.merged_into) {
+            alert(res.message);
+            districtSelect.value = '';
+            return;
+        }
+
+        resetSelect(wardSelect, '-- Chọn Phường / Xã --', false);
+
+        res.data.forEach(w => {
+            const opt = document.createElement('option');
+            opt.value = w.id;
+            opt.textContent = w.name;
+            wardSelect.appendChild(opt);
+        });
+    }
+
+    /**
+     * EVENTS
+     */
+    provinceSelect.addEventListener('change', e => {
+        const id = e.target.value;
+        if (!id) return;
+        loadDistricts(id);
+    });
+
+    districtSelect.addEventListener('change', e => {
+        const id = e.target.value;
+        if (!id) return;
+        loadWards(id);
+    });
+
+    // INIT
+    loadProvinces();
+});
+</script>
+@endpush
