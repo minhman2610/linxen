@@ -1,12 +1,22 @@
-@extends('storefront.luxe.layouts.master')
+@extends('storefront.luxe.layouts.app')
 
 @section('content')
 
+@php
+    $cartItems = $cart ?? [];
+    $subtotal = 0;
+
+    foreach ($cartItems as $item) {
+        $subtotal += ($item['price'] ?? 0) * ($item['qty'] ?? 0);
+    }
+
+    $shippingFee = $subtotal >= 500000 ? 0 : 30000;
+    $total = $subtotal + $shippingFee;
+@endphp
+
 <section class="lx-cart-page">
 
-    {{-- =========================
-        CART HEADER
-    ========================= --}}
+    {{-- HEADER --}}
     <div class="lx-cart-header">
         <h1>Giỏ hàng</h1>
         <a href="{{ route('linxen.home') }}" class="lx-cart-back">
@@ -14,15 +24,12 @@
         </a>
     </div>
 
-    {{-- =========================
-        CART CONTENT
-    ========================= --}}
+    {{-- CONTENT --}}
     <div class="lx-cart-content">
 
-        {{-- LEFT: CART ITEMS --}}
+        {{-- LEFT: ITEMS --}}
         <div class="lx-cart-items">
 
-            {{-- EMPTY STATE --}}
             @if(empty($cartItems))
                 <div class="lx-cart-empty">
                     <p>Giỏ hàng của bạn đang trống.</p>
@@ -32,8 +39,8 @@
                 </div>
             @else
 
-                @foreach($cartItems as $item)
-                    <div class="lx-cart-item">
+                @foreach($cartItems as $sku => $item)
+                    <div class="lx-cart-item" data-sku="{{ $sku }}">
 
                         {{-- IMAGE --}}
                         <div class="lx-cart-item-image">
@@ -62,11 +69,9 @@
 
                         {{-- QTY --}}
                         <div class="lx-cart-item-qty">
-                            <button type="button">−</button>
-                            <input type="number"
-                                   value="{{ $item['qty'] }}"
-                                   min="1">
-                            <button type="button">+</button>
+                            <button type="button" onclick="updateQty('{{ $sku }}', -1)">−</button>
+                            <input type="number" min="1" value="{{ $item['qty'] }}" readonly>
+                            <button type="button" onclick="updateQty('{{ $sku }}', 1)">+</button>
                         </div>
 
                         {{-- TOTAL --}}
@@ -75,7 +80,9 @@
                         </div>
 
                         {{-- REMOVE --}}
-                        <button class="lx-cart-item-remove" title="Xóa">
+                        <button class="lx-cart-item-remove"
+                                onclick="removeItem('{{ $sku }}')"
+                                title="Xóa">
                             ✕
                         </button>
 
@@ -86,6 +93,7 @@
         </div>
 
         {{-- RIGHT: SUMMARY --}}
+        @if(!empty($cartItems))
         <div class="lx-cart-summary">
 
             <h3>Đơn hàng</h3>
@@ -107,9 +115,10 @@
                 <span>{{ number_format($total) }}₫</span>
             </div>
 
-            <button class="lx-btn-primary lx-btn-full">
+            <a href="{{ route('linxen.checkout') }}"
+               class="lx-btn-primary lx-btn-full">
                 TIẾN HÀNH THANH TOÁN
-            </button>
+            </a>
 
             <div class="lx-cart-note">
                 ✔ Miễn phí đổi trả trong 7 ngày<br>
@@ -117,46 +126,11 @@
             </div>
 
         </div>
+        @endif
 
     </div>
 
-    {{-- =========================
-        SUGGESTED PRODUCTS
-    ========================= --}}
-    @if(!empty($suggestedProducts) && count($suggestedProducts))
-        <div class="lx-cart-suggested">
-
-            <h2>Có thể bạn sẽ thích</h2>
-
-            <div class="lx-suggested-grid">
-                @foreach($suggestedProducts as $p)
-                    @php
-                        $media = $p->getMedia();
-                        $thumb = $media['thumb'] ?? asset('images/no-image.png');
-                    @endphp
-
-                    <a href="{{ route('linxen.product', $p->code) }}"
-                       class="lx-suggested-item">
-
-                        <img src="{{ $thumb }}" alt="{{ $p->name }}">
-
-                        <div class="lx-suggested-name">
-                            {{ $p->name }}
-                        </div>
-
-                        <div class="lx-suggested-price">
-                            {{ number_format($p->retail_price ?? $p->base_price ?? 0) }}₫
-                        </div>
-
-                    </a>
-                @endforeach
-            </div>
-
-        </div>
-    @endif
-
 </section>
-
 @endsection
 
 {{-- =========================
