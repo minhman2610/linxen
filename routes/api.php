@@ -6,16 +6,15 @@ use App\Http\Controllers\Api\LocationProxyController;
 
 Route::prefix('storefront')->group(function () {
 
-    // 🧾 Tạo đơn hàng từ checkout LIN XÉN
-    Route::post('/orders', [CheckoutController::class, 'create'])
+    // 🧾 CHECKOUT – CẦN SESSION → GẮN WEB
+    Route::middleware('web')->post('/orders', [CheckoutController::class, 'create'])
         ->name('api.storefront.orders.create');
 
-    // 📍 Khu vực (proxy từ ERP)
+    // 📍 Khu vực (proxy từ ERP) – KHÔNG cần session
     Route::get('/locations', [LocationProxyController::class, 'locations'])
         ->name('api.storefront.locations');
 
-    // 🏠 Phường / xã theo khu vực
+    // 🏠 Phường / xã – KHÔNG cần session
     Route::get('/locations/{locationId}/wards', [LocationProxyController::class, 'wards'])
         ->name('api.storefront.wards');
-
 });
