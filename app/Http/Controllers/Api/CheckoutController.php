@@ -28,7 +28,7 @@ class CheckoutController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
-        | 1️⃣ Validate dữ liệu checkout
+        | 1️⃣ Validate dữ liệu checkout (CHỈ customer info)
         |--------------------------------------------------------------------------
         */
         $data = $request->validate([
@@ -38,15 +38,51 @@ class CheckoutController extends Controller
             'customer.ward_id'     => 'required|integer',
             'customer.street'      => 'required|string|max:255',
             'customer.note'        => 'nullable|string|max:255',
-
-            // items KHÔNG gửi từ frontend
-            // BE ERP sẽ xử lý dựa trên session/cart mapping
-            'items'                => 'nullable|array',
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | 2️⃣ Build payload gửi ERP (khớp createOrder ERP)
+        | 2️⃣ LẤY CART TỪ SESSION STOREFRONT
+        |--------------------------------------------------------------------------
+        */
+        $cart = session('cart', []);
+
+        if (empty($cart)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Giỏ hàng trống, không thể tạo đơn.',
+            ], 422);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 3️⃣ Build items gửi ERP (BẮT BUỘC)
+        |--------------------------------------------------------------------------
+        */
+        $items = collect($cart)->map(function ($item) {
+            return [
+                // ⚠️ Đảm bảo key này là SKU của KiotViet
+                'kv_sku'  => $item['sku'] ?? $item['kv_sku'] ?? null,
+                'qty'     => (int) ($item['qty'] ?? 1),
+                'price'   => (float) ($item['price'] ?? 0),
+                'note'    => $item['note'] ?? null,
+                'rs_code' => $item['rs_code'] ?? null,
+            ];
+        })
+        ->filter(fn ($i) => !empty($i['kv_sku']))
+        ->values()
+        ->all();
+
+        if (empty($items)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm trong giỏ hàng không hợp lệ.',
+            ], 422);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4️⃣ Build payload gửi ERP (KHỚP createOrder ERP)
         |--------------------------------------------------------------------------
         */
         $payload = [
@@ -62,18 +98,17 @@ class CheckoutController extends Controller
                 ),
             ],
 
-            // ❗ ERP sẽ map items từ cart/session nội bộ
-            'items' => $data['items'] ?? [],
+            'items' => $items,
         ];
 
         /*
         |--------------------------------------------------------------------------
-        | 3️⃣ Gọi ERP tạo đơn
+        | 5️⃣ Gọi ERP tạo đơn
         |--------------------------------------------------------------------------
         */
         try {
             $response = Http::withOptions([
-                    'verify' => false, // fix curl error 60
+                    'verify' => false, // 🔧 fix curl error 60
                 ])
                 ->timeout(12)
                 ->post(
@@ -103,6 +138,13 @@ class CheckoutController extends Controller
                     'message' => $json['message'] ?? 'Tạo đơn hàng thất bại.',
                 ], 400);
             }
+
+            /*
+            |--------------------------------------------------------------------------
+            | 6️⃣ Clear cart sau khi tạo đơn thành công
+            |--------------------------------------------------------------------------
+            */
+            session()->forget('cart');
 
             return response()->json([
                 'success'    => true,
