@@ -53,7 +53,9 @@ class CheckoutController extends Controller
                 'message' => 'Giỏ hàng trống, không thể tạo đơn.',
             ], 422);
         }
-
+        Log::info('🛒 STOREFRONT CART RAW', [
+    'cart' => session('cart'),
+]);
         /*
         |--------------------------------------------------------------------------
         | 3️⃣ Build items gửi ERP (BẮT BUỘC)
