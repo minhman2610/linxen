@@ -167,50 +167,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const errBox = document.getElementById('lx-checkout-error');
 
     form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        errBox.style.display = 'none';
+    e.preventDefault();
+    errBox.style.display = 'none';
 
-        const fd = new FormData(form);
+    const fd = new FormData(form);
 
-        const payload = {
-            customer: {
-                name: fd.get('name'),
-                phone: fd.get('phone'),
-                location_id: fd.get('location_id'),
-                ward_id: fd.get('ward_id'),
-                street: fd.get('street'),
-                note: fd.get('note'),
-            }
-        };
+    const payload = {
+        customer: {
+            name: fd.get('name'),
+            phone: fd.get('phone'),
+            location_id: fd.get('location_id'),
+            ward_id: fd.get('ward_id'),
+            street: fd.get('street'),
+            note: fd.get('note'),
+        }
+    };
+
+    try {
+        const res = await fetch('/api/storefront/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload)
+        });
+
+        const text = await res.text(); // 🔥 đọc raw trước
+        let json;
 
         try {
-            const res = await fetch('/api/storefront/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                },
-                credentials: 'same-origin', // 🔥 GIỮ SESSION CART
-                body: JSON.stringify(payload)
-            });
-
-            const json = await res.json();
-
-            if (!json.success) {
-                errBox.innerText = json.message || 'Không tạo được đơn hàng.';
-                errBox.style.display = 'block';
-                return;
-            }
-
-            // 👉 Redirect sang trang thành công
-            window.location.href = `/account/orders/${json.order_code}`;
-
-        } catch (err) {
-            errBox.innerText = 'Lỗi kết nối, vui lòng thử lại.';
+            json = JSON.parse(text);
+        } catch (e) {
+            console.error('❌ API trả về không phải JSON:', text);
+            errBox.innerText = 'Server lỗi (response không hợp lệ).';
             errBox.style.display = 'block';
+            return;
         }
-    });
+
+        if (!res.ok || !json.success) {
+            errBox.innerText = json.message || `Lỗi server (${res.status})`;
+            errBox.style.display = 'block';
+            return;
+        }
+
+        // ✅ Thành công
+        window.location.href = `/account/orders/${json.order_code}`;
+
+    } catch (err) {
+        console.error('🔥 Fetch error:', err);
+        errBox.innerText = 'Không kết nối được server.';
+        errBox.style.display = 'block';
+    }
+});
+
 });
 </script>
 @endpush
