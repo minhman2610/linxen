@@ -1,4 +1,6 @@
 <?php
+
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Storefront\CheckoutController;
 
 Route::prefix('storefront')->group(function () {
@@ -8,4 +10,3 @@ Route::prefix('storefront')->group(function () {
         ->name('api.storefront.orders.create');
 
 });
-?>
