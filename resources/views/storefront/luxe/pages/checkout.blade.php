@@ -33,11 +33,8 @@
         </div>
     @else
 
-    <form method="POST"
-          action="{{ route('linxen.checkout.place_order') }}"
-          class="lx-checkout-content">
-
-        @csrf
+    <form id="lx-checkout-form" class="lx-checkout-content">
+    @csrf
 
         {{-- ================= LEFT: SHIPPING INFO ================= --}}
         <div class="lx-checkout-left">
@@ -313,7 +310,75 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     loadLocations();
 });
+
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const form = document.getElementById('lx-checkout-form');
+    if (!form) return;
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // 🔒 Chặn double submit
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'ĐANG XỬ LÝ...';
+
+        const fd = new FormData(form);
+
+        // ===============================
+        // Build payload gửi BE
+        // ===============================
+        const payload = {
+            customer: {
+                name: fd.get('name'),
+                phone: fd.get('phone'),
+                location_id: fd.get('location_id'),
+                ward_id: fd.get('ward_id'),
+                street: fd.get('street'),
+                note: fd.get('note'),
+            }
+        };
+
+        try {
+            const res = await fetch('/api/storefront/orders', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const json = await res.json();
+
+            if (!res.ok || !json.success) {
+                alert(json.message || 'Không thể tạo đơn hàng.');
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'ĐẶT HÀNG';
+                return;
+            }
+
+            // ✅ Thành công → chuyển trang
+            window.location.href =
+                `/order-success?code=${json.order_code ?? ''}`;
+
+        } catch (err) {
+            console.error(err);
+            alert('Lỗi kết nối hệ thống. Vui lòng thử lại.');
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'ĐẶT HÀNG';
+        }
+    });
+
+});
+</script>
+
 @endpush
 
 
