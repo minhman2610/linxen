@@ -113,10 +113,7 @@ class CheckoutController extends Controller
                     'verify' => false, // 🔧 fix curl error 60
                 ])
                 ->timeout(12)
-                ->post(
-                    "{$this->erpBaseUrl}/api/sales/pos/orders",
-                    $payload
-                );
+                ->post("{$this->erpBaseUrl}/api/storefront/orders", $payload);
 
             if ($response->failed()) {
                 Log::error('❌ CheckoutController ERP create order failed', [
