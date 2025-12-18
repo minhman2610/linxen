@@ -4,17 +4,29 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\LocationProxyController;
 
+/*
+|--------------------------------------------------------------------------
+| 🔌 API – STOREFRONT (LIN XÉN)
+|--------------------------------------------------------------------------
+| Prefix: /api/storefront
+| Mục đích:
+| - Checkout tạo đơn → ERP (có auth)
+| - Proxy location / ward từ ERP
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('storefront')->group(function () {
 
-    // 🧾 CHECKOUT – CẦN SESSION → GẮN WEB
-    Route::middleware('web')->post('/orders', [CheckoutController::class, 'create'])
+    // 🧾 Tạo đơn hàng từ checkout LIN XÉN
+    Route::post('/orders', [CheckoutController::class, 'create'])
         ->name('api.storefront.orders.create');
 
-    // 📍 Khu vực (proxy từ ERP) – KHÔNG cần session
+    // 📍 Danh sách khu vực (proxy từ ERP)
     Route::get('/locations', [LocationProxyController::class, 'locations'])
         ->name('api.storefront.locations');
 
-    // 🏠 Phường / xã – KHÔNG cần session
+    // 🏠 Danh sách phường / xã theo khu vực
     Route::get('/locations/{locationId}/wards', [LocationProxyController::class, 'wards'])
         ->name('api.storefront.wards');
+
 });
