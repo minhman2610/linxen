@@ -79,16 +79,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     const qaPairs = [
         {
-            q: 'LIN XÉN bán gì?',
-            a: '— Những chiếc váy mặc lên không cần suy nghĩ'
+            q: 'bán gì?',
+            a: '— Váy BASIC mặc lên không cần suy nghĩ'
         },
         {
             q: 'Mặc khi nào?',
-            a: '— Đi làm, đi chơi và những ngày bận rộn'
+            a: '— Đi làm, đi chơi che hết khuyết điểm'
         },
         {
-            q: 'Ai chọn thiết kế?',
-            a: '— Chọn lọc kỹ để mặc đẹp mà vẫn thoải mái'
+            q: 'Hàng Trung Quốc hay Việt Nam ?',
+            a: '— Tự hào sản xuất tỉ mỉ bởi Lin Xén Việt Nam'
         },
         {
             q: 'Có đắt không?',
