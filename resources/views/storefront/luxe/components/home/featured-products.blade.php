@@ -10,10 +10,7 @@
         <p class="lx-section-desc">
             Những chiếc váy dễ mặc cho nhịp sống hằng ngày
         </p>
-        <a href="{{ route('linxen.collection', ['slug' => 'all']) }}"
-           class="lx-section-link">
-            Xem tất cả
-        </a>
+        
     </div>
 
     {{-- PRODUCT GRID --}}
