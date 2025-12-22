@@ -15,11 +15,13 @@
         @foreach($home['featured_products'] as $product)
 
             @continue(
-    empty($product['product_id'])
-    || empty($product['name'])
-    || empty($product['media']['images'][0])
-)
-
+                empty($product['product_id'])
+                || empty($product['name'])
+                || (
+                    empty($product['thumb_url'])
+                    && empty($product['thumb_url_mobile'])
+                )
+            )
 
             @php
                 // ✅ KHÔNG DÙNG use — dùng FQN
