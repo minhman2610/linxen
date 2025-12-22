@@ -123,3 +123,103 @@
     color: #b11226;
     font-weight: 500;
 }
+
+/* =====================================================
+   EXCHANGE POLICY – LIN XÉN
+===================================================== */
+
+.lx-exchange {
+    margin-top: 56px;
+    padding: 40px 22px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, #fff6f4, #ffffff);
+    border: 1.5px solid #f0d6d0;
+}
+
+/* TITLE */
+.lx-exchange-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 14px;
+}
+
+.lx-exchange-title span {
+    color: #b11226;
+}
+
+/* DESC */
+.lx-exchange-desc {
+    text-align: center;
+    font-size: 14.5px;
+    color: #444;
+    max-width: 520px;
+    margin: 0 auto 28px;
+}
+
+.lx-exchange-desc strong {
+    color: #b11226;
+    font-weight: 600;
+}
+
+/* STEPS */
+.lx-exchange-steps {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.lx-ex-step {
+    width: 140px;
+    text-align: center;
+}
+
+.lx-ex-step span {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1.5px solid #e8c5bf;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.lx-ex-step p {
+    font-size: 13.5px;
+    line-height: 1.35;
+}
+
+.lx-ex-step small {
+    font-size: 12px;
+    color: #666;
+}
+
+/* HIGHLIGHT */
+.lx-ex-step.highlight span {
+    background: #b11226;
+    color: #fff;
+    border-color: #b11226;
+}
+
+/* TRUST STRIP */
+.lx-exchange-trust {
+    margin-top: 18px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 1.5px solid #b11226;
+    text-align: center;
+    font-size: 14px;
+    color: #222;
+}
+
+.lx-exchange-trust strong {
+    color: #b11226;
+}
+

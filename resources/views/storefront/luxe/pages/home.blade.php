@@ -138,6 +138,41 @@
 
 </section>
 
+<section class="lx-exchange">
+
+    <h3 class="lx-exchange-title">
+        Đổi hàng trong 15 ngày<br>
+        <span>Với bất kỳ lý do gì</span>
+    </h3>
+
+    <p class="lx-exchange-desc">
+        LIN XÉN hiểu rằng đôi khi bạn cần thêm thời gian để quyết định.  
+        Vì vậy, chúng tôi cho phép <strong>đổi hàng trong vòng 15 ngày</strong> kể từ khi nhận.
+    </p>
+
+    <div class="lx-exchange-steps">
+        <div class="lx-ex-step">
+            <span>1</span>
+            <p>Liên hệ LIN XÉN<br><small>qua fanpage / hotline</small></p>
+        </div>
+
+        <div class="lx-ex-step">
+            <span>2</span>
+            <p>Shipper đến tận nhà<br><small>giao hàng mới</small></p>
+        </div>
+
+        <div class="lx-ex-step highlight">
+            <span>3</span>
+            <p>Thu hồi hàng cũ<br><small>bạn không cần mang đi đâu</small></p>
+        </div>
+    </div>
+
+    <div class="lx-exchange-trust">
+        Bạn không cần lo lắng –  
+        <strong>LIN XÉN chủ động xử lý việc đổi hàng từ A đến Z</strong>.
+    </div>
+
+</section>
 
 
 
