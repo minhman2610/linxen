@@ -75,34 +75,51 @@
     </div>
 
 </section>
-
 {{-- ===================================================== --}}
-{{-- 4️⃣ MẶC THỬ TẠI NHÀ – KHÔNG LO KHÔNG HỢP DÁNG --}}
+{{-- THỬ ĐỒ TẠI NHÀ – QUY TRÌNH --}}
 {{-- ===================================================== --}}
-<section class="lx-fit-try">
+<section class="lx-try-flow">
 
-    <div class="lx-fit-content">
-        <h3 class="lx-fit-title">
-            Không chắc hợp dáng?
-            <br>
-            <span>Mặc thử tại nhà rồi hãy quyết định.</span>
-        </h3>
+    <h3 class="lx-try-title">
+        Mặc thử tại nhà – rồi hãy quyết định
+    </h3>
 
-        <p class="lx-fit-desc">
-            Shipper giao hàng tận nơi.  
-            Bạn <strong>mặc thử trực tiếp tại nhà</strong>.  
-            <br>
-            👉 <strong>Chỉ khi thấy hợp dáng – thấy đẹp</strong> mới cần thanh toán.
-        </p>
+    <div class="lx-try-steps">
 
-        <ul class="lx-fit-points">
-            <li>👗 Mặc thử trước khi trả tiền</li>
-            <li>📦 Không hợp dáng → không cần nhận</li>
-            <li>💬 Không áp lực mua – không phải giải thích</li>
-        </ul>
+        <div class="lx-try-step">
+            <span class="lx-step-icon">📦</span>
+            <p>Shipper giao hàng</p>
+        </div>
+
+        <span class="lx-arrow">→</span>
+
+        <div class="lx-try-step">
+            <span class="lx-step-icon">👗</span>
+            <p>Mặc thử tại nhà</p>
+        </div>
+
+        <span class="lx-arrow">→</span>
+
+        <div class="lx-try-step">
+            <span class="lx-step-icon">❤️</span>
+            <p>Ưng thì nhận hàng</p>
+        </div>
+
+        <span class="lx-arrow">→</span>
+
+        <div class="lx-try-step highlight">
+            <span class="lx-step-icon">🚚</span>
+            <p>Không ưng<br><small>chỉ trả tiền ship</small></p>
+        </div>
+
     </div>
 
+    <p class="lx-try-note">
+        Không áp lực mua – không cần giải thích – quyết định hoàn toàn ở bạn
+    </p>
+
 </section>
+
 
 
 {{-- ===================================================== --}}
