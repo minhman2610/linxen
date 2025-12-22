@@ -1,5 +1,5 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – MOBILE FIRST (STATIC, CLEAN) --}}
+{{-- FEATURED PRODUCTS – MOBILE FIRST (STATIC, POLISHED) --}}
 {{-- ===================================================== --}}
 @if(!empty($products) && is_array($products))
 <section class="lx-product-section">
@@ -30,7 +30,6 @@
                 $slug = \Illuminate\Support\Str::slug($product['name'])
                         . '-' . $product['product_id'];
 
-                // CHỈ LẤY 1 ẢNH ĐẠI DIỆN
                 $image = $product['media']['images'][0];
             @endphp
 
@@ -40,28 +39,33 @@
                 {{-- MEDIA --}}
                 <div class="lx-product-media">
 
-                    {{-- TAG (NẾU CÓ) --}}
-                    @if(!empty($product['tag']))
-                        <span class="lx-product-tag">
-                            {{ $product['tag'] }}
-                        </span>
-                    @endif
-
                     <img
                         src="{{ $image }}"
                         alt="{{ $product['name'] }}"
                         loading="lazy"
                     >
+
+                    {{-- CTA ORDER --}}
+                    <span class="lx-quick-buy">
+                        Đặt hàng
+                    </span>
                 </div>
+
+                {{-- TAG (KHÔNG ĐÈ ẢNH) --}}
+                @if(!empty($product['tag']))
+                    <div class="lx-product-tag-below">
+                        {{ $product['tag'] }}
+                    </div>
+                @endif
 
                 {{-- INFO --}}
                 <div class="lx-product-info">
 
-                    {{-- FIX CỨNG MÀU --}}
+                    {{-- COLOR VARIANTS (FIX CỨNG, TO, RÕ) --}}
                     <div class="lx-product-colors">
-                        <span class="lx-color-dot black"></span>
-                        <span class="lx-color-dot red"></span>
-                        <span class="lx-color-dot blue"></span>
+                        <span class="lx-color-swatch black"></span>
+                        <span class="lx-color-swatch red"></span>
+                        <span class="lx-color-swatch blue"></span>
                     </div>
 
                     <p class="lx-product-name">
@@ -85,7 +89,7 @@
 @endif
 
 {{-- ===================================================== --}}
-{{-- 🎨 CSS – MOBILE FIRST, CLEAN FASHION UI --}}
+{{-- 🎨 CSS – FASHION, CLEAR, MOBILE FIRST --}}
 {{-- ===================================================== --}}
 <style>
 .lx-product-grid {
@@ -106,8 +110,8 @@
     width: 100%;
     aspect-ratio: 3 / 4;
     overflow: hidden;
-    border-radius: 6px;
-    background: #f5f5f5;
+    border-radius: 8px;
+    background: #f4f4f4;
 }
 
 .lx-product-media img {
@@ -117,26 +121,62 @@
     display: block;
 }
 
-/* TAG */
-.lx-product-tag {
+/* QUICK BUY BUTTON */
+.lx-quick-buy {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    z-index: 2;
+    right: 10px;
+    bottom: 10px;
 
-    background: rgba(0,0,0,.65);
+    background: rgba(59,42,34,.9); /* deep brown */
     color: #fff;
+
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+
+    letter-spacing: .3px;
+}
+
+/* TAG BELOW IMAGE */
+.lx-product-tag-below {
+    margin-top: 6px;
     font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 12px;
+    color: #555;
 }
 
 /* INFO */
 .lx-product-info {
-    padding: 10px 2px 18px;
+    padding: 8px 2px 18px;
 }
 
-/* NAME – dễ đọc, nữ tính */
+/* COLOR VARIANTS – TO, RÕ, ẤN TƯỢNG */
+.lx-product-colors {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0 6px;
+}
+
+.lx-color-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.lx-color-swatch::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.15);
+}
+
+.lx-color-swatch.black { background: #111; }
+.lx-color-swatch.red   { background: #b11226; }
+.lx-color-swatch.blue  { background: #1f3a5f; }
+
+/* NAME */
 .lx-product-name {
     font-family: ui-serif, Georgia, 'Times New Roman', serif;
     font-size: 14px;
@@ -151,13 +191,12 @@
     overflow: hidden;
 }
 
-/* PRICE – nổi bật */
+/* PRICE */
 .lx-product-price {
     font-size: 15px;
     font-weight: 700;
     letter-spacing: .3px;
-
-    color: #3b2a22; /* deep brown luxe */
+    color: #3b2a22;
     margin-bottom: 6px;
 }
 
@@ -167,26 +206,7 @@
     color: #777;
 }
 
-/* COLORS – FIX CỨNG */
-.lx-product-colors {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-}
-
-.lx-color-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid rgba(0,0,0,.15);
-}
-
-.lx-color-dot.black { background: #111; }
-.lx-color-dot.red   { background: #b11226; }
-.lx-color-dot.blue  { background: #1f3a5f; }
-
-/* MOBILE TUNE */
+/* MOBILE */
 @media (max-width: 480px) {
     .lx-product-name { font-size: 13.5px; }
     .lx-product-price { font-size: 14.5px; }
