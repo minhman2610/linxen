@@ -43,7 +43,7 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: 10px 12px;
+    padding: 20px 12px;
     height: 56px;
 
     background: #fff;
