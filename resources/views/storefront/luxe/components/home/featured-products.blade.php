@@ -1,5 +1,5 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – SALE & STATUS FOCUSED --}}
+{{-- FEATURED PRODUCTS – SALE & STATUS (FIXED DATA) --}}
 {{-- ===================================================== --}}
 @if(!empty($products) && is_array($products))
 <section class="lx-product-section">
@@ -17,29 +17,37 @@
             @continue(
                 empty($product['product_id'])
                 || empty($product['name'])
-                || empty($product['thumb_url'])
+                || (
+                    empty($product['thumb_url'])
+                    && empty($product['thumb_url_mobile'])
+                )
             )
 
             @php
-                $slug = \Illuminate\Support\Str::slug($product['name'])
-                        . '-' . $product['product_id'];
+                use Illuminate\Support\Str;
 
-                // FIX TAY DEMO
-                $price        = $product['price'];
+                $slug = Str::slug($product['name']) . '-' . $product['product_id'];
+
+                // 🔑 LẤY ẢNH ĐÚNG (FIX LỖI MẤT SẢN PHẨM)
+                $thumb = $product['thumb_url_mobile']
+                    ?? $product['thumb_url'];
+
+                // 🔥 FIX TAY DEMO
+                $price        = (float) $product['price'];
                 $salePercent  = 20;
-                $salePrice   = round($price * (100 - $salePercent) / 100);
+                $salePrice    = round($price * (100 - $salePercent) / 100);
 
-                // FIX TAY STATUS
-                $status = 'in_stock'; // in_stock | out_stock | preorder | best | trend
+                // 🏷 FIX TAY STATUS (demo)
+                $statuses = ['in_stock', 'best'];
             @endphp
 
             <div class="lx-product-card">
 
-                {{-- IMAGE --}}
+                {{-- ================= IMAGE ================= --}}
                 <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                    class="lx-product-media">
 
-                    <img src="{{ $product['thumb_url'] }}"
+                    <img src="{{ $thumb }}"
                          alt="{{ $product['name'] }}"
                          loading="lazy">
 
@@ -47,10 +55,9 @@
                     <span class="lx-sale-badge">
                         -{{ $salePercent }}%
                     </span>
-
                 </a>
 
-                {{-- PRICE --}}
+                {{-- ================= PRICE ================= --}}
                 <div class="lx-product-price-wrap">
                     <span class="lx-price-sale">
                         {{ number_format($salePrice) }}₫
@@ -60,32 +67,42 @@
                     </span>
                 </div>
 
-                {{-- NAME --}}
+                {{-- ================= NAME ================= --}}
                 <p class="lx-product-name one-line">
                     {{ $product['name'] }}
                 </p>
 
-                {{-- STATUS --}}
+                {{-- ================= STATUS TAGS ================= --}}
                 <div class="lx-product-tags">
 
-                    <span class="lx-tag lx-tag-stock">
-                        ✔ Còn hàng
-                    </span>
+                    @if(in_array('in_stock', $statuses))
+                        <span class="lx-tag lx-tag-stock">
+                            ✔ Còn hàng
+                        </span>
+                    @endif
 
-                    <span class="lx-tag lx-tag-best">
-                        🔥 Bán chạy
-                    </span>
+                    @if(in_array('best', $statuses))
+                        <span class="lx-tag lx-tag-best">
+                            🔥 Bán chạy
+                        </span>
+                    @endif
+
+                    @if(in_array('trend', $statuses))
+                        <span class="lx-tag lx-tag-trend">
+                            ✦ Xu hướng
+                        </span>
+                    @endif
 
                 </div>
 
-                {{-- COLORS --}}
+                {{-- ================= COLORS ================= --}}
                 <div class="lx-product-colors">
                     <span class="lx-color-swatch active black"></span>
                     <span class="lx-color-swatch red"></span>
                     <span class="lx-color-swatch blue"></span>
                 </div>
 
-                {{-- ACTION --}}
+                {{-- ================= ACTION ================= --}}
                 <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                    class="lx-btn-order">
                     ĐẶT HÀNG
@@ -128,7 +145,7 @@
     object-fit: cover;
 }
 
-/* SALE BADGE – RIGHT */
+/* SALE BADGE */
 .lx-sale-badge {
     position: absolute;
     top: 8px;
@@ -197,21 +214,10 @@
     gap: 4px;
 }
 
-/* TAG TYPES */
 .lx-tag-stock {
     color: #1f7a4f;
     border-color: #1f7a4f;
     background: rgba(31,122,79,.08);
-}
-
-.lx-tag-out {
-    color: #999;
-    border-color: #ccc;
-}
-
-.lx-tag-pre {
-    color: #8a5a00;
-    border-color: #e0b95c;
 }
 
 .lx-tag-best {
@@ -225,7 +231,7 @@
     border-color: #1f3a5f;
 }
 
-/* COLORS – TO, CÓ VIỀN */
+/* COLORS */
 .lx-product-colors {
     margin-top: 10px;
     display: flex;
@@ -237,7 +243,6 @@
     height: 18px;
     border-radius: 50%;
     border: 2px solid #ddd;
-    box-sizing: border-box;
 }
 
 .lx-color-swatch.active {
