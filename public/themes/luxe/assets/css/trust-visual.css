@@ -1,0 +1,92 @@
+/* =====================================================
+   TRUST VISUAL – LIN XÉN
+   Ảnh bán hàng vs Ảnh thực tế
+===================================================== */
+
+.lx-trust-visual {
+    margin-top: 36px;
+    padding: 0 16px;
+    text-align: center;
+}
+
+.lx-trust-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: .4px;
+    margin-bottom: 6px;
+}
+
+.lx-trust-desc {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+/* COMPARE BLOCK */
+.lx-trust-compare {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* IMAGE */
+.lx-trust-image {
+    position: relative;
+    width: 42%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f3f3f3;
+}
+
+.lx-trust-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* LABEL */
+.lx-trust-label {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 999px;
+
+    background: rgba(0,0,0,.7);
+    color: #fff;
+    font-weight: 500;
+}
+
+.lx-trust-label.real {
+    background: rgba(177,18,38,.85);
+}
+
+/* ARROW */
+.lx-trust-arrow {
+    font-size: 22px;
+    font-weight: 600;
+    color: #b11226;
+}
+
+/* NOTE */
+.lx-trust-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #444;
+    line-height: 1.5;
+}
+
+/* DESKTOP */
+@media (min-width: 768px) {
+    .lx-trust-compare {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .lx-trust-image {
+        width: 40%;
+    }
+}
