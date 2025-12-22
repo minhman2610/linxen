@@ -120,3 +120,24 @@
     background: #ffffff;
 }
 
+.lx-trust-title.framed {
+    position: relative;
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #b11226;
+    background: #fff6f4;
+    border-radius: 18px;
+    border: 2px solid #f0c9c2;
+}
+
+.lx-trust-title.framed::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px dashed #b11226;
+    border-radius: 12px;
+    pointer-events: none;
+}
+

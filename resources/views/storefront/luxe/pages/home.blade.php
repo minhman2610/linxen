@@ -37,7 +37,7 @@
 {{-- ===================================================== --}}
 <section class="lx-trust-visual">
 
-    <h3 class="lx-trust-title bordered">
+    <h3 class="lx-trust-title framed">
     Ảnh bán hàng ≈ Ảnh thực tế
 </h3>
 
