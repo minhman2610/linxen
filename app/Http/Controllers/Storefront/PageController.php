@@ -18,22 +18,32 @@ class PageController extends Controller
     }
 
     /* =====================================================
-     * 🏠 HOME
-     * ===================================================== */
-    public function home(ErpStorefrontApi $erp)
-    {
-        $rawHome = $erp->home($this->brand);
+ * 🏠 HOME – LIN XÉN STORE
+ * ===================================================== */
+public function home(ErpStorefrontApi $erp)
+{
+    // Lấy dữ liệu home từ ERP (UX-ready)
+    $rawHome = $erp->home($this->brand);
 
-        $home = [
-            'hero'              => $rawHome['hero'] ?? null,
-            'featured_products' => $rawHome['products'] ?? [],
-        ];
+    // Chuẩn hoá data cho view (không xử lý logic nặng ở đây)
+    $home = [
+        // HERO (video / banner / null đều OK)
+        'hero' => $rawHome['hero'] ?? null,
 
-        return view(
-            "storefront.{$this->theme}.pages.home",
-            compact('home')
-        );
-    }
+        // SẢN PHẨM CHỦ LỰC
+        // Đã bao gồm: media, tag, colors, micro_copy
+        'featured_products' => collect($rawHome['products'] ?? [])
+            ->filter(fn ($p) => !empty($p['product_id']) && !empty($p['name']))
+            ->values()
+            ->toArray(),
+    ];
+
+    return view(
+        "storefront.{$this->theme}.pages.home",
+        compact('home')
+    );
+}
+
 
     /* =====================================================
      * 🔍 SEARCH (placeholder)
