@@ -34,7 +34,6 @@
         <img src="/themes/luxe/assets/icons/icon-cart.svg" class="icon">
         <span>Giỏ hàng</span>
 
-        {{-- Cart count --}}
         <span class="cart-count" id="lxCartCount">
             {{ array_sum(array_column(session('cart', []), 'qty')) }}
         </span>
@@ -44,13 +43,8 @@
 
 <style>
 /* -----------------------------------------------------
-   LUXE — Mobile Bottom Navigation (FIXED)
-------------------------------------------------------*/
-
-/* ❗ QUAN TRỌNG:
-   - Mặc định KHÔNG ăn click
-   - Chỉ mobile mới ăn click
-*/
+   LUXE — Mobile Bottom Navigation (Refined)
+------------------------------------------------------ */
 
 .lx-bottom-nav {
     position: fixed;
@@ -58,9 +52,9 @@
     left: 0;
     right: 0;
 
-    height: 60px;
-    background: #fff;
-    border-top: 1px solid #e5e5e5;
+    height: 62px;
+    background: #f9f6f3; /* ivory nhẹ */
+    border-top: 1px solid rgba(0,0,0,.08);
 
     display: flex;
     justify-content: space-around;
@@ -68,11 +62,10 @@
 
     z-index: 999;
 
-    /* 🔥 FIX CHẶN CLICK */
     pointer-events: none;
 }
 
-/* Chỉ mobile mới cho phép click bottom-nav */
+/* Chỉ mobile mới cho click */
 @media (max-width: 767px) {
     .lx-bottom-nav {
         pointer-events: auto;
@@ -83,25 +76,33 @@
     flex: 1;
     text-align: center;
     text-decoration: none;
-    color: #000;
+
     font-size: 11px;
+    color: #6f665f; /* xám nâu trung tính */
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    padding-top: 4px;
+    padding-top: 6px;
+    gap: 2px;
 }
 
 .lx-nav-item .icon {
     width: 20px;
     height: 20px;
-    margin-bottom: 2px;
+    opacity: .7;
+    transition: opacity .2s ease;
 }
 
-.lx-nav-item.active span {
-    font-weight: 600;
+/* ACTIVE STATE */
+.lx-nav-item.active {
+    color: #3b2a22; /* deep brown LIN XÉN */
+}
+
+.lx-nav-item.active .icon {
+    opacity: 1;
 }
 
 /* CART BADGE */
@@ -111,9 +112,10 @@
 
 .cart-count {
     position: absolute;
-    top: 2px;
+    top: 4px;
     right: 22px;
-    background: #000;
+
+    background: #3b2a22;
     color: #fff;
 
     font-size: 10px;
@@ -127,7 +129,7 @@
     border-radius: 50%;
 }
 
-/* Desktop: ẩn hoàn toàn */
+/* Desktop: ẩn */
 @media (min-width: 768px) {
     .lx-bottom-nav {
         display: none;
