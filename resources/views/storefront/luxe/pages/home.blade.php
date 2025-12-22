@@ -75,50 +75,33 @@
     </div>
 
 </section>
-{{-- ===================================================== --}}
-{{-- THỬ ĐỒ TẠI NHÀ – QUY TRÌNH --}}
-{{-- ===================================================== --}}
-<section class="lx-try-flow">
+<section class="lx-try-steps-list">
 
     <h3 class="lx-try-title">
-        Mặc thử tại nhà – rồi hãy quyết định
+        Cách thử đồ tại nhà cùng LIN XÉN
     </h3>
 
-    <div class="lx-try-steps">
-
-        <div class="lx-try-step">
-            <span class="lx-step-icon">📦</span>
-            <p>Shipper giao hàng</p>
-        </div>
-
-        <span class="lx-arrow">→</span>
-
-        <div class="lx-try-step">
-            <span class="lx-step-icon">👗</span>
-            <p>Mặc thử tại nhà</p>
-        </div>
-
-        <span class="lx-arrow">→</span>
-
-        <div class="lx-try-step">
-            <span class="lx-step-icon">❤️</span>
-            <p>Ưng thì nhận hàng</p>
-        </div>
-
-        <span class="lx-arrow">→</span>
-
-        <div class="lx-try-step highlight">
-            <span class="lx-step-icon">🚚</span>
-            <p>Không ưng<br><small>chỉ trả tiền ship</small></p>
-        </div>
-
-    </div>
+    <ol class="lx-step-list">
+        <li>
+            <strong>Bước 1:</strong> Shipper giao hàng tận nơi
+        </li>
+        <li>
+            <strong>Bước 2:</strong> Bạn mặc thử trực tiếp tại nhà
+        </li>
+        <li>
+            <strong>Bước 3:</strong> Thấy hợp dáng → thanh toán
+        </li>
+        <li>
+            <strong>Bước 4:</strong> Không ưng → gửi lại shipper, chỉ trả tiền ship
+        </li>
+    </ol>
 
     <p class="lx-try-note">
-        Không áp lực mua – không cần giải thích – quyết định hoàn toàn ở bạn
+        LIN XÉN để bạn quyết định sau khi đã mặc thử
     </p>
 
 </section>
+
 
 
 
