@@ -57,7 +57,7 @@
         SCRIPTS
     ============================= --}}
     <script src="/themes/luxe/assets/js/theme.js"></script>
-    <script src="/themes/luxe/assets/js/mobile-menu.js"></script>
+    <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
 
     {{-- Page-specific scripts --}}
     @stack('scripts')
