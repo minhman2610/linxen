@@ -1,19 +1,16 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – MOBILE FIRST (STATIC, POLISHED) --}}
+{{-- FEATURED PRODUCTS – SALE FOCUSED / MOBILE FIRST --}}
 {{-- ===================================================== --}}
 @if(!empty($products) && is_array($products))
 <section class="lx-product-section">
 
-    {{-- SECTION HEADER --}}
     <div class="lx-section-header">
-        <h2 class="lx-section-title">VÁY ĐƯỢC YÊU THÍCH</h2>
+        <h2 class="lx-section-title">VÁY ĐANG GIẢM GIÁ</h2>
         <p class="lx-section-desc">
-            Những chiếc váy dễ mặc cho nhịp sống hằng ngày
+            Ưu đãi đặc biệt – số lượng có hạn
         </p>
-        
     </div>
 
-    {{-- PRODUCT GRID --}}
     <div class="lx-product-grid">
         @foreach($products as $product)
 
@@ -28,77 +25,71 @@
                         . '-' . $product['product_id'];
 
                 $image = $product['media']['images'][0];
+
+                // FIX TAY SALE
+                $salePercent = 20;
+                $price       = $product['price'];
+                $salePrice   = round($price * (100 - $salePercent) / 100);
             @endphp
 
             <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                class="lx-product-card">
 
-                {{-- MEDIA --}}
+                {{-- ================= IMAGE ================= --}}
                 <div class="lx-product-media">
 
-                    <img
-                        src="{{ $image }}"
-                        alt="{{ $product['name'] }}"
-                        loading="lazy"
-                    >
+                    <img src="{{ $image }}"
+                         alt="{{ $product['name'] }}"
+                         loading="lazy">
 
-                    {{-- QUICK BUY ICON --}}
-<span class="lx-quick-buy" aria-label="Xem sản phẩm">
-    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-        <path fill="currentColor"
-              d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 
-                 2-2-.9-2-2-2Zm10 0c-1.1 0-1.99.9-1.99 
-                 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2ZM7.17 
-                 14h9.66c.75 0 1.41-.41 1.75-1.03l3.58-6.49a1 
-                 1 0 0 0-.87-1.48H5.21L4.27 2H1v2h2l3.6 
-                 7.59-1.35 2.44C4.52 14.37 5.48 16 7 
-                 16h12v-2H7.17Z"/>
-    </svg>
-</span>
+                    {{-- SALE BADGE --}}
+                    <span class="lx-sale-badge">
+                        -{{ $salePercent }}%
+                    </span>
+
+                    {{-- SALE TEXT --}}
+                    <span class="lx-sale-text">
+                        Giảm {{ $salePercent }}% hôm nay
+                    </span>
 
                 </div>
 
-                {{-- TAG (DƯỚI ẢNH) --}}
-                @if(!empty($product['tag']))
-                    <div class="lx-product-tag-below">
-                        {{ $product['tag'] }}
-                    </div>
-                @endif
+                {{-- ================= PRICE ================= --}}
+                <div class="lx-product-price-wrap">
+                    <span class="lx-price-sale">
+                        {{ number_format($salePrice) }}₫
+                    </span>
+                    <span class="lx-price-origin">
+                        {{ number_format($price) }}₫
+                    </span>
+                </div>
 
-                {{-- INFO --}}
-                <div class="lx-product-info">
+                {{-- ================= NAME ================= --}}
+                <p class="lx-product-name one-line">
+                    {{ $product['name'] }}
+                </p>
 
-                    {{-- COLOR VARIANTS --}}
-                    <div class="lx-product-colors">
-                        <span class="lx-color-swatch black"></span>
-                        <span class="lx-color-swatch red"></span>
-                        <span class="lx-color-swatch blue"></span>
-                    </div>
+                {{-- ================= STATUS ================= --}}
+                <div class="lx-product-status">
+                    HÀNG CÓ SẴN
+                </div>
 
-                    <p class="lx-product-name">
-                        {{ $product['name'] }}
-                    </p>
-
-                    <p class="lx-product-price">
-                        {{ number_format($product['price']) }}₫
-                    </p>
-
-                    <p class="lx-product-micro">
-                        {{ $product['micro_copy'] ?? 'Dễ mặc mỗi ngày' }}
-                    </p>
+                {{-- ================= COLORS ================= --}}
+                <div class="lx-product-colors">
+                    <span class="lx-color-swatch active black"></span>
+                    <span class="lx-color-swatch red"></span>
+                    <span class="lx-color-swatch blue"></span>
                 </div>
 
             </a>
+
         @endforeach
     </div>
 
 </section>
 @endif
-
-{{-- ===================================================== --}}
-{{-- 🎨 CSS – FASHION, MOBILE FIRST --}}
-{{-- ===================================================== --}}
 <style>
+    /* GRID */
 .lx-product-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -111,7 +102,7 @@
     color: inherit;
 }
 
-/* MEDIA */
+/* IMAGE */
 .lx-product-media {
     position: relative;
     width: 100%;
@@ -125,104 +116,105 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
 }
 
-/* QUICK BUY ICON – subtle & luxe */
-.lx-quick-buy {
+/* SALE BADGE */
+.lx-sale-badge {
     position: absolute;
-    right: 8px;
+    top: 8px;
+    left: 8px;
+
+    background: #b11226;
+    color: #fff;
+
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* SALE TEXT */
+.lx-sale-text {
+    position: absolute;
     bottom: 8px;
+    left: 8px;
 
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
+    background: rgba(0,0,0,.55);
+    color: #fff;
 
-    background: rgba(255,255,255,.75); /* trắng mờ, không phá ảnh */
-    color: #3b2a22; /* deep brown icon */
+    font-size: 11px;
+    padding: 4px 6px;
+    border-radius: 4px;
+}
 
+/* PRICE */
+.lx-product-price-wrap {
+    margin-top: 8px;
     display: flex;
     align-items: center;
-    justify-content: center;
-
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-
-    box-shadow: 0 4px 10px rgba(0,0,0,.12);
+    gap: 6px;
 }
 
+.lx-price-sale {
+    font-size: 15px;
+    font-weight: 700;
+    color: #b11226;
+}
 
-/* TAG BELOW IMAGE */
-.lx-product-tag-below {
-    margin-top: 6px;
+.lx-price-origin {
+    font-size: 12px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+/* NAME */
+.lx-product-name {
+    margin-top: 4px;
+    font-size: 13.5px;
+    color: #222;
+}
+
+.lx-product-name.one-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* STATUS */
+.lx-product-status {
+    margin-top: 4px;
     font-size: 11px;
-    color: #555;
+    color: #3b2a22;
+    font-weight: 600;
 }
 
-/* INFO */
-.lx-product-info {
-    padding: 8px 2px 18px;
-}
-
-/* COLOR VARIANTS */
+/* COLORS */
 .lx-product-colors {
+    margin-top: 8px;
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 10px 0 6px;
 }
 
 .lx-color-swatch {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    position: relative;
+    opacity: .7;
 }
 
-.lx-color-swatch::after {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    border: 1px solid rgba(0,0,0,.15);
+.lx-color-swatch.active {
+    width: 18px;
+    height: 18px;
+    opacity: 1;
 }
 
 .lx-color-swatch.black { background: #111; }
 .lx-color-swatch.red   { background: #b11226; }
 .lx-color-swatch.blue  { background: #1f3a5f; }
 
-/* NAME */
-.lx-product-name {
-    font-family: ui-serif, Georgia, 'Times New Roman', serif;
-    font-size: 14px;
-    line-height: 1.45;
-    color: #222;
-    margin-bottom: 6px;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* PRICE */
-.lx-product-price {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: .3px;
-    color: #3b2a22;
-    margin-bottom: 6px;
-}
-
-/* MICRO */
-.lx-product-micro {
-    font-size: 12px;
-    color: #777;
-}
-
 /* MOBILE */
 @media (max-width: 480px) {
-    .lx-product-name { font-size: 13.5px; }
-    .lx-product-price { font-size: 14.5px; }
+    .lx-price-sale { font-size: 14.5px; }
 }
 </style>
