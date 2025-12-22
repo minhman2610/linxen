@@ -14,28 +14,23 @@
     <div class="lx-product-grid">
         @foreach($home['featured_products'] as $product)
 
-            @continue(
-                empty($product['product_id'])
-                || empty($product['name'])
-                || (
-                    empty($product['thumb_url'])
-                    && empty($product['thumb_url_mobile'])
-                )
-            )
+    @continue(
+        empty($product['product_id'])
+        || empty($product['name'])
+        || empty($product['media']['thumb_mobile'])
+    )
 
-            @php
-                // ✅ KHÔNG DÙNG use — dùng FQN
-                $slug = \Illuminate\Support\Str::slug($product['name'])
-                        . '-' . $product['product_id'];
+    @php
+        $slug = \Illuminate\Support\Str::slug($product['name'])
+                . '-' . $product['product_id'];
 
-                $thumb = $product['thumb_url_mobile']
-                    ?? $product['thumb_url'];
+        // ✅ LẤY ẢNH ĐÚNG TỪ API
+        $thumb = $product['media']['thumb_mobile'];
 
-                // DEMO SALE
-                $price       = (float) $product['price'];
-                $salePercent = 20;
-                $salePrice   = round($price * (100 - $salePercent) / 100);
-            @endphp
+        $price       = (float) $product['price'];
+        $salePercent = 20;
+        $salePrice   = round($price * (100 - $salePercent) / 100);
+    @endphp
 
             <div class="lx-product-card">
 
