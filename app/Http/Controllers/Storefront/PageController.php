@@ -18,22 +18,54 @@ class PageController extends Controller
     }
 
     /* =====================================================
- * 🏠 HOME – LIN XÉN STORE
+ * 🏠 HOME – LIN XÉN STORE (MEDIA-SAFE)
  * ===================================================== */
 public function home(ErpStorefrontApi $erp)
 {
-    // Lấy dữ liệu home từ ERP (UX-ready)
+    // Lấy dữ liệu home từ ERP
     $rawHome = $erp->home($this->brand);
 
-    // Chuẩn hoá data cho view (không xử lý logic nặng ở đây)
+    // Chuẩn hoá data cho view
     $home = [
         // HERO (video / banner / null đều OK)
         'hero' => $rawHome['hero'] ?? null,
 
         // SẢN PHẨM CHỦ LỰC
-        // Đã bao gồm: media, tag, colors, micro_copy
         'featured_products' => collect($rawHome['products'] ?? [])
-            ->filter(fn ($p) => !empty($p['product_id']) && !empty($p['name']))
+
+            // 1️⃣ Lọc sản phẩm hợp lệ cơ bản
+            ->filter(fn ($p) =>
+                !empty($p['product_id'])
+                && !empty($p['name'])
+                && !empty($p['price'])
+            )
+
+            // 2️⃣ Chuẩn hoá MEDIA → 1 KEY DUY NHẤT
+            ->map(function ($p) {
+
+                $thumb = null;
+
+                // Ưu tiên thứ tự: images → thumb → mobile
+                if (!empty($p['media']['images'][0])) {
+                    $thumb = $p['media']['images'][0];
+                } elseif (!empty($p['media']['thumb'])) {
+                    $thumb = $p['media']['thumb'];
+                } elseif (!empty($p['media']['mobile'])) {
+                    $thumb = $p['media']['mobile'];
+                }
+
+                return [
+                    ...$p,
+
+                    // 🔑 KEY DUY NHẤT CHO BLADE
+                    'thumb' => $thumb,
+                ];
+            })
+
+            // 3️⃣ Chỉ giữ sản phẩm có ảnh hợp lệ
+            ->filter(fn ($p) => !empty($p['thumb']))
+
+            // 4️⃣ Reset index
             ->values()
             ->toArray(),
     ];
