@@ -1,17 +1,11 @@
 <div class="lx-announcement-bar">
     <span class="lx-brand">LIN XÉN</span>
-
-    <span class="lx-editorial-sequence">
-        <span>Váy nữ thanh lịch cho nhịp sống hiện đại</span>
-        <span>Váy nữ basic, dễ mặc mỗi ngày</span>
-        <span>Thiết kế tinh giản dành cho phụ nữ bận rộn</span>
-    </span>
+    <span id="lxTypeTarget" class="lx-type-text"></span>
 </div>
-
 <style>
 /* ---------------------------------------------
    Announcement Bar — Deep Brown Luxe
-   Editorial Fade Sequence
+   Editorial Typing Motion
 ----------------------------------------------*/
 .lx-announcement-bar {
     --announcement-height: 38px;
@@ -22,8 +16,8 @@
     justify-content: center;
     gap: 14px;
 
-    background: #3b2a22; /* deep brown */
-    color: #f3eee9;     /* ivory */
+    background: #3b2a22;
+    color: #f3eee9;
 
     font-size: 12px;
     letter-spacing: .45px;
@@ -41,37 +35,27 @@
     white-space: nowrap;
 }
 
-/* SEQUENCE */
-.lx-editorial-sequence {
-    position: relative;
-    width: max-content;
+/* TYPE TEXT */
+.lx-type-text {
     min-width: 320px;
-    height: 1.4em;
-}
-
-.lx-editorial-sequence span {
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    opacity: 0;
     white-space: nowrap;
-
-    animation: lxEditorialFade 12s infinite;
+    position: relative;
 }
 
-/* Delay từng câu */
-.lx-editorial-sequence span:nth-child(1) { animation-delay: 0s; }
-.lx-editorial-sequence span:nth-child(2) { animation-delay: 4s; }
-.lx-editorial-sequence span:nth-child(3) { animation-delay: 8s; }
+/* caret rất nhẹ */
+.lx-type-text::after {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 1em;
+    background: rgba(243,238,233,.6);
+    margin-left: 4px;
+    animation: blink 1.2s infinite;
+}
 
-/* ANIMATION — rất nhẹ, rất sang */
-@keyframes lxEditorialFade {
-    0%   { opacity: 0; }
-    10%  { opacity: 1; }
-    30%  { opacity: 1; }
-    40%  { opacity: 0; }
-    100% { opacity: 0; }
+@keyframes blink {
+    0%,50%,100% { opacity: 0; }
+    25%,75% { opacity: 1; }
 }
 
 /* Mobile */
@@ -82,8 +66,51 @@
         gap: 8px;
     }
 
-    .lx-editorial-sequence {
+    .lx-type-text {
         min-width: auto;
     }
 }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const texts = [
+        'Váy nữ thanh lịch cho nhịp sống hiện đại',
+        'Váy nữ basic, dễ mặc mỗi ngày',
+        'Thiết kế tinh giản dành cho phụ nữ bận rộn'
+    ];
+
+    const target = document.getElementById('lxTypeTarget');
+    let textIndex = 0;
+    let charIndex = 0;
+    let typing = true;
+
+    function typeLoop() {
+        const current = texts[textIndex];
+
+        if (typing) {
+            if (charIndex < current.length) {
+                target.textContent += current.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeLoop, 40); // tốc độ đánh máy
+            } else {
+                // giữ lại để đọc
+                setTimeout(() => typing = false, 2200);
+                setTimeout(typeLoop, 2200);
+            }
+        } else {
+            if (charIndex > 0) {
+                target.textContent = current.substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(typeLoop, 20); // tốc độ xóa
+            } else {
+                typing = true;
+                textIndex = (textIndex + 1) % texts.length;
+                setTimeout(typeLoop, 400);
+            }
+        }
+    }
+
+    typeLoop();
+});
+</script>
+
