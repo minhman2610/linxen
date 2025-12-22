@@ -145,6 +145,11 @@
     opacity: 1;
 }
 
+.lx-product-media img {
+    transition: opacity .8s ease;
+}
+
+
 /* TAG */
 .lx-product-tag {
     position: absolute;
@@ -215,17 +220,34 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cards = document.querySelectorAll('[data-image-switch]');
 
-    cards.forEach(card => {
-        const images = card.querySelectorAll('img');
-        if (images.length < 2) return;
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
 
-        let index = 0;
+                const card = entry.target;
+                const images = card.querySelectorAll('img');
 
-        setInterval(() => {
-            images[index].classList.remove('is-active');
-            index = index === 0 ? 1 : 0;
-            images[index].classList.add('is-active');
-        }, 1600); // tốc độ đổi ảnh
-    });
+                if (images.length < 2) return;
+
+                // chỉ chạy 1 lần
+                if (card.dataset.switched) return;
+
+                card.dataset.switched = 'true';
+
+                setTimeout(() => {
+                    images[0].classList.remove('is-active');
+                    images[1].classList.add('is-active');
+                }, 400); // delay nhẹ cho tự nhiên
+
+                observer.unobserve(card);
+            });
+        },
+        {
+            threshold: 0.6
+        }
+    );
+
+    cards.forEach(card => observer.observe(card));
 });
 </script>
