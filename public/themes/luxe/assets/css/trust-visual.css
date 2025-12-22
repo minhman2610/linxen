@@ -90,3 +90,21 @@
         width: 40%;
     }
 }
+
+.lx-trust-title {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.lx-trust-desc {
+    text-align: center;
+    font-size: 14.5px;
+    color: #444;
+}
+
+.lx-trust-desc strong {
+    color: #b11226;
+    font-weight: 600;
+}

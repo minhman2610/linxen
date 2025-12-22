@@ -38,12 +38,14 @@
 <section class="lx-trust-visual">
 
     <h3 class="lx-trust-title">
-        Ảnh bán hàng &nbsp;↔&nbsp; Ảnh thực tế
-    </h3>
+    Ảnh bán hàng ≈ Ảnh thực tế
+</h3>
 
-    <p class="lx-trust-desc">
-        LIN XÉN cam kết hình ảnh sát thực tế – khách nhận hàng không bị “vỡ mộng”
-    </p>
+<p class="lx-trust-desc">
+    LIN XÉN <strong>cam kết hình ảnh sát thực tế</strong> –  
+    khách nhận hàng <strong>không bị “vỡ mộng”</strong> khi mở hộp.
+</p>
+
 
     <div class="lx-trust-compare">
 
