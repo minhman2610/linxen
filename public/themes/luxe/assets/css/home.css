@@ -1,101 +1,105 @@
 /* =====================================================
-   TRY AT HOME – PREMIUM FLOW
+   TRY BEFORE YOU DECIDE – TRUST BLOCK
 ===================================================== */
 
-.lx-tryflow {
-    margin-top: 48px;
-    padding: 36px 20px;
-    border-radius: 24px;
-    background: linear-gradient(180deg, #fff6f4, #ffffff);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+.lx-trytrust {
+    margin-top: 56px;
+    padding: 44px 22px;
+    border-radius: 28px;
+    background: #ffffff;
+    border: 2px solid #f1d6d1;
 }
 
-/* HEADER */
-.lx-tryflow-header {
+/* HERO */
+.lx-trytrust-hero {
     text-align: center;
+    margin-bottom: 28px;
+}
+
+.lx-trytrust-hero h2 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 10px;
+}
+
+.lx-trytrust-hero h2 span {
+    color: #b11226;
+}
+
+.lx-trytrust-hero p {
+    font-size: 15px;
+    color: #444;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* BENEFITS */
+.lx-trytrust-benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
     margin-bottom: 32px;
 }
 
-.lx-tryflow-title {
-    font-size: 26px;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 8px;
-}
-
-.lx-tryflow-title span {
-    color: #b11226;
-}
-
-.lx-tryflow-sub {
+.lx-trytrust-benefits div {
+    background: #fff6f4;
+    padding: 12px 14px;
+    border-radius: 14px;
     font-size: 14px;
-    color: #555;
+    font-weight: 500;
 }
 
-/* STEPS */
-.lx-tryflow-steps {
+.lx-trytrust-benefits .highlight {
+    background: #b11226;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* FLOW */
+.lx-trytrust-flow {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
-.lx-tryflow-step {
-    width: 140px;
+.lx-flow-item {
+    width: 120px;
     text-align: center;
 }
 
-.lx-step-circle {
-    width: 64px;
-    height: 64px;
+.lx-flow-item span {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid #f0d5d0;
-    display: flex;
+    background: #fff6f4;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    margin: 0 auto 10px;
+    font-weight: 700;
+    margin-bottom: 8px;
 }
 
-.lx-tryflow-step h4 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.lx-tryflow-step p {
+.lx-flow-item p {
     font-size: 13px;
-    color: #555;
+    color: #333;
 }
 
-/* LINE */
-.lx-tryflow-line {
-    width: 32px;
+.lx-flow-divider {
+    width: 24px;
     height: 2px;
-    background: #e6b8b1;
+    background: #e5bcb5;
 }
 
 /* HIGHLIGHT STEP */
-.lx-tryflow-step.highlight .lx-step-circle {
+.lx-flow-item.highlight span {
     background: #b11226;
     color: #fff;
-    border-color: #b11226;
 }
 
-.lx-tryflow-step.highlight h4,
-.lx-tryflow-step.highlight p {
+.lx-flow-item.highlight p {
     color: #b11226;
     font-weight: 600;
-}
-
-/* FOOTER */
-.lx-tryflow-footer {
-    margin-top: 28px;
-    padding-top: 18px;
-    border-top: 1px dashed #e7c2bc;
-    text-align: center;
-    font-size: 13.5px;
-    color: #444;
 }

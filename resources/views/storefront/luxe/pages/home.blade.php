@@ -76,57 +76,44 @@
 
 </section>
 {{-- ===================================================== --}}
-{{-- TRY AT HOME – PREMIUM FLOW --}}
+{{-- TRY BEFORE YOU DECIDE – TRUST BLOCK --}}
 {{-- ===================================================== --}}
-<section class="lx-tryflow">
+<section class="lx-trytrust">
 
-    <div class="lx-tryflow-header">
-        <h2 class="lx-tryflow-title">
-            Thử đồ tại nhà<br>
-            <span>Quyết định sau</span>
+    <div class="lx-trytrust-hero">
+        <h2>
+            Thử trước<br>
+            <span>Quyết sau</span>
         </h2>
-        <p class="lx-tryflow-sub">
-            Không áp lực mua · Không cần giải thích · Chủ động 100%
+
+        <p>
+            LIN XÉN không bán bằng lời hứa.  
+            Chúng tôi để bạn <strong>tự mặc – tự cảm – tự quyết</strong>.
         </p>
     </div>
 
-    <div class="lx-tryflow-steps">
-
-        <div class="lx-tryflow-step">
-            <div class="lx-step-circle">📦</div>
-            <h4>Nhận hàng</h4>
-            <p>Shipper giao tận tay</p>
-        </div>
-
-        <div class="lx-tryflow-line"></div>
-
-        <div class="lx-tryflow-step">
-            <div class="lx-step-circle">👗</div>
-            <h4>Mặc thử</h4>
-            <p>Thoải mái tại nhà</p>
-        </div>
-
-        <div class="lx-tryflow-line"></div>
-
-        <div class="lx-tryflow-step">
-            <div class="lx-step-circle">✨</div>
-            <h4>So gương</h4>
-            <p>Cảm nhận form & chất vải</p>
-        </div>
-
-        <div class="lx-tryflow-line"></div>
-
-        <div class="lx-tryflow-step highlight">
-            <div class="lx-step-circle">❤️</div>
-            <h4>Ưng thì nhận</h4>
-            <p>Không ưng chỉ trả phí ship</p>
-        </div>
-
+    <div class="lx-trytrust-benefits">
+        <div>✔️ Mặc thử tại nhà</div>
+        <div>✔️ Không áp lực mua</div>
+        <div>✔️ Không cần giải thích</div>
+        <div class="highlight">✔️ Không ưng chỉ trả phí ship</div>
     </div>
 
-    <div class="lx-tryflow-footer">
-        <strong>LIN XÉN tin rằng:</strong>  
-        Bạn cần cảm nhận trang phục trên chính cơ thể mình – không phải qua ảnh.
+    <div class="lx-trytrust-flow">
+        <div class="lx-flow-item">
+            <span>1</span>
+            <p>Giao hàng tận nhà</p>
+        </div>
+        <div class="lx-flow-divider"></div>
+        <div class="lx-flow-item">
+            <span>2</span>
+            <p>Mặc thử & soi gương</p>
+        </div>
+        <div class="lx-flow-divider"></div>
+        <div class="lx-flow-item highlight">
+            <span>3</span>
+            <p>Ưng thì nhận – Không ưng trả lại</p>
+        </div>
     </div>
 
 </section>
