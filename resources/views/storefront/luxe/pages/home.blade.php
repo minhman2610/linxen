@@ -152,9 +152,13 @@
 
     <div class="lx-exchange-steps">
         <div class="lx-ex-step">
-            <span>1</span>
-            <p>Liên hệ LIN XÉN<br><small>qua fanpage / hotline</small></p>
-        </div>
+    <span>1</span>
+    <p>
+        Tạo yêu cầu đổi hàng<br>
+        <small>trên website / fanpage / hotline</small>
+    </p>
+</div>
+
 
         <div class="lx-ex-step">
             <span>2</span>

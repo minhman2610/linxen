@@ -125,15 +125,15 @@
 }
 
 /* =====================================================
-   EXCHANGE POLICY – LIN XÉN
+   EXCHANGE POLICY – LIN XÉN (SYSTEM / AFTER-SALES)
 ===================================================== */
 
 .lx-exchange {
-    margin-top: 56px;
-    padding: 40px 22px;
+    margin-top: 64px;
+    padding: 44px 24px;
     border-radius: 28px;
-    background: linear-gradient(180deg, #fff6f4, #ffffff);
-    border: 1.5px solid #f0d6d0;
+    background: #f6f8fb;              /* nền xám xanh – khác section trên */
+    border: 1.5px solid #e2e7ef;
 }
 
 /* TITLE */
@@ -143,23 +143,24 @@
     font-weight: 800;
     line-height: 1.2;
     margin-bottom: 14px;
+    color: #1f2d3d;
 }
 
 .lx-exchange-title span {
-    color: #b11226;
+    color: #1f3a5f;                   /* xanh hệ thống */
 }
 
 /* DESC */
 .lx-exchange-desc {
     text-align: center;
     font-size: 14.5px;
-    color: #444;
-    max-width: 520px;
-    margin: 0 auto 28px;
+    color: #445266;
+    max-width: 540px;
+    margin: 0 auto 32px;
 }
 
 .lx-exchange-desc strong {
-    color: #b11226;
+    color: #1f3a5f;
     font-weight: 600;
 }
 
@@ -167,59 +168,66 @@
 .lx-exchange-steps {
     display: flex;
     justify-content: center;
-    gap: 16px;
+    gap: 18px;
     flex-wrap: wrap;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
 }
 
 .lx-ex-step {
-    width: 140px;
+    width: 150px;
     text-align: center;
 }
 
+/* STEP NUMBER */
 .lx-ex-step span {
     display: inline-flex;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     background: #ffffff;
-    border: 1.5px solid #e8c5bf;
+    border: 2px solid #cfd7e3;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    margin-bottom: 8px;
+    color: #1f2d3d;
+    margin-bottom: 10px;
 }
 
+/* STEP TEXT */
 .lx-ex-step p {
     font-size: 13.5px;
-    line-height: 1.35;
+    line-height: 1.4;
+    color: #1f2d3d;
 }
 
 .lx-ex-step small {
+    display: block;
     font-size: 12px;
-    color: #666;
+    color: #667085;
+    margin-top: 2px;
 }
 
-/* HIGHLIGHT */
+/* HIGHLIGHT STEP */
 .lx-ex-step.highlight span {
-    background: #b11226;
-    color: #fff;
-    border-color: #b11226;
+    background: #1f3a5f;
+    color: #ffffff;
+    border-color: #1f3a5f;
 }
 
 /* TRUST STRIP */
 .lx-exchange-trust {
-    margin-top: 18px;
-    padding: 14px 18px;
-    border-radius: 14px;
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 16px;
     background: #ffffff;
-    border: 1.5px solid #b11226;
+    border: 1.5px solid #1f3a5f;
     text-align: center;
     font-size: 14px;
-    color: #222;
+    color: #1f2d3d;
 }
 
 .lx-exchange-trust strong {
-    color: #b11226;
+    color: #1f3a5f;
+    font-weight: 600;
 }
 
