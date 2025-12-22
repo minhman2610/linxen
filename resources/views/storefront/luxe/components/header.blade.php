@@ -113,7 +113,7 @@
     border-bottom: none !important;
 
     position: absolute;
-    top: calc(var(--announcement-height, 0) + 20px);
+    top: calc(var(--announcement-height, 0));
     left: 0;
     width: 100%;
 
