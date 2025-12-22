@@ -28,15 +28,15 @@
 </section>
 
 {{-- ===================================================== --}}
-{{-- 2️⃣ SẢN PHẨM CHỦ LỰC – VÁY --}}
+{{-- 2️⃣ SẢN PHẨM CHỦ LỰC – VÁY (MOBILE FIRST) --}}
 {{-- ===================================================== --}}
 @if(!empty($home['featured_products']) && is_array($home['featured_products']))
 <section class="lx-product-section">
 
     <div class="lx-section-header">
-        <h2 class="lx-section-title">VÁY BÁN CHẠY</h2>
+        <h2 class="lx-section-title">VÁY ĐƯỢC YÊU THÍCH</h2>
         <p class="lx-section-desc">
-            Những thiết kế được khách hàng LIN XÉN yêu thích nhất
+            Những chiếc váy dễ mặc cho nhịp sống hằng ngày
         </p>
         <a href="{{ route('linxen.collection', ['slug' => 'all']) }}"
            class="lx-section-link">
@@ -50,37 +50,88 @@
             @continue(
                 empty($product['product_id'])
                 || empty($product['name'])
-                || (
-                    empty($product['thumb_url'])
-                    && empty($product['thumb_url_mobile'])
-                )
+                || empty($product['media'])
             )
 
             @php
                 $slug = \Illuminate\Support\Str::slug($product['name'])
                         . '-' . $product['product_id'];
 
-                $thumb = $product['thumb_url_mobile']
-                    ?? $product['thumb_url'];
+                // MEDIA LOGIC (mobile first)
+                $images = $product['media']['images'] ?? [];
+                $video  = $product['media']['video'] ?? null;
+
+                // TAG LOGIC
+                $tag = $product['tag'] ?? null;
+
+                // COLOR LOGIC
+                $colors = $product['colors'] ?? [];
+
+                // MICRO COPY
+                $micro = $product['micro_copy'] ?? 'Dễ mặc mỗi ngày';
             @endphp
 
             <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                class="lx-product-card">
 
-                <div class="lx-product-image">
-                    <img
-                        src="{{ $thumb }}"
-                        alt="{{ $product['name'] }}"
-                        loading="lazy"
-                    >
+                {{-- MEDIA --}}
+                <div class="lx-product-media"
+                     data-auto-slide="{{ count($images) > 1 ? 'true' : 'false' }}">
+
+                    {{-- TAG --}}
+                    @if($tag)
+                        <span class="lx-product-tag">{{ $tag }}</span>
+                    @endif
+
+                    {{-- VIDEO (nếu có) --}}
+                    @if($video)
+                        <video
+                            class="lx-product-video"
+                            src="{{ $video }}"
+                            muted
+                            playsinline
+                            loop
+                        ></video>
+                    @else
+                        {{-- IMAGE SLIDE --}}
+                        @foreach($images as $img)
+                            <img
+                                src="{{ $img }}"
+                                alt="{{ $product['name'] }}"
+                                loading="lazy"
+                            >
+                        @endforeach
+                    @endif
                 </div>
 
+                {{-- INFO --}}
                 <div class="lx-product-info">
+                    {{-- COLORS --}}
+                    @if(!empty($colors))
+                        <div class="lx-product-colors">
+                            @foreach(array_slice($colors, 0, 3) as $color)
+                                <span class="lx-color-dot"
+                                      style="background: {{ $color }}"></span>
+                            @endforeach
+
+                            @if(count($colors) > 3)
+                                <span class="lx-color-more">
+                                    +{{ count($colors) - 3 }}
+                                </span>
+                            @endif
+                        </div>
+                    @endif
+
                     <p class="lx-product-name">
                         {{ $product['name'] }}
                     </p>
+
                     <p class="lx-product-price">
                         {{ number_format($product['price']) }}₫
+                    </p>
+
+                    <p class="lx-product-micro">
+                        {{ $micro }}
                     </p>
                 </div>
 
@@ -90,6 +141,7 @@
 
 </section>
 @endif
+
 
 {{-- ===================================================== --}}
 {{-- 3️⃣ GIÁ TRỊ CỐT LÕI --}}
