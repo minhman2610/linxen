@@ -128,25 +128,29 @@
     display: block;
 }
 
-/* QUICK BUY ICON */
+/* QUICK BUY ICON – subtle & luxe */
 .lx-quick-buy {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
+    right: 8px;
+    bottom: 8px;
 
-    width: 38px;
-    height: 38px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
 
-    background: rgba(59,42,34,.92);
-    color: #fff;
+    background: rgba(255,255,255,.75); /* trắng mờ, không phá ảnh */
+    color: #3b2a22; /* deep brown icon */
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    box-shadow: 0 6px 16px rgba(0,0,0,.18);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    box-shadow: 0 4px 10px rgba(0,0,0,.12);
 }
+
 
 /* TAG BELOW IMAGE */
 .lx-product-tag-below {
