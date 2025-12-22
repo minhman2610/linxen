@@ -45,13 +45,23 @@
                         loading="lazy"
                     >
 
-                    {{-- CTA ORDER --}}
-                    <span class="lx-quick-buy">
-                        Đặt hàng
+                    {{-- QUICK BUY ICON --}}
+                    <span class="lx-quick-buy" aria-label="Xem sản phẩm">
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                            <path fill="currentColor"
+                                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2Zm10 
+                                     0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 
+                                     2-2-.9-2-2-2ZM7.17 14h9.66c.75 0 
+                                     1.41-.41 1.75-1.03l3.58-6.49a1 
+                                     1 0 0 0-.87-1.48H5.21L4.27 
+                                     2H1v2h2l3.6 7.59-1.35 
+                                     2.44C4.52 14.37 5.48 
+                                     16 7 16h12v-2H7.17Z"/>
+                        </svg>
                     </span>
                 </div>
 
-                {{-- TAG (KHÔNG ĐÈ ẢNH) --}}
+                {{-- TAG (DƯỚI ẢNH) --}}
                 @if(!empty($product['tag']))
                     <div class="lx-product-tag-below">
                         {{ $product['tag'] }}
@@ -61,7 +71,7 @@
                 {{-- INFO --}}
                 <div class="lx-product-info">
 
-                    {{-- COLOR VARIANTS (FIX CỨNG, TO, RÕ) --}}
+                    {{-- COLOR VARIANTS --}}
                     <div class="lx-product-colors">
                         <span class="lx-color-swatch black"></span>
                         <span class="lx-color-swatch red"></span>
@@ -89,7 +99,7 @@
 @endif
 
 {{-- ===================================================== --}}
-{{-- 🎨 CSS – FASHION, CLEAR, MOBILE FIRST --}}
+{{-- 🎨 CSS – FASHION, MOBILE FIRST --}}
 {{-- ===================================================== --}}
 <style>
 .lx-product-grid {
@@ -121,20 +131,24 @@
     display: block;
 }
 
-/* QUICK BUY BUTTON */
+/* QUICK BUY ICON */
 .lx-quick-buy {
     position: absolute;
     right: 10px;
     bottom: 10px;
 
-    background: rgba(59,42,34,.9); /* deep brown */
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+
+    background: rgba(59,42,34,.92);
     color: #fff;
 
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    letter-spacing: .3px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.18);
 }
 
 /* TAG BELOW IMAGE */
@@ -149,7 +163,7 @@
     padding: 8px 2px 18px;
 }
 
-/* COLOR VARIANTS – TO, RÕ, ẤN TƯỢNG */
+/* COLOR VARIANTS */
 .lx-product-colors {
     display: flex;
     align-items: center;
@@ -182,7 +196,6 @@
     font-size: 14px;
     line-height: 1.45;
     color: #222;
-
     margin-bottom: 6px;
 
     display: -webkit-box;
