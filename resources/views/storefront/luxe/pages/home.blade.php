@@ -137,6 +137,9 @@
 
 
 </section>
+<section class="lx-divider-image">
+    <img src="/themes/luxe/assets/images/try-at-home-divider.jpg" alt="Try at home LIN XÉN">
+</section>
 
 <section class="lx-exchange">
 

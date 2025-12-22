@@ -1,13 +1,35 @@
 /* =====================================================
-   TRY AT HOME – PREMIUM FLOW (REFINED)
+   TRY AT HOME – PREMIUM FLOW (REFINED + GIRL PEEK)
 ===================================================== */
 
 .lx-try-flow.refined {
+    position: relative;
     margin-top: 48px;
     padding: 36px 20px;
-    background: #faf7f6;
+    background:
+        url('/themes/luxe/assets/images/try-peek-girl.png') no-repeat
+        top right / 220px,
+        #faf7f6;
     border-radius: 24px;
     border: 1px solid #f0e2de;
+    overflow: hidden;
+}
+
+/* halo sáng nhẹ quanh cô gái – tránh cắt thô */
+.lx-try-flow.refined::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(
+        circle at top right,
+        rgba(255,255,255,0.85),
+        rgba(255,255,255,0.4) 40%,
+        transparent 70%
+    );
+    pointer-events: none;
 }
 
 /* TITLE */
@@ -30,6 +52,8 @@
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
+    position: relative;
+    z-index: 2; /* đảm bảo nổi trên background */
 }
 
 .lx-try-step {
@@ -53,7 +77,14 @@
 
 .lx-try-step p {
     font-size: 13.5px;
-    line-height: 1.3;
+    line-height: 1.35;
+}
+
+.lx-try-step small {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
 }
 
 /* ARROW */
@@ -76,21 +107,15 @@
     font-weight: 600;
 }
 
-.lx-try-step small {
-    display: block;
-    font-size: 12px;
-    opacity: 0.8;
+.lx-try-step.highlight small {
+    color: #b11226;
+    font-weight: 500;
 }
 
-/* NOTE */
-.lx-try-note {
-    margin-top: 24px;
-    text-align: center;
-    font-size: 13.5px;
-    color: #555;
-}
-
+/* TRUST STRIP */
 .lx-try-trust {
+    position: relative;
+    z-index: 2;
     margin-top: 26px;
     padding: 14px 18px;
     border-radius: 14px;
@@ -107,151 +132,15 @@
     font-weight: 700;
 }
 
-.lx-try-step p {
-    font-size: 13.5px;
-    line-height: 1.35;
+/* MOBILE OPTIMIZE */
+@media (max-width: 768px) {
+    .lx-try-flow.refined {
+        background-size: 140px;
+        padding-top: 110px; /* chừa không gian cho đầu cô gái */
+    }
+
+    .lx-try-flow.refined::after {
+        width: 180px;
+        height: 180px;
+    }
 }
-
-.lx-try-step small {
-    display: block;
-    font-size: 12px;
-    color: #666;
-    margin-top: 2px;
-}
-
-.lx-try-step.highlight small {
-    color: #b11226;
-    font-weight: 500;
-}
-
-/* =====================================================
-   EXCHANGE POLICY – LIN XÉN (REFINED PALETTE)
-===================================================== */
-
-.lx-exchange {
-    margin-top: 72px;
-    padding: 48px 26px;
-    border-radius: 30px;
-    background: linear-gradient(180deg, #f9fafb, #eef2f7);
-    border: 1.5px solid #d6dde8;
-}
-
-/* TITLE */
-.lx-exchange-title {
-    text-align: center;
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 14px;
-    color: #1f2937;
-}
-
-.lx-exchange-title span {
-    color: #243a5e;
-}
-
-/* DESC */
-.lx-exchange-desc {
-    text-align: center;
-    font-size: 14.5px;
-    color: #374151;
-    max-width: 560px;
-    margin: 0 auto 34px;
-}
-
-.lx-exchange-desc strong {
-    color: #243a5e;
-    font-weight: 600;
-}
-
-/* STEPS */
-.lx-exchange-steps {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 34px;
-}
-
-.lx-ex-step {
-    width: 160px;
-    text-align: center;
-}
-
-/* STEP NUMBER */
-.lx-ex-step span {
-    display: inline-flex;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid #d6dde8;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: #243a5e;
-    margin-bottom: 10px;
-}
-
-/* STEP TEXT */
-.lx-ex-step p {
-    font-size: 13.8px;
-    line-height: 1.45;
-    color: #1f2937;
-}
-
-.lx-ex-step small {
-    display: block;
-    font-size: 12.2px;
-    color: #667085;
-    margin-top: 3px;
-}
-
-/* HIGHLIGHT STEP */
-.lx-ex-step.highlight span {
-    background: #243a5e;
-    color: #ffffff;
-    border-color: #243a5e;
-}
-
-/* TRUST STRIP */
-.lx-exchange-trust {
-    margin-top: 22px;
-    padding: 18px 22px;
-    border-radius: 18px;
-    background: #ffffff;
-    border: 1.5px solid #243a5e;
-    text-align: center;
-    font-size: 14.2px;
-    color: #1f2937;
-}
-
-.lx-exchange-trust strong {
-    color: #243a5e;
-    font-weight: 600;
-}
-
-/* ===== Exchange animation base ===== */
-
-.lx-exchange {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity .6s ease, transform .6s ease;
-}
-
-.lx-exchange.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.lx-ex-step {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity .45s ease, transform .45s ease;
-}
-
-.lx-ex-step.is-active {
-    opacity: 1;
-    transform: translateY(0);
-}
-
