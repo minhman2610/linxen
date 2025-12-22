@@ -43,7 +43,7 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: 20px 12px;
+    padding: 10px 12px;
     height: 56px;
 
     background: #fff;
@@ -113,12 +113,13 @@
     border-bottom: none !important;
 
     position: absolute;
-    top: var(--announcement-height, 0);
+    top: calc(var(--announcement-height, 0) + 30px);
     left: 0;
     width: 100%;
 
     z-index: 50;
 }
+
 
 .lx-header--transparent .lx-header-logo {
     color: #111;
