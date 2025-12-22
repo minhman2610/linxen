@@ -24,6 +24,10 @@
     rel="stylesheet"
     href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}"
 >
+    <link
+    rel="stylesheet"
+    href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}"
+>
 
     {{-- Page-specific head --}}
     @stack('head')

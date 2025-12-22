@@ -76,6 +76,34 @@
 
 </section>
 
+{{-- ===================================================== --}}
+{{-- 4️⃣ MẶC THỬ TẠI NHÀ – KHÔNG LO KHÔNG HỢP DÁNG --}}
+{{-- ===================================================== --}}
+<section class="lx-fit-try">
+
+    <div class="lx-fit-content">
+        <h3 class="lx-fit-title">
+            Không chắc hợp dáng?
+            <br>
+            <span>Mặc thử tại nhà rồi hãy quyết định.</span>
+        </h3>
+
+        <p class="lx-fit-desc">
+            Shipper giao hàng tận nơi.  
+            Bạn <strong>mặc thử trực tiếp tại nhà</strong>.  
+            <br>
+            👉 <strong>Chỉ khi thấy hợp dáng – thấy đẹp</strong> mới cần thanh toán.
+        </p>
+
+        <ul class="lx-fit-points">
+            <li>👗 Mặc thử trước khi trả tiền</li>
+            <li>📦 Không hợp dáng → không cần nhận</li>
+            <li>💬 Không áp lực mua – không phải giải thích</li>
+        </ul>
+    </div>
+
+</section>
+
 
 {{-- ===================================================== --}}
 {{-- 4️⃣ PHỐI ĐỒ --}}
