@@ -1,105 +1,91 @@
 /* =====================================================
-   TRY BEFORE YOU DECIDE – TRUST BLOCK
+   TRY AT HOME – PREMIUM FLOW (REFINED)
 ===================================================== */
 
-.lx-trytrust {
-    margin-top: 56px;
-    padding: 44px 22px;
-    border-radius: 28px;
-    background: #ffffff;
-    border: 2px solid #f1d6d1;
+.lx-try-flow.refined {
+    margin-top: 48px;
+    padding: 36px 20px;
+    background: #faf7f6;
+    border-radius: 24px;
+    border: 1px solid #f0e2de;
 }
 
-/* HERO */
-.lx-trytrust-hero {
+/* TITLE */
+.lx-try-title {
     text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
     margin-bottom: 28px;
 }
 
-.lx-trytrust-hero h2 {
-    font-size: 32px;
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 10px;
-}
-
-.lx-trytrust-hero h2 span {
+.lx-try-title span {
     color: #b11226;
 }
 
-.lx-trytrust-hero p {
-    font-size: 15px;
-    color: #444;
-    max-width: 420px;
-    margin: 0 auto;
-}
-
-/* BENEFITS */
-.lx-trytrust-benefits {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 32px;
-}
-
-.lx-trytrust-benefits div {
-    background: #fff6f4;
-    padding: 12px 14px;
-    border-radius: 14px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.lx-trytrust-benefits .highlight {
-    background: #b11226;
-    color: #fff;
-    font-weight: 600;
-}
-
-/* FLOW */
-.lx-trytrust-flow {
+/* STEPS */
+.lx-try-steps {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
-.lx-flow-item {
-    width: 120px;
+.lx-try-step {
+    width: 110px;
     text-align: center;
+    color: #222;
 }
 
-.lx-flow-item span {
-    display: inline-flex;
-    width: 44px;
-    height: 44px;
+.lx-step-icon {
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
-    background: #fff6f4;
+    background: #ffffff;
+    border: 1.5px solid #ead3cd;
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    margin-bottom: 8px;
+    font-size: 26px;
+    margin: 0 auto 10px;
 }
 
-.lx-flow-item p {
-    font-size: 13px;
-    color: #333;
+.lx-try-step p {
+    font-size: 13.5px;
+    line-height: 1.3;
 }
 
-.lx-flow-divider {
+/* ARROW */
+.lx-arrow {
     width: 24px;
     height: 2px;
-    background: #e5bcb5;
+    background: #d7b2ab;
+    margin-top: -12px;
 }
 
-/* HIGHLIGHT STEP */
-.lx-flow-item.highlight span {
+/* HIGHLIGHT */
+.lx-try-step.highlight .lx-step-icon {
     background: #b11226;
     color: #fff;
+    border-color: #b11226;
 }
 
-.lx-flow-item.highlight p {
+.lx-try-step.highlight p {
     color: #b11226;
     font-weight: 600;
+}
+
+.lx-try-step small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* NOTE */
+.lx-try-note {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 13.5px;
+    color: #555;
 }

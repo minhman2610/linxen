@@ -76,45 +76,51 @@
 
 </section>
 {{-- ===================================================== --}}
-{{-- TRY BEFORE YOU DECIDE – TRUST BLOCK --}}
+{{-- TRY AT HOME – PREMIUM FLOW (REFINED) --}}
 {{-- ===================================================== --}}
-<section class="lx-trytrust">
+<section class="lx-try-flow refined">
 
-    <div class="lx-trytrust-hero">
-        <h2>
-            Thử trước<br>
-            <span>Quyết sau</span>
-        </h2>
+    <h3 class="lx-try-title">
+        Thử đồ tại nhà<br>
+        <span>Rồi hãy quyết định</span>
+    </h3>
 
-        <p>
-            LIN XÉN không bán bằng lời hứa.  
-            Chúng tôi để bạn <strong>tự mặc – tự cảm – tự quyết</strong>.
-        </p>
+    <div class="lx-try-steps">
+
+        <div class="lx-try-step">
+            <div class="lx-step-icon">📦</div>
+            <p>Giao hàng tận nơi</p>
+        </div>
+
+        <div class="lx-arrow"></div>
+
+        <div class="lx-try-step">
+            <div class="lx-step-icon">👗</div>
+            <p>Mặc thử tại nhà</p>
+        </div>
+
+        <div class="lx-arrow"></div>
+
+        <div class="lx-try-step">
+            <div class="lx-step-icon">✨</div>
+            <p>Cảm nhận form dáng</p>
+        </div>
+
+        <div class="lx-arrow"></div>
+
+        <div class="lx-try-step highlight">
+            <div class="lx-step-icon">❤️</div>
+            <p>
+                Ưng thì nhận<br>
+                <small>Không ưng chỉ trả phí ship</small>
+            </p>
+        </div>
+
     </div>
 
-    <div class="lx-trytrust-benefits">
-        <div>✔️ Mặc thử tại nhà</div>
-        <div>✔️ Không áp lực mua</div>
-        <div>✔️ Không cần giải thích</div>
-        <div class="highlight">✔️ Không ưng chỉ trả phí ship</div>
-    </div>
-
-    <div class="lx-trytrust-flow">
-        <div class="lx-flow-item">
-            <span>1</span>
-            <p>Giao hàng tận nhà</p>
-        </div>
-        <div class="lx-flow-divider"></div>
-        <div class="lx-flow-item">
-            <span>2</span>
-            <p>Mặc thử & soi gương</p>
-        </div>
-        <div class="lx-flow-divider"></div>
-        <div class="lx-flow-item highlight">
-            <span>3</span>
-            <p>Ưng thì nhận – Không ưng trả lại</p>
-        </div>
-    </div>
+    <p class="lx-try-note">
+        Không áp lực mua · Không cần giải thích · Quyết định hoàn toàn ở bạn
+    </p>
 
 </section>
 
