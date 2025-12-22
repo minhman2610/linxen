@@ -228,4 +228,29 @@
     .lx-hero { height: 70vh; }
     .lx-hero-text h1 { font-size: 24px; }
 }
+
+/* =========================================
+   FINAL FIX — HERO NOT BLOCK HEADER CLICKS
+========================================= */
+
+/* Disable pointer events for hero background */
+.lx-hero,
+.lx-hero-video-wrapper,
+.lx-hero-video {
+    pointer-events: none;
+}
+
+/* Enable pointer events for hero content */
+.lx-hero-text,
+.lx-hero-text * {
+    pointer-events: auto;
+}
+
+/* Ensure header is isolated and clickable */
+.lx-header {
+    isolation: isolate;
+    pointer-events: auto;
+    z-index: 200;
+}
+
 </style>
