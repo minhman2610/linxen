@@ -2,12 +2,14 @@
     <span class="lx-brand">LIN XÉN</span>
     <span id="lxTypeTarget" class="lx-type-text"></span>
 </div>
+
 <style>
 /* ---------------------------------------------
-   Announcement Bar — Deep Brown Luxe
-   Editorial Typing Motion
+   Announcement Bar — LIN XÉN
+   Deep Brown Luxe • Q&A Typing Motion
 ----------------------------------------------*/
 .lx-announcement-bar {
+    /* 🔑 Header auto offset */
     --announcement-height: 38px;
 
     height: var(--announcement-height);
@@ -16,8 +18,8 @@
     justify-content: center;
     gap: 14px;
 
-    background: #3b2a22;
-    color: #f3eee9;
+    background: #3b2a22; /* deep brown / leather */
+    color: #f3eee9;     /* ivory */
 
     font-size: 12px;
     letter-spacing: .45px;
@@ -25,6 +27,7 @@
 
     padding: 0 16px;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 /* BRAND */
@@ -37,20 +40,20 @@
 
 /* TYPE TEXT */
 .lx-type-text {
-    min-width: 320px;
+    min-width: 360px;
     white-space: nowrap;
     position: relative;
 }
 
-/* caret rất nhẹ */
+/* Caret — nhẹ, sang */
 .lx-type-text::after {
     content: '';
     display: inline-block;
     width: 1px;
     height: 1em;
-    background: rgba(243,238,233,.6);
+    background: rgba(243,238,233,.55);
     margin-left: 4px;
-    animation: blink 1.2s infinite;
+    animation: blink 1.4s infinite;
 }
 
 @keyframes blink {
@@ -71,46 +74,84 @@
     }
 }
 </style>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const texts = [
-        'Váy nữ thanh lịch cho nhịp sống hiện đại',
-        'Váy nữ basic, dễ mặc mỗi ngày',
-        'Thiết kế tinh giản dành cho phụ nữ bận rộn'
+    const qaPairs = [
+        {
+            q: 'LIN XÉN bán gì?',
+            a: '— Những chiếc váy mặc lên không cần suy nghĩ'
+        },
+        {
+            q: 'Mặc khi nào?',
+            a: '— Đi làm, đi chơi và những ngày bận rộn'
+        },
+        {
+            q: 'Ai chọn thiết kế?',
+            a: '— Chọn lọc kỹ để mặc đẹp mà vẫn thoải mái'
+        },
+        {
+            q: 'Có đắt không?',
+            a: '— Vừa đủ dễ chịu để mặc mỗi ngày'
+        }
     ];
 
     const target = document.getElementById('lxTypeTarget');
-    let textIndex = 0;
+
+    let pairIndex = 0;
     let charIndex = 0;
-    let typing = true;
+    let phase = 'question'; // question | answer | hold | clear
 
-    function typeLoop() {
-        const current = texts[textIndex];
+    function loop() {
+        const pair = qaPairs[pairIndex];
+        const question = pair.q;
+        const fullText = pair.q + ' ' + pair.a;
 
-        if (typing) {
-            if (charIndex < current.length) {
-                target.textContent += current.charAt(charIndex);
+        // 1️⃣ Gõ câu hỏi
+        if (phase === 'question') {
+            if (charIndex < question.length) {
+                target.textContent += question.charAt(charIndex);
                 charIndex++;
-                setTimeout(typeLoop, 40); // tốc độ đánh máy
+                setTimeout(loop, 40);
             } else {
-                // giữ lại để đọc
-                setTimeout(() => typing = false, 2200);
-                setTimeout(typeLoop, 2200);
+                phase = 'answer';
+                charIndex = question.length;
+                setTimeout(loop, 500);
             }
-        } else {
-            if (charIndex > 0) {
-                target.textContent = current.substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(typeLoop, 20); // tốc độ xóa
+        }
+
+        // 2️⃣ Gõ câu trả lời
+        else if (phase === 'answer') {
+            if (charIndex < fullText.length) {
+                target.textContent = fullText.substring(0, charIndex + 1);
+                charIndex++;
+                setTimeout(loop, 28);
             } else {
-                typing = true;
-                textIndex = (textIndex + 1) % texts.length;
-                setTimeout(typeLoop, 400);
+                phase = 'hold';
+                setTimeout(loop, 2400);
+            }
+        }
+
+        // 3️⃣ Giữ để đọc
+        else if (phase === 'hold') {
+            phase = 'clear';
+            setTimeout(loop, 600);
+        }
+
+        // 4️⃣ Xóa và chuyển Q&A tiếp theo
+        else if (phase === 'clear') {
+            if (target.textContent.length > 0) {
+                target.textContent = target.textContent.slice(0, -1);
+                setTimeout(loop, 18);
+            } else {
+                pairIndex = (pairIndex + 1) % qaPairs.length;
+                charIndex = 0;
+                phase = 'question';
+                setTimeout(loop, 500);
             }
         }
     }
 
-    typeLoop();
+    loop();
 });
 </script>
-
