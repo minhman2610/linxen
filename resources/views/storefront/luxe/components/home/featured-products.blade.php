@@ -44,7 +44,7 @@
 
                     {{-- QUICK BUY ICON --}}
                     <span class="lx-quick-buy" aria-label="Xem sản phẩm">
-                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
                             <path fill="currentColor"
                                   d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2Zm10 
                                      0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 
