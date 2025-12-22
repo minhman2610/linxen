@@ -3,7 +3,7 @@
 @section('content')
 
 {{-- ===================================================== --}}
-{{-- 1️⃣ HERO ĐỊNH VỊ (VIDEO + BRAND MESSAGE) --}}
+{{-- 1️⃣ HERO --}}
 {{-- ===================================================== --}}
 <section class="lx-hero">
     <div class="lx-hero-video-wrapper">
@@ -11,24 +11,10 @@
             <source src="{{ asset('themes/luxe/assets/videos/ccm.mp4') }}" type="video/mp4">
         </video>
     </div>
-
-    <!-- <div class="lx-hero-text">
-        <h1>
-            Váy đẹp tinh giản<br>
-            cho nhịp sống hiện đại
-        </h1>
-        <p class="lx-hero-sub">
-            LIN XÉN – Thanh lịch, dễ mặc, không lỗi mốt
-        </p>
-        <a href="{{ route('linxen.collection', ['slug' => 'all']) }}"
-           class="lx-btn-primary">
-            Khám phá bộ sưu tập
-        </a>
-    </div> -->
 </section>
 
 {{-- ===================================================== --}}
-{{-- 2️⃣ SẢN PHẨM CHỦ LỰC – VÁY (MOBILE FIRST) --}}
+{{-- 2️⃣ SẢN PHẨM CHỦ LỰC – MOBILE FIRST (2 ẢNH ĐỔI NHAU) --}}
 {{-- ===================================================== --}}
 @if(!empty($home['featured_products']) && is_array($home['featured_products']))
 <section class="lx-product-section">
@@ -47,76 +33,56 @@
     <div class="lx-product-grid">
         @foreach($home['featured_products'] as $product)
 
-            @continue(
-                empty($product['product_id'])
-                || empty($product['name'])
-                || empty($product['media'])
-            )
-
             @php
                 $slug = \Illuminate\Support\Str::slug($product['name'])
                         . '-' . $product['product_id'];
 
-                // MEDIA LOGIC (mobile first)
-                $images = $product['media']['images'] ?? [];
-                $video  = $product['media']['video'] ?? null;
+                // LẤY ĐÚNG 2 ẢNH
+                $images = array_slice(
+                    $product['media']['images'] ?? [],
+                    0,
+                    2
+                );
 
-                // TAG LOGIC
-                $tag = $product['tag'] ?? null;
-
-                // COLOR LOGIC
-                $colors = $product['colors'] ?? [];
-
-                // MICRO COPY
-                $micro = $product['micro_copy'] ?? 'Dễ mặc mỗi ngày';
+                if (count($images) < 2) {
+                    $images[1] = $images[0] ?? null;
+                }
             @endphp
 
             <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                class="lx-product-card">
 
-                {{-- MEDIA --}}
-                <div class="lx-product-media"
-                     data-auto-slide="{{ count($images) > 1 ? 'true' : 'false' }}">
+                <div class="lx-product-media" data-image-switch>
 
-                    {{-- TAG --}}
-                    @if($tag)
-                        <span class="lx-product-tag">{{ $tag }}</span>
+                    @if(!empty($product['tag']))
+                        <span class="lx-product-tag">
+                            {{ $product['tag'] }}
+                        </span>
                     @endif
 
-                    {{-- VIDEO (nếu có) --}}
-                    @if($video)
-                        <video
-                            class="lx-product-video"
-                            src="{{ $video }}"
-                            muted
-                            playsinline
-                            loop
-                        ></video>
-                    @else
-                        {{-- IMAGE SLIDE --}}
-                        @foreach($images as $img)
-                            <img
-                                src="{{ $img }}"
-                                alt="{{ $product['name'] }}"
-                                loading="lazy"
-                            >
-                        @endforeach
+                    <img src="{{ $images[0] }}"
+                         class="is-active"
+                         alt="{{ $product['name'] }}"
+                         loading="lazy">
+
+                    @if(!empty($images[1]))
+                        <img src="{{ $images[1] }}"
+                             alt="{{ $product['name'] }}"
+                             loading="lazy">
                     @endif
                 </div>
 
-                {{-- INFO --}}
                 <div class="lx-product-info">
-                    {{-- COLORS --}}
-                    @if(!empty($colors))
+
+                    @if(!empty($product['colors']))
                         <div class="lx-product-colors">
-                            @foreach(array_slice($colors, 0, 3) as $color)
+                            @foreach(array_slice($product['colors'], 0, 3) as $color)
                                 <span class="lx-color-dot"
                                       style="background: {{ $color }}"></span>
                             @endforeach
-
-                            @if(count($colors) > 3)
+                            @if(count($product['colors']) > 3)
                                 <span class="lx-color-more">
-                                    +{{ count($colors) - 3 }}
+                                    +{{ count($product['colors']) - 3 }}
                                 </span>
                             @endif
                         </div>
@@ -131,7 +97,7 @@
                     </p>
 
                     <p class="lx-product-micro">
-                        {{ $micro }}
+                        {{ $product['micro_copy'] ?? 'Dễ mặc mỗi ngày' }}
                     </p>
                 </div>
 
@@ -142,167 +108,132 @@
 </section>
 @endif
 
-
-{{-- ===================================================== --}}
-{{-- 3️⃣ GIÁ TRỊ CỐT LÕI --}}
-{{-- ===================================================== --}}
-<section class="lx-trust">
-    <div class="lx-trust-grid">
-        <div class="lx-trust-item">
-            <h4>Thiết kế chọn lọc</h4>
-            <p>Form dáng tinh giản, dễ mặc, phù hợp nhiều vóc dáng</p>
-        </div>
-        <div class="lx-trust-item">
-            <h4>Hình ảnh thật</h4>
-            <p>Sản phẩm giống hình, không chỉnh sửa quá tay</p>
-        </div>
-        <div class="lx-trust-item">
-            <h4>Đổi trả linh hoạt</h4>
-            <p>Hỗ trợ đổi size nếu không vừa</p>
-        </div>
-    </div>
-</section>
-
-{{-- ===================================================== --}}
-{{-- 4️⃣ PHỐI ĐỒ --}}
-{{-- ===================================================== --}}
-<section class="lx-lookbook">
-    <h2 class="lx-section-title">PHỐI ĐỒ GỢI Ý</h2>
-    <p class="lx-section-desc">
-        Một chiếc váy – nhiều cách mặc
-    </p>
-
-    <div class="lx-look-grid">
-        <div class="lx-look-item">Đi làm</div>
-        <div class="lx-look-item">Đi chơi</div>
-        <div class="lx-look-item">Hẹn hò</div>
-    </div>
-</section>
-
-{{-- ===================================================== --}}
-{{-- 5️⃣ CTA --}}
-{{-- ===================================================== --}}
-<section class="lx-final-cta">
-    <h2>
-        Chọn chiếc váy<br>
-        phù hợp với bạn hôm nay
-    </h2>
-    <a href="{{ route('linxen.collection', ['slug' => 'all']) }}"
-       class="lx-btn-primary">
-        Xem toàn bộ váy
-    </a>
-</section>
-
 @endsection
 
 {{-- ===================================================== --}}
-{{-- 🎨 STYLE — FIX HERO VIDEO BLOCKING HEADER --}}
+{{-- 🎨 CSS — PRODUCT IMAGE CHANGE (MOBILE FIRST) --}}
 {{-- ===================================================== --}}
 <style>
-/* HERO */
-.lx-hero {
+/* GRID */
+.lx-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 0 14px;
+}
+
+/* CARD */
+.lx-product-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* MEDIA */
+.lx-product-media {
     position: relative;
     width: 100%;
-    height: 80vh;
+    aspect-ratio: 3 / 4;
     overflow: hidden;
-    z-index: 1;
+    border-radius: 6px;
+    background: #f5f5f5;
 }
 
-/* VIDEO LAYER */
-.lx-hero-video-wrapper {
+.lx-product-media img {
     position: absolute;
     inset: 0;
-    z-index: 1;
-}
-
-.lx-hero-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    pointer-events: none; /* 🔑 FIX MENU CLICK */
+
+    opacity: 0;
+    transition: opacity .6s ease;
 }
 
-/* HERO TEXT */
-.lx-hero-text {
-    position: relative;
+.lx-product-media img.is-active {
+    opacity: 1;
+}
+
+/* TAG */
+.lx-product-tag {
+    position: absolute;
+    top: 8px;
+    left: 8px;
     z-index: 2;
-    text-align: center;
+
+    background: rgba(0,0,0,.65);
     color: #fff;
-
-    top: 50%;
-    transform: translateY(-50%);
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
 }
 
-.lx-hero-text h1 {
-    font-size: 34px;
-    line-height: 1.3;
-    margin-bottom: 12px;
+/* INFO */
+.lx-product-info {
+    padding: 10px 2px 16px;
 }
 
-.lx-hero-sub {
-    opacity: .9;
-    margin-bottom: 20px;
+.lx-product-name {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 4px;
 }
 
-/* SECTION */
-.lx-section-title {
-    text-align: center;
-    font-size: 26px;
+.lx-product-price {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.lx-product-micro {
+    font-size: 12px;
+    color: #777;
+}
+
+/* COLORS */
+.lx-product-colors {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     margin-bottom: 6px;
 }
 
-.lx-section-desc {
-    text-align: center;
-    color: #777;
-    margin-bottom: 24px;
+.lx-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
 }
 
-/* TRUST / LOOK */
-.lx-trust-grid,
-.lx-look-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 20px;
-    padding: 40px 20px;
-    text-align: center;
-}
-
-/* CTA */
-.lx-final-cta {
-    background: #000;
-    color: #fff;
-    padding: 60px 20px;
-    text-align: center;
+.lx-color-more {
+    font-size: 11px;
+    color: #555;
 }
 
 /* MOBILE */
-@media (max-width: 768px) {
-    .lx-hero { height: 70vh; }
-    .lx-hero-text h1 { font-size: 24px; }
+@media (max-width: 480px) {
+    .lx-product-name { font-size: 13px; }
+    .lx-product-price { font-size: 13px; }
 }
-
-/* =========================================
-   FINAL FIX — HERO NOT BLOCK HEADER CLICKS
-========================================= */
-
-/* Disable pointer events for hero background */
-.lx-hero,
-.lx-hero-video-wrapper,
-.lx-hero-video {
-    pointer-events: none;
-}
-
-/* Enable pointer events for hero content */
-.lx-hero-text,
-.lx-hero-text * {
-    pointer-events: auto;
-}
-
-/* Ensure header is isolated and clickable */
-.lx-header {
-    isolation: isolate;
-    pointer-events: auto;
-    z-index: 200;
-}
-
 </style>
+
+{{-- ===================================================== --}}
+{{-- ⚙️ JS — AUTO IMAGE SWITCH (2 ẢNH / CARD) --}}
+{{-- ===================================================== --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('[data-image-switch]');
+
+    cards.forEach(card => {
+        const images = card.querySelectorAll('img');
+        if (images.length < 2) return;
+
+        let index = 0;
+
+        setInterval(() => {
+            images[index].classList.remove('is-active');
+            index = index === 0 ? 1 : 0;
+            images[index].classList.add('is-active');
+        }, 1600); // tốc độ đổi ảnh (ms)
+    });
+});
+</script>
