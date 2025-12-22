@@ -108,3 +108,15 @@
     color: #b11226;
     font-weight: 600;
 }
+.lx-trust-title.bordered {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 2px solid #b11226;
+    border-radius: 999px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    color: #b11226;
+    background: #ffffff;
+}
+
