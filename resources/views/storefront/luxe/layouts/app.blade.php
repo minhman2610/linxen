@@ -18,6 +18,8 @@
         MOBILE MENU CSS
     ============================= --}}
     <link rel="stylesheet" href="/themes/luxe/assets/css/mobile-menu.css">
+    <link rel="stylesheet"
+      href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
 
     {{-- Page-specific head --}}
     @stack('head')
