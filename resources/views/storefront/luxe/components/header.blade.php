@@ -32,9 +32,11 @@
     </a>
 
 </header>
+
 <style>
-    /* -----------------------------------------------
-   LUXE HEADER — Mobile First (UPDATED)
+/* -----------------------------------------------
+   LUXE HEADER — Mobile First (FINAL)
+   👉 Auto offset by announcement height
 -----------------------------------------------*/
 .lx-header {
     display: flex;
@@ -48,7 +50,8 @@
     border-bottom: 1px solid #f0f0f0;
 
     position: sticky;
-    top: 0;
+    top: var(--announcement-height, 0);
+
     z-index: 40; /* cao hơn content, thấp hơn overlay/menu */
 }
 
@@ -110,9 +113,10 @@
     border-bottom: none !important;
 
     position: absolute;
-    top: 0;
+    top: var(--announcement-height, 0);
     left: 0;
     width: 100%;
+
     z-index: 50;
 }
 
@@ -135,5 +139,4 @@
         font-size: 26px;
     }
 }
-
 </style>

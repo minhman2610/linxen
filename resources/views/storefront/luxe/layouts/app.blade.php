@@ -32,6 +32,7 @@
 
     {{-- ============================
         HEADER (GLOBAL)
+        👉 Header tự né announcement qua CSS var
     ============================= --}}
     @include('storefront.luxe.components.header')
 

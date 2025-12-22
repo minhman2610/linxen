@@ -11,21 +11,30 @@
 <style>
 /* ---------------------------------------------
    Announcement Bar — LUXE Theme
+   👉 Defines --announcement-height for header
 ----------------------------------------------*/
 .lx-announcement-bar {
+    /* 🔑 Chiều cao chuẩn để header tự né */
+    --announcement-height: 32px;
+
     width: 100%;
+    height: var(--announcement-height);
+    line-height: var(--announcement-height);
+
     background: #000;
     color: #fff;
-    padding: 6px 12px;
+
     text-align: center;
     font-size: 12px;
-    line-height: 1.4;
     font-weight: 400;
     letter-spacing: 0.3px;
+
+    padding: 0 12px;
+    box-sizing: border-box;
 }
 
 .lx-announcement-bar a {
-    color: white;
+    color: #fff;
     text-decoration: underline;
     margin-left: 4px;
 }
@@ -37,8 +46,9 @@
 /* Mobile optimization */
 @media (max-width: 480px) {
     .lx-announcement-bar {
+        --announcement-height: 28px;
         font-size: 11px;
-        padding: 5px 8px;
+        padding: 0 8px;
     }
 }
 </style>
