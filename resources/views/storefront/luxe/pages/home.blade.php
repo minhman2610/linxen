@@ -118,9 +118,10 @@
 
     </div>
 
-    <p class="lx-try-note">
-        Không áp lực mua · Không cần giải thích · Quyết định hoàn toàn ở bạn
-    </p>
+    <div class="lx-try-trust">
+    Không áp lực mua · Không cần giải thích · <strong>Quyết định hoàn toàn ở bạn</strong>
+</div>
+
 
 </section>
 
