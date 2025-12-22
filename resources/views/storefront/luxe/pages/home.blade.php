@@ -50,7 +50,7 @@
         {{-- ẢNH BÁN HÀNG --}}
         <div class="lx-trust-image">
             <img
-                src="{{ asset('images/home/anh_shop1.png') }}"
+                src="{{ asset('images/home/anh_shop1.jpg') }}"
                 alt="Ảnh bán hàng LIN XÉN"
                 loading="lazy"
             >
@@ -73,12 +73,6 @@
         </div>
 
     </div>
-
-    <p class="lx-trust-note">
-        ✦ Hạn chế chỉnh sửa quá tay &nbsp;•&nbsp;
-        ✦ Form dáng đúng như mô tả &nbsp;•&nbsp;
-        ✦ Khách mặc lên giống ảnh
-    </p>
 
 </section>
 
