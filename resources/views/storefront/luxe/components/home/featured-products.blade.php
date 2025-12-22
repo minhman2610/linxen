@@ -43,19 +43,19 @@
                     >
 
                     {{-- QUICK BUY ICON --}}
-                    <span class="lx-quick-buy" aria-label="Xem sản phẩm">
-                        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
-                            <path fill="currentColor"
-                                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2Zm10 
-                                     0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 
-                                     2-2-.9-2-2-2ZM7.17 14h9.66c.75 0 
-                                     1.41-.41 1.75-1.03l3.58-6.49a1 
-                                     1 0 0 0-.87-1.48H5.21L4.27 
-                                     2H1v2h2l3.6 7.59-1.35 
-                                     2.44C4.52 14.37 5.48 
-                                     16 7 16h12v-2H7.17Z"/>
-                        </svg>
-                    </span>
+<span class="lx-quick-buy" aria-label="Xem sản phẩm">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+        <path fill="currentColor"
+              d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 
+                 2-2-.9-2-2-2Zm10 0c-1.1 0-1.99.9-1.99 
+                 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2ZM7.17 
+                 14h9.66c.75 0 1.41-.41 1.75-1.03l3.58-6.49a1 
+                 1 0 0 0-.87-1.48H5.21L4.27 2H1v2h2l3.6 
+                 7.59-1.35 2.44C4.52 14.37 5.48 16 7 
+                 16h12v-2H7.17Z"/>
+    </svg>
+</span>
+
                 </div>
 
                 {{-- TAG (DƯỚI ẢNH) --}}
