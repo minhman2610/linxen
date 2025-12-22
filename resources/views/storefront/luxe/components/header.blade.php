@@ -1,13 +1,18 @@
 <header class="lx-header {{ request()->routeIs('linxen.home') ? 'lx-header--transparent' : '' }}">
 
     {{-- MENU (MOBILE) --}}
-    <button class="lx-header-btn lx-header-btn-menu" data-menu-open type="button">
+    <button
+        class="lx-header-btn lx-header-btn-menu"
+        data-menu-open
+        type="button"
+        aria-label="Open menu"
+    >
         <img src="{{ asset('themes/luxe/assets/icons/icon-hamburger.svg') }}" alt="Menu">
     </button>
 
     {{-- SEARCH --}}
-    <a href="{{ route('linxen.search') }}" class="lx-header-btn">
-        <img src="{{ asset('themes/luxe/assets/icons/icon-search.svg') }}" class="lx-icon" alt="Search">
+    <a href="{{ route('linxen.search') }}" class="lx-header-btn" aria-label="Search">
+        <img src="{{ asset('themes/luxe/assets/icons/icon-search.svg') }}" alt="Search">
     </a>
 
     {{-- LOGO --}}
@@ -18,12 +23,12 @@
     </div>
 
     {{-- ACCOUNT --}}
-    <a href="{{ route('linxen.account') }}" class="lx-header-btn">
+    <a href="{{ route('linxen.account') }}" class="lx-header-btn" aria-label="Account">
         <img src="{{ asset('themes/luxe/assets/icons/icon-account.svg') }}" alt="Account">
     </a>
 
     {{-- CART --}}
-    <a href="{{ route('linxen.cart') }}" class="lx-header-btn cart-btn">
+    <a href="{{ route('linxen.cart') }}" class="lx-header-btn cart-btn" aria-label="Cart">
         <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
 
         <span class="cart-count" id="lxHeaderCartCount">
@@ -35,8 +40,7 @@
 
 <style>
 /* -----------------------------------------------
-   LUXE HEADER — Mobile First (FINAL)
-   👉 Auto offset by announcement height
+   LUXE HEADER — FINAL (CLICK SAFE)
 -----------------------------------------------*/
 .lx-header {
     display: flex;
@@ -52,16 +56,22 @@
     position: sticky;
     top: var(--announcement-height, 0);
 
-    z-index: 40; /* cao hơn content, thấp hơn overlay/menu */
+    z-index: 100;              /* 🔑 cao hơn hero */
+    pointer-events: auto;      /* 🔑 đảm bảo nhận click */
 }
 
+/* HEADER BUTTON */
 .lx-header-btn {
     background: none;
     border: none;
     padding: 0;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
+    cursor: pointer;
+    pointer-events: auto;
 }
 
 .lx-header-btn img {
@@ -69,6 +79,7 @@
     height: 22px;
 }
 
+/* LOGO */
 .lx-header-logo {
     font-size: 22px;
     font-weight: 700;
@@ -96,6 +107,7 @@
 
     background: #000;
     color: #fff;
+
     width: 16px;
     height: 16px;
 
@@ -113,13 +125,12 @@
     border-bottom: none !important;
 
     position: absolute;
-    top: calc(var(--announcement-height, 0));
+    top: var(--announcement-height, 0);
     left: 0;
     width: 100%;
 
-    z-index: 50;
+    z-index: 110; /* 🔑 cao hơn hero + text */
 }
-
 
 .lx-header--transparent .lx-header-logo {
     color: #111;
@@ -130,6 +141,7 @@
     color: #000;
 }
 
+/* DESKTOP */
 @media (min-width: 768px) {
     .lx-header {
         padding: 12px 20px;

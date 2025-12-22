@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
             a: '— Đi làm, đi chơi che hết khuyết điểm'
         },
         {
-            q: 'Hàng Trung Quốc hay Việt Nam ?',
-            a: '— Tự hào sản xuất tỉ mỉ bởi Lin Xén Việt Nam'
+            q: 'TQ hay Việt Nam ?',
+            a: '— Tự hào sản xuất bởi Lin Xén Việt Nam'
         },
         {
             q: 'Có đắt không?',

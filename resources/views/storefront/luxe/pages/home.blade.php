@@ -60,7 +60,6 @@
                 $slug = \Illuminate\Support\Str::slug($product['name'])
                         . '-' . $product['product_id'];
 
-                // 📱 Ưu tiên ảnh mobile, fallback về desktop
                 $thumb = $product['thumb_url_mobile']
                     ?? $product['thumb_url'];
             @endphp
@@ -92,9 +91,8 @@
 </section>
 @endif
 
-
 {{-- ===================================================== --}}
-{{-- 3️⃣ GIÁ TRỊ CỐT LÕI – TRUST --}}
+{{-- 3️⃣ GIÁ TRỊ CỐT LÕI --}}
 {{-- ===================================================== --}}
 <section class="lx-trust">
     <div class="lx-trust-grid">
@@ -114,7 +112,7 @@
 </section>
 
 {{-- ===================================================== --}}
-{{-- 4️⃣ PHỐI ĐỒ / LOOK HOÀN CHỈNH --}}
+{{-- 4️⃣ PHỐI ĐỒ --}}
 {{-- ===================================================== --}}
 <section class="lx-lookbook">
     <h2 class="lx-section-title">PHỐI ĐỒ GỢI Ý</h2>
@@ -130,33 +128,7 @@
 </section>
 
 {{-- ===================================================== --}}
-{{-- 5️⃣ VÁY THEO HOÀN CẢNH --}}
-{{-- ===================================================== --}}
-<section class="lx-context">
-    <h2 class="lx-section-title">CHỌN VÁY THEO HOÀN CẢNH</h2>
-
-    <div class="lx-context-grid">
-        <a href="#">Đi làm</a>
-        <a href="#">Đi chơi</a>
-        <a href="#">Dự tiệc</a>
-        <a href="#">Du lịch</a>
-    </div>
-</section>
-
-{{-- ===================================================== --}}
-{{-- 6️⃣ SOCIAL PROOF NHẸ --}}
-{{-- ===================================================== --}}
-<section class="lx-social-proof">
-    <p>
-        Hơn <strong>10.000+</strong> khách hàng đã chọn LIN XÉN
-    </p>
-    <p class="lx-social-muted">
-        Đánh giá trung bình 4.8★ từ khách hàng mua lại
-    </p>
-</section>
-
-{{-- ===================================================== --}}
-{{-- 7️⃣ CTA CUỐI --}}
+{{-- 5️⃣ CTA --}}
 {{-- ===================================================== --}}
 <section class="lx-final-cta">
     <h2>
@@ -172,7 +144,7 @@
 @endsection
 
 {{-- ===================================================== --}}
-{{-- 🎨 STYLE (TỐI GIẢN – DỄ MỞ RỘNG) --}}
+{{-- 🎨 STYLE — FIX HERO VIDEO BLOCKING HEADER --}}
 {{-- ===================================================== --}}
 <style>
 /* HERO */
@@ -181,29 +153,40 @@
     width: 100%;
     height: 80vh;
     overflow: hidden;
+    z-index: 1;
 }
-.lx-hero-video-wrapper,
+
+/* VIDEO LAYER */
+.lx-hero-video-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
 .lx-hero-video {
     width: 100%;
     height: 100%;
-}
-.lx-hero-video {
     object-fit: cover;
+    pointer-events: none; /* 🔑 FIX MENU CLICK */
 }
+
+/* HERO TEXT */
 .lx-hero-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    z-index: 2;
     text-align: center;
     color: #fff;
-    z-index: 10;
+
+    top: 50%;
+    transform: translateY(-50%);
 }
+
 .lx-hero-text h1 {
     font-size: 34px;
     line-height: 1.3;
     margin-bottom: 12px;
 }
+
 .lx-hero-sub {
     opacity: .9;
     margin-bottom: 20px;
@@ -215,39 +198,21 @@
     font-size: 26px;
     margin-bottom: 6px;
 }
+
 .lx-section-desc {
     text-align: center;
     color: #777;
     margin-bottom: 24px;
 }
-.lx-section-link {
-    display: block;
-    text-align: center;
-    margin-bottom: 30px;
-}
 
-/* TRUST / LOOK / CONTEXT */
+/* TRUST / LOOK */
 .lx-trust-grid,
-.lx-look-grid,
-.lx-context-grid {
+.lx-look-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 20px;
     padding: 40px 20px;
     text-align: center;
-}
-.lx-trust-item h4 {
-    margin-bottom: 8px;
-}
-
-/* SOCIAL */
-.lx-social-proof {
-    text-align: center;
-    padding: 40px 20px;
-    background: #f7f7f7;
-}
-.lx-social-muted {
-    color: #777;
 }
 
 /* CTA */
