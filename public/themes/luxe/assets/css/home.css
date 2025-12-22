@@ -106,3 +106,20 @@
     color: #b11226;
     font-weight: 700;
 }
+
+.lx-try-step p {
+    font-size: 13.5px;
+    line-height: 1.35;
+}
+
+.lx-try-step small {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.lx-try-step.highlight small {
+    color: #b11226;
+    font-weight: 500;
+}

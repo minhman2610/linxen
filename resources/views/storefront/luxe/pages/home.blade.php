@@ -87,36 +87,46 @@
 
     <div class="lx-try-steps">
 
-        <div class="lx-try-step">
-            <div class="lx-step-icon">📦</div>
-            <p>Giao hàng tận nơi</p>
-        </div>
-
-        <div class="lx-arrow"></div>
-
-        <div class="lx-try-step">
-            <div class="lx-step-icon">👗</div>
-            <p>Mặc thử tại nhà</p>
-        </div>
-
-        <div class="lx-arrow"></div>
-
-        <div class="lx-try-step">
-            <div class="lx-step-icon">✨</div>
-            <p>Cảm nhận form dáng</p>
-        </div>
-
-        <div class="lx-arrow"></div>
-
-        <div class="lx-try-step highlight">
-            <div class="lx-step-icon">❤️</div>
-            <p>
-                Ưng thì nhận<br>
-                <small>Không ưng chỉ trả phí ship</small>
-            </p>
-        </div>
-
+    <div class="lx-try-step">
+        <div class="lx-step-icon">📦</div>
+        <p>
+            Shipper giao đến nhà<br>
+            <small>Nhận hàng tận tay</small>
+        </p>
     </div>
+
+    <div class="lx-arrow"></div>
+
+    <div class="lx-try-step">
+        <div class="lx-step-icon">⏳</div>
+        <p>
+            Yêu cầu shipper chờ<br>
+            <small>Trong thời gian mặc thử</small>
+        </p>
+    </div>
+
+    <div class="lx-arrow"></div>
+
+    <div class="lx-try-step">
+        <div class="lx-step-icon">👗</div>
+        <p>
+            Mặc thử & cảm nhận<br>
+            <small>Form dáng · chất vải</small>
+        </p>
+    </div>
+
+    <div class="lx-arrow"></div>
+
+    <div class="lx-try-step highlight">
+        <div class="lx-step-icon">❤️</div>
+        <p>
+            Ưng thì thanh toán<br>
+            <small>Không ưng chỉ trả phí ship</small>
+        </p>
+    </div>
+
+</div>
+
 
     <div class="lx-try-trust">
     Không áp lực mua · Không cần giải thích · <strong>Quyết định hoàn toàn ở bạn</strong>
