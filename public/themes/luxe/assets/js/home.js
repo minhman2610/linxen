@@ -1,23 +1,34 @@
+/**
+ * HOME PAGE – Exchange animation
+ * Theme: LUXE
+ */
 
 document.addEventListener("DOMContentLoaded", () => {
-    const section = document.querySelector(".lx-exchange");
-    const steps = section?.querySelectorAll(".lx-ex-step");
 
-    if (!section || !steps) return;
+    const exchangeSection = document.querySelector(".lx-exchange");
+    if (!exchangeSection) return;
 
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                section.classList.add("is-visible");
-                steps.forEach((step, index) => {
-                    setTimeout(() => {
-                        step.classList.add("is-active");
-                    }, index * 150);
-                });
-            }
-        });
-    }, { threshold: 0.3 });
+    const steps = exchangeSection.querySelectorAll(".lx-ex-step");
 
-    observer.observe(section);
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    exchangeSection.classList.add("is-visible");
+
+                    steps.forEach((step, index) => {
+                        setTimeout(() => {
+                            step.classList.add("is-active");
+                        }, index * 180);
+                    });
+
+                    observer.unobserve(exchangeSection); // chỉ chạy 1 lần
+                }
+            });
+        },
+        { threshold: 0.2 }
+    );
+
+    observer.observe(exchangeSection);
+
 });
-

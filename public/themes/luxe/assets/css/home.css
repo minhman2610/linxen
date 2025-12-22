@@ -231,3 +231,27 @@
     font-weight: 600;
 }
 
+/* ===== Exchange animation base ===== */
+
+.lx-exchange {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity .6s ease, transform .6s ease;
+}
+
+.lx-exchange.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.lx-ex-step {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+}
+
+.lx-ex-step.is-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
