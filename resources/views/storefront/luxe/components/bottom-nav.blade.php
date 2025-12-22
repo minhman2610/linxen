@@ -43,7 +43,7 @@
 
 <style>
 /* -----------------------------------------------------
-   LUXE — Mobile Bottom Navigation (Refined)
+   LUXE — Mobile Bottom Navigation (Premium)
 ------------------------------------------------------ */
 
 .lx-bottom-nav {
@@ -52,9 +52,16 @@
     left: 0;
     right: 0;
 
-    height: 62px;
-    background: #f9f6f3; /* ivory nhẹ */
-    border-top: 1px solid rgba(0,0,0,.08);
+    height: 64px;
+
+    /* 🌟 NỀN ẤN TƯỢNG – NÂU ẤM EDITORIAL */
+    background: linear-gradient(
+        180deg,
+        #f7f2ed 0%,
+        #efe7df 100%
+    );
+
+    border-top: 1px solid rgba(59,42,34,.18);
 
     display: flex;
     justify-content: space-around;
@@ -62,37 +69,40 @@
 
     z-index: 999;
 
+    /* ❗ chỉ mobile mới ăn click */
     pointer-events: none;
 }
 
-/* Chỉ mobile mới cho click */
+/* Mobile enable click */
 @media (max-width: 767px) {
     .lx-bottom-nav {
         pointer-events: auto;
     }
 }
 
+/* NAV ITEM */
 .lx-nav-item {
     flex: 1;
     text-align: center;
     text-decoration: none;
 
     font-size: 11px;
-    color: #6f665f; /* xám nâu trung tính */
+    color: #6a5f57; /* xám nâu dịu */
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
+    gap: 3px;
     padding-top: 6px;
-    gap: 2px;
 }
 
+/* ICON */
 .lx-nav-item .icon {
     width: 20px;
     height: 20px;
-    opacity: .7;
+    opacity: .75;
     transition: opacity .2s ease;
 }
 
@@ -105,22 +115,28 @@
     opacity: 1;
 }
 
-/* CART BADGE */
+/* CART */
 .cart-btn {
     position: relative;
 }
 
+/* CART BADGE */
 .cart-count {
     position: absolute;
     top: 4px;
     right: 22px;
 
-    background: #3b2a22;
-    color: #fff;
-
-    font-size: 10px;
     width: 16px;
     height: 16px;
+
+    font-size: 10px;
+    color: #fff;
+
+    background: linear-gradient(
+        180deg,
+        #4a3428,
+        #2f2018
+    );
 
     display: flex;
     align-items: center;
@@ -129,10 +145,11 @@
     border-radius: 50%;
 }
 
-/* Desktop: ẩn */
+/* DESKTOP: HIDE */
 @media (min-width: 768px) {
     .lx-bottom-nav {
         display: none;
     }
 }
+
 </style>
