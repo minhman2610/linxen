@@ -12,7 +12,7 @@
         </video>
     </div>
 
-    <div class="lx-hero-text">
+    <!-- <div class="lx-hero-text">
         <h1>
             Váy đẹp tinh giản<br>
             cho nhịp sống hiện đại
@@ -24,7 +24,7 @@
            class="lx-btn-primary">
             Khám phá bộ sưu tập
         </a>
-    </div>
+    </div> -->
 </section>
 
 {{-- ===================================================== --}}
