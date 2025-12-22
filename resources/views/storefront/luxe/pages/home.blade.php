@@ -76,49 +76,61 @@
 
 </section>
 {{-- ===================================================== --}}
-{{-- THỬ ĐỒ TẠI NHÀ – QUY TRÌNH --}}
+{{-- TRY AT HOME – PREMIUM FLOW --}}
 {{-- ===================================================== --}}
-<section class="lx-try-flow">
+<section class="lx-tryflow">
 
-    <h3 class="lx-try-title">
-        Mặc thử tại nhà – rồi hãy quyết định
-    </h3>
+    <div class="lx-tryflow-header">
+        <h2 class="lx-tryflow-title">
+            Thử đồ tại nhà<br>
+            <span>Quyết định sau</span>
+        </h2>
+        <p class="lx-tryflow-sub">
+            Không áp lực mua · Không cần giải thích · Chủ động 100%
+        </p>
+    </div>
 
-    <div class="lx-try-steps">
+    <div class="lx-tryflow-steps">
 
-        <div class="lx-try-step">
-            <span class="lx-step-icon">📦</span>
-            <p>Shipper giao hàng</p>
+        <div class="lx-tryflow-step">
+            <div class="lx-step-circle">📦</div>
+            <h4>Nhận hàng</h4>
+            <p>Shipper giao tận tay</p>
         </div>
 
-        <span class="lx-arrow">→</span>
+        <div class="lx-tryflow-line"></div>
 
-        <div class="lx-try-step">
-            <span class="lx-step-icon">👗</span>
-            <p>Mặc thử tại nhà</p>
+        <div class="lx-tryflow-step">
+            <div class="lx-step-circle">👗</div>
+            <h4>Mặc thử</h4>
+            <p>Thoải mái tại nhà</p>
         </div>
 
-        <span class="lx-arrow">→</span>
+        <div class="lx-tryflow-line"></div>
 
-        <div class="lx-try-step">
-            <span class="lx-step-icon">❤️</span>
-            <p>Ưng thì nhận hàng</p>
+        <div class="lx-tryflow-step">
+            <div class="lx-step-circle">✨</div>
+            <h4>So gương</h4>
+            <p>Cảm nhận form & chất vải</p>
         </div>
 
-        <span class="lx-arrow">→</span>
+        <div class="lx-tryflow-line"></div>
 
-        <div class="lx-try-step highlight">
-            <span class="lx-step-icon">🚚</span>
-            <p>Không ưng<br><small>chỉ trả tiền ship</small></p>
+        <div class="lx-tryflow-step highlight">
+            <div class="lx-step-circle">❤️</div>
+            <h4>Ưng thì nhận</h4>
+            <p>Không ưng chỉ trả phí ship</p>
         </div>
 
     </div>
 
-    <p class="lx-try-note">
-        Không áp lực mua – không cần giải thích – quyết định hoàn toàn ở bạn
-    </p>
+    <div class="lx-tryflow-footer">
+        <strong>LIN XÉN tin rằng:</strong>  
+        Bạn cần cảm nhận trang phục trên chính cơ thể mình – không phải qua ảnh.
+    </div>
 
 </section>
+
 
 
 
