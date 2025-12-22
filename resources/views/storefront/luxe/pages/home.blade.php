@@ -50,12 +50,19 @@
             @continue(
                 empty($product['product_id'])
                 || empty($product['name'])
-                || empty($product['thumb_url'])
+                || (
+                    empty($product['thumb_url'])
+                    && empty($product['thumb_url_mobile'])
+                )
             )
 
             @php
                 $slug = \Illuminate\Support\Str::slug($product['name'])
                         . '-' . $product['product_id'];
+
+                // 📱 Ưu tiên ảnh mobile, fallback về desktop
+                $thumb = $product['thumb_url_mobile']
+                    ?? $product['thumb_url'];
             @endphp
 
             <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
@@ -63,24 +70,28 @@
 
                 <div class="lx-product-image">
                     <img
-                        src="{{ $product['thumb_url'] }}"
+                        src="{{ $thumb }}"
                         alt="{{ $product['name'] }}"
                         loading="lazy"
                     >
                 </div>
 
                 <div class="lx-product-info">
-                    <p class="lx-product-name">{{ $product['name'] }}</p>
+                    <p class="lx-product-name">
+                        {{ $product['name'] }}
+                    </p>
                     <p class="lx-product-price">
                         {{ number_format($product['price']) }}₫
                     </p>
                 </div>
+
             </a>
         @endforeach
     </div>
 
 </section>
 @endif
+
 
 {{-- ===================================================== --}}
 {{-- 3️⃣ GIÁ TRỊ CỐT LÕI – TRUST --}}
