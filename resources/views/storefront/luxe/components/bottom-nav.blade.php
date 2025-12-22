@@ -43,7 +43,7 @@
 
 <style>
 /* -----------------------------------------------------
-   LUXE — Mobile Bottom Navigation (Premium)
+   LUXE — Mobile Bottom Navigation (Compact & Clean)
 ------------------------------------------------------ */
 
 .lx-bottom-nav {
@@ -52,16 +52,12 @@
     left: 0;
     right: 0;
 
-    height: 64px;
+    height: 54px; /* 👈 BÉ LẠI */
 
-    /* 🌟 NỀN ẤN TƯỢNG – NÂU ẤM EDITORIAL */
-    background: linear-gradient(
-        180deg,
-        #f7f2ed 0%,
-        #efe7df 100%
-    );
+    background: #ffffff; /* 🤍 nền trắng */
 
-    border-top: 1px solid rgba(59,42,34,.18);
+    /* 🌫 ĐỔ BÓNG TÁCH NỘI DUNG */
+    box-shadow: 0 -4px 16px rgba(0,0,0,.08);
 
     display: flex;
     justify-content: space-around;
@@ -69,11 +65,10 @@
 
     z-index: 999;
 
-    /* ❗ chỉ mobile mới ăn click */
     pointer-events: none;
 }
 
-/* Mobile enable click */
+/* Mobile mới cho click */
 @media (max-width: 767px) {
     .lx-bottom-nav {
         pointer-events: auto;
@@ -86,33 +81,34 @@
     text-align: center;
     text-decoration: none;
 
-    font-size: 11px;
-    color: #6a5f57; /* xám nâu dịu */
+    font-size: 10.5px;
+    color: #666;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    gap: 3px;
-    padding-top: 6px;
+    gap: 2px;
+    padding-top: 4px;
 }
 
-/* ICON */
+/* ICON — MÀU ĐỎ */
 .lx-nav-item .icon {
-    width: 20px;
-    height: 20px;
-    opacity: .75;
-    transition: opacity .2s ease;
+    width: 18px;
+    height: 18px;
+
+    filter: invert(21%) sepia(88%) saturate(4222%) hue-rotate(350deg) brightness(92%) contrast(102%);
+    /* 👆 ép icon SVG sang đỏ */
 }
 
 /* ACTIVE STATE */
 .lx-nav-item.active {
-    color: #3b2a22; /* deep brown LIN XÉN */
+    color: #b11226; /* 🔴 đỏ đậm */
 }
 
 .lx-nav-item.active .icon {
-    opacity: 1;
+    filter: invert(21%) sepia(88%) saturate(4222%) hue-rotate(350deg) brightness(92%) contrast(110%);
 }
 
 /* CART */
@@ -123,20 +119,16 @@
 /* CART BADGE */
 .cart-count {
     position: absolute;
-    top: 4px;
-    right: 22px;
+    top: 2px;
+    right: 20px;
 
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
 
-    font-size: 10px;
+    font-size: 9px;
     color: #fff;
 
-    background: linear-gradient(
-        180deg,
-        #4a3428,
-        #2f2018
-    );
+    background: #b11226; /* 🔴 đỏ đồng bộ icon */
 
     display: flex;
     align-items: center;
@@ -145,7 +137,7 @@
     border-radius: 50%;
 }
 
-/* DESKTOP: HIDE */
+/* DESKTOP: ẨN */
 @media (min-width: 768px) {
     .lx-bottom-nav {
         display: none;
