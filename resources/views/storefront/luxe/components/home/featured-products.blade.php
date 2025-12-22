@@ -1,5 +1,5 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – MOBILE FIRST (2 IMAGES SWITCH) --}}
+{{-- FEATURED PRODUCTS – MOBILE FIRST (STATIC, CLEAN) --}}
 {{-- ===================================================== --}}
 @if(!empty($products) && is_array($products))
 <section class="lx-product-section">
@@ -30,21 +30,17 @@
                 $slug = \Illuminate\Support\Str::slug($product['name'])
                         . '-' . $product['product_id'];
 
-                // LẤY ĐÚNG 2 ẢNH
-                $images = array_slice($product['media']['images'], 0, 2);
-
-                if (count($images) < 2) {
-                    $images[1] = $images[0];
-                }
+                // CHỈ LẤY 1 ẢNH ĐẠI DIỆN
+                $image = $product['media']['images'][0];
             @endphp
 
             <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                class="lx-product-card">
 
                 {{-- MEDIA --}}
-                <div class="lx-product-media" data-image-switch>
+                <div class="lx-product-media">
 
-                    {{-- TAG --}}
+                    {{-- TAG (NẾU CÓ) --}}
                     @if(!empty($product['tag']))
                         <span class="lx-product-tag">
                             {{ $product['tag'] }}
@@ -52,14 +48,7 @@
                     @endif
 
                     <img
-                        src="{{ $images[0] }}"
-                        class="is-active"
-                        alt="{{ $product['name'] }}"
-                        loading="lazy"
-                    >
-
-                    <img
-                        src="{{ $images[1] }}"
+                        src="{{ $image }}"
                         alt="{{ $product['name'] }}"
                         loading="lazy"
                     >
@@ -68,21 +57,12 @@
                 {{-- INFO --}}
                 <div class="lx-product-info">
 
-                    {{-- COLORS --}}
-                    @if(!empty($product['colors']))
-                        <div class="lx-product-colors">
-                            @foreach(array_slice($product['colors'], 0, 3) as $color)
-                                <span class="lx-color-dot"
-                                      style="background: {{ $color }}"></span>
-                            @endforeach
-
-                            @if(count($product['colors']) > 3)
-                                <span class="lx-color-more">
-                                    +{{ count($product['colors']) - 3 }}
-                                </span>
-                            @endif
-                        </div>
-                    @endif
+                    {{-- FIX CỨNG MÀU --}}
+                    <div class="lx-product-colors">
+                        <span class="lx-color-dot black"></span>
+                        <span class="lx-color-dot red"></span>
+                        <span class="lx-color-dot blue"></span>
+                    </div>
 
                     <p class="lx-product-name">
                         {{ $product['name'] }}
@@ -105,7 +85,7 @@
 @endif
 
 {{-- ===================================================== --}}
-{{-- 🎨 CSS – PRODUCT IMAGE SWITCH (MOBILE FIRST) --}}
+{{-- 🎨 CSS – MOBILE FIRST, CLEAN FASHION UI --}}
 {{-- ===================================================== --}}
 <style>
 .lx-product-grid {
@@ -131,24 +111,11 @@
 }
 
 .lx-product-media img {
-    position: absolute;
-    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-
-    opacity: 0;
-    transition: opacity .6s ease;
+    display: block;
 }
-
-.lx-product-media img.is-active {
-    opacity: 1;
-}
-
-.lx-product-media img {
-    transition: opacity .8s ease;
-}
-
 
 /* TAG */
 .lx-product-tag {
@@ -166,50 +133,62 @@
 
 /* INFO */
 .lx-product-info {
-    padding: 10px 2px 16px;
+    padding: 10px 2px 18px;
 }
 
+/* NAME – dễ đọc, nữ tính */
 .lx-product-name {
+    font-family: ui-serif, Georgia, 'Times New Roman', serif;
     font-size: 14px;
-    line-height: 1.4;
-    margin-bottom: 4px;
+    line-height: 1.45;
+    color: #222;
+
+    margin-bottom: 6px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
+/* PRICE – nổi bật */
 .lx-product-price {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 4px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .3px;
+
+    color: #3b2a22; /* deep brown luxe */
+    margin-bottom: 6px;
 }
 
+/* MICRO */
 .lx-product-micro {
     font-size: 12px;
     color: #777;
 }
 
-/* COLORS */
+/* COLORS – FIX CỨNG */
 .lx-product-colors {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .lx-color-dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(0,0,0,.15);
 }
 
-.lx-color-more {
-    font-size: 11px;
-    color: #555;
-}
+.lx-color-dot.black { background: #111; }
+.lx-color-dot.red   { background: #b11226; }
+.lx-color-dot.blue  { background: #1f3a5f; }
 
-/* MOBILE TUNING */
+/* MOBILE TUNE */
 @media (max-width: 480px) {
-    .lx-product-name { font-size: 13px; }
-    .lx-product-price { font-size: 13px; }
+    .lx-product-name { font-size: 13.5px; }
+    .lx-product-price { font-size: 14.5px; }
 }
 </style>
-
