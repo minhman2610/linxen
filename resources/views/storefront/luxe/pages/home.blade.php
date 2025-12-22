@@ -323,3 +323,5 @@
 }
 
 </style>
+{{-- themes/luxe/layouts/app.blade.php --}}
+<script src="{{ asset('themes/luxe/assets/js/home.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/home.js')) }}"></script>
