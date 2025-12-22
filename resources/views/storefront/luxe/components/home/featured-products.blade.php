@@ -1,5 +1,5 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – SALE & STATUS (SAFE VERSION) --}}
+{{-- FEATURED PRODUCTS – SALE & STATUS (FINAL) --}}
 {{-- ===================================================== --}}
 @if(!empty($home['featured_products']) && is_array($home['featured_products']))
 <section class="lx-product-section">
@@ -14,38 +14,58 @@
     <div class="lx-product-grid">
         @foreach($home['featured_products'] as $product)
 
-    @continue(
-        empty($product['product_id'])
-        || empty($product['name'])
-        || empty($product['media']['thumb_mobile'])
-    )
+            @continue(
+                empty($product['product_id'])
+                || empty($product['name'])
+                || empty($product['media']['thumb_mobile'])
+            )
 
-    @php
-        $slug = \Illuminate\Support\Str::slug($product['name'])
-                . '-' . $product['product_id'];
+            @php
+                $slug = \Illuminate\Support\Str::slug($product['name'])
+                        . '-' . $product['product_id'];
 
-        // ✅ LẤY ẢNH ĐÚNG TỪ API
-        $thumb = $product['media']['thumb_mobile'];
+                $thumb = $product['media']['thumb_mobile'];
 
-        $price       = (float) $product['price'];
-        $salePercent = 20;
-        $salePrice   = round($price * (100 - $salePercent) / 100);
-    @endphp
+                $price       = (float) $product['price'];
+                $salePercent = 20; // demo
+                $salePrice   = round($price * (100 - $salePercent) / 100);
+            @endphp
 
             <div class="lx-product-card">
 
                 {{-- IMAGE --}}
-                <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
-                   class="lx-product-media">
+                <div class="lx-product-media">
 
-                    <img src="{{ $thumb }}"
-                         alt="{{ $product['name'] }}"
-                         loading="lazy">
+                    <a href="{{ route('linxen.product', ['slug' => $slug]) }}">
+                        <img src="{{ $thumb }}"
+                             alt="{{ $product['name'] }}"
+                             loading="lazy">
+                    </a>
 
+                    {{-- SALE BADGE --}}
                     <span class="lx-sale-badge">
                         -{{ $salePercent }}%
                     </span>
-                </a>
+
+                    {{-- QUICK ORDER ICON --}}
+                    <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
+                       class="lx-quick-order"
+                       aria-label="Đặt hàng">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill="currentColor"
+                                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 
+                                     22 7 22s2-.9 2-2-.9-2-2-2Zm10 
+                                     0c-1.1 0-1.99.9-1.99 2S15.9 
+                                     22 17 22s2-.9 2-2-.9-2-2-2ZM7.17 
+                                     14h9.66c.75 0 1.41-.41 
+                                     1.75-1.03l3.58-6.49a1 
+                                     1 0 0 0-.87-1.48H5.21L4.27 
+                                     2H1v2h2l3.6 7.59-1.35 
+                                     2.44C4.52 14.37 5.48 
+                                     16 7 16h12v-2H7.17Z"/>
+                        </svg>
+                    </a>
+                </div>
 
                 {{-- PRICE --}}
                 <div class="lx-product-price-wrap">
@@ -68,18 +88,12 @@
                     <span class="lx-tag lx-tag-best">🔥 Bán chạy</span>
                 </div>
 
-                {{-- COLORS --}}
+                {{-- COLORS (demo fix tay) --}}
                 <div class="lx-product-colors">
                     <span class="lx-color-swatch active black"></span>
                     <span class="lx-color-swatch red"></span>
                     <span class="lx-color-swatch blue"></span>
                 </div>
-
-                {{-- ACTION --}}
-                <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
-                   class="lx-btn-order">
-                    ĐẶT HÀNG
-                </a>
 
             </div>
 
@@ -88,199 +102,3 @@
 
 </section>
 @endif
-<style>
-    /* =====================================================
-   FEATURED PRODUCTS – LIN XÉN
-===================================================== */
-
-/* SECTION */
-.lx-product-section {
-    margin-top: 24px;
-}
-
-/* GRID */
-.lx-product-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    padding: 0 14px;
-}
-
-/* CARD */
-.lx-product-card {
-    display: flex;
-    flex-direction: column;
-}
-
-/* IMAGE */
-.lx-product-media {
-    position: relative;
-    aspect-ratio: 3 / 4;
-    overflow: hidden;
-    border-radius: 10px;
-    background: #f4f4f4;
-}
-
-.lx-product-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-/* SALE BADGE */
-.lx-sale-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-
-    background: #b11226;
-    color: #fff;
-
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 6px;
-}
-
-/* PRICE */
-.lx-product-price-wrap {
-    margin-top: 10px;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-}
-
-.lx-price-sale {
-    font-size: 16.5px;
-    font-weight: 700;
-    color: #b11226;
-    letter-spacing: .2px;
-}
-
-.lx-price-origin {
-    font-size: 13px;
-    color: #999;
-    text-decoration: line-through;
-}
-
-/* NAME */
-.lx-product-name {
-    margin-top: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #222;
-    line-height: 1.35;
-}
-
-.one-line {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* TAGS */
-.lx-product-tags {
-    margin-top: 6px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.lx-tag {
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    border: 1px solid;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    line-height: 1;
-}
-
-/* TAG TYPES */
-.lx-tag-stock {
-    color: #1f7a4f;
-    border-color: #1f7a4f;
-    background: rgba(31,122,79,.08);
-}
-
-.lx-tag-out {
-    color: #999;
-    border-color: #ccc;
-    background: #f5f5f5;
-}
-
-.lx-tag-pre {
-    color: #8a5a00;
-    border-color: #e0b95c;
-    background: rgba(224,185,92,.12);
-}
-
-.lx-tag-best {
-    color: #b11226;
-    border-color: #b11226;
-    background: rgba(177,18,38,.08);
-}
-
-.lx-tag-trend {
-    color: #1f3a5f;
-    border-color: #1f3a5f;
-    background: rgba(31,58,95,.08);
-}
-
-/* COLORS */
-.lx-product-colors {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-}
-
-.lx-color-swatch {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 2px solid #ddd;
-    box-sizing: border-box;
-}
-
-.lx-color-swatch.active {
-    width: 22px;
-    height: 22px;
-    border-color: #000;
-}
-
-/* COLOR TYPES */
-.lx-color-swatch.black { background: #111; }
-.lx-color-swatch.red   { background: #b11226; }
-.lx-color-swatch.blue  { background: #1f3a5f; }
-
-/* ACTION */
-.lx-btn-order {
-    margin-top: 12px;
-    padding: 10px 0;
-
-    text-align: center;
-    text-decoration: none;
-
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: .4px;
-
-    color: #fff;
-    background: #3b2a22;
-    border-radius: 8px;
-}
-
-/* MOBILE TUNING */
-@media (max-width: 480px) {
-    .lx-price-sale {
-        font-size: 15.5px;
-    }
-
-    .lx-product-name {
-        font-size: 13.5px;
-    }
-}
-</style>
