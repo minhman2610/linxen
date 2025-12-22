@@ -37,9 +37,10 @@
 {{-- ===================================================== --}}
 <section class="lx-trust-visual">
 
-    <h3 class="lx-trust-title">
+    <h3 class="lx-trust-title bordered">
     Ảnh bán hàng ≈ Ảnh thực tế
 </h3>
+
 
 <p class="lx-trust-desc">
     LIN XÉN <strong>cam kết hình ảnh sát thực tế</strong> –  
