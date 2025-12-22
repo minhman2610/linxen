@@ -33,24 +33,55 @@
 ])
 
 {{-- ===================================================== --}}
-{{-- 3️⃣ GIÁ TRỊ CỐT LÕI --}}
+{{-- 3️⃣ GIÁ TRỊ CỐT LÕI – ẢNH THẬT VS ẢNH BÁN HÀNG --}}
 {{-- ===================================================== --}}
-<section class="lx-trust">
-    <div class="lx-trust-grid">
-        <div class="lx-trust-item">
-            <h4>Thiết kế chọn lọc</h4>
-            <p>Form dáng tinh giản, dễ mặc, phù hợp nhiều vóc dáng</p>
+<section class="lx-trust-visual">
+
+    <h3 class="lx-trust-title">
+        Ảnh bán hàng &nbsp;↔&nbsp; Ảnh thực tế
+    </h3>
+
+    <p class="lx-trust-desc">
+        LIN XÉN cam kết hình ảnh sát thực tế – khách nhận hàng không bị “vỡ mộng”
+    </p>
+
+    <div class="lx-trust-compare">
+
+        {{-- ẢNH BÁN HÀNG --}}
+        <div class="lx-trust-image">
+            <img
+                src="{{ asset('images/home/anh_shop1.png') }}"
+                alt="Ảnh bán hàng LIN XÉN"
+                loading="lazy"
+            >
+            <span class="lx-trust-label">Ảnh bán hàng</span>
         </div>
-        <div class="lx-trust-item">
-            <h4>Hình ảnh thật</h4>
-            <p>Sản phẩm giống hình, không chỉnh sửa quá tay</p>
+
+        {{-- ARROW --}}
+        <div class="lx-trust-arrow">
+            →
         </div>
-        <div class="lx-trust-item">
-            <h4>Đổi trả linh hoạt</h4>
-            <p>Hỗ trợ đổi size nếu không vừa</p>
+
+        {{-- ẢNH THỰC TẾ --}}
+        <div class="lx-trust-image">
+            <img
+                src="{{ asset('images/home/anh_real1.png') }}"
+                alt="Ảnh thực tế LIN XÉN"
+                loading="lazy"
+            >
+            <span class="lx-trust-label real">Ảnh thực tế</span>
         </div>
+
     </div>
+
+    <p class="lx-trust-note">
+        ✦ Hạn chế chỉnh sửa quá tay &nbsp;•&nbsp;
+        ✦ Form dáng đúng như mô tả &nbsp;•&nbsp;
+        ✦ Khách mặc lên giống ảnh
+    </p>
+
 </section>
+
 
 {{-- ===================================================== --}}
 {{-- 4️⃣ PHỐI ĐỒ --}}
