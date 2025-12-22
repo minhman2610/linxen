@@ -1,28 +1,33 @@
 <div class="lx-announcement-bar">
     <span class="lx-announcement-text">
-        LIN XÉN — Thanh lịch mỗi ngày
+        Bộ sưu tập chọn lọc • LIN XÉN
     </span>
+
+    @if(!empty($link))
+        <a href="{{ $link }}" class="lx-announcement-link">Xem thêm</a>
+    @endif
 </div>
 
 <style>
 .lx-announcement-bar {
-    --announcement-height: 34px;
+    --announcement-height: 36px;
 
     height: var(--announcement-height);
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
 
-    background: #ffffff;
-    color: #111;
+    background: #2a2a2a; /* charcoal */
+    color: #f2f2f2;
 
-    font-size: 11.5px;
-    letter-spacing: .6px;
-
-    border-bottom: 1px solid #ededed;
+    font-size: 12px;
+    letter-spacing: .4px;
 }
 
-.lx-announcement-text {
-    opacity: .65;
+.lx-announcement-link {
+    color: #f2f2f2;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,.4);
 }
 </style>
