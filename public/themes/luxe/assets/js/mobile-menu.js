@@ -1,43 +1,38 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
+    const openBtn   = document.querySelector('[data-menu-open]');
+    const closeBtn  = document.getElementById('lxMenuClose');
+    const menu      = document.getElementById('lxMobileMenu');
+    const overlay   = document.getElementById('lxMenuOverlay');
+    const toggles   = document.querySelectorAll('.lx-menu-toggle');
 
-    const btnOpen = document.querySelector("[data-menu-open]");
-    const btnClose = document.getElementById("lxMenuClose");
-    const sidebar = document.getElementById("lxMobileMenu");
-    const overlay = document.getElementById("lxMenuOverlay");
-
-    function openMenu() {
-        sidebar.classList.add("active");
-        overlay.classList.add("active");
-        document.body.classList.add("no-scroll");
+    if (!openBtn || !menu || !overlay) {
+        console.warn('❌ Mobile menu elements missing');
+        return;
     }
+
+    // OPEN MENU
+    openBtn.addEventListener('click', () => {
+        menu.classList.add('is-open');
+        overlay.classList.add('is-active');
+        document.body.classList.add('no-scroll');
+    });
+
+    // CLOSE MENU
+    closeBtn?.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
 
     function closeMenu() {
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
-        document.body.classList.remove("no-scroll");
+        menu.classList.remove('is-open');
+        overlay.classList.remove('is-active');
+        document.body.classList.remove('no-scroll');
     }
 
-    btnOpen?.addEventListener("click", openMenu);
-    btnClose?.addEventListener("click", closeMenu);
-    overlay?.addEventListener("click", closeMenu);
-
-    // Dropdown submenu
-    document.querySelectorAll(".has-sub").forEach(item => {
-        const toggle = item.querySelector(".lx-menu-toggle");
-        const submenu = item.querySelector(".lx-submenu");
-
-        toggle.addEventListener("click", () => {
-            const isOpen = item.classList.contains("open");
-            document.querySelectorAll(".has-sub").forEach(i => {
-                i.classList.remove("open");
-                i.querySelector(".lx-submenu").classList.remove("show");
-            });
-
-            if (!isOpen) {
-                item.classList.add("open");
-                submenu.classList.add("show");
-            }
+    // SUB MENU TOGGLE
+    toggles.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.closest('.has-sub')?.classList.toggle('open');
         });
     });
 
+    console.log('✅ Mobile menu JS loaded');
 });
