@@ -125,7 +125,7 @@
     border-bottom: none !important;
 
     position: absolute;
-    top: var(--announcement-height, 0);
+    top: calc(var(--announcement-height, 0));
     left: 0;
     width: 100%;
 
