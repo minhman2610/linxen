@@ -7,10 +7,20 @@
 {{-- ===================================================== --}}
 <section class="lx-hero">
     <div class="lx-hero-video-wrapper">
-        <video class="lx-hero-video" autoplay muted playsinline loop>
-            <source src="/themes/luxe/assets/images/home/herovideo1.mp4" type="video/mp4">
-        </video>
-    </div>
+    <video
+        class="lx-hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster="/themes/luxe/assets/images/home/hero-poster.jpg"
+    >
+        <source src="/themes/luxe/assets/images/home/herovideo1.webm" type="video/webm">
+        <source src="/themes/luxe/assets/images/home/herovideo1.mp4" type="video/mp4">
+    </video>
+</div>
+
 
     <!-- <div class="lx-hero-text">
         <h1>
