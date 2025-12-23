@@ -162,8 +162,6 @@
         loading="lazy"
     >
 
-    
-
 </section>
 
 <section class="lx-exchange">
