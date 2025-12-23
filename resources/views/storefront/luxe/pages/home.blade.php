@@ -81,7 +81,7 @@
 {{-- ===================================================== --}}
 {{-- TRY AT HOME – PREMIUM FLOW (REFINED) --}}
 {{-- ===================================================== --}}
-<section class="lx-try-flow">
+<section class="lx-try-flow refined">
 
     <h3 class="lx-try-title">
         Thử đồ tại nhà<br>
