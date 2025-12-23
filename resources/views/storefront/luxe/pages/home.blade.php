@@ -8,7 +8,7 @@
 <section class="lx-hero">
     <div class="lx-hero-video-wrapper">
         <video class="lx-hero-video" autoplay muted playsinline loop>
-            <source src="/themes/luxe/assets/images/home/herovideo.mp4" type="video/mp4">
+            <source src="/themes/luxe/assets/images/home/herovideo1.mp4" type="video/mp4">
         </video>
     </div>
 
