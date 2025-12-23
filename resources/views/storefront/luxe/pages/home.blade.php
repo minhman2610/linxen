@@ -53,7 +53,7 @@
         {{-- ẢNH BÁN HÀNG --}}
         <div class="lx-trust-image">
             <img
-                src="{{ asset('images/home/anh_shop1.webp') }}"
+                src="/themes/luxe/assets/images/home/anh_shop1.webp"
                 alt="Ảnh bán hàng LIN XÉN"
                 loading="lazy"
             >
@@ -68,7 +68,7 @@
         {{-- ẢNH THỰC TẾ --}}
         <div class="lx-trust-image">
             <img
-                src="{{ asset('images/home/anh_real1.webp') }}"
+                src="/themes/luxe/assets/images/home/anh_real1.webp"
                 alt="Ảnh thực tế LIN XÉN"
                 loading="lazy"
             >
