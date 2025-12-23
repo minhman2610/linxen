@@ -590,3 +590,105 @@
     }
 }
 
+/* ===================================================== */
+/* PRODUCT TYPE CATEGORIES – IMAGE BASED */
+/* ===================================================== */
+
+.lx-product-type-categories {
+    padding: 20px 0 8px;
+    background: #fff;
+}
+
+/* ===== HEAD ===== */
+.lx-product-type-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 16px 12px;
+}
+
+.lx-product-type-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: .2px;
+}
+
+.lx-product-type-hint {
+    font-size: 12px;
+    color: #999;
+}
+
+/* ===== SCROLL WRAPPER ===== */
+.lx-product-type-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 12px;
+    scroll-behavior: smooth;
+}
+
+/* Ẩn scrollbar */
+.lx-product-type-scroll::-webkit-scrollbar {
+    display: none;
+}
+.lx-product-type-scroll {
+    scrollbar-width: none;
+}
+
+/* ===== CARD ===== */
+.lx-product-type-card {
+    flex: 0 0 auto;
+    width: 120px;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: #f7f7f7;
+}
+
+/* IMAGE */
+.lx-product-type-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+
+/* LABEL */
+.lx-product-type-card span {
+    display: block;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    background: #fff;
+}
+
+/* ===== HIGHLIGHT ===== */
+.lx-product-type-card.highlight {
+    outline: 2px solid #111;
+}
+
+/* ===== TABLET ===== */
+@media (min-width: 768px) {
+    .lx-product-type-card {
+        width: 150px;
+    }
+
+    .lx-product-type-card img {
+        height: 180px;
+    }
+
+    .lx-product-type-card span {
+        font-size: 14px;
+    }
+}
+
+/* ===== DESKTOP ===== */
+@media (min-width: 1024px) {
+    .lx-product-type-scroll {
+        justify-content: center;
+    }
+}
+
