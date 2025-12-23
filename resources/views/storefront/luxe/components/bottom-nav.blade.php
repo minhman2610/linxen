@@ -31,14 +31,19 @@
     </a>
 
     {{-- CART --}}
-    <a href="{{ route('linxen.cart') }}"
-       class="lx-nav-item cart-btn {{ request()->routeIs('linxen.cart') ? 'active' : '' }}">
+<a href="{{ route('linxen.cart') }}"
+   class="lx-nav-item cart-btn {{ request()->routeIs('linxen.cart') ? 'active' : '' }}">
+
+    <span class="lx-cart-icon-wrap">
         <img src="/themes/luxe/assets/icons/icon-cart.svg" class="icon">
-        <span class="lx-nav-text">Giỏ hàng</span>
 
         <span class="cart-count" id="lxCartCount">
             {{ array_sum(array_column(session('cart', []), 'qty')) }}
         </span>
-    </a>
+    </span>
+
+    <span class="lx-nav-text">Giỏ hàng</span>
+</a>
+
 
 </div>

@@ -103,19 +103,28 @@
     border-color: #b11226;
 }
 
-/* =====================================================
-   CART BADGE — REFINED
-===================================================== */
-
-.cart-btn {
-    position: relative;
+.lx-bottom-nav {
+    background: #f9fafb; /* trắng ngà cao cấp */
+    border-top: 1px solid rgba(0,0,0,.06);
 }
 
-/* badge */
+
+/* =====================================================
+   CART ICON + BADGE — FINAL FIX
+===================================================== */
+
+.lx-cart-icon-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* BADGE */
 .cart-count {
     position: absolute;
-    top: 0px;
-    right: 26px; /* căn sát icon */
+    top: -4px;
+    right: -6px;
 
     min-width: 16px;
     height: 16px;
@@ -127,8 +136,8 @@
 
     color: #fff;
 
-    /* 🎨 màu sang trọng */
-    background: linear-gradient(135deg, #1f2937, #111827);
+    /* 🎨 LUXURY COLOR */
+    background: linear-gradient(135deg, #2b2f36, #0f172a);
 
     display: flex;
     align-items: center;
