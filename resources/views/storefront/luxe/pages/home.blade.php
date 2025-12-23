@@ -162,11 +162,7 @@
         loading="lazy"
     >
 
-    <div class="lx-exchange-poster-text">
-        <h3>Đổi hàng thật dễ dàng</h3>
-        <p>15 ngày · Bất kỳ lý do gì</p>
-        <span>LIN XÉN</span>
-    </div>
+    
 
 </section>
 
