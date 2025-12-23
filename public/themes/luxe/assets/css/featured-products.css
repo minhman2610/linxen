@@ -296,3 +296,42 @@
     border: 1.5px solid rgba(17,17,17,.25);
     pointer-events: none;
 }
+/* =====================================================
+   COLOR VARIANTS – MOBILE FRIENDLY
+===================================================== */
+
+/* VARIANTS ROW */
+.lx-product-variants {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* COLORS CONTAINER */
+.lx-product-colors {
+    display: flex;
+    gap: 12px;          /* giãn hơn để dễ bấm */
+    padding-left: 10px; /* tránh cắn viền */
+}
+
+/* SWATCH – KÍCH THƯỚC CHUẨN MOBILE */
+.lx-color-swatch {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-clip: padding-box;
+    border: 1.5px solid #dcdcdc;
+    box-sizing: border-box;
+}
+
+/* ACTIVE – VÒNG NHẤN BÊN NGOÀI (KHÔNG CLIP) */
+.lx-color-swatch.active::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(17,17,17,.25);
+    pointer-events: none;
+}
