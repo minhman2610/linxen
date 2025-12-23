@@ -1,5 +1,77 @@
 /* =====================================================
-   REELS – SUBTLE HIGHLIGHT (CLEAN VERSION)
+   LUXE — MOBILE BOTTOM NAV (FINAL)
+===================================================== */
+
+/* NAV CONTAINER */
+.lx-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 56px;
+    background: #ffffff;
+
+    box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    z-index: 999;
+}
+
+/* HIDE ON DESKTOP */
+@media (min-width: 768px) {
+    .lx-bottom-nav {
+        display: none;
+    }
+}
+
+/* NAV ITEM */
+.lx-nav-item {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding-top: 6px;
+    color: #666;
+}
+
+/* ICON */
+.lx-nav-item .icon {
+    width: 18px;
+    height: 18px;
+    margin-bottom: 3px;
+
+    filter: invert(35%) sepia(6%) saturate(0%)
+            hue-rotate(180deg) brightness(90%) contrast(90%);
+}
+
+/* TEXT — FIX BASELINE */
+.lx-nav-text {
+    font-size: 10px;
+    line-height: 1;
+    display: block;
+}
+
+/* ACTIVE */
+.lx-nav-item.active {
+    color: #b11226;
+}
+
+.lx-nav-item.active .icon {
+    filter: invert(21%) sepia(88%) saturate(4222%)
+            hue-rotate(350deg) brightness(92%) contrast(110%);
+}
+
+/* =====================================================
+   REELS — SUBTLE HIGHLIGHT
 ===================================================== */
 
 .lx-nav-reels .lx-reels-bg {
@@ -13,9 +85,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    margin-bottom: 3px; /* giữ thẳng text */
 }
 
-/* icon reels giữ nguyên kích thước */
+/* REELS ICON */
 .lx-nav-reels .icon {
     width: 18px;
     height: 18px;
@@ -23,8 +97,35 @@
             hue-rotate(350deg) brightness(92%) contrast(102%);
 }
 
-/* ACTIVE */
+/* ACTIVE REELS */
 .lx-nav-reels.active .lx-reels-bg {
     background: rgba(177,18,38,.12);
     border-color: #b11226;
+}
+
+/* =====================================================
+   CART BADGE
+===================================================== */
+
+.cart-btn {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: 2px;
+    right: 18px;
+
+    width: 14px;
+    height: 14px;
+
+    font-size: 9px;
+    color: #fff;
+    background: #b11226;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
 }
