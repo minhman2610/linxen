@@ -99,9 +99,9 @@
             <span>Váy thiết kế</span>
         </a>
 
-        <a href="/collections/vay-sexy" class="lx-product-type-card">
-            <img src="/themes/luxe/assets/images/categories/vay-sexy.webp" alt="Váy sexy">
-            <span>Váy sexy</span>
+        <a href="/collections/vay-body" class="lx-product-type-card">
+            <img src="/themes/luxe/assets/images/categories/vay-body.webp" alt="Váy body">
+            <span>Váy body</span>
         </a>
 
         <a href="/collections/ao-da" class="lx-product-type-card">
