@@ -273,7 +273,7 @@
 .lx-product-colors {
     display: flex;
     gap: 8px;
-    padding-left: 2px; /* chừa không gian an toàn */
+    padding-left: 10px; /* chừa không gian an toàn */
 }
 
 /* SWATCH */
