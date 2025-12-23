@@ -18,19 +18,23 @@
         MOBILE MENU CSS
     ============================= --}}
     <link rel="stylesheet" href="/themes/luxe/assets/css/mobile-menu.css">
-    <link rel="stylesheet"
-      href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
-    <link
-    rel="stylesheet"
-    href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}"
->
-    <link
-    rel="stylesheet"
-    href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}"
->
-    <link rel="stylesheet"
-      href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">
 
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
+
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}">
+
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
+
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">
+    <link rel="stylesheet"
+      href="/themes/luxe/assets/css/footer.css?v={{ file_exists(public_path('themes/luxe/assets/css/footer.css')) 
+            ? filemtime(public_path('themes/luxe/assets/css/footer.css')) 
+            : time() }}">
+     
     {{-- Page-specific head --}}
     @stack('head')
 </head>
@@ -44,7 +48,6 @@
 
     {{-- ============================
         HEADER (GLOBAL)
-        👉 Header tự né announcement qua CSS var
     ============================= --}}
     @include('storefront.luxe.components.header')
 
@@ -61,6 +64,11 @@
     </main>
 
     {{-- ============================
+        FOOTER (GLOBAL)
+    ============================= --}}
+    @include('storefront.luxe.components.footer')
+
+    {{-- ============================
         BOTTOM NAVIGATION (MOBILE)
     ============================= --}}
     @include('storefront.luxe.components.bottom-nav')
@@ -69,6 +77,7 @@
         SCRIPTS
     ============================= --}}
     <script src="/themes/luxe/assets/js/theme.js"></script>
+
     <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
 
     {{-- Page-specific scripts --}}
