@@ -1,0 +1,47 @@
+/* =====================================================
+   REELS TAB — SIGNATURE BUTTON
+===================================================== */
+
+.lx-nav-reels {
+    position: relative;
+    top: -12px;
+    color: #111;
+}
+
+/* ICON REELS */
+.lx-reels-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+
+    background: linear-gradient(135deg, #1f2937, #111827);
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    box-shadow: 0 8px 22px rgba(0,0,0,.35);
+}
+
+/* REEL DOTS */
+.lx-reels-icon .reel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: .9;
+}
+
+/* TEXT */
+.lx-nav-reels span {
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* ACTIVE */
+.lx-nav-reels.active .lx-reels-icon {
+    box-shadow: 0 10px 26px rgba(0,0,0,.45);
+}

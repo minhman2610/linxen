@@ -28,6 +28,8 @@
     rel="stylesheet"
     href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}"
 >
+    <link rel="stylesheet"
+      href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">
 
     {{-- Page-specific head --}}
     @stack('head')
