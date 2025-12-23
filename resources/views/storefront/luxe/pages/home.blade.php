@@ -44,10 +44,10 @@
     <div class="lx-flash-sale-head">
         <h3 class="lx-flash-sale-title">
             ⚡ Flash Sale
-            <span class="lx-flash-sale-sub">Ưu đãi có hạn</span>
+            
         </h3>
 
-        <div class="lx-flash-sale-countdown" data-end-time="2025-12-31 23:59:59">
+        <div class="lx-flash-sale-countdown" data-end-time="2025-12-25 23:59:59">
             <div class="lx-countdown-item">
                 <span class="num" data-days>00</span>
                 <span class="label">Ngày</span>
