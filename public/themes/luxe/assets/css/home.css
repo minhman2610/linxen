@@ -667,7 +667,7 @@
 
 /* ===== HIGHLIGHT ===== */
 .lx-product-type-card.highlight {
-    outline: 2px solid #111;
+    outline: 0px solid #111;
 }
 
 /* ===== TABLET ===== */
