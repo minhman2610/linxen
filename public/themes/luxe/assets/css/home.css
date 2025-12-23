@@ -20,8 +20,6 @@
     right: -10px;
     width: 220px;
     height: 220px;
-    background: url('/themes/luxe/assets/images/home/try-peek-girl.webp') no-repeat;
-    background-size: contain;
     pointer-events: none;
     z-index: 1;
 }
