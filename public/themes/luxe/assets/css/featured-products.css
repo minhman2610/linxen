@@ -313,3 +313,35 @@
         transform: translateY(-1px);
     }
 }
+/* =====================================================
+   QUICK ORDER – LUXURY SUBTLE
+===================================================== */
+
+.lx-quick-order-inline {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e6e6e6;
+    color: #444;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.lx-quick-order-inline svg {
+    width: 14px;
+    height: 14px;
+    opacity: .85;
+}
