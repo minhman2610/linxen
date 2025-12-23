@@ -1,5 +1,5 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – SALE & STATUS (UPDATED LAYOUT) --}}
+{{-- FEATURED PRODUCTS – SALE & STATUS (WITH COLORS) --}}
 {{-- ===================================================== --}}
 @if(!empty($home['featured_products']) && is_array($home['featured_products']))
 <section class="lx-product-section">
@@ -30,10 +30,22 @@
                 $salePercent = 20; // demo
                 $salePrice   = round($price * (100 - $salePercent) / 100);
 
-                // demo màu ngẫu nhiên
-                $colors = collect(['black','white','beige','brown','red','blue'])
-                            ->shuffle()
-                            ->take(3);
+                /**
+                 * FIX CỨNG DANH SÁCH MÀU – RANDOM 3 MÀU / SẢN PHẨM
+                 */
+                $colorPool = [
+                    'black',
+                    'white',
+                    'beige',
+                    'brown',
+                    'red',
+                    'blue',
+                    'navy',
+                    'olive'
+                ];
+
+                shuffle($colorPool);
+                $productColors = array_slice($colorPool, 0, 3);
             @endphp
 
             <div class="lx-product-card">
@@ -46,7 +58,6 @@
                              loading="lazy">
                     </a>
 
-                    {{-- SALE BADGE --}}
                     <span class="lx-sale-badge">
                         -{{ $salePercent }}%
                     </span>
@@ -54,7 +65,7 @@
 
                 {{-- NAME + BEST SELLER --}}
                 <div class="lx-product-head">
-                    <span class="lx-badge-best">Best seller</span>
+                    <span class="lx-tag lx-tag-best">🔥 Bán chạy</span>
                     <p class="lx-product-name one-line">
                         {{ $product['name'] }}
                     </p>
@@ -70,7 +81,7 @@
                     </span>
                 </div>
 
-                {{-- STATUS TAGS --}}
+                {{-- STATUS --}}
                 <div class="lx-product-tags">
                     <span class="lx-tag lx-tag-stock">✔ Còn hàng</span>
                     <span class="lx-tag lx-tag-trend">✨ Xu hướng</span>
@@ -78,8 +89,8 @@
 
                 {{-- COLORS --}}
                 <div class="lx-product-colors">
-                    @foreach($colors as $color)
-                        <span class="lx-color-swatch {{ $color }}"></span>
+                    @foreach($productColors as $index => $color)
+                        <span class="lx-color-swatch {{ $color }} {{ $index === 0 ? 'active' : '' }}"></span>
                     @endforeach
                 </div>
 

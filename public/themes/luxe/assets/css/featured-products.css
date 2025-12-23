@@ -211,3 +211,46 @@
         font-size: 13.5px;
     }
 }
+/* =====================================================
+   PRODUCT COLORS
+===================================================== */
+
+.lx-product-colors {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+/* SWATCH */
+.lx-color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #e3e3e3;
+    box-sizing: border-box;
+    transition: transform .15s ease, border-color .15s ease;
+}
+
+/* ACTIVE COLOR */
+.lx-color-swatch.active {
+    transform: scale(1.2);
+    border-color: #111;
+}
+
+/* COLOR DEFINITIONS */
+.lx-color-swatch.black { background: #111; }
+.lx-color-swatch.white { background: #fff; border-color:#ccc; }
+.lx-color-swatch.beige { background: #e6d5c3; }
+.lx-color-swatch.brown { background: #7a4a2e; }
+.lx-color-swatch.red   { background: #b11226; }
+.lx-color-swatch.blue  { background: #1f3a5f; }
+.lx-color-swatch.navy  { background: #0f1f33; }
+.lx-color-swatch.olive { background: #6b7c3e; }
+
+/* MOBILE */
+@media (max-width: 480px) {
+    .lx-color-swatch {
+        width: 15px;
+        height: 15px;
+    }
+}
