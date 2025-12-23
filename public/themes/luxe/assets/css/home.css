@@ -554,3 +554,54 @@
     font-weight: 600;
 }
 
+/* ================= FLASH SALE ================= */
+.lx-flash-sale {
+    padding: 20px 0 8px;
+    background: linear-gradient(180deg, #fff6f7, #ffffff);
+}
+
+.lx-flash-sale-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding: 0 16px;
+}
+
+.lx-flash-sale-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.lx-flash-sale-sub {
+    font-size: 12px;
+    color: #888;
+    margin-left: 6px;
+}
+
+.lx-flash-sale-countdown {
+    display: flex;
+    gap: 6px;
+}
+
+.lx-countdown-item {
+    background: #111;
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 6px;
+    min-width: 44px;
+    text-align: center;
+}
+
+.lx-countdown-item .num {
+    font-weight: 600;
+    font-size: 14px;
+    display: block;
+    line-height: 1;
+}
+
+.lx-countdown-item .label {
+    font-size: 10px;
+    opacity: .75;
+}
+
