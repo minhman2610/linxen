@@ -240,3 +240,24 @@
         height: 15px;
     }
 }
+/* COLORS */
+.lx-product-colors {
+    display: flex;
+    gap: 8px;
+}
+
+.lx-color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-clip: padding-box;
+    border: 1.5px solid #e3e3e3;
+    box-sizing: border-box;
+}
+
+/* ACTIVE – giữ tròn 100% */
+.lx-color-swatch.active {
+    border-color: #111;
+    outline: 2px solid rgba(17,17,17,.15); /* vòng nhấn */
+    outline-offset: 2px;
+}
