@@ -1,5 +1,5 @@
 /* =====================================================
-   FEATURED PRODUCTS – LIN XÉN
+   FEATURED PRODUCTS – LIN XÉN (CLEAN & OPTIMIZED)
 ===================================================== */
 
 /* SECTION */
@@ -21,7 +21,9 @@
     flex-direction: column;
 }
 
-/* IMAGE */
+/* =====================================================
+   IMAGE
+===================================================== */
 .lx-product-media {
     position: relative;
     aspect-ratio: 3 / 4;
@@ -42,53 +44,58 @@
     position: absolute;
     top: 8px;
     right: 8px;
-
     background: #b11226;
     color: #fff;
-
     font-size: 12px;
     font-weight: 700;
     padding: 4px 8px;
     border-radius: 6px;
 }
 
-/* QUICK ORDER ICON — SUBTLE */
-.lx-quick-order {
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-
-    background: rgba(59, 42, 34, 0.75);
-    backdrop-filter: blur(2px);
-    color: #fff;
-
+/* =====================================================
+   NAME + BEST SELLER
+===================================================== */
+.lx-product-head {
+    margin-top: 8px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-
-    text-decoration: none;
-    box-shadow: 0 3px 8px rgba(0,0,0,.18);
-
-    transition: transform .15s ease, background .15s ease;
+    align-items: flex-start;
+    gap: 6px;
 }
 
-.lx-quick-order svg {
-    width: 15px;
-    height: 15px;
+.lx-product-head .lx-tag-best {
+    flex-shrink: 0;
 }
 
-@media (hover: hover) {
-    .lx-quick-order:hover {
-        background: rgba(59, 42, 34, 0.9);
-        transform: translateY(-1px);
-    }
+/* tên sản phẩm: tối đa 2 dòng */
+.lx-product-name {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: #222;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    min-width: 0; /* bắt buộc khi nằm trong flex */
 }
 
-/* PRICE */
+/* TAG BEST – nổi nhưng sang */
+.lx-tag-best {
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(135deg, #b11226, #d42a3f);
+    box-shadow: 0 2px 6px rgba(177,18,38,.25);
+}
+
+/* =====================================================
+   PRICE
+===================================================== */
 .lx-product-price-wrap {
     margin-top: 10px;
     display: flex;
@@ -100,7 +107,6 @@
     font-size: 16.5px;
     font-weight: 700;
     color: #b11226;
-    letter-spacing: .2px;
 }
 
 .lx-price-origin {
@@ -109,22 +115,9 @@
     text-decoration: line-through;
 }
 
-/* NAME */
-.lx-product-name {
-    margin-top: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #222;
-    line-height: 1.35;
-}
-
-.one-line {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* TAGS */
+/* =====================================================
+   STATUS TAGS
+===================================================== */
 .lx-product-tags {
     margin-top: 6px;
     display: flex;
@@ -140,33 +133,13 @@
     font-weight: 500;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
     line-height: 1;
 }
 
-/* TAG TYPES */
 .lx-tag-stock {
     color: #1f7a4f;
     border-color: #1f7a4f;
     background: rgba(31,122,79,.08);
-}
-
-.lx-tag-out {
-    color: #999;
-    border-color: #ccc;
-    background: #f5f5f5;
-}
-
-.lx-tag-pre {
-    color: #8a5a00;
-    border-color: #e0b95c;
-    background: rgba(224,185,92,.12);
-}
-
-.lx-tag-best {
-    color: #b11226;
-    border-color: #b11226;
-    background: rgba(177,18,38,.08);
 }
 
 .lx-tag-trend {
@@ -175,69 +148,36 @@
     background: rgba(31,58,95,.08);
 }
 
-/* COLORS */
-.lx-product-colors {
+/* =====================================================
+   VARIANTS ROW (COLORS + QUICK ORDER)
+===================================================== */
+.lx-product-variants {
     margin-top: 10px;
     display: flex;
-    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.lx-color-swatch {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 2px solid #ddd;
-    box-sizing: border-box;
-}
-
-.lx-color-swatch.active {
-    width: 22px;
-    height: 22px;
-    border-color: #000;
-}
-
-/* COLOR TYPES */
-.lx-color-swatch.black { background: #111; }
-.lx-color-swatch.red   { background: #b11226; }
-.lx-color-swatch.blue  { background: #1f3a5f; }
-
-/* MOBILE TUNING */
-@media (max-width: 480px) {
-    .lx-price-sale {
-        font-size: 15.5px;
-    }
-
-    .lx-product-name {
-        font-size: 13.5px;
-    }
-}
-/* =====================================================
-   PRODUCT COLORS
-===================================================== */
-
+/* COLORS */
 .lx-product-colors {
-    margin-top: 10px;
     display: flex;
     gap: 8px;
 }
 
-/* SWATCH */
 .lx-color-swatch {
     width: 16px;
     height: 16px;
     border-radius: 50%;
     border: 2px solid #e3e3e3;
-    box-sizing: border-box;
     transition: transform .15s ease, border-color .15s ease;
 }
 
-/* ACTIVE COLOR */
 .lx-color-swatch.active {
     transform: scale(1.2);
     border-color: #111;
 }
 
-/* COLOR DEFINITIONS */
+/* COLOR TYPES */
 .lx-color-swatch.black { background: #111; }
 .lx-color-swatch.white { background: #fff; border-color:#ccc; }
 .lx-color-swatch.beige { background: #e6d5c3; }
@@ -247,81 +187,13 @@
 .lx-color-swatch.navy  { background: #0f1f33; }
 .lx-color-swatch.olive { background: #6b7c3e; }
 
-/* MOBILE */
-@media (max-width: 480px) {
-    .lx-color-swatch {
-        width: 15px;
-        height: 15px;
-    }
-}
-.lx-product-head {
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* QUAN TRỌNG: reset p về inline */
-.lx-product-head .lx-product-name {
-    margin: 0;              /* bỏ margin mặc định của <p> */
-    display: inline-block;  /* hoặc flex:1 */
-    line-height: 1.2;
-    flex: 1;                /* tên chiếm phần còn lại */
-}
-/* =====================================================
-   PRODUCT VARIANTS ROW
-===================================================== */
-
-.lx-product-variants {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-/* giữ màu sắc bên trái */
-.lx-product-colors {
-    display: flex;
-    gap: 8px;
-}
-
-/* QUICK ORDER INLINE */
-.lx-quick-order-inline {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #111;
-    color: #fff;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    text-decoration: none;
-    box-shadow: 0 3px 8px rgba(0,0,0,.18);
-    transition: transform .15s ease, background .15s ease;
-}
-
-.lx-quick-order-inline svg {
-    width: 15px;
-    height: 15px;
-}
-
-@media (hover: hover) {
-    .lx-quick-order-inline:hover {
-        background: #b11226;
-        transform: translateY(-1px);
-    }
-}
 /* =====================================================
    QUICK ORDER – LUXURY SUBTLE
 ===================================================== */
-
 .lx-quick-order-inline {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-
     background: rgba(255,255,255,0.9);
     border: 1px solid #e6e6e6;
     color: #444;
@@ -332,16 +204,39 @@
 
     text-decoration: none;
     box-shadow: 0 1px 4px rgba(0,0,0,.06);
-
-    transition:
-        background .2s ease,
-        border-color .2s ease,
-        color .2s ease,
-        transform .2s ease;
+    transition: background .2s ease, border-color .2s ease,
+                color .2s ease, transform .2s ease;
 }
 
 .lx-quick-order-inline svg {
     width: 14px;
     height: 14px;
     opacity: .85;
+}
+
+@media (hover: hover) {
+    .lx-quick-order-inline:hover {
+        background: #fff;
+        border-color: #d8d8d8;
+        color: #222;
+        transform: translateY(-1px);
+    }
+}
+
+/* =====================================================
+   MOBILE TUNING
+===================================================== */
+@media (max-width: 480px) {
+    .lx-price-sale {
+        font-size: 15.5px;
+    }
+
+    .lx-product-name {
+        font-size: 13.5px;
+    }
+
+    .lx-color-swatch {
+        width: 15px;
+        height: 15px;
+    }
 }
