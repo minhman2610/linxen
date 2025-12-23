@@ -16,7 +16,7 @@
         preload="metadata"
         poster="/themes/luxe/assets/images/home/hero-poster.webp"
     >
-        <source src="/themes/luxe/assets/images/home/herovideo2.mp4" type="video/mp4">
+        <source src="/themes/luxe/assets/images/home/herovideo3.mp4" type="video/mp4">
     </video>
 </div>
 
