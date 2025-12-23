@@ -151,6 +151,24 @@
 
 </section>
 
+<!-- ============================================= -->
+<!-- EXCHANGE POSTER – LIN XÉN -->
+<!-- ============================================= -->
+<section class="lx-exchange-poster">
+
+    <img
+        src="/themes/luxe/assets/images/home/anh_doihang.webp"
+        alt="LIN XÉN – Đổi hàng thật dễ dàng"
+        loading="lazy"
+    >
+
+    <div class="lx-exchange-poster-text">
+        <h3>Đổi hàng thật dễ dàng</h3>
+        <p>15 ngày · Bất kỳ lý do gì</p>
+        <span>LIN XÉN</span>
+    </div>
+
+</section>
 
 <section class="lx-exchange">
 
