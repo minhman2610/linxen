@@ -89,10 +89,7 @@
         loading="lazy"
     >
 
-    <div class="lx-editorial-text">
-        <h2>LIN XÉN</h2>
-        <p>Thử tại nhà · Rồi hãy quyết định</p>
-    </div>
+    
 </section>
 
 {{-- ===================================================== --}}
