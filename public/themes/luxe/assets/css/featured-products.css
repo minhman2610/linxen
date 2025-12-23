@@ -254,3 +254,17 @@
         height: 15px;
     }
 }
+.lx-product-head {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* QUAN TRỌNG: reset p về inline */
+.lx-product-head .lx-product-name {
+    margin: 0;              /* bỏ margin mặc định của <p> */
+    display: inline-block;  /* hoặc flex:1 */
+    line-height: 1.2;
+    flex: 1;                /* tên chiếm phần còn lại */
+}
