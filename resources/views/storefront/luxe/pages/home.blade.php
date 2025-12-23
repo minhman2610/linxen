@@ -33,7 +33,7 @@
 
     <div class="lx-category-head">
         <h3 class="lx-category-title">Danh mục nổi bật</h3>
-        <span class="lx-category-hint">Vuốt để xem</span>
+        <span class="lx-category-hint">Vuốt ngang để xem</span>
     </div>
 
     <div class="lx-category-scroll">
@@ -71,6 +71,47 @@
                 <img src="/themes/luxe/assets/images/categories/new.webp" alt="Thiết kế mới">
             </div>
             <span class="lx-category-name">Mới</span>
+        </a>
+
+    </div>
+
+</section>
+
+{{-- ===================================================== --}}
+{{-- PRODUCT TYPE CATEGORIES – IMAGE BASED --}}
+{{-- ===================================================== --}}
+<section class="lx-product-type-categories">
+
+    <div class="lx-product-type-head">
+        <h3 class="lx-product-type-title">Loại sản phẩm</h3>
+        <span class="lx-product-type-hint">Chọn nhanh theo nhu cầu</span>
+    </div>
+
+    <div class="lx-product-type-scroll">
+
+        <a href="/collections/vay-basic" class="lx-product-type-card">
+            <img src="/themes/luxe/assets/images/categories/vay-basic.webp" alt="Váy basic">
+            <span>Váy basic</span>
+        </a>
+
+        <a href="/collections/vay-thiet-ke" class="lx-product-type-card highlight">
+            <img src="/themes/luxe/assets/images/categories/vay-thiet-ke.webp" alt="Váy thiết kế">
+            <span>Váy thiết kế</span>
+        </a>
+
+        <a href="/collections/vay-sexy" class="lx-product-type-card">
+            <img src="/themes/luxe/assets/images/categories/vay-sexy.webp" alt="Váy sexy">
+            <span>Váy sexy</span>
+        </a>
+
+        <a href="/collections/ao-da" class="lx-product-type-card">
+            <img src="/themes/luxe/assets/images/categories/ao-da.webp" alt="Áo dạ">
+            <span>Áo dạ</span>
+        </a>
+
+        <a href="/collections/set-bo" class="lx-product-type-card">
+            <img src="/themes/luxe/assets/images/categories/set-bo.webp" alt="Set bộ">
+            <span>Set bộ</span>
         </a>
 
     </div>
