@@ -386,28 +386,41 @@
     letter-spacing: 1px;
     opacity: 0.85;
 }
-
 /* =====================================================
-   CATEGORY PILLS – LIN XÉN
+   CATEGORY PILLS – LIN XÉN (REFINED)
 ===================================================== */
 
-.lx-category-pills {
-    margin-top: 24px;
-    padding-left: 14px;
+.lx-category-pills.refined {
+    margin-top: 28px;
+    padding: 0 14px;
+}
+
+/* header */
+.lx-category-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
 }
 
 .lx-category-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    color: #1f2937;
 }
 
-/* horizontal scroll */
+.lx-category-hint {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* scroll container */
 .lx-category-scroll {
     display: flex;
-    gap: 14px;
+    gap: 18px;
     overflow-x: auto;
-    padding-bottom: 6px;
+    padding-bottom: 8px;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -417,32 +430,48 @@
 
 /* pill */
 .lx-category-pill {
-    min-width: 72px;
+    min-width: 78px;
     text-align: center;
     text-decoration: none;
-    color: #222;
+    color: #1f2937;
+}
+
+/* image wrapper */
+.lx-category-thumb {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #f4f2f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
 /* image */
-.lx-category-pill img {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
+.lx-category-thumb img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    display: block;
-    margin: 0 auto;
 }
 
-/* text */
-.lx-category-pill span {
+/* name */
+.lx-category-name {
     display: block;
-    margin-top: 6px;
-    font-size: 12.5px;
-    line-height: 1.2;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .1px;
 }
 
-/* highlight */
-.lx-category-pill.highlight img {
+/* highlight (new / focus) */
+.lx-category-pill.highlight .lx-category-thumb {
     box-shadow: 0 0 0 2px #b11226;
+}
+
+.lx-category-pill.highlight .lx-category-name {
+    color: #b11226;
+    font-weight: 600;
 }
 

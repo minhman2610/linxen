@@ -27,42 +27,56 @@
     </div> -->
 </section>
 {{-- ===================================================== --}}
-{{-- CATEGORY PILLS – LIN XÉN --}}
+{{-- CATEGORY PILLS – LIN XÉN (REFINED) --}}
 {{-- ===================================================== --}}
-<section class="lx-category-pills">
+<section class="lx-category-pills refined">
 
-    <h3 class="lx-category-title">Danh mục nổi bật</h3>
+    <div class="lx-category-head">
+        <h3 class="lx-category-title">Danh mục nổi bật</h3>
+        <span class="lx-category-hint">Vuốt để xem</span>
+    </div>
 
     <div class="lx-category-scroll">
 
         <a href="/collections/di-lam" class="lx-category-pill">
-            <img src="/themes/luxe/assets/images/categories/di-lam.webp" alt="Đi làm">
-            <span>Đi làm</span>
+            <div class="lx-category-thumb">
+                <img src="/themes/luxe/assets/images/categories/di-lam.webp" alt="Đi làm">
+            </div>
+            <span class="lx-category-name">Đi làm</span>
         </a>
 
         <a href="/collections/dao-pho" class="lx-category-pill">
-            <img src="/themes/luxe/assets/images/categories/dao-pho.webp" alt="Dạo phố">
-            <span>Dạo phố</span>
+            <div class="lx-category-thumb">
+                <img src="/themes/luxe/assets/images/categories/dao-pho.webp" alt="Dạo phố">
+            </div>
+            <span class="lx-category-name">Dạo phố</span>
         </a>
 
         <a href="/collections/du-tiec" class="lx-category-pill">
-            <img src="/themes/luxe/assets/images/categories/du-tiec.webp" alt="Dự tiệc">
-            <span>Dự tiệc</span>
+            <div class="lx-category-thumb">
+                <img src="/themes/luxe/assets/images/categories/du-tiec.webp" alt="Dự tiệc">
+            </div>
+            <span class="lx-category-name">Dự tiệc</span>
         </a>
 
         <a href="/collections/thoai-mai" class="lx-category-pill">
-            <img src="/themes/luxe/assets/images/categories/thoai-mai.webp" alt="Thoải mái">
-            <span>Thoải mái</span>
+            <div class="lx-category-thumb">
+                <img src="/themes/luxe/assets/images/categories/thoai-mai.webp" alt="Thoải mái">
+            </div>
+            <span class="lx-category-name">Thoải mái</span>
         </a>
 
         <a href="/collections/thiet-ke-moi" class="lx-category-pill highlight">
-            <img src="/themes/luxe/assets/images/categories/new.webp" alt="Thiết kế mới">
-            <span>Mới</span>
+            <div class="lx-category-thumb">
+                <img src="/themes/luxe/assets/images/categories/new.webp" alt="Thiết kế mới">
+            </div>
+            <span class="lx-category-name">Mới</span>
         </a>
 
     </div>
 
 </section>
+
 
 {{-- FEATURED PRODUCTS --}}
 @include('storefront.luxe.components.home.featured-products', [
