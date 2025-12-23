@@ -14,14 +14,15 @@
         <span>Tìm kiếm</span>
     </a>
 
-    {{-- VIDEO (HIGHLIGHT) --}}
-    <a href="/video"
-       class="lx-nav-item lx-nav-video {{ request()->is('video') ? 'active' : '' }}"
-       aria-label="Xem video">
-        <div class="lx-video-icon">
-            ▶
+    {{-- REELS (HIGHLIGHT) --}}
+    <a href="/reels"
+       class="lx-nav-item lx-nav-reels {{ request()->is('reels') ? 'active' : '' }}"
+       aria-label="Xem Reels">
+        <div class="lx-reels-icon">
+            <span class="reel-dot"></span>
+            <span class="reel-dot"></span>
         </div>
-        <span>Video</span>
+        <span>Reels</span>
     </a>
 
     {{-- WISHLIST --}}
@@ -43,46 +44,3 @@
     </a>
 
 </div>
-<style>
-    /* =====================================================
-   VIDEO TAB — HERO BUTTON
-===================================================== */
-
-.lx-nav-video {
-    position: relative;
-    top: -10px; /* nhô lên */
-    color: #b11226;
-}
-
-/* ICON VIDEO */
-.lx-video-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-
-    background: linear-gradient(135deg, #b11226, #d42a3f);
-    color: #fff;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 18px;
-    font-weight: 700;
-
-    box-shadow: 0 6px 16px rgba(177,18,38,.35);
-}
-
-/* TEXT VIDEO */
-.lx-nav-video span {
-    margin-top: 2px;
-    font-size: 10px;
-    font-weight: 600;
-}
-
-/* ACTIVE VIDEO */
-.lx-nav-video.active .lx-video-icon {
-    box-shadow: 0 8px 20px rgba(177,18,38,.45);
-}
-
-</style>
