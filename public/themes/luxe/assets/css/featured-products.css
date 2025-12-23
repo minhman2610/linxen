@@ -268,3 +268,48 @@
     line-height: 1.2;
     flex: 1;                /* tên chiếm phần còn lại */
 }
+/* =====================================================
+   PRODUCT VARIANTS ROW
+===================================================== */
+
+.lx-product-variants {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* giữ màu sắc bên trái */
+.lx-product-colors {
+    display: flex;
+    gap: 8px;
+}
+
+/* QUICK ORDER INLINE */
+.lx-quick-order-inline {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(0,0,0,.18);
+    transition: transform .15s ease, background .15s ease;
+}
+
+.lx-quick-order-inline svg {
+    width: 15px;
+    height: 15px;
+}
+
+@media (hover: hover) {
+    .lx-quick-order-inline:hover {
+        background: #b11226;
+        transform: translateY(-1px);
+    }
+}
