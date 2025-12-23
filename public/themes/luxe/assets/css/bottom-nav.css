@@ -1,47 +1,30 @@
 /* =====================================================
-   REELS TAB — SIGNATURE BUTTON
+   REELS – SUBTLE HIGHLIGHT (CLEAN VERSION)
 ===================================================== */
 
-.lx-nav-reels {
-    position: relative;
-    top: -12px;
-    color: #111;
-}
+.lx-nav-reels .lx-reels-bg {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
 
-/* ICON REELS */
-.lx-reels-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-
-    background: linear-gradient(135deg, #1f2937, #111827);
-    color: #fff;
+    background: rgba(177,18,38,.08);
+    border: 1px solid rgba(177,18,38,.25);
 
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-
-    box-shadow: 0 8px 22px rgba(0,0,0,.35);
 }
 
-/* REEL DOTS */
-.lx-reels-icon .reel-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #fff;
-    opacity: .9;
-}
-
-/* TEXT */
-.lx-nav-reels span {
-    margin-top: 2px;
-    font-size: 10px;
-    font-weight: 600;
+/* icon reels giữ nguyên kích thước */
+.lx-nav-reels .icon {
+    width: 18px;
+    height: 18px;
+    filter: invert(21%) sepia(88%) saturate(4222%)
+            hue-rotate(350deg) brightness(92%) contrast(102%);
 }
 
 /* ACTIVE */
-.lx-nav-reels.active .lx-reels-icon {
-    box-shadow: 0 10px 26px rgba(0,0,0,.45);
+.lx-nav-reels.active .lx-reels-bg {
+    background: rgba(177,18,38,.12);
+    border-color: #b11226;
 }

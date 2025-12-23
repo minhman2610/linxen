@@ -14,14 +14,12 @@
         <span>Tìm kiếm</span>
     </a>
 
-    {{-- REELS (HIGHLIGHT) --}}
+    {{-- REELS --}}
     <a href="/reels"
-       class="lx-nav-item lx-nav-reels {{ request()->is('reels') ? 'active' : '' }}"
-       aria-label="Xem Reels">
-        <div class="lx-reels-icon">
-            <span class="reel-dot"></span>
-            <span class="reel-dot"></span>
-        </div>
+       class="lx-nav-item lx-nav-reels {{ request()->is('reels') ? 'active' : '' }}">
+        <span class="lx-reels-bg">
+            <img src="/themes/luxe/assets/icons/icon-reels.svg" class="icon">
+        </span>
         <span>Reels</span>
     </a>
 
