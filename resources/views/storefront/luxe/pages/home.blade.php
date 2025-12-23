@@ -77,6 +77,35 @@
 
     </div>
 
+    <div class="lx-trust-compare">
+
+        {{-- ẢNH BÁN HÀNG --}}
+        <div class="lx-trust-image">
+            <img
+                src="/themes/luxe/assets/images/home/anh_shop2.webp"
+                alt="Ảnh bán hàng LIN XÉN"
+                loading="lazy"
+            >
+            <span class="lx-trust-label">Ảnh bán hàng</span>
+        </div>
+
+        {{-- ARROW --}}
+        <div class="lx-trust-arrow">
+            →
+        </div>
+
+        {{-- ẢNH THỰC TẾ --}}
+        <div class="lx-trust-image">
+            <img
+                src="/themes/luxe/assets/images/home/anh_real2.webp"
+                alt="Ảnh thực tế LIN XÉN"
+                loading="lazy"
+            >
+            <span class="lx-trust-label real">Ảnh thực tế</span>
+        </div>
+
+    </div>
+
 </section>
 
 {{-- ===================================================== --}}
