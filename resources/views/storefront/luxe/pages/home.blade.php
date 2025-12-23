@@ -26,6 +26,46 @@
         </a>
     </div> -->
 </section>
+{{-- ===================================================== --}}
+{{-- CATEGORY BY LIFESTYLE --}}
+{{-- ===================================================== --}}
+<section class="lx-category-visual">
+
+    <h3 class="lx-section-title">Chọn váy theo phong cách</h3>
+    <p class="lx-section-desc">
+        Mỗi thiết kế phù hợp một khoảnh khắc trong cuộc sống
+    </p>
+
+    <div class="lx-category-grid">
+
+        <a href="/collections/di-lam" class="lx-category-item">
+            <img src="/themes/luxe/assets/images/categories/di-lam.webp" alt="Váy đi làm">
+            <span>Đi làm</span>
+        </a>
+
+        <a href="/collections/dao-pho" class="lx-category-item">
+            <img src="/themes/luxe/assets/images/categories/dao-pho.webp" alt="Váy dạo phố">
+            <span>Dạo phố</span>
+        </a>
+
+        <a href="/collections/du-tiec" class="lx-category-item">
+            <img src="/themes/luxe/assets/images/categories/du-tiec.webp" alt="Váy dự tiệc">
+            <span>Dự tiệc</span>
+        </a>
+
+        <a href="/collections/o-nha" class="lx-category-item">
+            <img src="/themes/luxe/assets/images/categories/o-nha.webp" alt="Váy ở nhà">
+            <span>Thoải mái</span>
+        </a>
+
+        <a href="/collections/new" class="lx-category-item highlight">
+            <img src="/themes/luxe/assets/images/categories/new.webp" alt="Thiết kế mới">
+            <span>Thiết kế mới</span>
+        </a>
+
+    </div>
+
+</section>
 
 {{-- FEATURED PRODUCTS --}}
 @include('storefront.luxe.components.home.featured-products', [
