@@ -27,40 +27,37 @@
     </div> -->
 </section>
 {{-- ===================================================== --}}
-{{-- CATEGORY BY LIFESTYLE --}}
+{{-- CATEGORY PILLS – LIN XÉN --}}
 {{-- ===================================================== --}}
-<section class="lx-category-visual">
+<section class="lx-category-pills">
 
-    <h3 class="lx-section-title">Chọn váy theo phong cách</h3>
-    <p class="lx-section-desc">
-        Mỗi thiết kế phù hợp một khoảnh khắc trong cuộc sống
-    </p>
+    <h3 class="lx-category-title">Danh mục nổi bật</h3>
 
-    <div class="lx-category-grid">
+    <div class="lx-category-scroll">
 
-        <a href="/collections/di-lam" class="lx-category-item">
-            <img src="/themes/luxe/assets/images/categories/di-lam.webp" alt="Váy đi làm">
+        <a href="/collections/di-lam" class="lx-category-pill">
+            <img src="/themes/luxe/assets/images/categories/di-lam.webp" alt="Đi làm">
             <span>Đi làm</span>
         </a>
 
-        <a href="/collections/dao-pho" class="lx-category-item">
-            <img src="/themes/luxe/assets/images/categories/dao-pho.webp" alt="Váy dạo phố">
+        <a href="/collections/dao-pho" class="lx-category-pill">
+            <img src="/themes/luxe/assets/images/categories/dao-pho.webp" alt="Dạo phố">
             <span>Dạo phố</span>
         </a>
 
-        <a href="/collections/du-tiec" class="lx-category-item">
-            <img src="/themes/luxe/assets/images/categories/du-tiec.webp" alt="Váy dự tiệc">
+        <a href="/collections/du-tiec" class="lx-category-pill">
+            <img src="/themes/luxe/assets/images/categories/du-tiec.webp" alt="Dự tiệc">
             <span>Dự tiệc</span>
         </a>
 
-        <a href="/collections/o-nha" class="lx-category-item">
-            <img src="/themes/luxe/assets/images/categories/o-nha.webp" alt="Váy ở nhà">
+        <a href="/collections/thoai-mai" class="lx-category-pill">
+            <img src="/themes/luxe/assets/images/categories/thoai-mai.webp" alt="Thoải mái">
             <span>Thoải mái</span>
         </a>
 
-        <a href="/collections/new" class="lx-category-item highlight">
+        <a href="/collections/thiet-ke-moi" class="lx-category-pill highlight">
             <img src="/themes/luxe/assets/images/categories/new.webp" alt="Thiết kế mới">
-            <span>Thiết kế mới</span>
+            <span>Mới</span>
         </a>
 
     </div>

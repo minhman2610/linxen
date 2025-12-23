@@ -388,49 +388,61 @@
 }
 
 /* =====================================================
-   CATEGORY VISUAL
+   CATEGORY PILLS – LIN XÉN
 ===================================================== */
 
-.lx-category-visual {
-    padding: 36px 16px 12px;
+.lx-category-pills {
+    margin-top: 24px;
+    padding-left: 14px;
 }
 
-.lx-category-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+.lx-category-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* horizontal scroll */
+.lx-category-scroll {
+    display: flex;
     gap: 14px;
-    margin-top: 20px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
 }
 
-.lx-category-item {
-    position: relative;
-    border-radius: 18px;
-    overflow: hidden;
-    aspect-ratio: 3 / 4;
-    display: block;
+.lx-category-scroll::-webkit-scrollbar {
+    display: none;
 }
 
-.lx-category-item img {
-    width: 100%;
-    height: 100%;
+/* pill */
+.lx-category-pill {
+    min-width: 72px;
+    text-align: center;
+    text-decoration: none;
+    color: #222;
+}
+
+/* image */
+.lx-category-pill img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
     object-fit: cover;
+    display: block;
+    margin: 0 auto;
 }
 
-.lx-category-item span {
-    position: absolute;
-    left: 14px;
-    bottom: 14px;
-
-    font-size: 15px;
-    font-weight: 500;
-    color: #fff;
-
-    background: rgba(0,0,0,.35);
-    padding: 6px 12px;
-    border-radius: 999px;
+/* text */
+.lx-category-pill span {
+    display: block;
+    margin-top: 6px;
+    font-size: 12.5px;
+    line-height: 1.2;
 }
 
-.lx-category-item.highlight span {
-    background: rgba(177,18,38,.85);
+/* highlight */
+.lx-category-pill.highlight img {
+    box-shadow: 0 0 0 2px #b11226;
 }
 
