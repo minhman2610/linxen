@@ -32,3 +32,45 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(exchangeSection);
 
 });
+// =====================================================
+// IMAGE ZOOM — TRUST VISUAL
+// =====================================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    const images = document.querySelectorAll('.lx-trust-image img');
+
+    if (!images.length) return;
+
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'lx-image-zoom-overlay';
+
+    const zoomImg = document.createElement('img');
+    zoomImg.className = 'lx-image-zoom-img';
+
+    overlay.appendChild(zoomImg);
+    document.body.appendChild(overlay);
+
+    images.forEach(img => {
+        img.addEventListener('click', () => {
+            zoomImg.src = img.src;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // Close on overlay click
+    overlay.addEventListener('click', () => {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+});

@@ -141,3 +141,33 @@
     pointer-events: none;
 }
 
+/* =====================================================
+   IMAGE ZOOM OVERLAY
+===================================================== */
+
+.lx-image-zoom-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.lx-image-zoom-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lx-image-zoom-img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35);
+}
