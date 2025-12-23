@@ -14,9 +14,8 @@
         loop
         playsinline
         preload="metadata"
-        poster="/themes/luxe/assets/images/home/hero-poster.jpg"
+        poster="/themes/luxe/assets/images/home/hero-poster.webp"
     >
-        <source src="/themes/luxe/assets/images/home/herovideo1.webm" type="video/webm">
         <source src="/themes/luxe/assets/images/home/herovideo1.mp4" type="video/mp4">
     </video>
 </div>
