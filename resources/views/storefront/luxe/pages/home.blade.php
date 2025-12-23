@@ -206,35 +206,6 @@
 
 
 
-{{-- ===================================================== --}}
-{{-- 4️⃣ PHỐI ĐỒ --}}
-{{-- ===================================================== --}}
-<section class="lx-lookbook">
-    <h2 class="lx-section-title">PHỐI ĐỒ GỢI Ý</h2>
-    <p class="lx-section-desc">
-        Một chiếc váy – nhiều cách mặc
-    </p>
-
-    <div class="lx-look-grid">
-        <div class="lx-look-item">Đi làm</div>
-        <div class="lx-look-item">Đi chơi</div>
-        <div class="lx-look-item">Hẹn hò</div>
-    </div>
-</section>
-
-{{-- ===================================================== --}}
-{{-- 5️⃣ CTA --}}
-{{-- ===================================================== --}}
-<section class="lx-final-cta">
-    <h2>
-        Chọn chiếc váy<br>
-        phù hợp với bạn hôm nay
-    </h2>
-    <a href="{{ route('linxen.collection', ['slug' => 'all']) }}"
-       class="lx-btn-primary">
-        Xem toàn bộ váy
-    </a>
-</section>
 
 @endsection
 
