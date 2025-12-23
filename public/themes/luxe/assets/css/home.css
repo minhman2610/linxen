@@ -283,3 +283,48 @@
     display: block;
     border-radius: 24px;
 }
+
+/* ============================================= */
+ /* EXCHANGE POSTER */
+ /* ============================================= */
+
+.lx-exchange-poster {
+    position: relative;
+    margin: 32px 14px 12px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.lx-exchange-poster img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* TEXT OVERLAY */
+.lx-exchange-poster-text {
+    position: absolute;
+    left: 16px;
+    top: 18px;
+    color: #f9f7f4;
+}
+
+.lx-exchange-poster-text h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.lx-exchange-poster-text p {
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: 0.9;
+}
+
+.lx-exchange-poster-text span {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    opacity: 0.85;
+}
