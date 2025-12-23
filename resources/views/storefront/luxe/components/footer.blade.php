@@ -14,23 +14,39 @@
         </div>
 
         {{-- =========================
-            SERVICE HIGHLIGHTS
+            BRAND ACHIEVEMENTS
+        ========================== --}}
+        <div class="lx-footer-achievements">
+
+            <div class="lx-achievement">
+                <strong>50.000+</strong>
+                <span>Khách hàng đã mua & trải nghiệm</span>
+            </div>
+
+            <div class="lx-achievement">
+                <strong>1.200+</strong>
+                <span>Sản phẩm thiết kế & chọn lọc</span>
+            </div>
+
+            <div class="lx-achievement">
+                <strong>98%</strong>
+                <span>Khách hài lòng sau khi nhận hàng</span>
+            </div>
+
+            <div class="lx-achievement">
+                <strong>15 ngày</strong>
+                <span>Đổi hàng dễ dàng · Không rủi ro</span>
+            </div>
+
+        </div>
+
+        {{-- =========================
+            SERVICE HIGHLIGHTS (NGẮN)
         ========================== --}}
         <div class="lx-footer-services">
-            <div class="lx-footer-service">
-                <strong>Thử tại nhà</strong>
-                <span>Không áp lực mua</span>
-            </div>
-
-            <div class="lx-footer-service">
-                <strong>Đổi hàng 15 ngày</strong>
-                <span>Với bất kỳ lý do gì</span>
-            </div>
-
-            <div class="lx-footer-service">
-                <strong>Shipper tận nhà</strong>
-                <span>Giao mới · Thu hàng cũ</span>
-            </div>
+            <span>Thử tại nhà</span>
+            <span>Đổi hàng tận nơi</span>
+            <span>Shipper chờ mặc thử</span>
         </div>
 
         {{-- =========================
