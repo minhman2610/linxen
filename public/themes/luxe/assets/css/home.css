@@ -475,110 +475,30 @@
     font-weight: 600;
 }
 
-/* =====================================================
-   PRODUCT TYPE CATEGORIES – LIN XÉN
-===================================================== */
+/* ===================================================== */
+/* FLASH SALE – LIN XÉN */
+/* ===================================================== */
 
-.lx-product-type-categories {
-    margin-top: 30px;
-    padding: 0 14px;
-}
-
-/* header */
-.lx-product-type-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-}
-
-.lx-product-type-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-.lx-product-type-hint {
-    font-size: 12px;
-    color: #9ca3af;
-}
-
-/* scroll */
-.lx-product-type-scroll {
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 6px;
-}
-
-.lx-product-type-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-/* card */
-.lx-product-type-card {
-    flex-shrink: 0;
-    width: 110px;
-    text-decoration: none;
-    color: #1f2937;
-}
-
-/* image */
-.lx-product-type-card img {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
-    border-radius: 14px;
-    display: block;
-    background: #f4f2f1;
-}
-
-/* name */
-.lx-product-type-card span {
-    display: block;
-    margin-top: 8px;
-    font-size: 13.5px;
-    font-weight: 500;
-    text-align: center;
-    letter-spacing: .1px;
-}
-
-/* highlight */
-.lx-product-type-card.highlight img {
-    box-shadow: 0 0 0 2px #b11226;
-}
-
-.lx-product-type-card.highlight span {
-    color: #b11226;
-    font-weight: 600;
-}
-
-/* ================= FLASH SALE ================= */
 .lx-flash-sale {
-    padding: 20px 0 8px;
+    padding: 16px 0 8px;
     background: linear-gradient(180deg, #fff6f7, #ffffff);
 }
 
+/* ===== HEAD ===== */
 .lx-flash-sale-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 14px;
-    padding: 0 16px;
+    padding: 0 16px 10px;
 }
 
 .lx-flash-sale-title {
     font-size: 18px;
     font-weight: 600;
+    letter-spacing: .3px;
 }
 
-.lx-flash-sale-sub {
-    font-size: 12px;
-    color: #888;
-    margin-left: 6px;
-}
-
+/* ===== COUNTDOWN ===== */
 .lx-flash-sale-countdown {
     display: flex;
     gap: 6px;
@@ -594,14 +514,79 @@
 }
 
 .lx-countdown-item .num {
-    font-weight: 600;
     font-size: 14px;
-    display: block;
+    font-weight: 600;
     line-height: 1;
+    display: block;
 }
 
 .lx-countdown-item .label {
     font-size: 10px;
     opacity: .75;
+}
+
+/* ===== SCROLL WRAPPER ===== */
+.lx-flash-sale-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 12px;
+    scroll-behavior: smooth;
+}
+
+/* Ẩn scrollbar */
+.lx-flash-sale-scroll::-webkit-scrollbar {
+    display: none;
+}
+.lx-flash-sale-scroll {
+    scrollbar-width: none;
+}
+
+/* ===== PRODUCT ROW ===== */
+.lx-product-row {
+    display: flex;
+    gap: 12px;
+}
+
+/* ===== PRODUCT CARD SIZE ===== */
+.lx-flash-sale .lx-product-card {
+    flex: 0 0 auto;
+    width: 160px; /* mobile */
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .lx-flash-sale .lx-product-card {
+        width: 200px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .lx-flash-sale .lx-product-card {
+        width: 220px;
+    }
+}
+
+/* ===== UX TINH TẾ ===== */
+/* Gợi ý kéo ngang */
+.lx-flash-sale-scroll::after {
+    content: '← Vuốt để xem thêm';
+    display: block;
+    font-size: 11px;
+    color: #999;
+    margin-top: 6px;
+}
+
+/* Fade nhẹ hai bên (tùy chọn, nếu thấy đẹp thì giữ) */
+@supports (mask-image: linear-gradient(#000, #000)) {
+    .lx-flash-sale-scroll {
+        mask-image: linear-gradient(
+            to right,
+            transparent 0,
+            black 24px,
+            black calc(100% - 24px),
+            transparent 100%
+        );
+    }
 }
 
