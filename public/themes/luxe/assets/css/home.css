@@ -101,6 +101,44 @@
     font-weight: 500;
     text-align: center;
 }
+/* =====================================================
+   EDITORIAL IMAGE — LIN XÉN
+===================================================== */
+
+.lx-editorial {
+    position: relative;
+    margin: 28px 14px 12px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.lx-editorial img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* TEXT OVERLAY */
+.lx-editorial-text {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+
+    color: #f9f7f4;
+}
+
+.lx-editorial-text h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    margin: 0;
+}
+
+.lx-editorial-text p {
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: .9;
+}
 
 
 /* =====================================================

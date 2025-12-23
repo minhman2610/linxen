@@ -78,6 +78,23 @@
     </div>
 
 </section>
+
+{{-- ===================================================== --}}
+{{-- EDITORIAL IMAGE – LIN XÉN --}}
+{{-- ===================================================== --}}
+<section class="lx-editorial">
+    <img
+        src="/themes/luxe/assets/images/home/anh_thudo.webp"
+        alt="LIN XÉN – Timeless Style"
+        loading="lazy"
+    >
+
+    <div class="lx-editorial-text">
+        <h2>LIN XÉN</h2>
+        <p>Thử tại nhà · Rồi hãy quyết định</p>
+    </div>
+</section>
+
 {{-- ===================================================== --}}
 {{-- TRY AT HOME – PREMIUM FLOW (REFINED) --}}
 {{-- ===================================================== --}}
