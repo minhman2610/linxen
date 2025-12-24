@@ -36,10 +36,6 @@
             : time() }}">
             
 
-
-<link rel="stylesheet"
-      href="/themes/luxe/assets/css/reels.css?v={{ filemtime(public_path('themes/luxe/assets/css/reels.css')) }}">
-
      
     {{-- Page-specific head --}}
     @stack('head')
@@ -86,7 +82,7 @@
 
     <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
 
-    <script src="/themes/luxe/assets/js/reels.js?v={{ filemtime(public_path('themes/luxe/assets/js/reels.js')) }}"></script>
+    
 
     {{-- Page-specific scripts --}}
     @stack('scripts')
