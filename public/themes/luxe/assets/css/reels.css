@@ -203,22 +203,20 @@ html, body {
 
 
 
-/* =====================================================
-   PRODUCT BAR (BOTTOM FIXED – FINAL CLEAN)
-   ===================================================== */
-
+/* ===============================
+   PRODUCT BAR (BOTTOM FIXED – FINAL)
+   =============================== */
 .lx-reels-product-bar {
     position: fixed;
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
     z-index: 100;
 
-    /* ❗ KHÓA CHIỀU CAO LOGIC */
     min-height: 144px;
+    max-height: 42vh;
 
     padding: 16px;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 
     display: flex;
     flex-direction: column;
@@ -227,12 +225,11 @@ html, body {
     background: linear-gradient(
         to top,
         rgba(0,0,0,.92),
-        rgba(0,0,0,.65),
-        rgba(0,0,0,0)
+        rgba(0,0,0,.65)
     );
 
     backdrop-filter: blur(12px);
-    overflow: hidden; /* ❌ không cho bar tự scroll */
+    overflow-y: auto;
 }
 
 /* ===============================
@@ -246,7 +243,7 @@ html, body {
 
 .lx-reels-row-top {
     align-items: flex-start;
-    min-height: 72px; /* 🔒 khóa – chống xô thumb */
+    min-height: 72px; /* 🔒 khóa chiều cao – chống xô thumb */
 }
 
 .lx-reels-row-meta {
@@ -265,6 +262,7 @@ html, body {
    =============================== */
 .lx-reels-thumb {
     position: relative;
+
     width: 64px;
     height: 64px;
 
@@ -281,7 +279,7 @@ html, body {
     display: block;
 }
 
-/* SALE BADGE – ABSOLUTE, KHÔNG ẢNH HƯỞNG LAYOUT */
+/* SALE BADGE – KHÔNG ẢNH HƯỞNG LAYOUT */
 .lx-reels-sale-badge {
     position: absolute;
     top: -6px;
@@ -294,15 +292,15 @@ html, body {
     line-height: 1;
 
     color: #fff;
-    background: linear-gradient(135deg, #ff5a5f, #ff8a80);
-    border-radius: 8px;
+    background: linear-gradient(135deg, #ff3b30, #ff6a5c);
 
-    box-shadow: 0 4px 10px rgba(255,90,95,.35);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255,59,48,.35);
     pointer-events: none;
 }
 
 /* ===============================
-   PRODUCT MAIN
+   PRODUCT MAIN (NAME + PRICE)
    =============================== */
 .lx-reels-product-main {
     flex: 1;
@@ -321,21 +319,20 @@ html, body {
     overflow: hidden;
 }
 
-/* ===============================
-   PRICE + DESC INLINE (KHÔNG REFLOW)
-   =============================== */
+/* PRICE INLINE – KHÓA KHÔNG REFLOW */
 .lx-reels-price-inline {
     display: flex;
     align-items: center;
     gap: 8px;
+
     margin-top: 4px;
-    white-space: nowrap;
+    white-space: nowrap; /* 🔥 không wrap – không đẩy layout */
 }
 
 .lx-reels-price {
     font-size: 15px;
     font-weight: 700;
-    color: #e86a6a; /* đỏ nhạt – sang */
+    color: #E86A6A;
 }
 
 .lx-reels-price-old {
@@ -344,17 +341,12 @@ html, body {
     text-decoration: line-through;
 }
 
-/* DESC – 1 LINE */
-.lx-reels-desc-inline {
+/* DESC */
+.lx-reels-desc {
     margin-top: 4px;
-    font-size: 12px;
-    line-height: 1.3;
-    color: rgba(255,255,255,.7);
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    pointer-events: none;
+    font-size: 13px;
+    color: rgba(255,255,255,.75);
+    line-height: 1.35;
 }
 
 /* ===============================
@@ -374,7 +366,7 @@ html, body {
 }
 
 /* ===============================
-   CTA – NORMALIZED
+   CTA – NORMALIZED (KHÔNG NHẢY)
    =============================== */
 .lx-reels-btn-primary,
 .lx-reels-btn-secondary {
@@ -387,25 +379,33 @@ html, body {
 
     box-sizing: border-box;
     line-height: 1;
+
     border-radius: 24px;
     white-space: nowrap;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* CTA CHÍNH */
 .lx-reels-btn-primary {
     flex: 1;
+
     background: #fff;
     color: #000;
 
     font-size: 15px;
     font-weight: 700;
+    letter-spacing: .02em;
+
     border: none;
+    cursor: pointer;
 }
 
 /* CTA PHỤ */
 .lx-reels-btn-secondary {
-    background: transparent;
     border: 1px solid rgba(255,255,255,.35);
+    background: transparent;
 
     color: #fff;
     font-size: 13px;
@@ -434,6 +434,57 @@ html, body {
 }
 
 /* ===============================
+   ACTION ICONS (NẾU DÙNG)
+   =============================== */
+.lx-reels-action-btn {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 24px;
+    background: rgba(255,255,255,.95);
+    border: none;
+    color: #000;
+}
+
+.lx-reels-action-btn svg {
+    width: 22px;
+    height: 22px;
+}
+/* ===============================
+   DESC INLINE – 1 LINE ONLY
+   =============================== */
+.lx-reels-desc-inline {
+    margin-top: 4px;
+
+    font-size: 12px;
+    line-height: 1.3;
+    color: rgba(255,255,255,.7);
+
+    white-space: nowrap;       /* 🔒 chỉ 1 dòng */
+    overflow: hidden;
+    text-overflow: ellipsis;   /* … nếu dài */
+
+    pointer-events: none;      /* không ảnh hưởng gesture */
+}
+
+
+
+
+/* HOVER / ACTIVE (desktop nhẹ nhàng) */
+@media (hover:hover) {
+    .lx-reels-btn-primary:hover {
+        background: #f5f5f5;
+    }
+
+    .lx-reels-btn-secondary:hover {
+        background:
+
+
+/* ===============================
    MINI LOADING
    =============================== */
 .lx-reels-mini-loading {
@@ -460,4 +511,28 @@ html, body {
     opacity: 1;
 }
 
+/* ===============================
+   UX POLISH
+   =============================== */
+.swiper-slide {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ===============================
+   SAFE AREA (iOS)
+   =============================== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    :root {
+        --lx-reels-product-bar-h: calc(144px + env(safe-area-inset-bottom));
+    }
+
+    .lx-reels-product-bar {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+}
 
