@@ -433,6 +433,27 @@ html, body {
     white-space: nowrap;
 }
 
+.lx-reels-btn-secondary {
+    height: 46px;
+    padding: 0 18px;
+
+    display: inline-flex;          /* 🔥 QUAN TRỌNG */
+    align-items: center;           /* 🔥 CĂN GIỮA DỌC */
+    justify-content: center;
+
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,.35);
+
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;                /* 🔥 FIX BASELINE */
+    white-space: nowrap;
+
+    text-decoration: none;
+}
+
+
 /* HOVER / ACTIVE (desktop nhẹ nhàng) */
 @media (hover:hover) {
     .lx-reels-btn-primary:hover {
