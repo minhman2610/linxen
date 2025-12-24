@@ -339,73 +339,40 @@ html, body {
 }
 
 /* ===============================
-   ACTION BUTTONS
+   ACTION ROW
    =============================== */
-.lx-reels-btn-primary {
-    flex: 1;
-    height: 44px;
-    border-radius: 22px;
-    background: #fff;
-    color: #000;
-    font-weight: 700;
-    border: none;
-}
-
-.lx-reels-btn-secondary {
-    height: 44px;
-    padding: 0 16px;
-    border-radius: 22px;
-    border: 1px solid rgba(255,255,255,.4);
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
-}
-
-/* WISHLIST */
-.lx-reels-wishlist-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    background: rgba(255,255,255,.15);
-    color: #fff;
-    border: none;
-    flex-shrink: 0;
-    font-size: 18px;
-}
-
-/* ===============================
-   ACTION ICONS (NẾU DÙNG)
-   =============================== */
-.lx-reels-action-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(255,255,255,.95);
-    border: none;
-    color: #000;
-}
-
-.lx-reels-action-btn svg {
-    width: 22px;
-    height: 22px;
-}
 .lx-reels-row-action {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
+/* ===============================
+   CTA – NORMALIZED (KHÔNG NHẢY)
+   =============================== */
+.lx-reels-btn-primary,
+.lx-reels-btn-secondary {
+    height: 46px;
+    padding: 0 18px;
+
+    display: inline-flex;          /* 🔥 normalize */
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;        /* 🔥 quan trọng */
+    line-height: 1;                /* 🔥 xoá baseline lệch */
+
+    border-radius: 24px;
+    white-space: nowrap;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 /* CTA CHÍNH */
 .lx-reels-btn-primary {
     flex: 1;
-    height: 46px;
 
-    border-radius: 24px;
     background: #fff;
     color: #000;
 
@@ -419,39 +386,58 @@ html, body {
 
 /* CTA PHỤ */
 .lx-reels-btn-secondary {
-    height: 46px;
-    padding: 0 18px;
-
-    border-radius: 24px;
     border: 1px solid rgba(255,255,255,.35);
+    background: transparent;
 
     color: #fff;
     font-size: 13px;
     font-weight: 600;
 
     text-decoration: none;
-    white-space: nowrap;
 }
 
-.lx-reels-btn-secondary {
-    height: 46px;
-    padding: 0 18px;
+/* ===============================
+   WISHLIST
+   =============================== */
+.lx-reels-wishlist-btn {
+    width: 36px;
+    height: 36px;
 
-    display: inline-flex;          /* 🔥 QUAN TRỌNG */
-    align-items: center;           /* 🔥 CĂN GIỮA DỌC */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+
+    border: none;
+    flex-shrink: 0;
+    font-size: 18px;
+}
+
+/* ===============================
+   ACTION ICONS (NẾU DÙNG)
+   =============================== */
+.lx-reels-action-btn {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
     justify-content: center;
 
     border-radius: 24px;
-    border: 1px solid rgba(255,255,255,.35);
-
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1;                /* 🔥 FIX BASELINE */
-    white-space: nowrap;
-
-    text-decoration: none;
+    background: rgba(255,255,255,.95);
+    border: none;
+    color: #000;
 }
+
+.lx-reels-action-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
 
 
 /* HOVER / ACTIVE (desktop nhẹ nhàng) */
