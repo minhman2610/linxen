@@ -128,10 +128,7 @@ html, body {
    =============================== */
 .lx-reels-wrapper {
     position: fixed;
-    top: 0;
-    bottom: -100px;
-    left: 0;
-    right: 0;
+    
 
     width: 100vw;
     overflow: hidden;
