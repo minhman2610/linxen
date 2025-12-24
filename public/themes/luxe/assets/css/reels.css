@@ -341,7 +341,7 @@ html, body {
 .lx-reels-price {
     font-size: 15px;
     font-weight: 700;
-    color: #fff;
+    color: red;
 }
 
 .lx-reels-price-old {
