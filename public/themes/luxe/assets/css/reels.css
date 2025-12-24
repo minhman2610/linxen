@@ -407,3 +407,86 @@ button {
         padding-bottom: calc(144px + env(safe-area-inset-bottom));
     }
 }
+/* ===============================
+   PRODUCT BAR – RICH CONTENT
+   =============================== */
+.lx-reels-product-bar--rich {
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ROWS */
+.lx-reels-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lx-reels-row-top {
+    align-items: flex-start;
+}
+
+.lx-reels-product-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.lx-reels-product-main strong {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.lx-reels-desc {
+    margin-top: 4px;
+    font-size: 13px;
+    color: rgba(255,255,255,.75);
+    line-height: 1.35;
+}
+
+/* Wishlist nhỏ lại */
+.lx-reels-wishlist-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    border: none;
+    font-size: 18px;
+}
+
+/* META */
+.lx-reels-row-meta {
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.lx-reels-attr {
+    font-size: 12px;
+    color: rgba(255,255,255,.7);
+}
+
+/* CTA */
+.lx-reels-row-action {
+    gap: 12px;
+}
+
+.lx-reels-btn-primary {
+    flex: 1;
+    height: 44px;
+    border-radius: 22px;
+    background: #fff;
+    color: #000;
+    font-weight: 700;
+    border: none;
+}
+
+.lx-reels-btn-secondary {
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.4);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+}
