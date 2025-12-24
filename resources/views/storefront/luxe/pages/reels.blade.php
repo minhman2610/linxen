@@ -3,6 +3,12 @@
 @section('content')
 <div class="lx-reels-wrapper">
 
+    {{-- MINI LOADING (CHỈ HIỆN KHI RELOAD) --}}
+    <div class="lx-reels-mini-loading" id="lxReelsMiniLoading">
+        <span class="lx-reels-loading-icon">⟳</span>
+        <span class="lx-reels-loading-text">Đang làm mới…</span>
+    </div>
+
     {{-- SWIPER DỌC --}}
     <div class="swiper reels-vertical">
         <div class="swiper-wrapper">
@@ -18,8 +24,8 @@
                     <div class="swiper reels-images">
                         <div class="swiper-wrapper">
                             @foreach ($p['images'] as $img)
-                                <div class="swiper-slide reels-image-item">
-                                    <img src="{{ $img }}" alt="{{ $p['name'] }}" loading="lazy">
+                                <div class="swiper-slide">
+                                    <img src="{{ $img }}" loading="lazy">
                                 </div>
                             @endforeach
                         </div>
@@ -29,12 +35,6 @@
             @endforeach
 
         </div>
-    </div>
-
-    {{-- LOADING OVERLAY --}}
-    <div class="lx-reels-loading" id="lxReelsLoading">
-        <div class="lx-loading-spinner"></div>
-        <div class="lx-loading-text">Đang làm mới…</div>
     </div>
 
 </div>

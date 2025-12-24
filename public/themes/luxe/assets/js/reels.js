@@ -1,25 +1,38 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS
- * SAFE INIT + SMART RELOAD + LOADING
+ * LIN XÉN – PRODUCT REELS (FINAL)
  * =====================================================
+ * RULE:
+ * - Normal swipe: browse products
+ * - Swipe to first product (index 0): OK
+ * - Try to swipe ABOVE first product → SHOW LOADING → RELOAD
  */
 
 (function () {
 
+    /* =====================================================
+       GLOBAL GUARD
+       ===================================================== */
     if (window.__LX_REELS_INITED__) return;
     window.__LX_REELS_INITED__ = true;
 
     let reelsVertical = null;
-    let isReloading = false;
+    let isReloading   = false;
 
+    /* =====================================================
+       LOADING
+       ===================================================== */
     function showLoading() {
         const el = document.getElementById('lxReelsLoading');
         if (el) el.classList.add('active');
     }
 
+    /* =====================================================
+       INIT SWIPERS
+       ===================================================== */
     function initReels() {
 
+        // Chờ Swiper load
         if (typeof window.Swiper === 'undefined') {
             setTimeout(initReels, 50);
             return;
@@ -28,14 +41,17 @@
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
+        /* ---------- Vertical reels ---------- */
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
-            resistanceRatio: 0,
+            resistanceRatio: 0, // không bounce
         });
 
+        // expose (debug / future use)
         window.reelsVertical = reelsVertical;
 
+        /* ---------- Horizontal images ---------- */
         document.querySelectorAll('.reels-images').forEach(el => {
             if (el.classList.contains('swiper-initialized')) return;
 
@@ -43,86 +59,53 @@
                 direction: 'horizontal',
                 slidesPerView: 1,
                 nested: true,
+                resistanceRatio: 0.6,
             });
         });
-
-        // ADD TO CART
-        document.getElementById('lxReelsAddCart')
-            ?.addEventListener('click', function () {
-
-                const btn = this;
-
-                fetch('/cart/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        sku: btn.dataset.id,
-                        name: btn.dataset.name,
-                        price: btn.dataset.price,
-                        image: btn.dataset.image,
-                        qty: 1
-                    })
-                })
-                .then(res => res.json())
-                .then(res => {
-                    if (res?.success && document.getElementById('lxCartCount')) {
-                        document.getElementById('lxCartCount').innerText = res.cart_count;
-                    }
-                });
-            });
     }
 
+    // DOM Ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initReels);
     } else {
         initReels();
     }
 
-    /* ===============================
-       SMART PULL DOWN
-       =============================== */
+    /* =====================================================
+       RELOAD LOGIC – ONLY WHEN TRYING TO GO ABOVE FIRST
+       ===================================================== */
     let startY = 0;
-    let pulling = false;
-    let backToTopTriggered = false;
 
     document.addEventListener('touchstart', e => {
         if (!reelsVertical || isReloading) return;
         startY = e.touches[0].clientY;
-        pulling = true;
-        backToTopTriggered = false;
     }, { passive: true });
 
     document.addEventListener('touchmove', e => {
-        if (!pulling || !reelsVertical || isReloading) return;
+        if (!reelsVertical || isReloading) return;
 
-        const delta = e.touches[0].clientY - startY;
-        if (delta < 80) return;
+        const currentY = e.touches[0].clientY;
+        const deltaY   = currentY - startY;
 
-        // 1️⃣ Chưa ở đầu → kéo về đầu
-        if (reelsVertical.activeIndex > 0 && !backToTopTriggered) {
-            backToTopTriggered = true;
-            reelsVertical.slideTo(0, 300);
-            return;
-        }
-
-        // 2️⃣ Ở đầu → reload + loading
-        if (reelsVertical.activeIndex === 0 && delta > 140) {
+        /**
+         * deltaY < 0  → vuốt LÊN
+         * activeIndex === 0 → đang ở sản phẩm đầu
+         * deltaY < -80 → cố tình vuốt ngược
+         */
+        if (
+            reelsVertical.activeIndex === 0 &&
+            deltaY < -80
+        ) {
             isReloading = true;
+
             showLoading();
 
+            // delay nhẹ cho UX
             setTimeout(() => {
                 window.location.reload();
             }, 300);
         }
-    }, { passive: true });
 
-    document.addEventListener('touchend', () => {
-        pulling = false;
-    });
+    }, { passive: true });
 
 })();
