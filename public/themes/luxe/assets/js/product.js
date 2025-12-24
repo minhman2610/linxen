@@ -184,3 +184,33 @@
     });
 
 })();
+function initProductSwiper() {
+    if (!window.Swiper) return;
+
+    const thumbEl = document.querySelector('.lx-product-thumb-swiper');
+    const mainEl  = document.querySelector('.lx-product-main-swiper');
+
+    if (!mainEl) return;
+
+    let thumbSwiper = null;
+
+    if (thumbEl) {
+        thumbSwiper = new Swiper(thumbEl, {
+            spaceBetween: 8,
+            slidesPerView: 'auto',
+            freeMode: true,
+            watchSlidesProgress: true,
+        });
+    }
+
+    new Swiper(mainEl, {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: false,
+        pagination: {
+            el: mainEl.querySelector('.swiper-pagination'),
+            clickable: true,
+        },
+        thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
+    });
+}

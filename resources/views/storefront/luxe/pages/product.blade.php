@@ -23,29 +23,44 @@
 <section class="lx-product-detail">
 
     {{-- =====================================================
-       PRODUCT GALLERY – SLIDER
-    ===================================================== --}}
-    <div class="lx-product-gallery">
+   PRODUCT GALLERY – MAIN + THUMBS
+===================================================== --}}
+<div class="lx-product-gallery">
 
-        <div class="swiper lx-product-swiper">
+    {{-- MAIN IMAGE --}}
+    <div class="swiper lx-product-main-swiper">
+        <div class="swiper-wrapper">
+            @foreach($images as $img)
+                <div class="swiper-slide">
+                    <img
+                        src="{{ $img }}"
+                        alt="{{ $product['name'] ?? '' }}"
+                        loading="lazy">
+                </div>
+            @endforeach
+        </div>
+
+        <div class="swiper-pagination"></div>
+    </div>
+
+    {{-- THUMBNAILS --}}
+    @if(count($images) > 1)
+        <div class="swiper lx-product-thumb-swiper">
             <div class="swiper-wrapper">
-
                 @foreach($images as $img)
                     <div class="swiper-slide">
                         <img
                             src="{{ $img }}"
-                            alt="{{ $product['name'] ?? '' }}"
+                            alt=""
                             loading="lazy">
                     </div>
                 @endforeach
-
             </div>
-
-            {{-- Pagination --}}
-            <div class="swiper-pagination"></div>
         </div>
+    @endif
 
-    </div>
+</div>
+
 
     {{-- =====================================================
        PRODUCT INFO
