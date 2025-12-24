@@ -1,17 +1,14 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (FINAL – HEIGHT LOCK)
+ * LIN XÉN – PRODUCT REELS (FINAL – CORRECT HEIGHT LOCK)
  * =====================================================
- * - Vertical reels + horizontal images
- * - Fix image overflow under product bar (runtime)
- * - Stable nested swipe (iOS / Android)
+ * - KHÓA HEIGHT THEO .reels-images (KHÔNG PHẢI wrapper)
+ * - KHÔNG TRÀN PRODUCT BAR
+ * - ỔN ĐỊNH iOS / ANDROID
  */
 
 (function () {
 
-    /* =====================================================
-       GLOBAL GUARD
-       ===================================================== */
     if (window.__LX_REELS_INITED__) return;
     window.__LX_REELS_INITED__ = true;
 
@@ -21,91 +18,85 @@
        PRODUCT BAR SYNC
        ===================================================== */
     function updateProductBarFromIndex(swiper) {
-        if (!swiper || !swiper.slides || !swiper.slides.length) return;
-
-        const slideEl = swiper.slides[swiper.activeIndex];
+        const slideEl = swiper?.slides?.[swiper.activeIndex];
         if (!slideEl) return;
 
-        const {
-            id,
-            sku,
-            name,
-            price,
-            thumb,
-            tag,
-            available,
-            desc,
-            url
-        } = slideEl.dataset;
+        const d = slideEl.dataset;
 
-        const thumbEl  = document.getElementById('lxReelsThumb');
-        const nameEl   = document.getElementById('lxReelsName');
-        const priceEl  = document.getElementById('lxReelsPrice');
-        const tagEl    = document.getElementById('lxReelsTag');
-        const descEl   = document.getElementById('lxReelsDesc');
-        const addBtn   = document.getElementById('lxReelsAddCart');
-        const linkEl   = document.getElementById('lxReelsDetailLink');
+        const map = {
+            lxReelsThumb: d.thumb,
+            lxReelsName: d.name,
+            lxReelsDesc: d.desc
+        };
 
-        if (thumbEl && thumb) thumbEl.src = thumb;
-        if (nameEl)  nameEl.textContent  = name || '';
-        if (descEl)  descEl.textContent  = desc || '';
+        Object.entries(map).forEach(([id, val]) => {
+            const el = document.getElementById(id);
+            if (el && val !== undefined) {
+                if (el.tagName === 'IMG') el.src = val;
+                else el.textContent = val;
+            }
+        });
 
-        if (priceEl && price) {
-            priceEl.textContent =
-                Number(price).toLocaleString('vi-VN') + '₫';
+        const priceEl = document.getElementById('lxReelsPrice');
+        if (priceEl && d.price) {
+            priceEl.textContent = Number(d.price).toLocaleString('vi-VN') + '₫';
         }
 
+        const tagEl = document.getElementById('lxReelsTag');
         if (tagEl) {
-            tagEl.textContent = tag || '';
-            tagEl.style.display = tag ? 'inline-block' : 'none';
+            tagEl.textContent = d.tag || '';
+            tagEl.style.display = d.tag ? 'inline-block' : 'none';
         }
 
+        const addBtn = document.getElementById('lxReelsAddCart');
         if (addBtn) {
-            addBtn.dataset.id    = id || '';
-            addBtn.dataset.sku   = sku || '';
-            addBtn.dataset.name  = name || '';
-            addBtn.dataset.price = price || '';
-            addBtn.dataset.image = thumb || '';
-            addBtn.disabled = Number(available) <= 0;
+            Object.assign(addBtn.dataset, {
+                id: d.id || '',
+                sku: d.sku || '',
+                name: d.name || '',
+                price: d.price || '',
+                image: d.thumb || ''
+            });
+            addBtn.disabled = Number(d.available) <= 0;
         }
 
-        if (linkEl) {
-            linkEl.href = url || '#';
-        }
+        const linkEl = document.getElementById('lxReelsDetailLink');
+        if (linkEl) linkEl.href = d.url || '#';
     }
 
     /* =====================================================
-       🔒 LOCK IMAGE HEIGHT – CORE FIX
+       🔒 CORRECT HEIGHT LOCK
        ===================================================== */
-    function lockReelsImageHeight() {
-        const wrapper = document.querySelector('.lx-reels-wrapper');
-        if (!wrapper) return;
+    function lockImageHeight() {
+        document.querySelectorAll('.reels-images').forEach(images => {
+            const rect = images.getBoundingClientRect();
+            const h = Math.floor(rect.height);
 
-        const rect = wrapper.getBoundingClientRect();
-        const maxHeight = Math.round(rect.height);
+            if (!h || h < 100) return;
 
-        document.querySelectorAll('.reels-image-frame').forEach(frame => {
-            frame.style.height = maxHeight + 'px';
-            frame.style.maxHeight = maxHeight + 'px';
+            images.querySelectorAll('.reels-image-frame').forEach(frame => {
+                frame.style.height = h + 'px';
+                frame.style.maxHeight = h + 'px';
+            });
         });
     }
 
-    function bindImageLoadLock() {
+    function bindImageLoad() {
         document.querySelectorAll('.reels-image-frame img').forEach(img => {
             if (img.complete) {
-                lockReelsImageHeight();
+                lockImageHeight();
             } else {
-                img.addEventListener('load', lockReelsImageHeight, { once: true });
+                img.addEventListener('load', lockImageHeight, { once: true });
             }
         });
     }
 
     /* =====================================================
-       INIT REELS
+       INIT
        ===================================================== */
     function initReels() {
 
-        if (typeof window.Swiper === 'undefined') {
+        if (!window.Swiper) {
             setTimeout(initReels, 50);
             return;
         }
@@ -113,106 +104,53 @@
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
-        /* ---------- Vertical Swiper ---------- */
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
             resistance: true,
             resistanceRatio: 0.85,
-            nested: false,
 
             on: {
                 init(sw) {
                     updateProductBarFromIndex(sw);
-                    lockReelsImageHeight();
-                    bindImageLoadLock();
+                    lockImageHeight();
+                    bindImageLoad();
                 },
                 slideChangeTransitionEnd(sw) {
                     updateProductBarFromIndex(sw);
-                    lockReelsImageHeight();
+                    lockImageHeight();
                 }
             }
         });
 
         window.reelsVertical = reelsVertical;
 
-        /* ---------- Horizontal Image Swipers ---------- */
         document.querySelectorAll('.reels-images').forEach(el => {
             if (el.classList.contains('swiper-initialized')) return;
 
-            const swiper = new Swiper(el, {
+            new Swiper(el, {
                 direction: 'horizontal',
                 slidesPerView: 1,
                 loop: false,
                 nested: true,
-
-                resistance: true,
-                resistanceRatio: 0.85,
-                touchReleaseOnEdges: false,
                 watchOverflow: true,
-                freeMode: false,
 
                 on: {
-                    init(sw) {
-                        if (sw.slides.length <= 1) {
-                            sw.allowTouchMove = false;
-                        }
-                        lockReelsImageHeight();
+                    init() {
+                        lockImageHeight();
                     },
                     slideChangeTransitionEnd() {
-                        lockReelsImageHeight();
+                        lockImageHeight();
                     }
                 }
             });
-
-            el.__swiper = swiper;
         });
 
-        /* ---------- ADD TO CART ---------- */
-        const addCartBtn = document.getElementById('lxReelsAddCart');
-        if (addCartBtn) {
-            addCartBtn.addEventListener('click', function () {
-
-                if (this.disabled) return;
-
-                fetch('/cart/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        sku:   this.dataset.sku,
-                        name:  this.dataset.name,
-                        price: this.dataset.price,
-                        image: this.dataset.image,
-                        qty:   1
-                    })
-                })
-                .then(res => res.json())
-                .then(res => {
-                    if (res?.success) {
-                        const countEl = document.getElementById('lxCartCount');
-                        if (countEl && res.cart_count !== undefined) {
-                            countEl.textContent = res.cart_count;
-                        }
-                    }
-                })
-                .catch(() => {});
-            });
-        }
-
-        /* ---------- RESIZE / ORIENTATION ---------- */
         window.addEventListener('resize', () => {
-            setTimeout(lockReelsImageHeight, 80);
+            setTimeout(lockImageHeight, 100);
         });
     }
 
-    /* =====================================================
-       DOM READY
-       ===================================================== */
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initReels);
     } else {
