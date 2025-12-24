@@ -1,6 +1,14 @@
 /* =====================================================
-   LIN XÉN – REELS (FINAL CLEAN)
+   LIN XÉN – REELS (FIX IMAGE OVERFLOW – FINAL)
    ===================================================== */
+
+/* ===============================
+   GLOBAL VARS
+   =============================== */
+:root {
+    --lx-reels-header-h: 52px;
+    --lx-reels-product-bar-h: 144px;
+}
 
 /* ===============================
    RESET / BASE
@@ -14,27 +22,28 @@ html, body {
 }
 
 .lx-reels-body {
+    height: 100vh;
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                  Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* ===============================
-   HEADER REELS
+   HEADER
    =============================== */
 .lx-reels-header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 52px;
+    height: var(--lx-reels-header-h);
     z-index: 100;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     padding: 0 12px;
+
     color: #fff;
     font-weight: 800;
 
@@ -45,116 +54,60 @@ html, body {
     );
 }
 
-/* ICON */
-.lx-reels-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: none;
-    border: none;
-    color: #fff;
-}
-
-.lx-reels-icon svg {
-    width: 22px;
-    height: 22px;
-    stroke: #fff;
-}
-
-/* MODE SWITCH */
-.lx-reels-mode {
-    display: flex;
-    gap: 16px;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: .1em;
-}
-
-.lx-reels-mode span {
-    opacity: .45;
-}
-
-.lx-reels-mode span.active {
-    opacity: 1;
-}
-
-/* RIGHT ACTIONS */
-.lx-reels-actions {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-/* CART BADGE */
-.lx-reels-cart {
-    position: relative;
-}
-
-.lx-reels-cart em {
-    position: absolute;
-    top: -5px;
-    right: -6px;
-
-    min-width: 18px;
-    height: 18px;
-
-    font-size: 11px;
-    font-weight: 700;
-
-    background: #ff3b30;
-    color: #fff;
-    border-radius: 9px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* ===============================
-   MAIN – MEDIA AREA
+   MAIN WRAPPER
    =============================== */
 .lx-reels-main,
 .lx-reels-wrapper {
-    width: 100vw;
     height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
 /* ===============================
    SWIPER – VERTICAL
    =============================== */
-.reels-vertical,
-.reels-vertical .swiper-wrapper,
-.reels-slide {
-    height: 100vh;
+.reels-vertical {
+    height: 100%;
+}
+
+.reels-vertical .swiper-wrapper {
+    height: 100%;
 }
 
 .reels-slide {
-    position: relative;
+    height: 100%;
     background: #000;
+
+    /* ⛔ KHÔNG dùng padding-bottom ở đây */
 }
 
 /* ===============================
-   SWIPER – IMAGES (HORIZONTAL)
+   IMAGE AREA (KEY FIX)
    =============================== */
-.reels-images,
-.reels-images .swiper-wrapper {
+.reels-images {
+    height: calc(
+        100vh
+        - var(--lx-reels-header-h)
+        - var(--lx-reels-product-bar-h)
+    );
+}
+
+.reels-images .swiper-wrapper,
+.reels-images .swiper-slide {
     height: 100%;
 }
 
 .reels-images img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* QUAN TRỌNG: không zoom cận */
     display: block;
+    background: #000;
 }
 
 /* ===============================
-   PRODUCT BAR (BOTTOM)
+   PRODUCT BAR (RICH – LARGE)
    =============================== */
 .lx-reels-product-bar {
     position: fixed;
@@ -163,30 +116,32 @@ html, body {
     right: 0;
     z-index: 100;
 
-    height: 72px;
-    padding: 0 12px;
+    height: var(--lx-reels-product-bar-h);
+    padding: 16px;
 
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
 
     background: linear-gradient(
         to top,
-        rgba(0,0,0,.85),
-        rgba(0,0,0,.55)
+        rgba(0,0,0,.95),
+        rgba(0,0,0,.7)
     );
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
 }
 
-/* THUMBNAIL */
+/* ===============================
+   PRODUCT BAR CONTENT
+   =============================== */
 .lx-reels-thumb {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
     overflow: hidden;
     flex-shrink: 0;
-    background: #111;
 }
 
 .lx-reels-thumb img {
@@ -196,32 +151,26 @@ html, body {
 }
 
 /* INFO */
-.lx-reels-product-info {
-    flex: 1;
-    min-width: 0;
-    color: #fff;
-}
-
 .lx-reels-product-info strong {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-/* META */
-.lx-reels-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 2px;
+.lx-reels-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,.75);
+    line-height: 1.35;
 }
 
 .lx-reels-price {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
 }
 
 .lx-reels-tag {
@@ -231,72 +180,56 @@ html, body {
     background: rgba(255,255,255,.15);
 }
 
-/* ACTION ICONS (PRODUCT BAR) */
+/* ===============================
+   CTA
+   =============================== */
 .lx-reels-action-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: rgba(255,255,255,.95);
-    border: none;
+    background: #fff;
     color: #000;
-}
-
-.lx-reels-action-btn svg {
-    width: 20px;
-    height: 20px;
+    border: none;
 }
 
 /* ===============================
-   MINI LOADING (RELOAD INDICATOR)
+   MINI LOADING
    =============================== */
 .lx-reels-mini-loading {
     position: absolute;
-    top: 56px;
+    top: calc(var(--lx-reels-header-h) + 4px);
     left: 50%;
     transform: translateX(-50%);
-    z-index: 20;
+    z-index: 120;
 
     display: flex;
-    align-items: center;
     gap: 6px;
-
     padding: 6px 10px;
-    border-radius: 14px;
 
+    border-radius: 14px;
     background: rgba(0,0,0,.6);
     color: #fff;
     font-size: 12px;
 
     opacity: 0;
     pointer-events: none;
-    transition: opacity .2s ease;
 }
 
 .lx-reels-mini-loading.active {
     opacity: 1;
 }
 
-.lx-reels-loading-icon {
-    display: inline-block;
-    animation: lx-spin 1s linear infinite;
-}
-
-@keyframes lx-spin {
-    to { transform: rotate(360deg); }
-}
-
 /* ===============================
    SAFE AREA (iOS)
    =============================== */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .lx-reels-product-bar {
-        padding-bottom: env(safe-area-inset-bottom);
-        height: calc(72px + env(safe-area-inset-bottom));
+    :root {
+        --lx-reels-product-bar-h: calc(144px + env(safe-area-inset-bottom));
     }
 }
 
@@ -310,183 +243,4 @@ html, body {
 
 button {
     -webkit-tap-highlight-color: transparent;
-}
-/* =====================================================
-   REELS – LARGE PRODUCT BAR (IMAGE FRIENDLY)
-   ===================================================== */
-
-/* ===============================
-   PRODUCT BAR – TĂNG CHIỀU CAO
-   =============================== */
-.lx-reels-product-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-
-    height: 144px; /* gấp đôi bản cũ */
-    padding: 16px 16px 20px;
-
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-
-    background: linear-gradient(
-        to top,
-        rgba(0,0,0,.92),
-        rgba(0,0,0,.65)
-    );
-
-    backdrop-filter: blur(12px);
-}
-
-/* ===============================
-   THUMBNAIL – TO HƠN
-   =============================== */
-.lx-reels-thumb {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-/* ===============================
-   PRODUCT INFO – RÕ & 2 DÒNG
-   =============================== */
-.lx-reels-product-info strong {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1.25;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-
-    overflow: hidden;
-}
-
-.lx-reels-price {
-    font-size: 15px;
-    font-weight: 700;
-}
-
-/* ===============================
-   ACTION ICONS – DỄ BẤM
-   =============================== */
-.lx-reels-action-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-}
-
-.lx-reels-action-btn svg {
-    width: 22px;
-    height: 22px;
-}
-
-/* ===============================
-   IMAGE AREA – CHỪA KHÔNG GIAN
-   =============================== */
-.reels-slide {
-    padding-bottom: 144px; /* đúng bằng height product bar */
-    box-sizing: border-box;
-}
-
-/* ===============================
-   SAFE AREA (iOS)
-   =============================== */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .lx-reels-product-bar {
-        padding-bottom: calc(20px + env(safe-area-inset-bottom));
-        height: calc(144px + env(safe-area-inset-bottom));
-    }
-
-    .reels-slide {
-        padding-bottom: calc(144px + env(safe-area-inset-bottom));
-    }
-}
-/* ===============================
-   PRODUCT BAR – RICH CONTENT
-   =============================== */
-.lx-reels-product-bar--rich {
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* ROWS */
-.lx-reels-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.lx-reels-row-top {
-    align-items: flex-start;
-}
-
-.lx-reels-product-main {
-    flex: 1;
-    min-width: 0;
-}
-
-.lx-reels-product-main strong {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1.25;
-}
-
-.lx-reels-desc {
-    margin-top: 4px;
-    font-size: 13px;
-    color: rgba(255,255,255,.75);
-    line-height: 1.35;
-}
-
-/* Wishlist nhỏ lại */
-.lx-reels-wishlist-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    background: rgba(255,255,255,.15);
-    color: #fff;
-    border: none;
-    font-size: 18px;
-}
-
-/* META */
-.lx-reels-row-meta {
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.lx-reels-attr {
-    font-size: 12px;
-    color: rgba(255,255,255,.7);
-}
-
-/* CTA */
-.lx-reels-row-action {
-    gap: 12px;
-}
-
-.lx-reels-btn-primary {
-    flex: 1;
-    height: 44px;
-    border-radius: 22px;
-    background: #fff;
-    color: #000;
-    font-weight: 700;
-    border: none;
-}
-
-.lx-reels-btn-secondary {
-    height: 44px;
-    padding: 0 16px;
-    border-radius: 22px;
-    border: 1px solid rgba(255,255,255,.4);
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
 }
