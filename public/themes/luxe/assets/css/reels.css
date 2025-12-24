@@ -126,11 +126,19 @@ html, body {
 /* ===============================
    MAIN WRAPPER
    =============================== */
+/* REELS VIEWPORT – KHÔNG DÙNG VH */
 .lx-reels-wrapper {
+    position: fixed;
+    top: var(--lx-reels-header-h);
+    bottom: var(--lx-reels-product-bar-h);
+    left: 0;
+    right: 0;
+
     width: 100vw;
-    height: 70vh;
-    overflow: hidden; /* 🔒 khóa không cho tràn */
+    overflow: hidden;
+    background: #000;
 }
+
 
 .lx-reels-has-header {
     padding-top: var(--lx-reels-header-h);
