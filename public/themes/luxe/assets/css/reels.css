@@ -20,7 +20,7 @@ html, body {
 }
 
 /* ===============================
-   HEADER REELS
+   HEADER REELS (FIXED – RIÊNG BIỆT)
    =============================== */
 .lx-reels-header {
     position: fixed;
@@ -115,6 +115,14 @@ html, body {
     justify-content: center;
 }
 
+/* =====================================================
+   GLOBAL VARS
+   ===================================================== */
+:root {
+    --lx-reels-header-h: 52px;
+    --lx-reels-product-bar-h: 144px;
+}
+
 /* ===============================
    MAIN – MEDIA AREA
    =============================== */
@@ -136,18 +144,10 @@ html, body {
 .reels-slide {
     position: relative;
     background: #000;
-}
 
-/* =====================================================
-   REELS – IMAGE + PRODUCT BAR (FINAL CLEAN VERSION)
-   ===================================================== */
-
-/* ===============================
-   GLOBAL VARS
-   =============================== */
-:root {
-    --lx-reels-header-h: 52px;
-    --lx-reels-product-bar-h: 144px;
+    /* 👉 CHỪA CHỖ CHO PRODUCT BAR */
+    padding-bottom: var(--lx-reels-product-bar-h);
+    box-sizing: border-box;
 }
 
 /* ===============================
@@ -176,8 +176,9 @@ html, body {
     justify-content: center;
 }
 
-/* 👉 QUAN TRỌNG: Ảnh fill chiều cao hợp lệ, KHÔNG tràn */
-.reels-images img {
+/* 👉 ẢNH / VIDEO LUÔN Ở GIỮA – KHÔNG TRÀN */
+.reels-images img,
+.reels-images video {
     height: 100%;
     width: auto;
 
@@ -189,7 +190,7 @@ html, body {
 }
 
 /* ===============================
-   PRODUCT BAR (BOTTOM – LARGE)
+   PRODUCT BAR (BOTTOM – FIXED)
    =============================== */
 .lx-reels-product-bar {
     position: fixed;
@@ -262,12 +263,12 @@ html, body {
 }
 
 /* ===============================
-   ACTION ICONS
+   ACTION ICONS – DỄ BẤM
    =============================== */
 .lx-reels-action-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
 
     display: flex;
     align-items: center;
@@ -279,8 +280,8 @@ html, body {
 }
 
 .lx-reels-action-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
 }
 
 /* ===============================
@@ -311,15 +312,6 @@ html, body {
 }
 
 /* ===============================
-   SAFE AREA (iOS)
-   =============================== */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    :root {
-        --lx-reels-product-bar-h: calc(144px + env(safe-area-inset-bottom));
-    }
-}
-
-/* ===============================
    UX POLISH
    =============================== */
 .swiper-slide {
@@ -331,122 +323,15 @@ button {
     -webkit-tap-highlight-color: transparent;
 }
 
-
-/* ===============================
-   ACTION ICONS – DỄ BẤM
-   =============================== */
-.lx-reels-action-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-}
-
-.lx-reels-action-btn svg {
-    width: 22px;
-    height: 22px;
-}
-
-/* ===============================
-   IMAGE AREA – CHỪA KHÔNG GIAN
-   =============================== */
-.reels-slide {
-    padding-bottom: 144px; /* đúng bằng height product bar */
-    box-sizing: border-box;
-}
-
 /* ===============================
    SAFE AREA (iOS)
    =============================== */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    :root {
+        --lx-reels-product-bar-h: calc(144px + env(safe-area-inset-bottom));
+    }
+
     .lx-reels-product-bar {
-        padding-bottom: calc(20px + env(safe-area-inset-bottom));
-        height: calc(144px + env(safe-area-inset-bottom));
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
     }
-
-    .reels-slide {
-        padding-bottom: calc(144px + env(safe-area-inset-bottom));
-    }
-}
-/* ===============================
-   PRODUCT BAR – RICH CONTENT
-   =============================== */
-.lx-reels-product-bar--rich {
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* ROWS */
-.lx-reels-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.lx-reels-row-top {
-    align-items: flex-start;
-}
-
-.lx-reels-product-main {
-    flex: 1;
-    min-width: 0;
-}
-
-.lx-reels-product-main strong {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1.25;
-}
-
-.lx-reels-desc {
-    margin-top: 4px;
-    font-size: 13px;
-    color: rgba(255,255,255,.75);
-    line-height: 1.35;
-}
-
-/* Wishlist nhỏ lại */
-.lx-reels-wishlist-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    background: rgba(255,255,255,.15);
-    color: #fff;
-    border: none;
-    font-size: 18px;
-}
-
-/* META */
-.lx-reels-row-meta {
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.lx-reels-attr {
-    font-size: 12px;
-    color: rgba(255,255,255,.7);
-}
-
-/* CTA */
-.lx-reels-row-action {
-    gap: 12px;
-}
-
-.lx-reels-btn-primary {
-    flex: 1;
-    height: 44px;
-    border-radius: 22px;
-    background: #fff;
-    color: #000;
-    font-weight: 700;
-    border: none;
-}
-
-.lx-reels-btn-secondary {
-    height: 44px;
-    padding: 0 16px;
-    border-radius: 22px;
-    border: 1px solid rgba(255,255,255,.4);
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
 }
