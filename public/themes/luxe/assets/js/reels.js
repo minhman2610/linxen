@@ -1,10 +1,10 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (FINAL – CORRECT HEIGHT LOCK)
+ * LIN XÉN – PRODUCT REELS (FINAL ABSOLUTE FIX)
  * =====================================================
- * - KHÓA HEIGHT THEO .reels-images (KHÔNG PHẢI wrapper)
- * - KHÔNG TRÀN PRODUCT BAR
- * - ỔN ĐỊNH iOS / ANDROID
+ * ✔ Khóa height theo viewport thật
+ * ✔ Ép lại swiper-slide (chặn Swiper tự set 880px)
+ * ✔ Không tràn product bar – 100%
  */
 
 (function () {
@@ -15,31 +15,75 @@
     let reelsVertical = null;
 
     /* =====================================================
-       PRODUCT BAR SYNC
+       VIEWPORT HEIGHT (SINGLE SOURCE OF TRUTH)
        ===================================================== */
-    function updateProductBarFromIndex(swiper) {
-        const slideEl = swiper?.slides?.[swiper.activeIndex];
-        if (!slideEl) return;
+    function getViewportHeight() {
+        const header = document.querySelector('.lx-reels-header');
+        const bar    = document.querySelector('.lx-reels-product-bar');
 
-        const d = slideEl.dataset;
+        const headerH = header ? header.offsetHeight : 0;
+        const barH    = bar ? bar.offsetHeight : 0;
 
-        const map = {
-            lxReelsThumb: d.thumb,
-            lxReelsName: d.name,
-            lxReelsDesc: d.desc
-        };
+        return window.innerHeight - headerH - barH;
+    }
 
-        Object.entries(map).forEach(([id, val]) => {
-            const el = document.getElementById(id);
-            if (el && val !== undefined) {
-                if (el.tagName === 'IMG') el.src = val;
-                else el.textContent = val;
+    /* =====================================================
+       🔒 LOCK SLIDE + IMAGE HEIGHT (CORE FIX)
+       ===================================================== */
+    function lockAllHeights() {
+        const h = getViewportHeight();
+        if (!h || h < 300) return;
+
+        /* 1️⃣ Ép lại swiper-slide */
+        document.querySelectorAll('.reels-slide').forEach(slide => {
+            slide.style.height = h + 'px';
+            slide.style.maxHeight = h + 'px';
+            slide.style.overflow = 'hidden';
+        });
+
+        /* 2️⃣ Ép image frame */
+        document.querySelectorAll('.reels-image-frame').forEach(frame => {
+            frame.style.height = h + 'px';
+            frame.style.maxHeight = h + 'px';
+        });
+    }
+
+    /* =====================================================
+       IMAGE LOAD BIND
+       ===================================================== */
+    function bindImageLoad() {
+        document.querySelectorAll('.reels-image-frame img').forEach(img => {
+            if (img.complete) {
+                lockAllHeights();
+            } else {
+                img.addEventListener('load', lockAllHeights, { once: true });
             }
         });
+    }
+
+    /* =====================================================
+       PRODUCT BAR SYNC
+       ===================================================== */
+    function updateProductBar(swiper) {
+        const slide = swiper?.slides?.[swiper.activeIndex];
+        if (!slide) return;
+
+        const d = slide.dataset;
+
+        const set = (id, val, isImg = false) => {
+            const el = document.getElementById(id);
+            if (!el || val === undefined) return;
+            isImg ? el.src = val : el.textContent = val;
+        };
+
+        set('lxReelsThumb', d.thumb, true);
+        set('lxReelsName', d.name);
+        set('lxReelsDesc', d.desc);
 
         const priceEl = document.getElementById('lxReelsPrice');
         if (priceEl && d.price) {
-            priceEl.textContent = Number(d.price).toLocaleString('vi-VN') + '₫';
+            priceEl.textContent =
+                Number(d.price).toLocaleString('vi-VN') + '₫';
         }
 
         const tagEl = document.getElementById('lxReelsTag');
@@ -60,44 +104,16 @@
             addBtn.disabled = Number(d.available) <= 0;
         }
 
-        const linkEl = document.getElementById('lxReelsDetailLink');
-        if (linkEl) linkEl.href = d.url || '#';
-    }
-
-    /* =====================================================
-       🔒 CORRECT HEIGHT LOCK
-       ===================================================== */
-    function lockImageHeight() {
-        document.querySelectorAll('.reels-images').forEach(images => {
-            const rect = images.getBoundingClientRect();
-            const h = Math.floor(rect.height);
-
-            if (!h || h < 100) return;
-
-            images.querySelectorAll('.reels-image-frame').forEach(frame => {
-                frame.style.height = h + 'px';
-                frame.style.maxHeight = h + 'px';
-            });
-        });
-    }
-
-    function bindImageLoad() {
-        document.querySelectorAll('.reels-image-frame img').forEach(img => {
-            if (img.complete) {
-                lockImageHeight();
-            } else {
-                img.addEventListener('load', lockImageHeight, { once: true });
-            }
-        });
+        const link = document.getElementById('lxReelsDetailLink');
+        if (link) link.href = d.url || '#';
     }
 
     /* =====================================================
        INIT
        ===================================================== */
-    function initReels() {
-
+    function init() {
         if (!window.Swiper) {
-            setTimeout(initReels, 50);
+            setTimeout(init, 50);
             return;
         }
 
@@ -112,19 +128,20 @@
 
             on: {
                 init(sw) {
-                    updateProductBarFromIndex(sw);
-                    lockImageHeight();
+                    updateProductBar(sw);
+                    lockAllHeights();
                     bindImageLoad();
                 },
                 slideChangeTransitionEnd(sw) {
-                    updateProductBarFromIndex(sw);
-                    lockImageHeight();
+                    updateProductBar(sw);
+                    lockAllHeights();
                 }
             }
         });
 
         window.reelsVertical = reelsVertical;
 
+        /* Horizontal swipers */
         document.querySelectorAll('.reels-images').forEach(el => {
             if (el.classList.contains('swiper-initialized')) return;
 
@@ -137,24 +154,23 @@
 
                 on: {
                     init() {
-                        lockImageHeight();
+                        lockAllHeights();
                     },
                     slideChangeTransitionEnd() {
-                        lockImageHeight();
+                        lockAllHeights();
                     }
                 }
             });
         });
 
+        /* Resize / rotate */
         window.addEventListener('resize', () => {
-            setTimeout(lockImageHeight, 100);
+            setTimeout(lockAllHeights, 100);
         });
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initReels);
-    } else {
-        initReels();
-    }
+    document.readyState === 'loading'
+        ? document.addEventListener('DOMContentLoaded', init)
+        : init();
 
 })();
