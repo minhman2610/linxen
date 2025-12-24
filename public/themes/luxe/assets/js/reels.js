@@ -1,10 +1,9 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (FINAL – STABLE)
+ * LIN XÉN – PRODUCT REELS (FINAL – HEIGHT LOCK)
  * =====================================================
  * - Vertical reels + horizontal images
- * - No black screen
- * - No stuck on edges
+ * - Fix image overflow under product bar (runtime)
  * - Stable nested swipe (iOS / Android)
  */
 
@@ -76,6 +75,32 @@
     }
 
     /* =====================================================
+       🔒 LOCK IMAGE HEIGHT – CORE FIX
+       ===================================================== */
+    function lockReelsImageHeight() {
+        const wrapper = document.querySelector('.lx-reels-wrapper');
+        if (!wrapper) return;
+
+        const rect = wrapper.getBoundingClientRect();
+        const maxHeight = Math.round(rect.height);
+
+        document.querySelectorAll('.reels-image-frame').forEach(frame => {
+            frame.style.height = maxHeight + 'px';
+            frame.style.maxHeight = maxHeight + 'px';
+        });
+    }
+
+    function bindImageLoadLock() {
+        document.querySelectorAll('.reels-image-frame img').forEach(img => {
+            if (img.complete) {
+                lockReelsImageHeight();
+            } else {
+                img.addEventListener('load', lockReelsImageHeight, { once: true });
+            }
+        });
+    }
+
+    /* =====================================================
        INIT REELS
        ===================================================== */
     function initReels() {
@@ -99,9 +124,12 @@
             on: {
                 init(sw) {
                     updateProductBarFromIndex(sw);
+                    lockReelsImageHeight();
+                    bindImageLoadLock();
                 },
-                slideChange(sw) {
+                slideChangeTransitionEnd(sw) {
                     updateProductBarFromIndex(sw);
+                    lockReelsImageHeight();
                 }
             }
         });
@@ -126,20 +154,13 @@
 
                 on: {
                     init(sw) {
-                        // Nếu chỉ có 1 ảnh → khoá swipe ngang
                         if (sw.slides.length <= 1) {
                             sw.allowTouchMove = false;
                         }
+                        lockReelsImageHeight();
                     },
-                    reachEnd(sw) {
-                        // 🔒 không cho vượt quá ảnh cuối
-                        sw.allowTouchMove = true;
-                        sw.setTranslate(sw.maxTranslate());
-                    },
-                    reachBeginning(sw) {
-                        // 🔒 không cho vượt quá ảnh đầu
-                        sw.allowTouchMove = true;
-                        sw.setTranslate(sw.minTranslate());
+                    slideChangeTransitionEnd() {
+                        lockReelsImageHeight();
                     }
                 }
             });
@@ -182,6 +203,11 @@
                 .catch(() => {});
             });
         }
+
+        /* ---------- RESIZE / ORIENTATION ---------- */
+        window.addEventListener('resize', () => {
+            setTimeout(lockReelsImageHeight, 80);
+        });
     }
 
     /* =====================================================
