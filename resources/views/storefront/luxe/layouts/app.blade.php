@@ -76,9 +76,13 @@
     @include('storefront.luxe.components.footer')
 
     {{-- ============================
-        BOTTOM NAVIGATION (MOBILE)
-    ============================= --}}
+    BOTTOM NAVIGATION (MOBILE)
+    Chỉ hiển thị ở HOME
+============================= --}}
+@if (request()->routeIs('home') || request()->routeIs('linxen.home'))
     @include('storefront.luxe.components.bottom-nav')
+@endif
+
 
     {{-- ============================
         SCRIPTS
