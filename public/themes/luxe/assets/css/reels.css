@@ -148,7 +148,11 @@ html, body {
 
 .reels-images img {
     width: 100%;
-    height: 100%;
+    height: calc(
+        100vh
+        - var(--lx-reels-header-h)
+        - var(--lx-reels-product-bar-h)
+    );
     object-fit: cover;
     display: block;
 }
