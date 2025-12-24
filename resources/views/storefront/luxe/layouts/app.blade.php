@@ -38,7 +38,9 @@
     <link rel="stylesheet"
       href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
 
-
+      {{-- Swiper CSS --}}
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
      
     {{-- Page-specific head --}}
     @stack('head')
@@ -87,7 +89,8 @@
 
     <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
 
-    
+    {{-- Swiper JS --}}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     {{-- Page-specific scripts --}}
     @stack('scripts')
