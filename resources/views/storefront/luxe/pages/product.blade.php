@@ -60,93 +60,120 @@
 
 
     {{-- =====================================================
-       PRODUCT INFO
-    ===================================================== --}}
-    <div class="lx-product-info">
+   PRODUCT INFO – PREMIUM LAYOUT
+===================================================== --}}
+<div class="lx-product-info">
 
-        {{-- TITLE --}}
-        <h1 class="lx-product-title">
-            {{ $product['name'] ?? '' }}
-        </h1>
+    {{-- BRAND + TAGLINE --}}
+    <div class="lx-product-brandline">
+        <span class="lx-brand">{{ strtoupper($brand) }}</span>
+        <span class="lx-divider">—</span>
+        <span class="lx-tagline">Thiết kế tinh tế cho vẻ đẹp hiện đại</span>
+    </div>
 
-        {{-- META --}}
-        <div class="lx-product-meta">
-            @if(!empty($product['code']))
-                <span>Mã SP: <strong>{{ $product['code'] }}</strong></span>
-            @endif
-            <span class="lx-badge">{{ strtoupper($brand) }}</span>
-        </div>
+    {{-- TITLE --}}
+    <h1 class="lx-product-title">
+        {{ $product['name'] ?? '' }}
+    </h1>
 
-        {{-- PRICE --}}
-        <div class="lx-product-price">
-            {{ number_format($product['price'] ?? 0) }}₫
-        </div>
-
-        {{-- DESCRIPTION --}}
-        <div class="lx-product-description">
-            {!! nl2br(e($product['description'] ?? 'Thiết kế tinh tế – phom dáng hiện đại.')) !!}
-        </div>
-
-        {{-- =====================================================
-           VARIANTS
-        ===================================================== --}}
-        @if(!empty($attributes))
-            <div class="lx-product-variants" id="lxVariants">
-
-                @foreach($attributes as $attr => $values)
-                    @php
-                        $attrKey = Str::slug($attr, '_');
-                    @endphp
-
-                    <div class="lx-attr-group"
-                         data-attr="{{ $attr }}"
-                         data-attr-key="{{ $attrKey }}">
-
-                        <label class="lx-attr-label">
-                            {{ $attr }}
-                        </label>
-
-                        <div class="lx-attr-values">
-                            @foreach($values as $val)
-                                <div class="variant-option"
-                                     data-attr="{{ $attr }}"
-                                     data-attr-key="{{ $attrKey }}"
-                                     data-value="{{ $val }}">
-                                    {{ $val }}
-                                </div>
-                            @endforeach
-                        </div>
-
-                    </div>
-                @endforeach
-
-            </div>
+    {{-- META --}}
+    <div class="lx-product-meta">
+        @if(!empty($product['code']))
+            <span class="lx-meta-item">
+                Mã SP: <strong>{{ $product['code'] }}</strong>
+            </span>
         @endif
+        <span class="lx-meta-dot">•</span>
+        <span class="lx-meta-item">Hàng thiết kế</span>
+    </div>
 
-        {{-- STOCK --}}
-        <p class="lx-product-stock" id="lxStock">
-            Vui lòng chọn biến thể
-        </p>
+    {{-- PRICE --}}
+    <div class="lx-product-price-wrap">
+        <span class="lx-product-price">
+            {{ number_format($product['price'] ?? 0) }}₫
+        </span>
+        <span class="lx-price-note">
+            Giá đã bao gồm VAT
+        </span>
+    </div>
 
-        {{-- =====================================================
-           ACTIONS
-        ===================================================== --}}
-        <div class="lx-product-actions">
+    {{-- DESCRIPTION --}}
+    <div class="lx-product-description">
+        {!! nl2br(e($product['description'] ?? 'Thiết kế tinh tế, phom dáng chuẩn, tôn dáng và dễ phối trong nhiều hoàn cảnh.')) !!}
+    </div>
 
-            <div class="lx-qty">
-                <button type="button" onclick="changeQty(-1)">−</button>
-                <input type="number" id="lxQty" value="1" min="1">
-                <button type="button" onclick="changeQty(1)">+</button>
-            </div>
+    {{-- =====================================================
+       VARIANTS
+    ===================================================== --}}
+    @if(!empty($attributes))
+        <div class="lx-product-variants" id="lxVariants">
 
-            <button
-                class="lx-btn-primary lx-btn-full"
-                id="lxAddToCartBtn"
-                type="button">
-                THÊM VÀO GIỎ
-            </button>
+            @foreach($attributes as $attr => $values)
+                @php
+                    $attrKey = Str::slug($attr, '_');
+                @endphp
+
+                <div class="lx-attr-group"
+                     data-attr="{{ $attr }}"
+                     data-attr-key="{{ $attrKey }}">
+
+                    <label class="lx-attr-label">
+                        {{ $attr }}
+                    </label>
+
+                    <div class="lx-attr-values">
+                        @foreach($values as $val)
+                            <button
+                                type="button"
+                                class="variant-option"
+                                data-attr="{{ $attr }}"
+                                data-attr-key="{{ $attrKey }}"
+                                data-value="{{ $val }}">
+                                {{ $val }}
+                            </button>
+                        @endforeach
+                    </div>
+
+                </div>
+            @endforeach
 
         </div>
+    @endif
+
+    {{-- STOCK --}}
+    <p class="lx-product-stock" id="lxStock">
+        Vui lòng chọn đầy đủ biến thể
+    </p>
+
+    {{-- =====================================================
+       ACTIONS
+    ===================================================== --}}
+    <div class="lx-product-actions">
+
+        <div class="lx-qty">
+            <button type="button" onclick="changeQty(-1)">−</button>
+            <input type="number" id="lxQty" value="1" min="1">
+            <button type="button" onclick="changeQty(1)">+</button>
+        </div>
+
+        <button
+            class="lx-btn-primary lx-btn-full"
+            id="lxAddToCartBtn"
+            type="button">
+            Thêm vào giỏ hàng
+        </button>
+
+    </div>
+
+    {{-- TRUST / USP --}}
+    <ul class="lx-product-trust">
+        <li>✔ Thiết kế độc quyền LIN XÉN</li>
+        <li>✔ Chất liệu cao cấp, chọn lọc</li>
+        <li>✔ Đổi trả trong 7 ngày</li>
+    </ul>
+
+</div>
+
 
         {{-- TRUST --}}
         <ul class="lx-product-trust">

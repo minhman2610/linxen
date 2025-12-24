@@ -148,3 +148,255 @@
         height: 94px;
     }
 }
+/* =====================================================
+   PRODUCT INFO – PREMIUM STYLE
+===================================================== */
+
+.lx-product-info {
+    padding-top: 8px;
+}
+
+/* -----------------------------------------------------
+   BRAND LINE
+----------------------------------------------------- */
+.lx-product-brandline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+
+    color: #777;
+    margin-bottom: 6px;
+}
+
+.lx-product-brandline .lx-brand {
+    font-weight: 600;
+    color: #111;
+}
+
+.lx-product-brandline .lx-divider {
+    opacity: .5;
+}
+
+.lx-product-brandline .lx-tagline {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+/* -----------------------------------------------------
+   TITLE
+----------------------------------------------------- */
+.lx-product-title {
+    font-size: 22px;
+    line-height: 1.25;
+    font-weight: 500;
+
+    color: #111;
+    margin-bottom: 8px;
+}
+
+/* -----------------------------------------------------
+   META
+----------------------------------------------------- */
+.lx-product-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 12px;
+}
+
+.lx-meta-item strong {
+    font-weight: 500;
+    color: #111;
+}
+
+.lx-meta-dot {
+    opacity: .5;
+}
+
+/* -----------------------------------------------------
+   PRICE
+----------------------------------------------------- */
+.lx-product-price-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.lx-product-price {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111;
+}
+
+.lx-price-note {
+    font-size: 12px;
+    color: #888;
+}
+
+/* -----------------------------------------------------
+   DESCRIPTION
+----------------------------------------------------- */
+.lx-product-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+
+    margin-bottom: 18px;
+}
+
+/* -----------------------------------------------------
+   VARIANTS
+----------------------------------------------------- */
+.lx-product-variants {
+    margin-bottom: 12px;
+}
+
+.lx-attr-group {
+    margin-bottom: 14px;
+}
+
+.lx-attr-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #111;
+
+    margin-bottom: 6px;
+}
+
+/* VALUES */
+.lx-attr-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* VARIANT OPTION */
+.variant-option {
+    min-width: 40px;
+    padding: 8px 12px;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    background: #fff;
+    font-size: 13px;
+    color: #111;
+
+    cursor: pointer;
+    transition: all .15s ease;
+}
+
+.variant-option:hover {
+    border-color: #111;
+}
+
+.variant-option.active {
+    border-color: #111;
+    background: #111;
+    color: #fff;
+}
+
+/* -----------------------------------------------------
+   STOCK
+----------------------------------------------------- */
+.lx-product-stock {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 14px;
+}
+
+.lx-product-stock.in-stock {
+    color: #0a7a3b;
+}
+
+/* -----------------------------------------------------
+   ACTIONS
+----------------------------------------------------- */
+.lx-product-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 16px;
+}
+
+/* QTY */
+.lx-qty {
+    display: flex;
+    align-items: center;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.lx-qty button {
+    width: 32px;
+    height: 36px;
+
+    border: none;
+    background: #f7f7f7;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.lx-qty input {
+    width: 40px;
+    height: 36px;
+
+    border: none;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* CTA */
+.lx-btn-primary {
+    height: 36px;
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: opacity .15s ease;
+}
+
+.lx-btn-primary:hover {
+    opacity: .85;
+}
+
+.lx-btn-full {
+    flex: 1;
+}
+
+/* -----------------------------------------------------
+   TRUST / USP
+----------------------------------------------------- */
+.lx-product-trust {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    font-size: 13px;
+    color: #555;
+}
+
+.lx-product-trust li {
+    margin-bottom: 6px;
+}
