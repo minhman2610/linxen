@@ -1,10 +1,11 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (ACTIVE INDEX FIX)
+ * LIN XÉN – PRODUCT REELS (FINAL NESTED SWIPER FIX)
  * =====================================================
- * - Sync product bar using swiper.activeIndex
- * - NO reload logic
- * - Stable on iOS momentum
+ * - Vertical reels + horizontal images
+ * - NO black frame
+ * - NO stuck on edge
+ * - Stable nested swipe (iOS / Android)
  */
 
 (function () {
@@ -18,10 +19,10 @@
     let reelsVertical = null;
 
     /* =====================================================
-       PRODUCT BAR SYNC (SOURCE OF TRUTH = activeIndex)
+       PRODUCT BAR SYNC
        ===================================================== */
     function updateProductBarFromIndex(swiper) {
-        if (!swiper || !swiper.slides || !swiper.slides.length) return;
+        if (!swiper || !swiper.slides?.length) return;
 
         const slideEl = swiper.slides[swiper.activeIndex];
         if (!slideEl) return;
@@ -42,17 +43,10 @@
         const tagEl   = document.getElementById('lxReelsTag');
         const addBtn  = document.getElementById('lxReelsAddCart');
 
-        if (thumbEl && thumb) {
-            thumbEl.src = thumb;
-        }
-
-        if (nameEl) {
-            nameEl.textContent = name || '';
-        }
-
+        if (thumbEl && thumb) thumbEl.src = thumb;
+        if (nameEl) nameEl.textContent = name || '';
         if (priceEl && price) {
-            priceEl.textContent =
-                Number(price).toLocaleString('vi-VN') + '₫';
+            priceEl.textContent = Number(price).toLocaleString('vi-VN') + '₫';
         }
 
         if (tagEl) {
@@ -71,7 +65,7 @@
     }
 
     /* =====================================================
-       INIT SWIPERS
+       INIT
        ===================================================== */
     function initReels() {
 
@@ -87,46 +81,53 @@
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
-            resistanceRatio: 0,
+            resistance: true,
+            resistanceRatio: 0.85,
 
             on: {
-                init(swiper) {
-                    updateProductBarFromIndex(swiper);
-                },
-                slideChange(swiper) {
-                    updateProductBarFromIndex(swiper);
-                }
+                init: updateProductBarFromIndex,
+                slideChange: updateProductBarFromIndex
             }
         });
 
         window.reelsVertical = reelsVertical;
 
-        /* ---------- Horizontal image swipers ---------- */
-document.querySelectorAll('.reels-images').forEach(el => {
-    if (el.classList.contains('swiper-initialized')) return;
+        /* ---------- Horizontal image swipers (FIX TRIỆT ĐỂ) ---------- */
+        document.querySelectorAll('.reels-images').forEach(el => {
+            if (el.classList.contains('swiper-initialized')) return;
 
-    new Swiper(el, {
-        direction: 'horizontal',
-        slidesPerView: 1,
-        nested: true,
+            const swiper = new Swiper(el, {
+                direction: 'horizontal',
+                slidesPerView: 1,
+                nested: true,
+                loop: false,
 
-        /* 🔒 KHÓA BIÊN – KHÔNG NHẢY SANG TRANG ĐEN */
-        resistance: true,
-        resistanceRatio: 0,
-        edgeSwipeDetection: true,
-        edgeSwipeThreshold: 20,
+                /* 🔑 CHÌA KHOÁ FIX */
+                resistance: true,
+                resistanceRatio: 0.85,
+                touchReleaseOnEdges: false,
+                freeMode: false,
+                watchOverflow: true,
 
-        /* ❌ TẮT MOMENTUM QUÁ ĐÀ */
-        freeMode: false,
+                on: {
+                    init(sw) {
+                        if (sw.slides.length <= 1) {
+                            sw.allowTouchMove = false;
+                        }
+                    },
+                    reachEnd(sw) {
+                        sw.setTranslate(sw.maxTranslate());
+                        sw.allowTouchMove = true;
+                    },
+                    reachBeginning(sw) {
+                        sw.setTranslate(sw.minTranslate());
+                        sw.allowTouchMove = true;
+                    }
+                }
+            });
 
-        /* ❌ KHÔNG LOOP – KHÔNG SLIDE ẢO */
-        loop: false,
-
-        /* 🧠 QUAN TRỌNG: GIỮ SLIDE Ở BIÊN */
-        watchOverflow: true,
-    });
-});
-
+            el.__swiper = swiper;
+        });
 
         /* ---------- ADD TO CART ---------- */
         document.getElementById('lxReelsAddCart')
