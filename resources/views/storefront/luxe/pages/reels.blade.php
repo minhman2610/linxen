@@ -28,6 +28,8 @@
                      data-available="{{ $p['available'] }}"
                      data-tag="{{ $p['tag'] }}"
                      data-thumb="{{ $p['thumb'] }}"
+                     data-desc="{{ $p['desc'] ?? '' }}"
+                     data-url="{{ route('linxen.product', ['slug' => $p['slug']]) }}"
                      data-images-count="{{ $imageCount }}">
 
                     {{-- ===============================

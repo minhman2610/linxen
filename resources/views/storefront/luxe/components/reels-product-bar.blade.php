@@ -1,7 +1,7 @@
 <div class="lx-reels-product-bar lx-reels-product-bar--rich">
 
     {{-- ===============================
-         TOP ROW: THUMB + NAME + PRICE
+         TOP ROW: THUMB + NAME + PRICE + DESC
          =============================== --}}
     <div class="lx-reels-row lx-reels-row-top">
 
@@ -15,28 +15,25 @@
 
         <div class="lx-reels-product-main">
 
+            {{-- NAME --}}
             <strong id="lxReelsName">
                 Váy lụa dáng xòe cổ vuông
             </strong>
 
-            <div class="lx-reels-product-main">
+            {{-- PRICE GROUP --}}
+            <div class="lx-reels-price-inline">
+                <span class="lx-reels-price" id="lxReelsPrice">
+                    890.000₫
+                </span>
+                <span class="lx-reels-price-old">
+                    1.090.000₫
+                </span>
+            </div>
 
-    {{-- PRICE GROUP --}}
-    <div class="lx-reels-price-inline">
-        <span class="lx-reels-price" id="lxReelsPrice">
-            890.000₫
-        </span>
-        <span class="lx-reels-price-old">
-            1.090.000₫
-        </span>
-    </div>
-
-    {{-- DESC – 1 LINE ONLY --}}
-    <div class="lx-reels-desc-inline" id="lxReelsDesc">
-        Chất lụa mềm, tôn dáng, dễ mặc đi làm &amp; dạo phố
-    </div>
-
-</div>
+            {{-- DESC – 1 LINE ONLY --}}
+            <div class="lx-reels-desc-inline" id="lxReelsDesc">
+                Chất lụa mềm, tôn dáng, dễ mặc đi làm &amp; dạo phố
+            </div>
 
         </div>
 
@@ -84,7 +81,8 @@
 
         <a
             href="#"
-            class="lx-reels-btn-secondary">
+            class="lx-reels-btn-secondary"
+            id="lxReelsDetailLink">
             Xem chi tiết
         </a>
 

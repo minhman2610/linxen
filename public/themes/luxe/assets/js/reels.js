@@ -1,10 +1,10 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (FINAL NESTED SWIPER FIX)
+ * LIN XÉN – PRODUCT REELS (FINAL – STABLE)
  * =====================================================
  * - Vertical reels + horizontal images
- * - NO black frame
- * - NO stuck on edge
+ * - No black screen
+ * - No stuck on edges
  * - Stable nested swipe (iOS / Android)
  */
 
@@ -22,7 +22,7 @@
        PRODUCT BAR SYNC
        ===================================================== */
     function updateProductBarFromIndex(swiper) {
-        if (!swiper || !swiper.slides?.length) return;
+        if (!swiper || !swiper.slides || !swiper.slides.length) return;
 
         const slideEl = swiper.slides[swiper.activeIndex];
         if (!slideEl) return;
@@ -34,19 +34,26 @@
             price,
             thumb,
             tag,
-            available
+            available,
+            desc,
+            url
         } = slideEl.dataset;
 
-        const thumbEl = document.getElementById('lxReelsThumb');
-        const nameEl  = document.getElementById('lxReelsName');
-        const priceEl = document.getElementById('lxReelsPrice');
-        const tagEl   = document.getElementById('lxReelsTag');
-        const addBtn  = document.getElementById('lxReelsAddCart');
+        const thumbEl  = document.getElementById('lxReelsThumb');
+        const nameEl   = document.getElementById('lxReelsName');
+        const priceEl  = document.getElementById('lxReelsPrice');
+        const tagEl    = document.getElementById('lxReelsTag');
+        const descEl   = document.getElementById('lxReelsDesc');
+        const addBtn   = document.getElementById('lxReelsAddCart');
+        const linkEl   = document.getElementById('lxReelsDetailLink');
 
         if (thumbEl && thumb) thumbEl.src = thumb;
-        if (nameEl) nameEl.textContent = name || '';
+        if (nameEl)  nameEl.textContent  = name || '';
+        if (descEl)  descEl.textContent  = desc || '';
+
         if (priceEl && price) {
-            priceEl.textContent = Number(price).toLocaleString('vi-VN') + '₫';
+            priceEl.textContent =
+                Number(price).toLocaleString('vi-VN') + '₫';
         }
 
         if (tagEl) {
@@ -55,17 +62,21 @@
         }
 
         if (addBtn) {
-            addBtn.dataset.id    = id;
-            addBtn.dataset.sku   = sku;
-            addBtn.dataset.name  = name;
-            addBtn.dataset.price = price;
-            addBtn.dataset.image = thumb;
+            addBtn.dataset.id    = id || '';
+            addBtn.dataset.sku   = sku || '';
+            addBtn.dataset.name  = name || '';
+            addBtn.dataset.price = price || '';
+            addBtn.dataset.image = thumb || '';
             addBtn.disabled = Number(available) <= 0;
+        }
+
+        if (linkEl) {
+            linkEl.href = url || '#';
         }
     }
 
     /* =====================================================
-       INIT
+       INIT REELS
        ===================================================== */
     function initReels() {
 
@@ -77,51 +88,58 @@
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
-        /* ---------- Vertical reels ---------- */
+        /* ---------- Vertical Swiper ---------- */
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
             resistance: true,
             resistanceRatio: 0.85,
+            nested: false,
 
             on: {
-                init: updateProductBarFromIndex,
-                slideChange: updateProductBarFromIndex
+                init(sw) {
+                    updateProductBarFromIndex(sw);
+                },
+                slideChange(sw) {
+                    updateProductBarFromIndex(sw);
+                }
             }
         });
 
         window.reelsVertical = reelsVertical;
 
-        /* ---------- Horizontal image swipers (FIX TRIỆT ĐỂ) ---------- */
+        /* ---------- Horizontal Image Swipers ---------- */
         document.querySelectorAll('.reels-images').forEach(el => {
             if (el.classList.contains('swiper-initialized')) return;
 
             const swiper = new Swiper(el, {
                 direction: 'horizontal',
                 slidesPerView: 1,
-                nested: true,
                 loop: false,
+                nested: true,
 
-                /* 🔑 CHÌA KHOÁ FIX */
                 resistance: true,
                 resistanceRatio: 0.85,
                 touchReleaseOnEdges: false,
-                freeMode: false,
                 watchOverflow: true,
+                freeMode: false,
 
                 on: {
                     init(sw) {
+                        // Nếu chỉ có 1 ảnh → khoá swipe ngang
                         if (sw.slides.length <= 1) {
                             sw.allowTouchMove = false;
                         }
                     },
                     reachEnd(sw) {
-                        sw.setTranslate(sw.maxTranslate());
+                        // 🔒 không cho vượt quá ảnh cuối
                         sw.allowTouchMove = true;
+                        sw.setTranslate(sw.maxTranslate());
                     },
                     reachBeginning(sw) {
-                        sw.setTranslate(sw.minTranslate());
+                        // 🔒 không cho vượt quá ảnh đầu
                         sw.allowTouchMove = true;
+                        sw.setTranslate(sw.minTranslate());
                     }
                 }
             });
@@ -130,11 +148,11 @@
         });
 
         /* ---------- ADD TO CART ---------- */
-        document.getElementById('lxReelsAddCart')
-            ?.addEventListener('click', function () {
+        const addCartBtn = document.getElementById('lxReelsAddCart');
+        if (addCartBtn) {
+            addCartBtn.addEventListener('click', function () {
 
-                const btn = this;
-                if (btn.disabled) return;
+                if (this.disabled) return;
 
                 fetch('/cart/add', {
                     method: 'POST',
@@ -145,21 +163,25 @@
                             ?.getAttribute('content')
                     },
                     body: JSON.stringify({
-                        sku: btn.dataset.sku,
-                        name: btn.dataset.name,
-                        price: btn.dataset.price,
-                        image: btn.dataset.image,
-                        qty: 1
+                        sku:   this.dataset.sku,
+                        name:  this.dataset.name,
+                        price: this.dataset.price,
+                        image: this.dataset.image,
+                        qty:   1
                     })
                 })
                 .then(res => res.json())
                 .then(res => {
-                    if (res?.success && document.getElementById('lxCartCount')) {
-                        document.getElementById('lxCartCount').textContent =
-                            res.cart_count;
+                    if (res?.success) {
+                        const countEl = document.getElementById('lxCartCount');
+                        if (countEl && res.cart_count !== undefined) {
+                            countEl.textContent = res.cart_count;
+                        }
                     }
-                });
+                })
+                .catch(() => {});
             });
+        }
     }
 
     /* =====================================================
