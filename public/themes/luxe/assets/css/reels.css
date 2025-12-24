@@ -214,7 +214,7 @@ html, body {
 
 
 /* ===============================
-   PRODUCT BAR (BOTTOM FIXED)
+   PRODUCT BAR (BOTTOM FIXED – STABLE)
    =============================== */
 .lx-reels-product-bar {
     position: fixed;
@@ -223,12 +223,14 @@ html, body {
     right: 0;
     z-index: 100;
 
-    height: var(--lx-reels-product-bar-h);
+    /* ❌ KHÔNG KHÓA HEIGHT CỨNG */
+    min-height: 144px;
+    max-height: 42vh;
+
     padding: 16px;
 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     gap: 10px;
 
     background: linear-gradient(
@@ -238,9 +240,38 @@ html, body {
     );
 
     backdrop-filter: blur(12px);
+
+    /* 🔥 QUAN TRỌNG: cho phép hiện đủ nội dung */
+    overflow-y: auto;
 }
 
-/* PRODUCT BAR CONTENT */
+/* ===============================
+   ROWS – KHÔNG BỊ CO
+   =============================== */
+.lx-reels-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    flex-shrink: 0; /* 🔥 ngăn flex nuốt row */
+}
+
+.lx-reels-row-top {
+    align-items: flex-start;
+}
+
+.lx-reels-row-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.lx-reels-row-action {
+    gap: 12px;
+}
+
+/* ===============================
+   THUMB
+   =============================== */
 .lx-reels-thumb {
     width: 64px;
     height: 64px;
@@ -254,14 +285,19 @@ html, body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
-/* INFO */
-.lx-reels-product-info {
+/* ===============================
+   PRODUCT MAIN
+   =============================== */
+.lx-reels-product-main {
+    flex: 1;
+    min-width: 0; /* 🔥 cho text wrap đúng */
     color: #fff;
 }
 
-.lx-reels-product-info strong {
+.lx-reels-product-main strong {
     font-size: 16px;
     font-weight: 700;
     line-height: 1.25;
@@ -272,9 +308,21 @@ html, body {
     overflow: hidden;
 }
 
+/* DESC */
+.lx-reels-desc {
+    margin-top: 4px;
+    font-size: 13px;
+    color: rgba(255,255,255,.75);
+    line-height: 1.35;
+}
+
+/* ===============================
+   META
+   =============================== */
 .lx-reels-price {
     font-size: 15px;
     font-weight: 700;
+    color: #fff;
 }
 
 .lx-reels-tag {
@@ -282,10 +330,51 @@ html, body {
     padding: 2px 6px;
     border-radius: 6px;
     background: rgba(255,255,255,.15);
+    color: #fff;
+}
+
+.lx-reels-attr {
+    font-size: 12px;
+    color: rgba(255,255,255,.7);
 }
 
 /* ===============================
-   ACTION ICONS
+   ACTION BUTTONS
+   =============================== */
+.lx-reels-btn-primary {
+    flex: 1;
+    height: 44px;
+    border-radius: 22px;
+    background: #fff;
+    color: #000;
+    font-weight: 700;
+    border: none;
+}
+
+.lx-reels-btn-secondary {
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.4);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+/* WISHLIST */
+.lx-reels-wishlist-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    border: none;
+    flex-shrink: 0;
+    font-size: 18px;
+}
+
+/* ===============================
+   ACTION ICONS (NẾU DÙNG)
    =============================== */
 .lx-reels-action-btn {
     width: 48px;
@@ -305,6 +394,7 @@ html, body {
     width: 22px;
     height: 22px;
 }
+
 
 /* ===============================
    MINI LOADING
