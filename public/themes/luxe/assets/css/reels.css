@@ -311,3 +311,99 @@ html, body {
 button {
     -webkit-tap-highlight-color: transparent;
 }
+/* =====================================================
+   REELS – LARGE PRODUCT BAR (IMAGE FRIENDLY)
+   ===================================================== */
+
+/* ===============================
+   PRODUCT BAR – TĂNG CHIỀU CAO
+   =============================== */
+.lx-reels-product-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+
+    height: 144px; /* gấp đôi bản cũ */
+    padding: 16px 16px 20px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.92),
+        rgba(0,0,0,.65)
+    );
+
+    backdrop-filter: blur(12px);
+}
+
+/* ===============================
+   THUMBNAIL – TO HƠN
+   =============================== */
+.lx-reels-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* ===============================
+   PRODUCT INFO – RÕ & 2 DÒNG
+   =============================== */
+.lx-reels-product-info strong {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+.lx-reels-price {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* ===============================
+   ACTION ICONS – DỄ BẤM
+   =============================== */
+.lx-reels-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+}
+
+.lx-reels-action-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* ===============================
+   IMAGE AREA – CHỪA KHÔNG GIAN
+   =============================== */
+.reels-slide {
+    padding-bottom: 144px; /* đúng bằng height product bar */
+    box-sizing: border-box;
+}
+
+/* ===============================
+   SAFE AREA (iOS)
+   =============================== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .lx-reels-product-bar {
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+        height: calc(144px + env(safe-area-inset-bottom));
+    }
+
+    .reels-slide {
+        padding-bottom: calc(144px + env(safe-area-inset-bottom));
+    }
+}
