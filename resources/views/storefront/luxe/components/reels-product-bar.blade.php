@@ -19,15 +19,28 @@
                 Váy lụa dáng xòe cổ vuông
             </strong>
 
-            {{-- PRICE GROUP (CỐ ĐỊNH CHIỀU CAO) --}}
-            <div class="lx-reels-price-inline">
-                <span class="lx-reels-price" id="lxReelsPrice">
-                    890.000₫
-                </span>
-                <span class="lx-reels-price-old">
-                    1.090.000₫
-                </span>
-            </div>
+            <div class="lx-reels-product-main">
+
+    <strong id="lxReelsName">
+        Váy lụa dáng xòe cổ vuông
+    </strong>
+
+    {{-- PRICE GROUP --}}
+    <div class="lx-reels-price-inline">
+        <span class="lx-reels-price" id="lxReelsPrice">
+            890.000₫
+        </span>
+        <span class="lx-reels-price-old">
+            1.090.000₫
+        </span>
+    </div>
+
+    {{-- DESC – 1 LINE ONLY --}}
+    <div class="lx-reels-desc-inline" id="lxReelsDesc">
+        Chất lụa mềm, tôn dáng, dễ mặc đi làm &amp; dạo phố
+    </div>
+
+</div>
 
         </div>
 
