@@ -112,6 +112,40 @@
     /* INIT */
     loadImage(0, false);
 }
+function slideTo(index, direction = 1) {
+    if (index < 0 || index >= total || index === currentIndex) return;
+
+    const nextSrc = thumbs[index].dataset.full;
+
+    const nextImg = document.createElement('img');
+    nextImg.src = nextSrc;
+    nextImg.className = 'lx-slide-img';
+    nextImg.style.transform = `translateX(${direction * 100}%)`;
+
+    mainWrap.appendChild(nextImg);
+
+    requestAnimationFrame(() => {
+        mainImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
+        nextImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
+
+        mainImg.style.transform = `translateX(${-direction * 100}%)`;
+        nextImg.style.transform = 'translateX(0)';
+    });
+
+    nextImg.onload = () => {
+        setTimeout(() => {
+            mainImg.src = nextSrc;
+            mainImg.style.transition = 'none';
+            mainImg.style.transform = 'translateX(0)';
+
+            mainWrap.removeChild(nextImg);
+            currentIndex = index;
+
+            thumbs.forEach(t => t.classList.remove('active'));
+            thumbs[index].classList.add('active');
+        }, 350);
+    };
+}
 
 
     /* =====================================================
