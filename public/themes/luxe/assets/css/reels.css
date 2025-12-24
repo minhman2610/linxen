@@ -1,0 +1,33 @@
+.lx-reels,
+.reels-vertical,
+.reels-product {
+    height: 100vh;
+}
+
+.reels-product {
+    position: relative;
+    background: #000;
+}
+
+.reels-images img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+.reels-overlay {
+    position: absolute;
+    bottom: 90px;
+    left: 16px;
+    right: 16px;
+    color: #fff;
+}
+
+.lx-btn-add-cart {
+    width: 100%;
+    padding: 14px;
+    background: #fff;
+    color: #000;
+    border-radius: 12px;
+    font-weight: 600;
+}
