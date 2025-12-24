@@ -21,36 +21,37 @@
 <section class="lx-product-detail">
 
     {{-- =====================================================
-       PRODUCT GALLERY – PROGRESSIVE + SWIPE
-    ===================================================== --}}
-    <div class="lx-product-gallery">
+   PRODUCT GALLERY – PROGRESSIVE + SWIPE
+===================================================== --}}
+<div class="lx-product-gallery">
 
-        {{-- MAIN IMAGE --}}
-        <div class="lx-product-main" id="lxProductMain">
-            <img
-                id="lxMainImage"
-                src="{{ $mainImage }}"
-                data-index="0"
-                alt="{{ $product['name'] ?? '' }}"
-                loading="eager">
-        </div>
-
-        {{-- THUMBNAILS --}}
-        @if(count($images) > 1)
-            <div class="lx-product-thumbs" id="lxProductThumbs">
-                @foreach($images as $index => $img)
-                    <img
-                        src="{{ $img['thumb'] }}"
-                        data-full="{{ $img['full'] }}"
-                        data-index="{{ $index }}"
-                        class="{{ $index === 0 ? 'active' : '' }}"
-                        alt="{{ $product['name'] ?? '' }} thumbnail {{ $index + 1 }}"
-                        loading="lazy">
-                @endforeach
-            </div>
-        @endif
-
+    {{-- MAIN IMAGE (SWIPE ZONE) --}}
+    <div class="lx-product-main" id="lxProductMain">
+        <img
+            id="lxMainImage"
+            src="{{ $mainImage }}"
+            data-index="0"
+            alt="{{ $product['name'] ?? '' }}"
+            loading="eager">
     </div>
+
+    {{-- THUMBNAILS --}}
+    @if(count($images) > 1)
+        <div class="lx-product-thumbs" id="lxProductThumbs">
+            @foreach($images as $index => $img)
+                <img
+                    src="{{ $img['thumb'] }}"
+                    data-full="{{ $img['full'] }}"
+                    data-index="{{ $index }}"
+                    class="{{ $index === 0 ? 'active' : '' }}"
+                    alt="{{ $product['name'] ?? '' }} thumbnail {{ $index + 1 }}"
+                    loading="lazy">
+            @endforeach
+        </div>
+    @endif
+
+</div>
+
 
     {{-- =====================================================
        PRODUCT INFO

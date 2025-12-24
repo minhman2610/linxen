@@ -13,29 +13,70 @@
      * 1️⃣ GALLERY – MAIN IMAGE + THUMBS (PROGRESSIVE)
      * ===================================================== */
     function initGallery() {
-        const mainImg = document.getElementById('lxMainImage');
-        const thumbs  = document.querySelectorAll('.lx-product-thumbs img');
+    const mainImg = document.getElementById('lxMainImage');
+    const thumbs  = document.querySelectorAll('#lxProductThumbs img');
 
-        if (!mainImg || !thumbs.length) return;
+    if (!mainImg || !thumbs.length) return;
 
-        thumbs.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                // active state
-                thumbs.forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
+    let currentIndex = 0;
+    const total = thumbs.length;
 
-                const fullSrc = thumb.dataset.full;
-                if (!fullSrc) return;
+    function loadImage(index) {
+        if (index < 0 || index >= total) return;
 
-                // preload ảnh lớn
-                const img = new Image();
-                img.src = fullSrc;
-                img.onload = () => {
-                    mainImg.src = fullSrc;
-                };
-            });
-        });
+        const thumb = thumbs[index];
+        const fullSrc = thumb.dataset.full;
+
+        thumbs.forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+
+        const img = new Image();
+        img.src = fullSrc;
+        img.onload = () => {
+            mainImg.src = fullSrc;
+            mainImg.dataset.index = index;
+            currentIndex = index;
+        };
     }
+
+    /* CLICK THUMB */
+    thumbs.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            loadImage(parseInt(thumb.dataset.index, 10));
+        });
+    });
+
+    /* SWIPE MAIN IMAGE */
+    let startX = 0;
+    let isSwiping = false;
+
+    mainImg.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        isSwiping = true;
+    }, { passive: true });
+
+    mainImg.addEventListener('touchend', e => {
+        if (!isSwiping) return;
+
+        const endX = e.changedTouches[0].clientX;
+        const diff = endX - startX;
+
+        // threshold chống vuốt nhầm
+        if (Math.abs(diff) < 40) return;
+
+        if (diff < 0) {
+            loadImage(currentIndex + 1); // swipe left
+        } else {
+            loadImage(currentIndex - 1); // swipe right
+        }
+
+        isSwiping = false;
+    });
+
+    /* preload ảnh đầu tiên */
+    loadImage(0);
+}
+
 
     /* =====================================================
      * 2️⃣ VARIANT SELECTION
