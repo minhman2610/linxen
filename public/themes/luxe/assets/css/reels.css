@@ -129,7 +129,7 @@ html, body {
 .lx-reels-wrapper {
     position: fixed;
     top: 0;
-    bottom: var(--lx-reels-product-bar-h);
+    bottom: -100px;
     left: 0;
     right: 0;
 
