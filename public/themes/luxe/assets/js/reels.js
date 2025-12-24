@@ -1,63 +1,56 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (SAFE INIT)
+ * LIN XÉN – PRODUCT REELS
+ * SAFE INIT + SMART RELOAD + LOADING
  * =====================================================
- * - Avoid global variable collision
- * - Wait for Swiper to be available
- * - Prevent double initialization
  */
 
 (function () {
 
-    // Tránh init 2 lần
-    if (window.__LX_REELS_INITED__) {
-        return;
-    }
+    if (window.__LX_REELS_INITED__) return;
     window.__LX_REELS_INITED__ = true;
+
+    let reelsVertical = null;
+    let isReloading = false;
+
+    function showLoading() {
+        const el = document.getElementById('lxReelsLoading');
+        if (el) el.classList.add('active');
+    }
 
     function initReels() {
 
-        // Nếu Swiper chưa load → chờ
         if (typeof window.Swiper === 'undefined') {
             setTimeout(initReels, 50);
             return;
         }
 
-        /* ===============================
-         * VERTICAL – PRODUCT REELS
-         * =============================== */
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
-        const reelsVertical = new Swiper(verticalEl, {
+        reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
             resistanceRatio: 0,
-            watchSlidesProgress: true,
         });
 
-        /* ===============================
-         * HORIZONTAL – IMAGES
-         * =============================== */
-        document.querySelectorAll('.reels-images').forEach(el => {
+        window.reelsVertical = reelsVertical;
 
-            // Tránh init lại swiper cũ
+        document.querySelectorAll('.reels-images').forEach(el => {
             if (el.classList.contains('swiper-initialized')) return;
 
             new Swiper(el, {
                 direction: 'horizontal',
                 slidesPerView: 1,
                 nested: true,
-                resistanceRatio: 0.6,
             });
         });
 
-        /* ===============================
-         * ADD TO CART
-         * =============================== */
-        document.querySelectorAll('.lx-btn-add-cart').forEach(btn => {
+        // ADD TO CART
+        document.getElementById('lxReelsAddCart')
+            ?.addEventListener('click', function () {
 
-            btn.addEventListener('click', function () {
+                const btn = this;
 
                 fetch('/cart/add', {
                     method: 'POST',
@@ -82,40 +75,49 @@
                     }
                 });
             });
-        });
     }
 
-    // DOM Ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initReels);
     } else {
         initReels();
     }
 
-})();
-
-(function () {
-
+    /* ===============================
+       SMART PULL DOWN
+       =============================== */
     let startY = 0;
     let pulling = false;
+    let backToTopTriggered = false;
 
     document.addEventListener('touchstart', e => {
-        if (window.reelsVertical?.activeIndex === 0) {
-            startY = e.touches[0].clientY;
-            pulling = true;
-        }
+        if (!reelsVertical || isReloading) return;
+        startY = e.touches[0].clientY;
+        pulling = true;
+        backToTopTriggered = false;
     }, { passive: true });
 
     document.addEventListener('touchmove', e => {
-        if (!pulling) return;
+        if (!pulling || !reelsVertical || isReloading) return;
 
-        const currentY = e.touches[0].clientY;
-        const delta = currentY - startY;
+        const delta = e.touches[0].clientY - startY;
+        if (delta < 80) return;
 
-        // Kéo xuống đủ xa → reload
-        if (delta > 120) {
-            pulling = false;
-            window.location.reload();
+        // 1️⃣ Chưa ở đầu → kéo về đầu
+        if (reelsVertical.activeIndex > 0 && !backToTopTriggered) {
+            backToTopTriggered = true;
+            reelsVertical.slideTo(0, 300);
+            return;
+        }
+
+        // 2️⃣ Ở đầu → reload + loading
+        if (reelsVertical.activeIndex === 0 && delta > 140) {
+            isReloading = true;
+            showLoading();
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 300);
         }
     }, { passive: true });
 
@@ -124,4 +126,3 @@
     });
 
 })();
-

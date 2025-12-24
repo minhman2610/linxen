@@ -273,3 +273,44 @@ button {
     font-weight: 600;
     white-space: nowrap;
 }
+
+/* ===============================
+   REELS LOADING OVERLAY
+   =============================== */
+.lx-reels-loading {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.lx-reels-loading.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.lx-loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255,255,255,.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: lx-spin .9s linear infinite;
+}
+
+.lx-loading-text {
+    margin-top: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,.8);
+}
+
+@keyframes lx-spin {
+    to { transform: rotate(360deg); }
+}
