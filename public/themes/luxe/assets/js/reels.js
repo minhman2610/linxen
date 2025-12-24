@@ -1,13 +1,12 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (FINAL STABLE)
+ * LIN XÉN – PRODUCT REELS (STABLE – NO RELOAD)
  * =====================================================
  * FEATURES:
  * - Sync product bar on slide change
- * - Reload ONLY when:
- *   1. Touch STARTS at first slide
- *   2. Swipe UP strongly
- *   3. Swiper is NOT animating
+ * - Vertical reels + horizontal images
+ * - Add to cart from product bar
+ * - NO reload on swipe (disabled completely)
  */
 
 (function () {
@@ -19,18 +18,6 @@
     window.__LX_REELS_INITED__ = true;
 
     let reelsVertical = null;
-    let isReloading = false;
-
-    let touchStartY = 0;
-    let startedAtFirstSlide = false;
-
-    /* =====================================================
-       MINI LOADING
-       ===================================================== */
-    function showMiniLoading() {
-        const el = document.getElementById('lxReelsMiniLoading');
-        if (el) el.classList.add('active');
-    }
 
     /* =====================================================
        PRODUCT BAR SYNC
@@ -56,6 +43,7 @@
 
         if (thumbEl && thumb) thumbEl.src = thumb;
         if (nameEl) nameEl.innerText = name || '';
+
         if (priceEl && price) {
             priceEl.innerText =
                 Number(price).toLocaleString('vi-VN') + '₫';
@@ -90,6 +78,7 @@
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
+        /* ---------- Vertical reels ---------- */
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
@@ -111,7 +100,7 @@
 
         window.reelsVertical = reelsVertical;
 
-        // Horizontal image swipers
+        /* ---------- Horizontal image swipers ---------- */
         document.querySelectorAll('.reels-images').forEach(el => {
             if (el.classList.contains('swiper-initialized')) return;
 
@@ -123,7 +112,7 @@
             });
         });
 
-        // ADD TO CART
+        /* ---------- ADD TO CART ---------- */
         document.getElementById('lxReelsAddCart')
             ?.addEventListener('click', function () {
 
@@ -156,43 +145,13 @@
             });
     }
 
-    // DOM READY
+    /* =====================================================
+       DOM READY
+       ===================================================== */
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initReels);
     } else {
         initReels();
     }
-
-    /* =====================================================
-       SMART RELOAD (BUGFIX)
-       ===================================================== */
-    document.addEventListener('touchstart', e => {
-        if (!reelsVertical || isReloading) return;
-
-        touchStartY = e.touches[0].clientY;
-        startedAtFirstSlide = reelsVertical.activeIndex === 0;
-    }, { passive: true });
-
-    document.addEventListener('touchmove', e => {
-        if (
-            !reelsVertical ||
-            isReloading ||
-            !startedAtFirstSlide ||
-            reelsVertical.animating
-        ) return;
-
-        const currentY = e.touches[0].clientY;
-        const deltaY = currentY - touchStartY;
-
-        // CHỈ reload nếu vuốt LÊN rất mạnh
-        if (deltaY < -120) {
-            isReloading = true;
-            showMiniLoading();
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 300);
-        }
-    }, { passive: true });
 
 })();
