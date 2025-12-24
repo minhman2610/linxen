@@ -32,7 +32,7 @@ html, body {
    =============================== */
 .lx-reels-header {
     position: fixed;
-    top: 10;
+    top: 20;
     left: 0;
     right: 0;
     height: var(--lx-reels-header-h);
