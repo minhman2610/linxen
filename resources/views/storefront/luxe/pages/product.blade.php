@@ -5,55 +5,52 @@
 @php
     use Illuminate\Support\Str;
 
-    /* ============================
-       NORMALIZE DATA
-    ============================ */
-    $images = [];
-
-    if (!empty($product['images']) && is_array($product['images'])) {
-        $images = $product['images'];
-    } elseif (!empty($product['thumb_url'])) {
-        $images = [$product['thumb_url']];
-    }
-
-    $variants   = $product['variants'] ?? [];
-    $attributes = $product['attributes'] ?? [];
+    /*
+    |--------------------------------------------------------------------------
+    | NORMALIZE DATA FROM ERP
+    |--------------------------------------------------------------------------
+    | images[] = [
+    |   ['thumb' => '', 'mobile' => '', 'full' => '']
+    | ]
+    */
+    $images     = $images ?? [];
+    $variants   = $variants ?? [];
+    $attributes = $attributes ?? [];
 @endphp
 
 <section class="lx-product-detail">
 
     {{-- =====================================================
-   PRODUCT GALLERY – MAIN + THUMBS (PROGRESSIVE)
-===================================================== --}}
-<div class="lx-product-gallery">
+       PRODUCT GALLERY – PROGRESSIVE + SWIPE
+    ===================================================== --}}
+    <div class="lx-product-gallery">
 
-    {{-- MAIN IMAGE --}}
-    <div class="lx-product-main">
-        <img
-            id="lxMainImage"
-            src="{{ $images[0] }}?w=120"
-            data-full="{{ $images[0] }}"
-            alt="{{ $product['name'] ?? '' }}"
-            loading="eager">
-    </div>
-
-    {{-- THUMBNAILS --}}
-    @if(count($images) > 1)
-        <div class="lx-product-thumbs">
-            @foreach($images as $index => $img)
-                <img
-                    src="{{ $img }}?w=120"
-                    data-full="{{ $img }}"
-                    class="{{ $index === 0 ? 'active' : '' }}"
-                    alt=""
-                    loading="lazy">
-            @endforeach
+        {{-- MAIN IMAGE --}}
+        <div class="lx-product-main" id="lxProductMain">
+            <img
+                id="lxMainImage"
+                src="{{ $mainImage }}"
+                data-index="0"
+                alt="{{ $product['name'] ?? '' }}"
+                loading="eager">
         </div>
-    @endif
 
-</div>
+        {{-- THUMBNAILS --}}
+        @if(count($images) > 1)
+            <div class="lx-product-thumbs" id="lxProductThumbs">
+                @foreach($images as $index => $img)
+                    <img
+                        src="{{ $img['thumb'] }}"
+                        data-full="{{ $img['full'] }}"
+                        data-index="{{ $index }}"
+                        class="{{ $index === 0 ? 'active' : '' }}"
+                        alt="{{ $product['name'] ?? '' }} thumbnail {{ $index + 1 }}"
+                        loading="lazy">
+                @endforeach
+            </div>
+        @endif
 
-
+    </div>
 
     {{-- =====================================================
        PRODUCT INFO

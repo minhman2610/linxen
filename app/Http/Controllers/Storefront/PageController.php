@@ -86,35 +86,63 @@ public function home(ErpStorefrontApi $erp)
     }
 
     /* =====================================================
-     * 👗 PRODUCT DETAIL
-     * ===================================================== */
-    public function product(string $slug, ErpStorefrontApi $erp)
-    {
-        $product = $erp->product($this->brand, $slug);
+ * 👗 PRODUCT DETAIL – LIN XÉN
+ * Lấy dữ liệu từ ERP Storefront API
+ * ===================================================== */
+public function product(string $slug, ErpStorefrontApi $erp)
+{
+    $product = $erp->product($this->brand, $slug);
 
-        if (empty($product)) {
-            abort(404);
-        }
-
-        // Chuẩn hoá dữ liệu cho blade
-        $variants   = $product['variants'] ?? [];
-        $attributes = $product['attributes'] ?? [];
-
-        $photos = $product['images'] ?? [];
-        $mainImage = $photos[0] ?? ($product['thumb_url'] ?? null);
-
-        return view(
-            "storefront.{$this->theme}.pages.product",
-            [
-                'product'    => $product,
-                'variants'   => $variants,
-                'attributes' => $attributes,
-                'photos'     => $photos,
-                'mainImage'  => $mainImage,
-                'brand'      => $this->brand,
-            ]
-        );
+    if (empty($product)) {
+        abort(404);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | VARIANTS & ATTRIBUTES
+    |--------------------------------------------------------------------------
+    */
+    $variants   = $product['variants']   ?? [];
+    $attributes = $product['attributes'] ?? [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEDIA – STOREFRONT (PROGRESSIVE GALLERY)
+    |--------------------------------------------------------------------------
+    | ERP trả về:
+    | - thumb_url
+    | - thumb_mobile
+    | - images[]: { thumb, mobile, full }
+    |--------------------------------------------------------------------------
+    */
+    $images = $product['images'] ?? [];
+
+    // Ảnh chính: ưu tiên mobile của ảnh đầu
+    $mainImage = $images[0]['mobile']
+        ?? $product['thumb_mobile']
+        ?? $product['thumb_url']
+        ?? null;
+
+    return view(
+        "storefront.{$this->theme}.pages.product",
+        [
+            // 🧾 DATA GỐC
+            'product'    => $product,
+
+            // 🎛 BIẾN THỂ
+            'variants'   => $variants,
+            'attributes' => $attributes,
+
+            // 🖼 GALLERY (MỚI)
+            'images'     => $images,
+            'mainImage'  => $mainImage,
+
+            // 🏷 BRAND
+            'brand'      => $this->brand,
+        ]
+    );
+}
+
 
     /* =====================================================
      * 📦 COLLECTION / CATEGORY
