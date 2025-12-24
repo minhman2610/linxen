@@ -156,6 +156,15 @@ html, body {
     object-fit: cover;
     display: block;
 }
+.reels-images {
+    height: calc(100vh - header - product-bar);
+}
+
+.reels-images img {
+    max-height: 100%;
+    height: auto;
+}
+
 
 /* ===============================
    PRODUCT BAR (BOTTOM)
