@@ -128,7 +128,7 @@ html, body {
    =============================== */
 .lx-reels-wrapper {
     width: 100vw;
-    height: 80vh;
+    height: 60vh;
     overflow: hidden; /* 🔒 khóa không cho tràn */
 }
 
