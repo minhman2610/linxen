@@ -129,42 +129,52 @@ html, body {
 .lx-reels-wrapper {
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    overflow: hidden; /* 🔒 khóa không cho tràn */
 }
 
-/* ❌ KHÔNG CHỪA HEADER BẰNG PADDING */
 .lx-reels-has-header {
-    padding-top: 0;
+    padding-top: var(--lx-reels-header-h);
+    box-sizing: border-box;
 }
 
 /* ===============================
-   SWIPER – VERTICAL (CHUẨN)
+   SWIPER – VERTICAL
    =============================== */
 .reels-vertical,
 .reels-vertical .swiper-wrapper,
 .reels-slide {
-    height: calc(
-        100vh
-        - var(--lx-reels-header-h)
-    );
+    height: 100%;
 }
 
 .reels-slide {
     position: relative;
     background: #000;
-    overflow: hidden;
+    box-sizing: border-box;
+    overflow: hidden; /* 🔒 ngăn content tràn xuống */
 }
 
 /* ===============================
-   IMAGE AREA
+   IMAGE AREA (HORIZONTAL SWIPER)
    =============================== */
 .reels-images {
-    height: 100%;
+    height: calc(
+        100vh
+        - var(--lx-reels-header-h)
+        - var(--lx-reels-product-bar-h)
+    );
+
+    max-height: calc(
+        100vh
+        - var(--lx-reels-header-h)
+        - var(--lx-reels-product-bar-h)
+    );
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     background: #000;
-    overflow: hidden;
+    overflow: hidden; /* 🔥 quan trọng */
 }
 
 .reels-images .swiper-wrapper {
@@ -173,11 +183,11 @@ html, body {
 
 .reels-images .swiper-slide {
     height: 100%;
+
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 
 /* ===============================
    IMAGE FRAME – FULL BLEED (STABLE)
