@@ -149,8 +149,7 @@ html, body {
     position: relative;
     background: #000;
 
-    /* chừa chỗ cho product bar */
-    padding-bottom: var(--lx-reels-product-bar-h);
+-   padding-bottom: var(--lx-reels-product-bar-h);
     box-sizing: border-box;
 }
 
