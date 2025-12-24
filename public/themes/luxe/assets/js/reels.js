@@ -102,16 +102,31 @@
         window.reelsVertical = reelsVertical;
 
         /* ---------- Horizontal image swipers ---------- */
-        document.querySelectorAll('.reels-images').forEach(el => {
-            if (el.classList.contains('swiper-initialized')) return;
+document.querySelectorAll('.reels-images').forEach(el => {
+    if (el.classList.contains('swiper-initialized')) return;
 
-            new Swiper(el, {
-                direction: 'horizontal',
-                slidesPerView: 1,
-                nested: true,
-                resistanceRatio: 0.6,
-            });
-        });
+    new Swiper(el, {
+        direction: 'horizontal',
+        slidesPerView: 1,
+        nested: true,
+
+        /* 🔒 KHÓA BIÊN – KHÔNG NHẢY SANG TRANG ĐEN */
+        resistance: true,
+        resistanceRatio: 0,
+        edgeSwipeDetection: true,
+        edgeSwipeThreshold: 20,
+
+        /* ❌ TẮT MOMENTUM QUÁ ĐÀ */
+        freeMode: false,
+
+        /* ❌ KHÔNG LOOP – KHÔNG SLIDE ẢO */
+        loop: false,
+
+        /* 🧠 QUAN TRỌNG: GIỮ SLIDE Ở BIÊN */
+        watchOverflow: true,
+    });
+});
+
 
         /* ---------- ADD TO CART ---------- */
         document.getElementById('lxReelsAddCart')
