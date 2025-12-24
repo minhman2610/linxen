@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Storefront;
 
 use App\Http\Controllers\Controller;
 use App\Services\ERP\ErpStorefrontApi;
+use Illuminate\Support\Str;
 
 class ReelsController extends Controller
 {
@@ -34,19 +35,42 @@ class ReelsController extends Controller
             )
             ->map(function ($p) {
 
-                // Thumbnail ưu tiên mobile
+                /* ===============================
+                   MEDIA
+                   =============================== */
+                $images = array_values(
+                    array_filter($p['media']['images'] ?? [])
+                );
+
                 $thumb = $p['media']['thumb_mobile']
                     ?? $p['media']['thumb']
-                    ?? $p['media']['images'][0]
+                    ?? $images[0]
                     ?? null;
+
+                /* ===============================
+                   IDENTITY
+                   =============================== */
+                $id   = (int) $p['product_id'];
+                $name = (string) $p['name'];
+
+                // 🔥 SLUG CHUẨN – DÙNG CHO LINK CHI TIẾT
+                $slug = Str::slug($name) . '-' . $id;
+
+                /* ===============================
+                   META / DESC (AN TOÀN)
+                   =============================== */
+                $desc = $p['short_desc']
+                    ?? $p['description']
+                    ?? '';
 
                 return [
                     /* ===============================
                        IDENTITY
                        =============================== */
-                    'id'   => (int) $p['product_id'],
-                    'sku'  => $p['code'] ?? (string) $p['product_id'],
-                    'name' => $p['name'],
+                    'id'   => $id,
+                    'sku'  => $p['code'] ?? (string) $id,
+                    'name' => $name,
+                    'slug' => $slug,
 
                     /* ===============================
                        PRICING
@@ -65,9 +89,12 @@ class ReelsController extends Controller
                        MEDIA
                        =============================== */
                     'thumb'  => $thumb,
-                    'images' => array_values(
-                        array_filter($p['media']['images'] ?? [])
-                    ),
+                    'images' => $images,
+
+                    /* ===============================
+                       DESC (REELS BAR)
+                       =============================== */
+                    'desc' => trim($desc),
 
                     /* ===============================
                        META (RESERVE)

@@ -18,18 +18,22 @@
             @foreach ($products as $p)
                 @php
                     $imageCount = count($p['images'] ?? []);
+
+                    // 🔥 FIX CỨNG SLUG – KHÔNG PHỤ THUỘC BACKEND
+                    $slug = \Illuminate\Support\Str::slug($p['name'] ?? 'product')
+                            . '-' . ($p['id'] ?? uniqid());
                 @endphp
 
                 <div class="swiper-slide reels-slide"
-                     data-id="{{ $p['id'] }}"
-                     data-sku="{{ $p['sku'] }}"
-                     data-name="{{ $p['name'] }}"
-                     data-price="{{ $p['price'] }}"
-                     data-available="{{ $p['available'] }}"
-                     data-tag="{{ $p['tag'] }}"
-                     data-thumb="{{ $p['thumb'] }}"
+                     data-id="{{ $p['id'] ?? '' }}"
+                     data-sku="{{ $p['sku'] ?? '' }}"
+                     data-name="{{ $p['name'] ?? '' }}"
+                     data-price="{{ $p['price'] ?? 0 }}"
+                     data-available="{{ $p['available'] ?? 0 }}"
+                     data-tag="{{ $p['tag'] ?? '' }}"
+                     data-thumb="{{ $p['thumb'] ?? '' }}"
                      data-desc="{{ $p['desc'] ?? '' }}"
-                     data-url="{{ route('linxen.product', ['slug' => $p['slug']]) }}"
+                     data-url="{{ route('linxen.product', ['slug' => $slug]) }}"
                      data-images-count="{{ $imageCount }}">
 
                     {{-- ===============================
@@ -41,12 +45,12 @@
                         <div class="swiper reels-images">
                             <div class="swiper-wrapper">
 
-                                @foreach ($p['images'] as $img)
+                                @foreach ($p['images'] ?? [] as $img)
                                     <div class="swiper-slide">
                                         <div class="reels-image-frame">
                                             <img
                                                 src="{{ $img }}"
-                                                alt="{{ $p['name'] }}"
+                                                alt="{{ $p['name'] ?? '' }}"
                                                 loading="lazy"
                                                 draggable="false">
                                         </div>
