@@ -1,10 +1,11 @@
 /**
  * =====================================================
- * LIN XÉN – REELS (FINAL SAFE FIX)
+ * LIN XÉN – REELS JS (SAFE VERSION – CSS DRIVEN)
  * =====================================================
- * ✔ KHÔNG ép height swiper-slide
- * ✔ CHỈ khóa image frame theo viewport
- * ✔ Không còn nửa ảnh / nửa ảnh
+ * ✔ KHÔNG can thiệp height
+ * ✔ KHÔNG đo viewport
+ * ✔ KHÔNG ép swiper-slide
+ * ✔ Chỉ sync data + quản lý swipe
  */
 
 (function () {
@@ -15,42 +16,6 @@
     let reelsVertical = null;
 
     /* =====================================================
-       VIEWPORT HEIGHT (CHUẨN)
-       ===================================================== */
-    function getImageViewportHeight() {
-        const header = document.querySelector('.lx-reels-header');
-        const bar    = document.querySelector('.lx-reels-product-bar');
-
-        const headerH = header ? header.offsetHeight : 0;
-        const barH    = bar ? bar.offsetHeight : 0;
-
-        return window.innerHeight - headerH - barH;
-    }
-
-    /* =====================================================
-       🔒 CHỈ KHÓA IMAGE – KHÔNG ĐỤNG SLIDE
-       ===================================================== */
-    function lockImageHeightOnly() {
-        const h = getImageViewportHeight();
-        if (!h || h < 200) return;
-
-        document.querySelectorAll('.reels-image-frame').forEach(frame => {
-            frame.style.height = h + 'px';
-            frame.style.maxHeight = h + 'px';
-        });
-    }
-
-    function bindImageLoad() {
-        document.querySelectorAll('.reels-image-frame img').forEach(img => {
-            if (img.complete) {
-                lockImageHeightOnly();
-            } else {
-                img.addEventListener('load', lockImageHeightOnly, { once: true });
-            }
-        });
-    }
-
-    /* =====================================================
        PRODUCT BAR SYNC
        ===================================================== */
     function updateProductBar(swiper) {
@@ -59,15 +24,19 @@
 
         const d = slide.dataset;
 
-        const set = (id, val, isImg = false) => {
+        const setText = (id, val) => {
             const el = document.getElementById(id);
-            if (!el || val === undefined) return;
-            isImg ? el.src = val : el.textContent = val;
+            if (el && val !== undefined) el.textContent = val;
         };
 
-        set('lxReelsThumb', d.thumb, true);
-        set('lxReelsName', d.name);
-        set('lxReelsDesc', d.desc);
+        const setImg = (id, src) => {
+            const el = document.getElementById(id);
+            if (el && src) el.src = src;
+        };
+
+        setImg('lxReelsThumb', d.thumb);
+        setText('lxReelsName', d.name);
+        setText('lxReelsDesc', d.desc);
 
         const priceEl = document.getElementById('lxReelsPrice');
         if (priceEl && d.price) {
@@ -83,81 +52,131 @@
 
         const addBtn = document.getElementById('lxReelsAddCart');
         if (addBtn) {
-            Object.assign(addBtn.dataset, {
-                id: d.id || '',
-                sku: d.sku || '',
-                name: d.name || '',
-                price: d.price || '',
-                image: d.thumb || ''
-            });
+            addBtn.dataset.id    = d.id || '';
+            addBtn.dataset.sku   = d.sku || '';
+            addBtn.dataset.name  = d.name || '';
+            addBtn.dataset.price = d.price || '';
+            addBtn.dataset.image = d.thumb || '';
             addBtn.disabled = Number(d.available) <= 0;
         }
 
-        const link = document.getElementById('lxReelsDetailLink');
-        if (link) link.href = d.url || '#';
+        const detailLink = document.getElementById('lxReelsDetailLink');
+        if (detailLink && d.url) {
+            detailLink.href = d.url;
+        }
     }
 
     /* =====================================================
        INIT
        ===================================================== */
-    function init() {
+    function initReels() {
+
         if (!window.Swiper) {
-            setTimeout(init, 50);
+            setTimeout(initReels, 50);
             return;
         }
 
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
+        /* ---------- Vertical Swiper ---------- */
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
             resistance: true,
             resistanceRatio: 0.85,
+            nested: false,
 
             on: {
                 init(sw) {
                     updateProductBar(sw);
-                    lockImageHeightOnly();
-                    bindImageLoad();
                 },
                 slideChangeTransitionEnd(sw) {
                     updateProductBar(sw);
-                    lockImageHeightOnly();
                 }
             }
         });
 
         window.reelsVertical = reelsVertical;
 
+        /* ---------- Horizontal Image Swipers ---------- */
         document.querySelectorAll('.reels-images').forEach(el => {
+
             if (el.classList.contains('swiper-initialized')) return;
 
-            new Swiper(el, {
+            const slideCount =
+                el.querySelectorAll('.swiper-slide').length;
+
+            const swiper = new Swiper(el, {
                 direction: 'horizontal',
                 slidesPerView: 1,
                 loop: false,
                 nested: true,
                 watchOverflow: true,
 
+                resistance: true,
+                resistanceRatio: 0.85,
+                touchReleaseOnEdges: false,
+
+                allowTouchMove: slideCount > 1,
+
                 on: {
-                    init() {
-                        lockImageHeightOnly();
-                    },
-                    slideChangeTransitionEnd() {
-                        lockImageHeightOnly();
+                    init(sw) {
+                        if (sw.slides.length <= 1) {
+                            sw.allowTouchMove = false;
+                        }
                     }
                 }
             });
+
+            el.__swiper = swiper;
         });
 
-        window.addEventListener('resize', () => {
-            setTimeout(lockImageHeightOnly, 80);
-        });
+        /* ---------- ADD TO CART ---------- */
+        const addCartBtn = document.getElementById('lxReelsAddCart');
+        if (addCartBtn) {
+            addCartBtn.addEventListener('click', function () {
+
+                if (this.disabled) return;
+
+                fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        sku:   this.dataset.sku,
+                        name:  this.dataset.name,
+                        price: this.dataset.price,
+                        image: this.dataset.image,
+                        qty:   1
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res?.success) {
+                        const countEl =
+                            document.getElementById('lxCartCount');
+                        if (countEl && res.cart_count !== undefined) {
+                            countEl.textContent = res.cart_count;
+                        }
+                    }
+                })
+                .catch(() => {});
+            });
+        }
     }
 
-    document.readyState === 'loading'
-        ? document.addEventListener('DOMContentLoaded', init)
-        : init();
+    /* =====================================================
+       BOOT
+       ===================================================== */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initReels);
+    } else {
+        initReels();
+    }
 
 })();
