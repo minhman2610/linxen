@@ -93,3 +93,35 @@
     }
 
 })();
+
+(function () {
+
+    let startY = 0;
+    let pulling = false;
+
+    document.addEventListener('touchstart', e => {
+        if (window.reelsVertical?.activeIndex === 0) {
+            startY = e.touches[0].clientY;
+            pulling = true;
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+        if (!pulling) return;
+
+        const currentY = e.touches[0].clientY;
+        const delta = currentY - startY;
+
+        // Kéo xuống đủ xa → reload
+        if (delta > 120) {
+            pulling = false;
+            window.location.reload();
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+        pulling = false;
+    });
+
+})();
+
