@@ -2,7 +2,7 @@
  * =====================================================
  * PRODUCT PAGE JS – LIN XÉN (LUXE THEME)
  * =====================================================
- * Gallery: Progressive (thumb -> main)
+ * Gallery: Progressive + Swipe + Slide
  * No Swiper dependency
  */
 
@@ -10,143 +10,122 @@
     'use strict';
 
     /* =====================================================
-     * 1️⃣ GALLERY – MAIN IMAGE + THUMBS (PROGRESSIVE)
+     * 1️⃣ GALLERY – MAIN + THUMBS + SLIDE
      * ===================================================== */
     function initGallery() {
-    const mainWrap = document.getElementById('lxProductMain');
-    const mainImg  = document.getElementById('lxMainImage');
-    const thumbs   = document.querySelectorAll('#lxProductThumbs img');
-    const btnPrev  = document.getElementById('lxGalleryPrev');
-    const btnNext  = document.getElementById('lxGalleryNext');
+        const mainWrap = document.getElementById('lxProductMain');
+        const mainImg  = document.getElementById('lxMainImage');
+        const thumbs   = document.querySelectorAll('#lxProductThumbs img');
+        const btnPrev  = document.getElementById('lxGalleryPrev');
+        const btnNext  = document.getElementById('lxGalleryNext');
 
-    if (!mainImg || !thumbs.length) return;
+        if (!mainWrap || !mainImg || !thumbs.length) return;
 
-    let currentIndex = 0;
-    const total = thumbs.length;
+        let currentIndex = 0;
+        const total = thumbs.length;
 
-    let startX = 0;
-    let currentX = 0;
-    let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
 
-    function loadImage(index, animate = true) {
-        if (index < 0 || index >= total) return;
+        function setActiveThumb(index) {
+            thumbs.forEach(t => t.classList.remove('active'));
+            thumbs[index]?.classList.add('active');
+        }
 
-        const thumb = thumbs[index];
-        const fullSrc = thumb.dataset.full;
-
-        thumbs.forEach(t => t.classList.remove('active'));
-        thumb.classList.add('active');
-
-        const img = new Image();
-        img.src = fullSrc;
-        img.onload = () => {
-            if (animate) {
-                mainImg.style.transition = 'transform .25s ease, opacity .25s ease';
-                mainImg.style.opacity = 0;
-                mainImg.style.transform = 'translateX(20px)';
+        function slideTo(index, direction = 1) {
+            if (index < 0 || index >= total || index === currentIndex) {
+                mainImg.style.transition = 'transform .25s ease';
+                mainImg.style.transform = 'translateX(0)';
+                return;
             }
+
+            const nextSrc = thumbs[index].dataset.full;
+
+            const nextImg = document.createElement('img');
+            nextImg.src = nextSrc;
+            nextImg.className = 'lx-slide-img';
+            nextImg.style.transform = `translateX(${direction * 100}%)`;
+
+            mainWrap.appendChild(nextImg);
 
             requestAnimationFrame(() => {
-                mainImg.src = fullSrc;
-                mainImg.dataset.index = index;
-                currentIndex = index;
+                mainImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
+                nextImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
 
-                mainImg.style.opacity = 1;
-                mainImg.style.transform = 'translateX(0)';
+                mainImg.style.transform = `translateX(${-direction * 100}%)`;
+                nextImg.style.transform = 'translateX(0)';
             });
-        };
-    }
 
-    /* CLICK THUMB */
-    thumbs.forEach(thumb => {
-        thumb.addEventListener('click', () => {
-            loadImage(parseInt(thumb.dataset.index, 10));
-        });
-    });
+            nextImg.onload = () => {
+                setTimeout(() => {
+                    mainImg.src = nextSrc;
+                    mainImg.style.transition = 'none';
+                    mainImg.style.transform = 'translateX(0)';
 
-    /* BUTTONS */
-    btnPrev?.addEventListener('click', () => {
-        loadImage(currentIndex - 1);
-    });
-
-    btnNext?.addEventListener('click', () => {
-        loadImage(currentIndex + 1);
-    });
-
-    /* SWIPE WITH DRAG EFFECT */
-    mainWrap.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-        currentX = startX;
-        isDragging = true;
-        mainImg.style.transition = 'none';
-    }, { passive: true });
-
-    mainWrap.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-
-        currentX = e.touches[0].clientX;
-        const deltaX = currentX - startX;
-
-        mainImg.style.transform = `translateX(${deltaX}px)`;
-    }, { passive: true });
-
-    mainWrap.addEventListener('touchend', () => {
-        if (!isDragging) return;
-
-        const deltaX = currentX - startX;
-        isDragging = false;
-
-        mainImg.style.transition = 'transform .25s ease';
-
-        if (Math.abs(deltaX) > 60) {
-            if (deltaX < 0) {
-                loadImage(currentIndex + 1, false);
-            } else {
-                loadImage(currentIndex - 1, false);
-            }
-        } else {
-            mainImg.style.transform = 'translateX(0)';
+                    mainWrap.removeChild(nextImg);
+                    currentIndex = index;
+                    setActiveThumb(index);
+                }, 350);
+            };
         }
-    });
 
-    /* INIT */
-    loadImage(0, false);
-}
-function slideTo(index, direction = 1) {
-    if (index < 0 || index >= total || index === currentIndex) return;
+        /* CLICK THUMB */
+        thumbs.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const idx = parseInt(thumb.dataset.index, 10);
+                const dir = idx > currentIndex ? 1 : -1;
+                slideTo(idx, dir);
+            });
+        });
 
-    const nextSrc = thumbs[index].dataset.full;
+        /* BUTTONS */
+        btnPrev?.addEventListener('click', () => {
+            slideTo(currentIndex - 1, -1);
+        });
 
-    const nextImg = document.createElement('img');
-    nextImg.src = nextSrc;
-    nextImg.className = 'lx-slide-img';
-    nextImg.style.transform = `translateX(${direction * 100}%)`;
+        btnNext?.addEventListener('click', () => {
+            slideTo(currentIndex + 1, 1);
+        });
 
-    mainWrap.appendChild(nextImg);
-
-    requestAnimationFrame(() => {
-        mainImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
-        nextImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
-
-        mainImg.style.transform = `translateX(${-direction * 100}%)`;
-        nextImg.style.transform = 'translateX(0)';
-    });
-
-    nextImg.onload = () => {
-        setTimeout(() => {
-            mainImg.src = nextSrc;
+        /* SWIPE – DRAG FOLLOW + RELEASE SLIDE */
+        mainWrap.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+            currentX = startX;
+            isDragging = true;
             mainImg.style.transition = 'none';
-            mainImg.style.transform = 'translateX(0)';
+        }, { passive: true });
 
-            mainWrap.removeChild(nextImg);
-            currentIndex = index;
+        mainWrap.addEventListener('touchmove', e => {
+            if (!isDragging) return;
 
-            thumbs.forEach(t => t.classList.remove('active'));
-            thumbs[index].classList.add('active');
-        }, 350);
-    };
-}
+            currentX = e.touches[0].clientX;
+            const deltaX = currentX - startX;
 
+            mainImg.style.transform = `translateX(${deltaX}px)`;
+        }, { passive: true });
+
+        mainWrap.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            const deltaX = currentX - startX;
+
+            if (Math.abs(deltaX) > 60) {
+                if (deltaX < 0) {
+                    slideTo(currentIndex + 1, 1);
+                } else {
+                    slideTo(currentIndex - 1, -1);
+                }
+            } else {
+                mainImg.style.transition = 'transform .25s ease';
+                mainImg.style.transform = 'translateX(0)';
+            }
+        });
+
+        /* INIT */
+        setActiveThumb(0);
+    }
 
     /* =====================================================
      * 2️⃣ VARIANT SELECTION
@@ -161,7 +140,6 @@ function slideTo(index, direction = 1) {
                 const attrKey = option.dataset.attrKey;
                 const value   = option.dataset.value;
 
-                // clear active cùng group
                 document
                     .querySelectorAll(`.variant-option[data-attr-key="${attrKey}"]`)
                     .forEach(el => el.classList.remove('active'));
@@ -248,7 +226,7 @@ function slideTo(index, direction = 1) {
                 } else {
                     showToast('Không thể thêm sản phẩm');
                 }
-            } catch (e) {
+            } catch {
                 showToast('Lỗi kết nối, vui lòng thử lại');
             }
         });

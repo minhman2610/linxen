@@ -1,9 +1,12 @@
 /* =====================================================
    PRODUCT DETAIL – GALLERY (LIN XÉN)
-   Layout: Main Image + Thumbnails (Progressive Load)
+   Layout: Main Image + Thumbnails
+   Progressive + Swipe + Slide
 ===================================================== */
 
-/* WRAPPER */
+/* =====================================================
+   WRAPPER
+===================================================== */
 .lx-product-gallery {
     width: 100%;
     margin-bottom: 16px;
@@ -13,7 +16,12 @@
    MAIN IMAGE
 ===================================================== */
 .lx-product-main {
+    position: relative;
     width: 100%;
+    overflow: hidden;
+
+    /* cho phép swipe ngang, khoá dọc */
+    touch-action: pan-y;
 }
 
 .lx-product-main img {
@@ -21,7 +29,23 @@
     aspect-ratio: 3 / 4;
     object-fit: cover;
     display: block;
+
     background: #f4f4f4;
+    will-change: transform;
+}
+
+/* IMG TẠM DÙNG KHI SLIDE */
+.lx-slide-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+
+    will-change: transform;
+    pointer-events: none;
 }
 
 /* =====================================================
@@ -46,6 +70,7 @@
 
     cursor: pointer;
     opacity: .45;
+
     transition: opacity .15s ease, outline .15s ease;
 }
 
@@ -54,6 +79,59 @@
     opacity: 1;
     outline: 2px solid #111;
     outline-offset: 2px;
+}
+
+/* =====================================================
+   GALLERY NAV – SUBTLE / INVISIBLE STYLE
+===================================================== */
+
+/* VÙNG CLICK ẨN */
+.lx-gallery-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20%;
+
+    z-index: 5;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* LEFT / RIGHT ZONE */
+.lx-gallery-btn.prev { left: 0; }
+.lx-gallery-btn.next { right: 0; }
+
+/* ICON MŨI TÊN RẤT NHẸ */
+.lx-gallery-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+
+    width: 8px;
+    height: 8px;
+
+    border-top: 1.5px solid rgba(255,255,255,.6);
+    border-right: 1.5px solid rgba(255,255,255,.6);
+
+    opacity: 0;
+    transition: opacity .25s ease;
+}
+
+.lx-gallery-btn.prev::after {
+    left: 14px;
+    transform: translateY(-50%) rotate(-135deg);
+}
+
+.lx-gallery-btn.next::after {
+    right: 14px;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* CHỈ GỢI Ý NHẸ KHI CHẠM / HOVER */
+.lx-product-main:hover .lx-gallery-btn::after,
+.lx-product-main:active .lx-gallery-btn::after {
+    opacity: .8;
 }
 
 /* =====================================================
@@ -69,58 +147,4 @@
         width: 70px;
         height: 94px;
     }
-}
-/* =====================================================
-   GALLERY NAV – SUBTLE STYLE
-===================================================== */
-
-.lx-product-main {
-    position: relative;
-    overflow: hidden;
-    touch-action: pan-y;
-}
-
-/* VÙNG CLICK (ẨN) */
-.lx-gallery-btn {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 20%;
-    z-index: 5;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-/* LEFT / RIGHT ZONE */
-.lx-gallery-btn.prev { left: 0; }
-.lx-gallery-btn.next { right: 0; }
-
-/* ICON NHẸ */
-.lx-gallery-btn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 8px;
-    height: 8px;
-    border-top: 1.5px solid rgba(255,255,255,.6);
-    border-right: 1.5px solid rgba(255,255,255,.6);
-    opacity: 0;
-    transition: opacity .25s ease, transform .25s ease;
-}
-
-.lx-gallery-btn.prev::after {
-    left: 14px;
-    transform: translateY(-50%) rotate(-135deg);
-}
-
-.lx-gallery-btn.next::after {
-    right: 14px;
-    transform: translateY(-50%) rotate(45deg);
-}
-
-/* CHỈ HIỆN KHI CHẠM / HOVER */
-.lx-product-main:hover .lx-gallery-btn::after,
-.lx-product-main:active .lx-gallery-btn::after {
-    opacity: .8;
 }
