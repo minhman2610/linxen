@@ -1,12 +1,10 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (STABLE – NO RELOAD)
+ * LIN XÉN – PRODUCT REELS (ACTIVE INDEX FIX)
  * =====================================================
- * FEATURES:
- * - Sync product bar on slide change
- * - Vertical reels + horizontal images
- * - Add to cart from product bar
- * - NO reload on swipe (disabled completely)
+ * - Sync product bar using swiper.activeIndex
+ * - NO reload logic
+ * - Stable on iOS momentum
  */
 
 (function () {
@@ -20,9 +18,12 @@
     let reelsVertical = null;
 
     /* =====================================================
-       PRODUCT BAR SYNC
+       PRODUCT BAR SYNC (SOURCE OF TRUTH = activeIndex)
        ===================================================== */
-    function updateProductBarFromSlide(slideEl) {
+    function updateProductBarFromIndex(swiper) {
+        if (!swiper || !swiper.slides || !swiper.slides.length) return;
+
+        const slideEl = swiper.slides[swiper.activeIndex];
         if (!slideEl) return;
 
         const {
@@ -41,20 +42,24 @@
         const tagEl   = document.getElementById('lxReelsTag');
         const addBtn  = document.getElementById('lxReelsAddCart');
 
-        if (thumbEl && thumb) thumbEl.src = thumb;
-        if (nameEl) nameEl.innerText = name || '';
+        if (thumbEl && thumb) {
+            thumbEl.src = thumb;
+        }
+
+        if (nameEl) {
+            nameEl.textContent = name || '';
+        }
 
         if (priceEl && price) {
-            priceEl.innerText =
+            priceEl.textContent =
                 Number(price).toLocaleString('vi-VN') + '₫';
         }
 
         if (tagEl) {
-            tagEl.innerText = tag || '';
+            tagEl.textContent = tag || '';
             tagEl.style.display = tag ? 'inline-block' : 'none';
         }
 
-        // Bind add-to-cart data
         if (addBtn) {
             addBtn.dataset.id    = id;
             addBtn.dataset.sku   = sku;
@@ -85,15 +90,11 @@
             resistanceRatio: 0,
 
             on: {
-                init() {
-                    const firstSlide =
-                        verticalEl.querySelector('.swiper-slide-active');
-                    updateProductBarFromSlide(firstSlide);
+                init(swiper) {
+                    updateProductBarFromIndex(swiper);
                 },
-                slideChange() {
-                    const activeSlide =
-                        verticalEl.querySelector('.swiper-slide-active');
-                    updateProductBarFromSlide(activeSlide);
+                slideChange(swiper) {
+                    updateProductBarFromIndex(swiper);
                 }
             }
         });
@@ -138,7 +139,7 @@
                 .then(res => res.json())
                 .then(res => {
                     if (res?.success && document.getElementById('lxCartCount')) {
-                        document.getElementById('lxCartCount').innerText =
+                        document.getElementById('lxCartCount').textContent =
                             res.cart_count;
                     }
                 });
