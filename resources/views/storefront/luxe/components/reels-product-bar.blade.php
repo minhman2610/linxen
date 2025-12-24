@@ -6,6 +6,12 @@
     <div class="lx-reels-row lx-reels-row-top">
 
         <div class="lx-reels-thumb">
+
+            {{-- SALE BADGE --}}
+            <span class="lx-reels-sale-badge">
+                -20%
+            </span>
+
             <img
                 id="lxReelsThumb"
                 src="/images/no-image.png"
@@ -15,16 +21,16 @@
         <div class="lx-reels-product-main">
             <strong id="lxReelsName">Váy lụa dáng xòe cổ vuông</strong>
 
-            {{-- DEMO: mô tả ngắn (fix tay) --}}
+            {{-- Mô tả ngắn --}}
             <p class="lx-reels-desc" id="lxReelsDesc">
-                Chất lụa mềm, tôn dáng, dễ mặc đi làm & dạo phố
+                Chất lụa mềm, tôn dáng, dễ mặc đi làm &amp; dạo phố
             </p>
         </div>
 
-        {{-- WISHLIST --}}
+        {{-- WISHLIST – NỔI BẬT --}}
         <button
             type="button"
-            class="lx-reels-wishlist-btn"
+            class="lx-reels-wishlist-btn is-highlight"
             id="lxReelsWishlist"
             aria-label="Yêu thích">
             ♥
@@ -37,11 +43,13 @@
          =============================== --}}
     <div class="lx-reels-row lx-reels-row-meta">
 
-        <span class="lx-reels-price" id="lxReelsPrice">890.000₫</span>
+        <div class="lx-reels-price-wrap">
+            <span class="lx-reels-price" id="lxReelsPrice">890.000₫</span>
+            <span class="lx-reels-price-old">1.090.000₫</span>
+        </div>
 
         <span class="lx-reels-tag" id="lxReelsTag">Có sẵn</span>
 
-        {{-- DEMO: meta cứng để test layout --}}
         <span class="lx-reels-attr">Màu: Trắng, Đen</span>
         <span class="lx-reels-attr">Size: S–M–L</span>
 

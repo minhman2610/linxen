@@ -501,3 +501,85 @@ button {
         padding-bottom: calc(16px + env(safe-area-inset-bottom));
     }
 }
+/* ===============================
+   SALE BADGE (TRÊN THUMB)
+   =============================== */
+.lx-reels-thumb {
+    position: relative;
+}
+
+.lx-reels-sale-badge {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    z-index: 2;
+
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+
+    color: #fff;
+    background: linear-gradient(
+        135deg,
+        #ff3b30,
+        #ff6a5c
+    );
+
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255,59,48,.35);
+    pointer-events: none;
+}
+
+/* ===============================
+   PRICE (NEW + OLD)
+   =============================== */
+.lx-reels-price-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lx-reels-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.lx-reels-price-old {
+    font-size: 12px;
+    color: rgba(255,255,255,.55);
+    text-decoration: line-through;
+}
+
+/* ===============================
+   WISHLIST – NỔI BẬT
+   =============================== */
+.lx-reels-wishlist-btn {
+    transition: transform .15s ease, background .15s ease;
+}
+
+/* trạng thái highlight (đang hot / đã thích) */
+.lx-reels-wishlist-btn.is-highlight {
+    background: rgba(255,59,48,.15);
+    color: #ff3b30;
+}
+
+/* cảm giác bấm */
+.lx-reels-wishlist-btn:active {
+    transform: scale(.92);
+}
+
+/* ===============================
+   OPTIONAL: ANIMATE SALE (NHẸ)
+   =============================== */
+@keyframes lx-sale-pulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.lx-reels-sale-badge {
+    animation: lx-sale-pulse 1.6s ease-in-out infinite;
+}
+
