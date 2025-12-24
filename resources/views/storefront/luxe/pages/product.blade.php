@@ -21,11 +21,10 @@
 <section class="lx-product-detail">
 
     {{-- =====================================================
-   PRODUCT GALLERY – PROGRESSIVE + SWIPE
+   PRODUCT GALLERY – PROGRESSIVE + SWIPE + CONTROLS
 ===================================================== --}}
 <div class="lx-product-gallery">
 
-    {{-- MAIN IMAGE (SWIPE ZONE) --}}
     <div class="lx-product-main" id="lxProductMain">
         <img
             id="lxMainImage"
@@ -33,6 +32,14 @@
             data-index="0"
             alt="{{ $product['name'] ?? '' }}"
             loading="eager">
+
+        {{-- CONTROLS --}}
+        <button class="lx-gallery-btn prev" id="lxGalleryPrev" aria-label="Previous">
+            ‹
+        </button>
+        <button class="lx-gallery-btn next" id="lxGalleryNext" aria-label="Next">
+            ›
+        </button>
     </div>
 
     {{-- THUMBNAILS --}}
@@ -44,7 +51,6 @@
                     data-full="{{ $img['full'] }}"
                     data-index="{{ $index }}"
                     class="{{ $index === 0 ? 'active' : '' }}"
-                    alt="{{ $product['name'] ?? '' }} thumbnail {{ $index + 1 }}"
                     loading="lazy">
             @endforeach
         </div>

@@ -70,3 +70,58 @@
         height: 94px;
     }
 }
+/* =====================================================
+   GALLERY CONTROLS
+===================================================== */
+
+.lx-product-main {
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+.lx-product-main img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+    background: #f4f4f4;
+    will-change: transform;
+}
+
+/* NAV BUTTONS */
+.lx-gallery-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+
+    background: rgba(0,0,0,.45);
+    color: #fff;
+    font-size: 20px;
+    line-height: 36px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.lx-gallery-btn.prev {
+    left: 8px;
+}
+
+.lx-gallery-btn.next {
+    right: 8px;
+}
+
+/* MOBILE – nút nhỏ hơn */
+@media (max-width: 767px) {
+    .lx-gallery-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+    }
+}

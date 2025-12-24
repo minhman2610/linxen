@@ -13,15 +13,22 @@
      * 1️⃣ GALLERY – MAIN IMAGE + THUMBS (PROGRESSIVE)
      * ===================================================== */
     function initGallery() {
-    const mainImg = document.getElementById('lxMainImage');
-    const thumbs  = document.querySelectorAll('#lxProductThumbs img');
+    const mainWrap = document.getElementById('lxProductMain');
+    const mainImg  = document.getElementById('lxMainImage');
+    const thumbs   = document.querySelectorAll('#lxProductThumbs img');
+    const btnPrev  = document.getElementById('lxGalleryPrev');
+    const btnNext  = document.getElementById('lxGalleryNext');
 
     if (!mainImg || !thumbs.length) return;
 
     let currentIndex = 0;
     const total = thumbs.length;
 
-    function loadImage(index) {
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    function loadImage(index, animate = true) {
         if (index < 0 || index >= total) return;
 
         const thumb = thumbs[index];
@@ -33,9 +40,20 @@
         const img = new Image();
         img.src = fullSrc;
         img.onload = () => {
-            mainImg.src = fullSrc;
-            mainImg.dataset.index = index;
-            currentIndex = index;
+            if (animate) {
+                mainImg.style.transition = 'transform .25s ease, opacity .25s ease';
+                mainImg.style.opacity = 0;
+                mainImg.style.transform = 'translateX(20px)';
+            }
+
+            requestAnimationFrame(() => {
+                mainImg.src = fullSrc;
+                mainImg.dataset.index = index;
+                currentIndex = index;
+
+                mainImg.style.opacity = 1;
+                mainImg.style.transform = 'translateX(0)';
+            });
         };
     }
 
@@ -46,35 +64,53 @@
         });
     });
 
-    /* SWIPE MAIN IMAGE */
-    let startX = 0;
-    let isSwiping = false;
-
-    mainImg.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-        isSwiping = true;
-    }, { passive: true });
-
-    mainImg.addEventListener('touchend', e => {
-        if (!isSwiping) return;
-
-        const endX = e.changedTouches[0].clientX;
-        const diff = endX - startX;
-
-        // threshold chống vuốt nhầm
-        if (Math.abs(diff) < 40) return;
-
-        if (diff < 0) {
-            loadImage(currentIndex + 1); // swipe left
-        } else {
-            loadImage(currentIndex - 1); // swipe right
-        }
-
-        isSwiping = false;
+    /* BUTTONS */
+    btnPrev?.addEventListener('click', () => {
+        loadImage(currentIndex - 1);
     });
 
-    /* preload ảnh đầu tiên */
-    loadImage(0);
+    btnNext?.addEventListener('click', () => {
+        loadImage(currentIndex + 1);
+    });
+
+    /* SWIPE WITH DRAG EFFECT */
+    mainWrap.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        currentX = startX;
+        isDragging = true;
+        mainImg.style.transition = 'none';
+    }, { passive: true });
+
+    mainWrap.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+
+        currentX = e.touches[0].clientX;
+        const deltaX = currentX - startX;
+
+        mainImg.style.transform = `translateX(${deltaX}px)`;
+    }, { passive: true });
+
+    mainWrap.addEventListener('touchend', () => {
+        if (!isDragging) return;
+
+        const deltaX = currentX - startX;
+        isDragging = false;
+
+        mainImg.style.transition = 'transform .25s ease';
+
+        if (Math.abs(deltaX) > 60) {
+            if (deltaX < 0) {
+                loadImage(currentIndex + 1, false);
+            } else {
+                loadImage(currentIndex - 1, false);
+            }
+        } else {
+            mainImg.style.transform = 'translateX(0)';
+        }
+    });
+
+    /* INIT */
+    loadImage(0, false);
 }
 
 
