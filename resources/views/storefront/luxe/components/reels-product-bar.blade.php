@@ -21,10 +21,6 @@
 
             <div class="lx-reels-product-main">
 
-    <strong id="lxReelsName">
-        Váy lụa dáng xòe cổ vuông
-    </strong>
-
     {{-- PRICE GROUP --}}
     <div class="lx-reels-price-inline">
         <span class="lx-reels-price" id="lxReelsPrice">
