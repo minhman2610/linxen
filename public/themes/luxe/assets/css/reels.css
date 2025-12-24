@@ -750,4 +750,79 @@ html, body {
 .reels-image-frame img {
     vertical-align: top !important;
 }
+/* =====================================================
+   🔥 REELS OVERRIDE – FINAL HEIGHT LOCK
+   ===================================================== */
+
+/* 1️⃣ REELS WRAPPER – ANCHOR MODEL */
+.lx-reels-wrapper {
+    position: fixed !important;
+    top: var(--lx-reels-header-h) !important;
+    bottom: var(--lx-reels-product-bar-h) !important;
+    left: 0;
+    right: 0;
+
+    overflow: hidden !important;
+    background: #000 !important;
+}
+
+/* 2️⃣ SWIPER DỌC – KHÔNG CHO TỰ TÍNH HEIGHT */
+.reels-vertical,
+.reels-vertical .swiper-wrapper,
+.reels-slide {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+}
+
+/* 3️⃣ IMAGE AREA = VÙNG CẮT DUY NHẤT */
+.reels-images {
+    position: relative !important;
+    height: 100% !important;
+    max-height: 100% !important;
+
+    overflow: hidden !important;
+    background: #000 !important;
+}
+
+/* 4️⃣ SWIPER SLIDE NGANG – CẤM CO GIÃN */
+.reels-images .swiper-slide {
+    height: 100% !important;
+    max-height: 100% !important;
+
+    overflow: hidden !important;
+
+    display: block !important;
+}
+
+/* 5️⃣ IMAGE FRAME – KHÓA 100% */
+.reels-image-frame {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+
+    overflow: hidden !important;
+    background: #000 !important;
+}
+
+/* 6️⃣ IMG / VIDEO – ABSOLUTE, KHÔNG THAM GIA FLOW */
+.reels-image-frame img,
+.reels-image-frame video {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+    display: block !important;
+    vertical-align: top !important;
+}
+
+/* 7️⃣ CHỐT: NGĂN BASELINE / LINE-HEIGHT ẢNH */
+.reels-image-frame img {
+    line-height: 0 !important;
+    font-size: 0 !important;
+}
 
