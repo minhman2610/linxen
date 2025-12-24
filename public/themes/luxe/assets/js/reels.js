@@ -1,11 +1,11 @@
 /**
  * =====================================================
- * LIN XÉN – REELS JS (SAFE VERSION – CSS DRIVEN)
+ * LIN XÉN – REELS JS (FINAL – ANCHOR CSS MATCH)
  * =====================================================
  * ✔ KHÔNG can thiệp height
- * ✔ KHÔNG đo viewport
+ * ✔ KHÔNG dùng vh / viewport
  * ✔ KHÔNG ép swiper-slide
- * ✔ Chỉ sync data + quản lý swipe
+ * ✔ Swiper quản lý layout, JS chỉ sync data + gesture
  */
 
 (function () {
@@ -34,22 +34,26 @@
             if (el && src) el.src = src;
         };
 
+        /* BASIC INFO */
         setImg('lxReelsThumb', d.thumb);
         setText('lxReelsName', d.name);
         setText('lxReelsDesc', d.desc);
 
+        /* PRICE */
         const priceEl = document.getElementById('lxReelsPrice');
         if (priceEl && d.price) {
             priceEl.textContent =
                 Number(d.price).toLocaleString('vi-VN') + '₫';
         }
 
+        /* TAG */
         const tagEl = document.getElementById('lxReelsTag');
         if (tagEl) {
             tagEl.textContent = d.tag || '';
             tagEl.style.display = d.tag ? 'inline-block' : 'none';
         }
 
+        /* ADD TO CART DATA */
         const addBtn = document.getElementById('lxReelsAddCart');
         if (addBtn) {
             addBtn.dataset.id    = d.id || '';
@@ -60,6 +64,7 @@
             addBtn.disabled = Number(d.available) <= 0;
         }
 
+        /* DETAIL LINK */
         const detailLink = document.getElementById('lxReelsDetailLink');
         if (detailLink && d.url) {
             detailLink.href = d.url;
@@ -79,13 +84,16 @@
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
-        /* ---------- Vertical Swiper ---------- */
+        /* ---------- VERTICAL REELS ---------- */
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
+
             resistance: true,
             resistanceRatio: 0.85,
+
             nested: false,
+            watchOverflow: true,
 
             on: {
                 init(sw) {
@@ -99,7 +107,7 @@
 
         window.reelsVertical = reelsVertical;
 
-        /* ---------- Horizontal Image Swipers ---------- */
+        /* ---------- HORIZONTAL IMAGES ---------- */
         document.querySelectorAll('.reels-images').forEach(el => {
 
             if (el.classList.contains('swiper-initialized')) return;
@@ -111,12 +119,12 @@
                 direction: 'horizontal',
                 slidesPerView: 1,
                 loop: false,
+
                 nested: true,
                 watchOverflow: true,
 
                 resistance: true,
                 resistanceRatio: 0.85,
-                touchReleaseOnEdges: false,
 
                 allowTouchMove: slideCount > 1,
 
