@@ -1,8 +1,10 @@
 /* =====================================================
-   LIN XÉN – REELS (TIKTOK STYLE)
+   LIN XÉN – REELS (FINAL CLEAN)
    ===================================================== */
 
-/* RESET / BASE */
+/* ===============================
+   RESET / BASE
+   =============================== */
 html, body {
     margin: 0;
     padding: 0;
@@ -17,9 +19,9 @@ html, body {
                  Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* =====================================================
+/* ===============================
    HEADER REELS
-   ===================================================== */
+   =============================== */
 .lx-reels-header {
     position: fixed;
     top: 0;
@@ -27,11 +29,15 @@ html, body {
     right: 0;
     height: 52px;
     z-index: 100;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 0 12px;
     color: #fff;
+    font-weight: 800;
+
     background: linear-gradient(
         to bottom,
         rgba(0,0,0,.6),
@@ -39,63 +45,88 @@ html, body {
     );
 }
 
+/* ICON */
 .lx-reels-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     background: none;
     border: none;
     color: #fff;
-    font-size: 20px;
 }
 
+.lx-reels-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: #fff;
+}
+
+/* MODE SWITCH */
 .lx-reels-mode {
     display: flex;
-    gap: 14px;
-    font-size: 14px;
+    gap: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: .1em;
 }
 
 .lx-reels-mode span {
-    opacity: .5;
+    opacity: .45;
 }
 
 .lx-reels-mode span.active {
     opacity: 1;
-    font-weight: 600;
 }
 
+/* RIGHT ACTIONS */
+.lx-reels-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* CART BADGE */
 .lx-reels-cart {
     position: relative;
-    color: #fff;
-    font-size: 18px;
-    text-decoration: none;
 }
 
 .lx-reels-cart em {
     position: absolute;
-    top: -6px;
-    right: -10px;
+    top: -5px;
+    right: -6px;
+
     min-width: 18px;
     height: 18px;
+
     font-size: 11px;
+    font-weight: 700;
+
     background: #ff3b30;
     color: #fff;
     border-radius: 9px;
+
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* =====================================================
+/* ===============================
    MAIN – MEDIA AREA
-   ===================================================== */
-.lx-reels-main {
-    height: 100vh;
-    width: 100vw;
-}
-
+   =============================== */
+.lx-reels-main,
 .lx-reels-wrapper {
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
 }
 
-/* SWIPER */
+/* ===============================
+   SWIPER – VERTICAL
+   =============================== */
 .reels-vertical,
 .reels-vertical .swiper-wrapper,
 .reels-slide {
@@ -107,31 +138,34 @@ html, body {
     background: #000;
 }
 
-/* IMAGE SWIPER */
+/* ===============================
+   SWIPER – IMAGES (HORIZONTAL)
+   =============================== */
 .reels-images,
-.reels-images .swiper-wrapper,
-.reels-image-item {
+.reels-images .swiper-wrapper {
     height: 100%;
 }
 
-.reels-image-item img {
+.reels-images img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-/* =====================================================
+/* ===============================
    PRODUCT BAR (BOTTOM)
-   ===================================================== */
+   =============================== */
 .lx-reels-product-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 72px;
     z-index: 100;
+
+    height: 72px;
     padding: 0 12px;
+
     display: flex;
     align-items: center;
     gap: 12px;
@@ -145,70 +179,7 @@ html, body {
     backdrop-filter: blur(10px);
 }
 
-.lx-reels-product-info {
-    flex: 1;
-    color: #fff;
-    overflow: hidden;
-}
-
-.lx-reels-product-info strong {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.lx-reels-product-info span {
-    font-size: 13px;
-    opacity: .9;
-}
-
-.lx-reels-add-cart {
-    height: 44px;
-    padding: 0 18px;
-    border-radius: 22px;
-    border: none;
-    background: #fff;
-    color: #000;
-    font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-/* =====================================================
-   SAFE AREA (iOS)
-   ===================================================== */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .lx-reels-product-bar {
-        padding-bottom: env(safe-area-inset-bottom);
-        height: calc(72px + env(safe-area-inset-bottom));
-    }
-}
-
-/* =====================================================
-   UX POLISH
-   ===================================================== */
-.swiper-slide {
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-button {
-    -webkit-tap-highlight-color: transparent;
-}
-/* ===============================
-   PRODUCT BAR – ENHANCED
-   =============================== */
-
-.lx-reels-product-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* Thumbnail */
+/* THUMBNAIL */
 .lx-reels-thumb {
     width: 48px;
     height: 48px;
@@ -224,22 +195,23 @@ button {
     object-fit: cover;
 }
 
-/* Info */
+/* INFO */
 .lx-reels-product-info {
     flex: 1;
     min-width: 0;
+    color: #fff;
 }
 
 .lx-reels-product-info strong {
+    display: block;
     font-size: 14px;
     font-weight: 600;
-    color: #fff;
-    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* META */
 .lx-reels-meta {
     display: flex;
     align-items: center;
@@ -250,7 +222,6 @@ button {
 .lx-reels-price {
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
 }
 
 .lx-reels-tag {
@@ -258,83 +229,52 @@ button {
     padding: 2px 6px;
     border-radius: 6px;
     background: rgba(255,255,255,.15);
-    color: #fff;
 }
 
-/* CTA */
-.lx-reels-add-cart {
+/* ACTION ICONS (PRODUCT BAR) */
+.lx-reels-action-btn {
+    width: 40px;
     height: 40px;
-    padding: 0 14px;
     border-radius: 20px;
-    border: none;
-    background: #ffffff;
-    color: #000;
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-}
 
-/* ===============================
-   REELS LOADING OVERLAY
-   =============================== */
-.lx-reels-loading {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 999;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s ease;
+
+    background: rgba(255,255,255,.95);
+    border: none;
+    color: #000;
 }
 
-.lx-reels-loading.active {
-    opacity: 1;
-    pointer-events: all;
+.lx-reels-action-btn svg {
+    width: 20px;
+    height: 20px;
 }
 
-.lx-loading-spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid rgba(255,255,255,.2);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: lx-spin .9s linear infinite;
-}
-
-.lx-loading-text {
-    margin-top: 12px;
-    font-size: 13px;
-    color: rgba(255,255,255,.8);
-}
-
-@keyframes lx-spin {
-    to { transform: rotate(360deg); }
-}
 /* ===============================
-   MINI LOADING (NON-OVERLAY)
+   MINI LOADING (RELOAD INDICATOR)
    =============================== */
-
 .lx-reels-mini-loading {
     position: absolute;
-    top: 56px; /* dưới header reels */
+    top: 56px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 20;
+
     display: flex;
     align-items: center;
     gap: 6px;
+
     padding: 6px 10px;
     border-radius: 14px;
+
     background: rgba(0,0,0,.6);
     color: #fff;
     font-size: 12px;
+
     opacity: 0;
     pointer-events: none;
     transition: opacity .2s ease;
-    z-index: 20;
 }
 
 .lx-reels-mini-loading.active {
@@ -349,97 +289,25 @@ button {
 @keyframes lx-spin {
     to { transform: rotate(360deg); }
 }
+
 /* ===============================
-   HEADER TYPOGRAPHY & ICON STYLE
+   SAFE AREA (iOS)
    =============================== */
-
-.lx-reels-header {
-    font-weight: 700;
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .lx-reels-product-bar {
+        padding-bottom: env(safe-area-inset-bottom);
+        height: calc(72px + env(safe-area-inset-bottom));
+    }
 }
 
-.lx-reels-icon {
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.lx-reels-icon svg {
-    stroke: #fff;
-}
-
-/* CENTER MODE */
-.lx-reels-mode {
-    font-size: 16px;
-    letter-spacing: .08em;
-}
-
-.lx-reels-mode span {
-    opacity: .45;
-}
-
-.lx-reels-mode span.active {
-    opacity: 1;
-    font-weight: 800;
-}
-
-/* RIGHT ACTIONS */
-.lx-reels-actions {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-/* CART BADGE */
-.lx-reels-cart em {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    min-width: 18px;
-    height: 18px;
-    font-size: 11px;
-    font-weight: 700;
-    background: #ff3b30;
-    color: #fff;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 /* ===============================
-   REELS HEADER – ACTION SPACING
+   UX POLISH
    =============================== */
-
-.lx-reels-actions {
-    display: flex;
-    align-items: center;
-    gap: 18px; /* GIÃN icon ra – không bị dính */
+.swiper-slide {
+    -webkit-user-select: none;
+    user-select: none;
 }
 
-.lx-reels-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+button {
+    -webkit-tap-highlight-color: transparent;
 }
-
-.lx-reels-icon svg {
-    width: 22px;
-    height: 22px;
-}
-
-/* Cart badge position refine */
-.lx-reels-cart em {
-    top: -5px;
-    right: -6px;
-}
-
-/* Center mode typography */
-.lx-reels-mode {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: .1em;
-}
-

@@ -9,23 +9,42 @@
         <span class="lx-reels-loading-text">Đang làm mới…</span>
     </div>
 
-    {{-- SWIPER DỌC --}}
+    {{-- ===============================
+         SWIPER DỌC – PRODUCT REELS
+         =============================== --}}
     <div class="swiper reels-vertical">
         <div class="swiper-wrapper">
 
             @foreach ($products as $p)
                 <div class="swiper-slide reels-slide"
-                     data-id="{{ $p['id'] }}"
-                     data-name="{{ $p['name'] }}"
-                     data-price="{{ $p['price'] }}"
-                     data-image="{{ $p['images'][0] ?? '' }}">
 
-                    {{-- SWIPER NGANG --}}
+                     {{-- IDENTITY --}}
+                     data-id="{{ $p['id'] }}"
+                     data-sku="{{ $p['sku'] }}"
+                     data-name="{{ $p['name'] }}"
+
+                     {{-- PRICING --}}
+                     data-price="{{ $p['price'] }}"
+
+                     {{-- STOCK --}}
+                     data-available="{{ $p['available'] }}"
+                     data-tag="{{ $p['tag'] }}"
+
+                     {{-- MEDIA --}}
+                     data-thumb="{{ $p['thumb'] }}"
+                >
+
+                    {{-- ===============================
+                         SWIPER NGANG – IMAGES
+                         =============================== --}}
                     <div class="swiper reels-images">
                         <div class="swiper-wrapper">
                             @foreach ($p['images'] as $img)
                                 <div class="swiper-slide">
-                                    <img src="{{ $img }}" loading="lazy">
+                                    <img
+                                        src="{{ $img }}"
+                                        alt="{{ $p['name'] }}"
+                                        loading="lazy">
                                 </div>
                             @endforeach
                         </div>

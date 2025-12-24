@@ -16,42 +16,62 @@ class ReelsController extends Controller
         $this->brand = config('storefront.brand', 'linxen');
     }
 
+    /**
+     * =====================================================
+     * REELS – IMAGE PRODUCT FEED
+     * =====================================================
+     */
     public function index(ErpStorefrontApi $erp)
     {
+        // Tạm dùng home feed (sau này tách API riêng cho reels)
         $raw = $erp->home($this->brand);
 
         $products = collect($raw['products'] ?? [])
             ->filter(fn ($p) =>
-                !empty($p['product_id'])
-                && !empty($p['price'])
-                && !empty($p['media']['images'][0])
+                !empty($p['product_id']) &&
+                !empty($p['price']) &&
+                !empty($p['media']['images'][0])
             )
             ->map(function ($p) {
 
+                // Thumbnail ưu tiên mobile
                 $thumb = $p['media']['thumb_mobile']
+                    ?? $p['media']['thumb']
                     ?? $p['media']['images'][0]
                     ?? null;
 
                 return [
-                    // Identity
-                    'id'    => $p['product_id'],
-                    'sku'   => $p['code'] ?? $p['product_id'],
-                    'name'  => $p['name'],
+                    /* ===============================
+                       IDENTITY
+                       =============================== */
+                    'id'   => (int) $p['product_id'],
+                    'sku'  => $p['code'] ?? (string) $p['product_id'],
+                    'name' => $p['name'],
 
-                    // Pricing
-                    'price' => $p['price'],
+                    /* ===============================
+                       PRICING
+                       =============================== */
+                    'price' => (float) $p['price'],
 
-                    // Stock
-                    'available' => $p['available'] ?? 0,
-                    'tag'       => ($p['available'] ?? 0) > 0
+                    /* ===============================
+                       STOCK / TAG
+                       =============================== */
+                    'available' => (int) ($p['available'] ?? 0),
+                    'tag' => ($p['available'] ?? 0) > 0
                         ? 'Có sẵn'
                         : 'Đặt trước',
 
-                    // Media
+                    /* ===============================
+                       MEDIA
+                       =============================== */
                     'thumb'  => $thumb,
-                    'images' => $p['media']['images'],
+                    'images' => array_values(
+                        array_filter($p['media']['images'] ?? [])
+                    ),
 
-                    // Optional (future use)
+                    /* ===============================
+                       META (RESERVE)
+                       =============================== */
                     'brand' => $this->brand,
                 ];
             })
