@@ -387,3 +387,23 @@
     border: 1px solid rgba(17,17,17,.18);
     pointer-events: none;
 }
+/* ======================================
+   FIX CHỒNG LÊN TÊN SẢN PHẨM
+====================================== */
+
+/* BLOCK TÊN */
+.lx-product-head {
+    margin-top: 8px;
+    margin-bottom: 6px;   /* ⬅️ tạo khoảng thở rõ */
+}
+
+/* TÊN SẢN PHẨM */
+.lx-product-name {
+    line-height: 1.4;     /* ⬅️ tránh chữ thấp */
+}
+
+/* BLOCK MÀU */
+.lx-product-colors {
+    margin-top: 4px;      /* ⬅️ tách khỏi tên */
+    margin-bottom: 6px;   /* ⬅️ tách khỏi giá */
+}
