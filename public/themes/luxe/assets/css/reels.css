@@ -128,23 +128,18 @@ html, body {
    =============================== */
 .lx-reels-wrapper {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh; /* 🔥 FIX CUỐI */
     overflow: hidden;
 }
 
-/* ❌ KHÔNG CHỪA HEADER BẰNG PADDING */
-.lx-reels-has-header {
-    padding-top: 0;
-}
-
 /* ===============================
-   SWIPER – VERTICAL (CHUẨN)
+   SWIPER – VERTICAL
    =============================== */
 .reels-vertical,
 .reels-vertical .swiper-wrapper,
 .reels-slide {
     height: calc(
-        100vh
+        100dvh
         - var(--lx-reels-header-h)
     );
 }
@@ -167,15 +162,9 @@ html, body {
     overflow: hidden;
 }
 
-.reels-images .swiper-wrapper {
-    height: 100%;
-}
-
+.reels-images .swiper-wrapper,
 .reels-images .swiper-slide {
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 
