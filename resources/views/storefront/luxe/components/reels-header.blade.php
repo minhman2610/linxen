@@ -1,22 +1,42 @@
-<header class="lx-reels-header">
+<div class="lx-reels-product-bar">
 
-    {{-- LEFT: MENU --}}
-    <button class="lx-reels-icon" onclick="history.back()">
-        ☰
-    </button>
-
-    {{-- CENTER: MODE --}}
-    <div class="lx-reels-mode">
-        <span class="active">Ảnh</span>
-        <span>Video</span>
+    {{-- THUMBNAIL --}}
+    <div class="lx-reels-thumb">
+        <img
+            id="lxReelsThumb"
+            src="/images/no-image.png"
+            alt="Product thumbnail">
     </div>
 
-    {{-- RIGHT: CART --}}
-    <a href="{{ route('linxen.cart') }}" class="lx-reels-cart">
-        🛒
-        <em id="lxCartCount">
-            {{ array_sum(array_column(session('cart', []), 'qty')) }}
-        </em>
-    </a>
+    {{-- INFO --}}
+    <div class="lx-reels-product-info">
+        <strong id="lxReelsName">Tên sản phẩm</strong>
 
-</header>
+        <div class="lx-reels-meta">
+            <span class="lx-reels-price" id="lxReelsPrice">0₫</span>
+            <span class="lx-reels-tag" id="lxReelsTag">Có sẵn</span>
+        </div>
+    </div>
+
+    {{-- ACTION ICONS --}}
+    <div class="lx-reels-actions">
+
+        {{-- WISHLIST --}}
+        <button
+            class="lx-reels-action-btn lx-reels-wishlist"
+            id="lxReelsWishlist"
+            title="Yêu thích">
+            ❤️
+        </button>
+
+        {{-- ADD TO CART --}}
+        <button
+            class="lx-reels-action-btn lx-reels-add-cart"
+            id="lxReelsAddCart"
+            title="Thêm vào giỏ">
+            🛒
+        </button>
+
+    </div>
+
+</div>

@@ -18,7 +18,6 @@ class ReelsController extends Controller
 
     public function index(ErpStorefrontApi $erp)
     {
-        // Tận dụng home API (sau này tách riêng cũng OK)
         $raw = $erp->home($this->brand);
 
         $products = collect($raw['products'] ?? [])
@@ -28,11 +27,32 @@ class ReelsController extends Controller
                 && !empty($p['media']['images'][0])
             )
             ->map(function ($p) {
+
+                $thumb = $p['media']['thumb_mobile']
+                    ?? $p['media']['images'][0]
+                    ?? null;
+
                 return [
-                    'id'     => $p['product_id'],
-                    'name'   => $p['name'],
-                    'price'  => $p['price'],
+                    // Identity
+                    'id'    => $p['product_id'],
+                    'sku'   => $p['code'] ?? $p['product_id'],
+                    'name'  => $p['name'],
+
+                    // Pricing
+                    'price' => $p['price'],
+
+                    // Stock
+                    'available' => $p['available'] ?? 0,
+                    'tag'       => ($p['available'] ?? 0) > 0
+                        ? 'Có sẵn'
+                        : 'Đặt trước',
+
+                    // Media
+                    'thumb'  => $thumb,
                     'images' => $p['media']['images'],
+
+                    // Optional (future use)
+                    'brand' => $this->brand,
                 ];
             })
             ->values()
