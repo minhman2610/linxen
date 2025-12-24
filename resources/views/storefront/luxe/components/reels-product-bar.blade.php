@@ -1,17 +1,12 @@
 <div class="lx-reels-product-bar lx-reels-product-bar--rich">
 
     {{-- ===============================
-         TOP ROW: THUMB + BASIC INFO
+         TOP ROW: THUMB + NAME + PRICE
          =============================== --}}
     <div class="lx-reels-row lx-reels-row-top">
 
         <div class="lx-reels-thumb">
-
-            {{-- SALE BADGE --}}
-            <span class="lx-reels-sale-badge">
-                -20%
-            </span>
-
+            <span class="lx-reels-sale-badge">-20%</span>
             <img
                 id="lxReelsThumb"
                 src="/images/no-image.png"
@@ -19,15 +14,24 @@
         </div>
 
         <div class="lx-reels-product-main">
-            <strong id="lxReelsName">Váy lụa dáng xòe cổ vuông</strong>
 
-            {{-- Mô tả ngắn --}}
-            <p class="lx-reels-desc" id="lxReelsDesc">
-                Chất lụa mềm, tôn dáng, dễ mặc đi làm &amp; dạo phố
-            </p>
+            <strong id="lxReelsName">
+                Váy lụa dáng xòe cổ vuông
+            </strong>
+
+            {{-- PRICE GROUP (CỐ ĐỊNH CHIỀU CAO) --}}
+            <div class="lx-reels-price-inline">
+                <span class="lx-reels-price" id="lxReelsPrice">
+                    890.000₫
+                </span>
+                <span class="lx-reels-price-old">
+                    1.090.000₫
+                </span>
+            </div>
+
         </div>
 
-        {{-- WISHLIST – NỔI BẬT --}}
+        {{-- WISHLIST --}}
         <button
             type="button"
             class="lx-reels-wishlist-btn is-highlight"
@@ -39,24 +43,26 @@
     </div>
 
     {{-- ===============================
-         MIDDLE ROW: PRICE + META
+         META ROW: TAG + ATTR
          =============================== --}}
     <div class="lx-reels-row lx-reels-row-meta">
 
-        <div class="lx-reels-price-wrap">
-            <span class="lx-reels-price" id="lxReelsPrice">890.000₫</span>
-            <span class="lx-reels-price-old">1.090.000₫</span>
-        </div>
+        <span class="lx-reels-tag" id="lxReelsTag">
+            Có sẵn
+        </span>
 
-        <span class="lx-reels-tag" id="lxReelsTag">Có sẵn</span>
+        <span class="lx-reels-attr">
+            Màu: Trắng, Đen
+        </span>
 
-        <span class="lx-reels-attr">Màu: Trắng, Đen</span>
-        <span class="lx-reels-attr">Size: S–M–L</span>
+        <span class="lx-reels-attr">
+            Size: S–M–L
+        </span>
 
     </div>
 
     {{-- ===============================
-         BOTTOM ROW: CTA
+         CTA ROW
          =============================== --}}
     <div class="lx-reels-row lx-reels-row-action">
 
