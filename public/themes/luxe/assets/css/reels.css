@@ -349,3 +349,97 @@ button {
 @keyframes lx-spin {
     to { transform: rotate(360deg); }
 }
+/* ===============================
+   HEADER TYPOGRAPHY & ICON STYLE
+   =============================== */
+
+.lx-reels-header {
+    font-weight: 700;
+}
+
+.lx-reels-icon {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lx-reels-icon svg {
+    stroke: #fff;
+}
+
+/* CENTER MODE */
+.lx-reels-mode {
+    font-size: 16px;
+    letter-spacing: .08em;
+}
+
+.lx-reels-mode span {
+    opacity: .45;
+}
+
+.lx-reels-mode span.active {
+    opacity: 1;
+    font-weight: 800;
+}
+
+/* RIGHT ACTIONS */
+.lx-reels-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* CART BADGE */
+.lx-reels-cart em {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 11px;
+    font-weight: 700;
+    background: #ff3b30;
+    color: #fff;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* ===============================
+   REELS HEADER – ACTION SPACING
+   =============================== */
+
+.lx-reels-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px; /* GIÃN icon ra – không bị dính */
+}
+
+.lx-reels-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lx-reels-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Cart badge position refine */
+.lx-reels-cart em {
+    top: -5px;
+    right: -6px;
+}
+
+/* Center mode typography */
+.lx-reels-mode {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: .1em;
+}
+

@@ -6,7 +6,6 @@
         class="lx-reels-icon lx-reels-home"
         aria-label="Trang chủ">
 
-        {{-- HOME ICON --}}
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
              stroke="currentColor" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round">
@@ -29,7 +28,6 @@
             class="lx-reels-icon lx-reels-wishlist"
             id="lxReelsHeaderWishlist"
             aria-label="Yêu thích">
-
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
                  stroke="currentColor" stroke-width="1.8"
                  stroke-linecap="round" stroke-linejoin="round">
@@ -54,6 +52,20 @@
             <em id="lxCartCount">
                 {{ array_sum(array_column(session('cart', []), 'qty')) }}
             </em>
+        </a>
+
+        {{-- SEARCH --}}
+        <a
+            href="{{ route('linxen.search') }}"
+            class="lx-reels-icon lx-reels-search"
+            aria-label="Tìm kiếm">
+
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
+                 stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.3-4.3"></path>
+            </svg>
         </a>
 
     </div>
