@@ -692,4 +692,62 @@ html, body {
         padding-bottom: calc(16px + env(safe-area-inset-bottom));
     }
 }
+/* =====================================================
+   🔥 REELS IMAGE OVERRIDE – FIX TRÀN PRODUCT BAR
+   ===================================================== */
+
+/* 1️⃣ KHÓA CHIỀU CAO SLIDE – KHÔNG CHO CO GIÃN */
+.reels-vertical,
+.reels-vertical .swiper-wrapper,
+.reels-slide {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+}
+
+/* 2️⃣ IMAGE AREA = VÙNG CẮT DUY NHẤT */
+.reels-images {
+    position: relative !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+}
+
+/* 3️⃣ SWIPER SLIDE KHÔNG ĐƯỢC QUYẾT ĐỊNH HEIGHT */
+.reels-images .swiper-slide {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+}
+
+/* 4️⃣ FRAME = CONTAINER CẮT ẢNH */
+.reels-image-frame {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    background: #000 !important;
+}
+
+/* 5️⃣ MEDIA = ABSOLUTE, KHÔNG THAM GIA FLOW */
+.reels-image-frame img,
+.reels-image-frame video {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* 6️⃣ CHỐT: KHÔNG CHO IMG TẠO BASELINE */
+.reels-image-frame img {
+    vertical-align: top !important;
+}
 
