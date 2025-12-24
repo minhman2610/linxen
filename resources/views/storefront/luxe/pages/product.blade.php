@@ -23,43 +23,36 @@
 <section class="lx-product-detail">
 
     {{-- =====================================================
-   PRODUCT GALLERY – MAIN + THUMBS
+   PRODUCT GALLERY – MAIN + THUMBS (PROGRESSIVE)
 ===================================================== --}}
 <div class="lx-product-gallery">
 
     {{-- MAIN IMAGE --}}
-    <div class="swiper lx-product-main-swiper">
-        <div class="swiper-wrapper">
-            @foreach($images as $img)
-                <div class="swiper-slide">
-                    <img
-                        src="{{ $img }}"
-                        alt="{{ $product['name'] ?? '' }}"
-                        loading="lazy">
-                </div>
-            @endforeach
-        </div>
-
-        <div class="swiper-pagination"></div>
+    <div class="lx-product-main">
+        <img
+            id="lxMainImage"
+            src="{{ $images[0] }}?w=120"
+            data-full="{{ $images[0] }}"
+            alt="{{ $product['name'] ?? '' }}"
+            loading="eager">
     </div>
 
     {{-- THUMBNAILS --}}
     @if(count($images) > 1)
-        <div class="swiper lx-product-thumb-swiper">
-            <div class="swiper-wrapper">
-                @foreach($images as $img)
-                    <div class="swiper-slide">
-                        <img
-                            src="{{ $img }}"
-                            alt=""
-                            loading="lazy">
-                    </div>
-                @endforeach
-            </div>
+        <div class="lx-product-thumbs">
+            @foreach($images as $index => $img)
+                <img
+                    src="{{ $img }}?w=120"
+                    data-full="{{ $img }}"
+                    class="{{ $index === 0 ? 'active' : '' }}"
+                    alt=""
+                    loading="lazy">
+            @endforeach
         </div>
     @endif
 
 </div>
+
 
 
     {{-- =====================================================

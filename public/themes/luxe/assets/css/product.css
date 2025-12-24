@@ -1,61 +1,22 @@
 /* =====================================================
-   PRODUCT DETAIL – GALLERY SLIDER (LIN XÉN)
+   PRODUCT DETAIL – GALLERY (LIN XÉN)
+   Layout: Main Image + Thumbnails (Progressive Load)
 ===================================================== */
 
-/* GALLERY WRAPPER */
+/* WRAPPER */
 .lx-product-gallery {
     width: 100%;
     margin-bottom: 16px;
 }
 
-/* SWIPER */
-.lx-product-swiper {
-    width: 100%;
-}
-
-/* SLIDE IMAGE */
-.lx-product-swiper .swiper-slide img {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    display: block;
-    background: #f4f4f4;
-}
-
-/* PAGINATION – TINH TẾ */
-.lx-product-swiper .swiper-pagination {
-    bottom: 8px !important;
-}
-
-.lx-product-swiper .swiper-pagination-bullet {
-    width: 6px;
-    height: 6px;
-    background: rgba(0,0,0,.25);
-    opacity: 1;
-    margin: 0 4px !important;
-}
-
-.lx-product-swiper .swiper-pagination-bullet-active {
-    background: #111;
-}
-
-/* DESKTOP */
-@media (min-width: 768px) {
-    .lx-product-gallery {
-        position: sticky;
-        top: 80px;
-    }
-}
 /* =====================================================
-   PRODUCT GALLERY – MAIN + THUMBS
+   MAIN IMAGE
 ===================================================== */
-
-.lx-product-gallery {
+.lx-product-main {
     width: 100%;
 }
 
-/* MAIN */
-.lx-product-main-swiper img {
+.lx-product-main img {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
@@ -63,43 +24,49 @@
     background: #f4f4f4;
 }
 
-/* PAGINATION */
-.lx-product-main-swiper .swiper-pagination {
-    bottom: 8px !important;
-}
-
-.lx-product-main-swiper .swiper-pagination-bullet {
-    width: 6px;
-    height: 6px;
-    background: rgba(0,0,0,.25);
-    opacity: 1;
-}
-
-.lx-product-main-swiper .swiper-pagination-bullet-active {
-    background: #111;
-}
-
-/* THUMBS */
-.lx-product-thumb-swiper {
+/* =====================================================
+   THUMBNAILS
+===================================================== */
+.lx-product-thumbs {
+    display: flex;
+    gap: 8px;
     margin-top: 10px;
+    padding-bottom: 2px;
+
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.lx-product-thumb-swiper .swiper-slide {
+.lx-product-thumbs img {
     width: 64px;
     height: 86px;
-    opacity: .5;
+
+    object-fit: cover;
+    display: block;
+
     cursor: pointer;
+    opacity: .45;
+    transition: opacity .15s ease, outline .15s ease;
 }
 
-.lx-product-thumb-swiper .swiper-slide-thumb-active {
+/* ACTIVE THUMB */
+.lx-product-thumbs img.active {
     opacity: 1;
     outline: 2px solid #111;
     outline-offset: 2px;
 }
 
-.lx-product-thumb-swiper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+/* =====================================================
+   DESKTOP ENHANCEMENT
+===================================================== */
+@media (min-width: 768px) {
+    .lx-product-gallery {
+        position: sticky;
+        top: 80px;
+    }
+
+    .lx-product-thumbs img {
+        width: 70px;
+        height: 94px;
+    }
 }

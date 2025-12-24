@@ -2,30 +2,38 @@
  * =====================================================
  * PRODUCT PAGE JS – LIN XÉN (LUXE THEME)
  * =====================================================
- * Author: Kai
- * Scope: Product Detail Page
+ * Gallery: Progressive (thumb -> main)
+ * No Swiper dependency
  */
 
 (function () {
     'use strict';
 
     /* =====================================================
-     * 1️⃣ SWIPER – PRODUCT GALLERY
+     * 1️⃣ GALLERY – MAIN IMAGE + THUMBS (PROGRESSIVE)
      * ===================================================== */
-    function initProductSwiper() {
-        if (typeof Swiper === 'undefined') return;
+    function initGallery() {
+        const mainImg = document.getElementById('lxMainImage');
+        const thumbs  = document.querySelectorAll('.lx-product-thumbs img');
 
-        const el = document.querySelector('.lx-product-swiper');
-        if (!el) return;
+        if (!mainImg || !thumbs.length) return;
 
-        new Swiper(el, {
-            slidesPerView: 1,
-            spaceBetween: 0,
-            loop: false,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
+        thumbs.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                // active state
+                thumbs.forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+
+                const fullSrc = thumb.dataset.full;
+                if (!fullSrc) return;
+
+                // preload ảnh lớn
+                const img = new Image();
+                img.src = fullSrc;
+                img.onload = () => {
+                    mainImg.src = fullSrc;
+                };
+            });
         });
     }
 
@@ -42,7 +50,7 @@
                 const attrKey = option.dataset.attrKey;
                 const value   = option.dataset.value;
 
-                // Remove active in same group
+                // clear active cùng group
                 document
                     .querySelectorAll(`.variant-option[data-attr-key="${attrKey}"]`)
                     .forEach(el => el.classList.remove('active'));
@@ -59,8 +67,8 @@
         const stockEl = document.getElementById('lxStock');
         if (!stockEl) return;
 
+        const totalAttrs = document.querySelectorAll('.lx-attr-group').length;
         const selectedCount = Object.keys(selectedAttrs).length;
-        const totalAttrs    = document.querySelectorAll('.lx-attr-group').length;
 
         if (selectedCount < totalAttrs) {
             stockEl.textContent = 'Vui lòng chọn đầy đủ biến thể';
@@ -68,7 +76,6 @@
             return;
         }
 
-        // Hiện tại mock – sau này map variant thật từ ERP
         stockEl.textContent = '✔ Còn hàng – Giao nhanh';
         stockEl.classList.add('in-stock');
     }
@@ -82,8 +89,8 @@
 
         let val = parseInt(input.value || 1, 10);
         val += delta;
-
         if (val < 1) val = 1;
+
         input.value = val;
     };
 
@@ -107,7 +114,7 @@
                 sku: buildSku(),
                 name: document.querySelector('.lx-product-title')?.textContent?.trim(),
                 price: extractPrice(),
-                image: document.querySelector('.lx-product-swiper img')?.src || null,
+                image: document.getElementById('lxMainImage')?.src || null,
                 qty: parseInt(qtyInput?.value || 1, 10),
                 attrs: selectedAttrs,
             };
@@ -137,8 +144,8 @@
     }
 
     function buildSku() {
-        // SKU giả lập: NAME + ATTRS
-        const base = document.querySelector('.lx-product-title')?.textContent?.trim() || 'SKU';
+        const base =
+            document.querySelector('.lx-product-title')?.textContent?.trim() || 'SKU';
         const attrs = Object.values(selectedAttrs).join('-');
         return attrs ? `${base}-${attrs}` : base;
     }
@@ -150,12 +157,16 @@
     }
 
     function getCsrfToken() {
-        return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        return document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content');
     }
 
     function updateCartBadge(count) {
-        const badge = document.querySelector('[data-cart-count]');
-        if (badge) badge.textContent = count;
+        const badge = document.getElementById('lxHeaderCartCount');
+        if (badge && typeof count !== 'undefined') {
+            badge.textContent = count;
+        }
     }
 
     /* =====================================================
@@ -175,42 +186,12 @@
     }
 
     /* =====================================================
-     * INIT ALL
+     * INIT
      * ===================================================== */
     document.addEventListener('DOMContentLoaded', () => {
-        initProductSwiper();
+        initGallery();
         initVariants();
         initAddToCart();
     });
 
 })();
-function initProductSwiper() {
-    if (!window.Swiper) return;
-
-    const thumbEl = document.querySelector('.lx-product-thumb-swiper');
-    const mainEl  = document.querySelector('.lx-product-main-swiper');
-
-    if (!mainEl) return;
-
-    let thumbSwiper = null;
-
-    if (thumbEl) {
-        thumbSwiper = new Swiper(thumbEl, {
-            spaceBetween: 8,
-            slidesPerView: 'auto',
-            freeMode: true,
-            watchSlidesProgress: true,
-        });
-    }
-
-    new Swiper(mainEl, {
-        slidesPerView: 1,
-        spaceBetween: 0,
-        loop: false,
-        pagination: {
-            el: mainEl.querySelector('.swiper-pagination'),
-            clickable: true,
-        },
-        thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
-    });
-}
