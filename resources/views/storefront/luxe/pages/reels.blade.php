@@ -31,7 +31,7 @@
                      data-images-count="{{ $imageCount }}">
 
                     {{-- ===============================
-                         IMAGE AREA (GESTURE SAFE ZONE)
+                         IMAGE AREA (SAFE ZONE)
                          =============================== --}}
                     <div class="reels-media-zone">
 
@@ -41,11 +41,13 @@
 
                                 @foreach ($p['images'] as $img)
                                     <div class="swiper-slide">
-                                        <img
-                                            src="{{ $img }}"
-                                            alt="{{ $p['name'] }}"
-                                            loading="lazy"
-                                            draggable="false">
+                                        <div class="reels-image-frame">
+                                            <img
+                                                src="{{ $img }}"
+                                                alt="{{ $p['name'] }}"
+                                                loading="lazy"
+                                                draggable="false">
+                                        </div>
                                     </div>
                                 @endforeach
 
