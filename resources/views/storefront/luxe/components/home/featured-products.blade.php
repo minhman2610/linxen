@@ -68,22 +68,23 @@
                     </p>
                 </div>
 
-                {{-- COLORS (⬆️ ĐƯA LÊN TRÊN GIÁ) --}}
-                <div class="lx-product-colors">
-                    @foreach($productColors as $index => $color)
-                        <span class="lx-color-swatch {{ $color }} {{ $index === 0 ? 'active' : '' }}"></span>
-                    @endforeach
+                {{-- PRICE --}}
+                <div class="lx-product-price-wrap">
+                    <span class="lx-price-sale">
+                        {{ number_format($salePrice) }}₫
+                    </span>
+                    <span class="lx-price-origin">
+                        {{ number_format($price) }}₫
+                    </span>
                 </div>
 
-                {{-- PRICE + QUICK ORDER --}}
-                <div class="lx-product-price-wrap">
-                    <div class="lx-product-price">
-                        <span class="lx-price-sale">
-                            {{ number_format($salePrice) }}₫
-                        </span>
-                        <span class="lx-price-origin">
-                            {{ number_format($price) }}₫
-                        </span>
+                {{-- COLORS + QUICK ORDER (⬇️ DƯỚI GIÁ – CÙNG 1 HÀNG) --}}
+                <div class="lx-product-variants">
+
+                    <div class="lx-product-colors">
+                        @foreach($productColors as $index => $color)
+                            <span class="lx-color-swatch {{ $color }} {{ $index === 0 ? 'active' : '' }}"></span>
+                        @endforeach
                     </div>
 
                     <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
@@ -103,6 +104,7 @@
                                      16 7 16h12v-2H7.17Z"/>
                         </svg>
                     </a>
+
                 </div>
 
                 {{-- STATUS --}}
