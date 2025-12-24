@@ -83,14 +83,17 @@
     {{-- ============================
         SCRIPTS
     ============================= --}}
+    {{-- Swiper JS --}}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
+
+     <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
 
     <script src="/themes/luxe/assets/js/theme.js"></script>
 
-    <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
+   
 
-    {{-- Swiper JS --}}
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
 
     {{-- Page-specific scripts --}}
     @stack('scripts')
