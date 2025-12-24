@@ -1,38 +1,37 @@
 /**
  * =====================================================
- * LIN XÉN – PRODUCT REELS (FINAL)
+ * LIN XÉN – PRODUCT REELS (BUGFIX VERSION)
  * =====================================================
- * RULE:
- * - Normal swipe: browse products
- * - Swipe to first product (index 0): OK
- * - Try to swipe ABOVE first product → SHOW LOADING → RELOAD
+ * Reload ONLY when:
+ * 1. Touch STARTS at first slide (index 0)
+ * 2. Swipe UP strongly
+ * 3. Swiper is NOT animating
  */
 
 (function () {
 
-    /* =====================================================
-       GLOBAL GUARD
-       ===================================================== */
     if (window.__LX_REELS_INITED__) return;
     window.__LX_REELS_INITED__ = true;
 
     let reelsVertical = null;
-    let isReloading   = false;
+    let isReloading = false;
 
-    /* =====================================================
-       LOADING
-       ===================================================== */
-    function showLoading() {
-        const el = document.getElementById('lxReelsLoading');
+    let touchStartY = 0;
+    let startedAtFirstSlide = false;
+
+    /* ===============================
+       MINI LOADING
+       =============================== */
+    function showMiniLoading() {
+        const el = document.getElementById('lxReelsMiniLoading');
         if (el) el.classList.add('active');
     }
 
-    /* =====================================================
+    /* ===============================
        INIT SWIPERS
-       ===================================================== */
+       =============================== */
     function initReels() {
 
-        // Chờ Swiper load
         if (typeof window.Swiper === 'undefined') {
             setTimeout(initReels, 50);
             return;
@@ -41,17 +40,14 @@
         const verticalEl = document.querySelector('.reels-vertical');
         if (!verticalEl) return;
 
-        /* ---------- Vertical reels ---------- */
         reelsVertical = new Swiper(verticalEl, {
             direction: 'vertical',
             slidesPerView: 1,
-            resistanceRatio: 0, // không bounce
+            resistanceRatio: 0,
         });
 
-        // expose (debug / future use)
         window.reelsVertical = reelsVertical;
 
-        /* ---------- Horizontal images ---------- */
         document.querySelectorAll('.reels-images').forEach(el => {
             if (el.classList.contains('swiper-initialized')) return;
 
@@ -64,43 +60,38 @@
         });
     }
 
-    // DOM Ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initReels);
     } else {
         initReels();
     }
 
-    /* =====================================================
-       RELOAD LOGIC – ONLY WHEN TRYING TO GO ABOVE FIRST
-       ===================================================== */
-    let startY = 0;
-
+    /* ===============================
+       SMART RELOAD LOGIC (FIXED)
+       =============================== */
     document.addEventListener('touchstart', e => {
         if (!reelsVertical || isReloading) return;
-        startY = e.touches[0].clientY;
+
+        touchStartY = e.touches[0].clientY;
+        startedAtFirstSlide = reelsVertical.activeIndex === 0;
     }, { passive: true });
 
     document.addEventListener('touchmove', e => {
-        if (!reelsVertical || isReloading) return;
+        if (
+            !reelsVertical ||
+            isReloading ||
+            !startedAtFirstSlide ||
+            reelsVertical.animating
+        ) return;
 
         const currentY = e.touches[0].clientY;
-        const deltaY   = currentY - startY;
+        const deltaY = currentY - touchStartY;
 
-        /**
-         * deltaY < 0  → vuốt LÊN
-         * activeIndex === 0 → đang ở sản phẩm đầu
-         * deltaY < -80 → cố tình vuốt ngược
-         */
-        if (
-            reelsVertical.activeIndex === 0 &&
-            deltaY < -80
-        ) {
+        // CHỈ reload nếu vuốt LÊN rất mạnh
+        if (deltaY < -120) {
             isReloading = true;
+            showMiniLoading();
 
-            showLoading();
-
-            // delay nhẹ cho UX
             setTimeout(() => {
                 window.location.reload();
             }, 300);
