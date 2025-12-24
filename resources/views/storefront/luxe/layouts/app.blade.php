@@ -34,7 +34,10 @@
       href="/themes/luxe/assets/css/footer.css?v={{ file_exists(public_path('themes/luxe/assets/css/footer.css')) 
             ? filemtime(public_path('themes/luxe/assets/css/footer.css')) 
             : time() }}">
-            
+    <link rel="stylesheet" href="/themes/luxe/assets/css/product.css">
+    <link rel="stylesheet"
+      href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
+
 
      
     {{-- Page-specific head --}}
@@ -78,6 +81,8 @@
     {{-- ============================
         SCRIPTS
     ============================= --}}
+    <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
+
     <script src="/themes/luxe/assets/js/theme.js"></script>
 
     <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>

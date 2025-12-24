@@ -5,9 +5,9 @@
 @php
     use Illuminate\Support\Str;
 
-    // ============================
-    // NORMALIZE DATA FROM API
-    // ============================
+    /* ============================
+       NORMALIZE DATA
+    ============================ */
     $images = [];
 
     if (!empty($product['images']) && is_array($product['images'])) {
@@ -16,44 +16,48 @@
         $images = [$product['thumb_url']];
     }
 
-    $mainImage = $images[0] ?? '';
-
     $variants   = $product['variants'] ?? [];
     $attributes = $product['attributes'] ?? [];
 @endphp
 
 <section class="lx-product-detail">
 
-    {{-- =========================
-        PRODUCT GALLERY
-    ========================= --}}
+    {{-- =====================================================
+       PRODUCT GALLERY – SLIDER
+    ===================================================== --}}
     <div class="lx-product-gallery">
-        <div class="lx-product-main-image">
-            <img id="lxMainImage"
-                 src="{{ $mainImage }}"
-                 alt="{{ $product['name'] ?? '' }}">
+
+        <div class="swiper lx-product-swiper">
+            <div class="swiper-wrapper">
+
+                @foreach($images as $img)
+                    <div class="swiper-slide">
+                        <img
+                            src="{{ $img }}"
+                            alt="{{ $product['name'] ?? '' }}"
+                            loading="lazy">
+                    </div>
+                @endforeach
+
+            </div>
+
+            {{-- Pagination --}}
+            <div class="swiper-pagination"></div>
         </div>
 
-        @if(count($images) > 1)
-            <div class="lx-product-thumbs">
-                @foreach($images as $img)
-                    <img src="{{ $img }}"
-                         onclick="previewImage('{{ $img }}')"
-                         alt="">
-                @endforeach
-            </div>
-        @endif
     </div>
 
-    {{-- =========================
-        PRODUCT INFO
-    ========================= --}}
+    {{-- =====================================================
+       PRODUCT INFO
+    ===================================================== --}}
     <div class="lx-product-info">
 
+        {{-- TITLE --}}
         <h1 class="lx-product-title">
             {{ $product['name'] ?? '' }}
         </h1>
 
+        {{-- META --}}
         <div class="lx-product-meta">
             @if(!empty($product['code']))
                 <span>Mã SP: <strong>{{ $product['code'] }}</strong></span>
@@ -61,27 +65,35 @@
             <span class="lx-badge">{{ strtoupper($brand) }}</span>
         </div>
 
+        {{-- PRICE --}}
         <div class="lx-product-price">
             {{ number_format($product['price'] ?? 0) }}₫
         </div>
 
+        {{-- DESCRIPTION --}}
         <div class="lx-product-description">
             {!! nl2br(e($product['description'] ?? 'Thiết kế tinh tế – phom dáng hiện đại.')) !!}
         </div>
 
-        {{-- =========================
-            VARIANTS
-        ========================= --}}
+        {{-- =====================================================
+           VARIANTS
+        ===================================================== --}}
         @if(!empty($attributes))
             <div class="lx-product-variants" id="lxVariants">
+
                 @foreach($attributes as $attr => $values)
                     @php
                         $attrKey = Str::slug($attr, '_');
                     @endphp
+
                     <div class="lx-attr-group"
                          data-attr="{{ $attr }}"
                          data-attr-key="{{ $attrKey }}">
-                        <label>{{ $attr }}</label>
+
+                        <label class="lx-attr-label">
+                            {{ $attr }}
+                        </label>
+
                         <div class="lx-attr-values">
                             @foreach($values as $val)
                                 <div class="variant-option"
@@ -92,22 +104,23 @@
                                 </div>
                             @endforeach
                         </div>
+
                     </div>
                 @endforeach
+
             </div>
         @endif
 
-        {{-- =========================
-            STOCK
-        ========================= --}}
+        {{-- STOCK --}}
         <p class="lx-product-stock" id="lxStock">
             Vui lòng chọn biến thể
         </p>
 
-        {{-- =========================
-            ACTIONS
-        ========================= --}}
+        {{-- =====================================================
+           ACTIONS
+        ===================================================== --}}
         <div class="lx-product-actions">
+
             <div class="lx-qty">
                 <button type="button" onclick="changeQty(-1)">−</button>
                 <input type="number" id="lxQty" value="1" min="1">
@@ -120,8 +133,10 @@
                 type="button">
                 THÊM VÀO GIỎ
             </button>
+
         </div>
 
+        {{-- TRUST --}}
         <ul class="lx-product-trust">
             <li>✔ Thiết kế độc quyền LIN XÉN</li>
             <li>✔ Chất liệu cao cấp</li>
@@ -129,78 +144,10 @@
         </ul>
 
     </div>
+
 </section>
 
+{{-- TOAST --}}
 <div id="lxToast" class="lx-toast"></div>
 
 @endsection
-<style>
-    /* =====================================================
-   PRODUCT PAGE LAYOUT FIX
-===================================================== */
-
-/* Chừa chỗ cho bottom-nav */
-.lx-product-detail {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px 16px 90px; /* 👈 90px = height bottom-nav + breathing space */
-    display: grid;
-    gap: 32px;
-}
-
-/* Desktop */
-@media (min-width: 768px) {
-    .lx-product-detail {
-        grid-template-columns: 1fr 1fr;
-        padding-bottom: 40px; /* desktop không có bottom-nav */
-    }
-}
-
-/* IMAGE */
-.lx-product-main-image img {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    display: block;
-}
-
-/* THUMBS */
-.lx-product-thumbs {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.lx-product-thumbs img {
-    width: 64px;
-    height: 86px;
-    object-fit: cover;
-    cursor: pointer;
-}
-
-/* ACTIONS */
-.lx-product-actions {
-    margin-top: 20px;
-    display: flex;
-    gap: 12px;
-}
-
-/* QTY */
-.lx-qty {
-    display: flex;
-    border: 1px solid #ddd;
-}
-
-.lx-qty button {
-    width: 36px;
-    background: #fff;
-    border: none;
-}
-
-.lx-qty input {
-    width: 50px;
-    text-align: center;
-    border: none;
-}
-
-</style>

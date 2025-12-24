@@ -1,0 +1,48 @@
+/* =====================================================
+   PRODUCT DETAIL – GALLERY SLIDER (LIN XÉN)
+===================================================== */
+
+/* GALLERY WRAPPER */
+.lx-product-gallery {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+/* SWIPER */
+.lx-product-swiper {
+    width: 100%;
+}
+
+/* SLIDE IMAGE */
+.lx-product-swiper .swiper-slide img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+    background: #f4f4f4;
+}
+
+/* PAGINATION – TINH TẾ */
+.lx-product-swiper .swiper-pagination {
+    bottom: 8px !important;
+}
+
+.lx-product-swiper .swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+    background: rgba(0,0,0,.25);
+    opacity: 1;
+    margin: 0 4px !important;
+}
+
+.lx-product-swiper .swiper-pagination-bullet-active {
+    background: #111;
+}
+
+/* DESKTOP */
+@media (min-width: 768px) {
+    .lx-product-gallery {
+        position: sticky;
+        top: 80px;
+    }
+}
