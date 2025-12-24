@@ -30,9 +30,6 @@
                 $salePercent = 20; // demo
                 $salePrice   = round($price * (100 - $salePercent) / 100);
 
-                /**
-                 * FIX CỨNG DANH SÁCH MÀU – RANDOM 3 MÀU / SẢN PHẨM
-                 */
                 $colorPool = [
                     'black',
                     'white',
@@ -66,19 +63,46 @@
                 {{-- NAME + BEST SELLER --}}
                 <div class="lx-product-head">
                     <span class="lx-tag lx-tag-best">🔥 Bán chạy</span>
-                    <p class="lx-product-name one-line">
+                    <p class="lx-product-name">
                         {{ $product['name'] }}
                     </p>
                 </div>
 
-                {{-- PRICE --}}
+                {{-- COLORS (⬆️ ĐƯA LÊN TRÊN GIÁ) --}}
+                <div class="lx-product-colors">
+                    @foreach($productColors as $index => $color)
+                        <span class="lx-color-swatch {{ $color }} {{ $index === 0 ? 'active' : '' }}"></span>
+                    @endforeach
+                </div>
+
+                {{-- PRICE + QUICK ORDER --}}
                 <div class="lx-product-price-wrap">
-                    <span class="lx-price-sale">
-                        {{ number_format($salePrice) }}₫
-                    </span>
-                    <span class="lx-price-origin">
-                        {{ number_format($price) }}₫
-                    </span>
+                    <div class="lx-product-price">
+                        <span class="lx-price-sale">
+                            {{ number_format($salePrice) }}₫
+                        </span>
+                        <span class="lx-price-origin">
+                            {{ number_format($price) }}₫
+                        </span>
+                    </div>
+
+                    <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
+                       class="lx-quick-order-inline"
+                       aria-label="Đặt hàng">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill="currentColor"
+                                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 
+                                     22 7 22s2-.9 2-2-.9-2-2-2Zm10 
+                                     0c-1.1 0-1.99.9-1.99 2S15.9 
+                                     22 17 22s2-.9 2-2-.9-2-2-2ZM7.17 
+                                     14h9.66c.75 0 1.41-.41 
+                                     1.75-1.03l3.58-6.49a1 
+                                     1 0 0 0-.87-1.48H5.21L4.27 
+                                     2H1v2h2l3.6 7.59-1.35 
+                                     2.44C4.52 14.37 5.48 
+                                     16 7 16h12v-2H7.17Z"/>
+                        </svg>
+                    </a>
                 </div>
 
                 {{-- STATUS --}}
@@ -86,36 +110,6 @@
                     <span class="lx-tag lx-tag-stock">✔ Còn hàng</span>
                     <span class="lx-tag lx-tag-trend">✨ Xu hướng</span>
                 </div>
-
-                {{-- COLORS + QUICK ORDER --}}
-<div class="lx-product-variants">
-
-    <div class="lx-product-colors">
-        @foreach($productColors as $index => $color)
-            <span class="lx-color-swatch {{ $color }} {{ $index === 0 ? 'active' : '' }}"></span>
-        @endforeach
-    </div>
-
-    <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
-       class="lx-quick-order-inline"
-       aria-label="Đặt hàng">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="currentColor"
-                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 
-                     22 7 22s2-.9 2-2-.9-2-2-2Zm10 
-                     0c-1.1 0-1.99.9-1.99 2S15.9 
-                     22 17 22s2-.9 2-2-.9-2-2-2ZM7.17 
-                     14h9.66c.75 0 1.41-.41 
-                     1.75-1.03l3.58-6.49a1 
-                     1 0 0 0-.87-1.48H5.21L4.27 
-                     2H1v2h2l3.6 7.59-1.35 
-                     2.44C4.52 14.37 5.48 
-                     16 7 16h12v-2H7.17Z"/>
-        </svg>
-    </a>
-
-</div>
-
 
             </div>
 
