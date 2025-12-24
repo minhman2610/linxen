@@ -71,7 +71,7 @@
     }
 }
 /* =====================================================
-   GALLERY CONTROLS
+   GALLERY NAV – SUBTLE STYLE
 ===================================================== */
 
 .lx-product-main {
@@ -80,48 +80,47 @@
     touch-action: pan-y;
 }
 
-.lx-product-main img {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    display: block;
-    background: #f4f4f4;
-    will-change: transform;
-}
-
-/* NAV BUTTONS */
+/* VÙNG CLICK (ẨN) */
 .lx-gallery-btn {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    bottom: 0;
+    width: 20%;
     z-index: 5;
-
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    background: transparent;
     border: none;
-
-    background: rgba(0,0,0,.45);
-    color: #fff;
-    font-size: 20px;
-    line-height: 36px;
-    text-align: center;
     cursor: pointer;
 }
 
-.lx-gallery-btn.prev {
-    left: 8px;
+/* LEFT / RIGHT ZONE */
+.lx-gallery-btn.prev { left: 0; }
+.lx-gallery-btn.next { right: 0; }
+
+/* ICON NHẸ */
+.lx-gallery-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-top: 1.5px solid rgba(255,255,255,.6);
+    border-right: 1.5px solid rgba(255,255,255,.6);
+    opacity: 0;
+    transition: opacity .25s ease, transform .25s ease;
 }
 
-.lx-gallery-btn.next {
-    right: 8px;
+.lx-gallery-btn.prev::after {
+    left: 14px;
+    transform: translateY(-50%) rotate(-135deg);
 }
 
-/* MOBILE – nút nhỏ hơn */
-@media (max-width: 767px) {
-    .lx-gallery-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 18px;
-    }
+.lx-gallery-btn.next::after {
+    right: 14px;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* CHỈ HIỆN KHI CHẠM / HOVER */
+.lx-product-main:hover .lx-gallery-btn::after,
+.lx-product-main:active .lx-gallery-btn::after {
+    opacity: .8;
 }
