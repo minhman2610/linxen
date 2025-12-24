@@ -127,10 +127,16 @@ html, body {
    MAIN WRAPPER
    =============================== */
 .lx-reels-wrapper {
+    position: fixed;
+    top: var(--lx-reels-header-h);
+    bottom: var(--lx-reels-product-bar-h);
+    left: 0;
+    right: 0;
+
     width: 100vw;
-    height: 100vh;
-    overflow: hidden; /* 🔒 khóa không cho tràn */
+    overflow: hidden;
 }
+
 
 .lx-reels-has-header {
     padding-top: var(--lx-reels-header-h);
