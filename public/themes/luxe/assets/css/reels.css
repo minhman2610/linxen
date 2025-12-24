@@ -1,33 +1,200 @@
-.lx-reels,
+/* =====================================================
+   LIN XÉN – REELS (TIKTOK STYLE)
+   ===================================================== */
+
+/* RESET / BASE */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #000;
+    overscroll-behavior: none;
+}
+
+.lx-reels-body {
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* =====================================================
+   HEADER REELS
+   ===================================================== */
+.lx-reels-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    color: #fff;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.6),
+        rgba(0,0,0,0)
+    );
+}
+
+.lx-reels-icon {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+}
+
+.lx-reels-mode {
+    display: flex;
+    gap: 14px;
+    font-size: 14px;
+}
+
+.lx-reels-mode span {
+    opacity: .5;
+}
+
+.lx-reels-mode span.active {
+    opacity: 1;
+    font-weight: 600;
+}
+
+.lx-reels-cart {
+    position: relative;
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.lx-reels-cart em {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 11px;
+    background: #ff3b30;
+    color: #fff;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =====================================================
+   MAIN – MEDIA AREA
+   ===================================================== */
+.lx-reels-main {
+    height: 100vh;
+    width: 100vw;
+}
+
+.lx-reels-wrapper {
+    height: 100%;
+}
+
+/* SWIPER */
 .reels-vertical,
-.reels-product {
+.reels-vertical .swiper-wrapper,
+.reels-slide {
     height: 100vh;
 }
 
-.reels-product {
+.reels-slide {
     position: relative;
     background: #000;
 }
 
-.reels-images img {
+/* IMAGE SWIPER */
+.reels-images,
+.reels-images .swiper-wrapper,
+.reels-image-item {
+    height: 100%;
+}
+
+.reels-image-item img {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     object-fit: cover;
+    display: block;
 }
 
-.reels-overlay {
-    position: absolute;
-    bottom: 90px;
-    left: 16px;
-    right: 16px;
+/* =====================================================
+   PRODUCT BAR (BOTTOM)
+   ===================================================== */
+.lx-reels-product-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    z-index: 100;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.55)
+    );
+
+    backdrop-filter: blur(10px);
+}
+
+.lx-reels-product-info {
+    flex: 1;
     color: #fff;
+    overflow: hidden;
 }
 
-.lx-btn-add-cart {
-    width: 100%;
-    padding: 14px;
+.lx-reels-product-info strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lx-reels-product-info span {
+    font-size: 13px;
+    opacity: .9;
+}
+
+.lx-reels-add-cart {
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 22px;
+    border: none;
     background: #fff;
     color: #000;
-    border-radius: 12px;
     font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   SAFE AREA (iOS)
+   ===================================================== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .lx-reels-product-bar {
+        padding-bottom: env(safe-area-inset-bottom);
+        height: calc(72px + env(safe-area-inset-bottom));
+    }
+}
+
+/* =====================================================
+   UX POLISH
+   ===================================================== */
+.swiper-slide {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
 }
