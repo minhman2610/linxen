@@ -347,43 +347,43 @@
     border: 1px solid rgba(177,18,38,.25);
     line-height: 1;
 }
-/* ================================
-   COLOR SWATCH – POLYGON CAPSULE
-================================ */
+/* =====================================================
+   COLOR VARIANTS – SMALL & SUBTLE (LIN XÉN)
+===================================================== */
 
-/* container giữ nguyên */
+/* CONTAINER */
 .lx-product-colors {
     display: flex;
-    gap: 10px;
+    gap: 8px;           /* giãn vừa phải */
+    padding-left: 6px;  /* tránh sát viền */
 }
 
-/* SWATCH – đa giác bo cạnh */
+/* SWATCH – nhỏ gọn */
 .lx-color-swatch {
     position: relative;
-    width: 28px;
-    height: 16px;
+    width: 22px;        /* ⬅️ nhỏ hơn */
+    height: 14px;       /* ⬅️ thấp hơn */
 
-    border-radius: 6px; /* ⬅️ bo cạnh thay vì tròn */
+    border-radius: 5px; /* capsule mềm */
     background-clip: padding-box;
 
-    border: 1.5px solid #dcdcdc;
+    border: 1px solid #e1e1e1;  /* viền mảnh */
     box-sizing: border-box;
-    transition: transform .15s ease, border-color .15s ease;
+
+    transition: border-color .15s ease;
 }
 
-/* ACTIVE – viền nhấn ngoài */
+/* ACTIVE – VIỀN NHẸ, KHÔNG PHÓNG TO */
+.lx-color-swatch.active {
+    border-color: #111;
+}
+
+/* vòng nhấn ngoài RẤT MẢNH */
 .lx-color-swatch.active::after {
     content: "";
     position: absolute;
-    inset: -3px;
-    border-radius: 7px;
-    border: 1.5px solid rgba(17,17,17,.3);
+    inset: -2px;                 /* ⬅️ nhỏ */
+    border-radius: 6px;
+    border: 1px solid rgba(17,17,17,.18);
     pointer-events: none;
-}
-
-/* hover (desktop) */
-@media (hover: hover) {
-    .lx-color-swatch:hover {
-        transform: scale(1.08);
-    }
 }
