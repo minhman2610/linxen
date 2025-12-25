@@ -1,61 +1,80 @@
 /* =====================================================
-   FLORAL BREADCRUMB – ONE LINE, WITH HOME
+   COUTURE BREADCRUMB – FRAMED & CONNECTED
 ===================================================== */
 
-.lx-floral-breadcrumb {
-    position: relative;
-    margin-bottom: 12px;
+.lx-couture-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 14px;
 
     white-space: nowrap;
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* HOA – decoration layer */
-.lx-floral-decor {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: #d4af37; /* champagne */
-    opacity: 0.9;
-
-    pointer-events: none;
+.lx-couture-breadcrumb::-webkit-scrollbar {
+    display: none;
 }
 
-/* TEXT – nội dung chính */
-.lx-floral-text {
-    display: block;
+/* ITEM (FRAME) */
+.lx-couture-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
 
-    padding-left: 52px; /* chừa chỗ cho hoa */
-    padding-right: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+
+    background: #fff;
+    border: 1px solid #e5e7eb;
 
     font-size: 11px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
 
-    color: #9b8f82;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #6b7280;
 }
 
-/* ĐƯỜNG HOA MẢNH */
-.lx-floral-breadcrumb::after {
+/* HOME khác nhẹ */
+.lx-couture-item.home {
+    background: #fafafa;
+    border-style: dashed;
+}
+
+/* ACTIVE (CURRENT) */
+.lx-couture-item.active {
+    border-color: #111;
+    color: #111;
+}
+
+/* LABEL */
+.lx-couture-label {
+    position: relative;
+    z-index: 1;
+}
+
+/* CONNECTOR ICON */
+.lx-couture-connector {
+    font-size: 12px;
+    color: #c7a26d; /* champagne gold */
+    opacity: 0.9;
+    flex-shrink: 0;
+}
+
+/* OPTIONAL: đường mảnh chạy phía sau */
+.lx-couture-breadcrumb::after {
     content: "";
     position: absolute;
-    left: 52px;
-    right: 20%;
-    bottom: -4px;
+    left: 0;
+    right: 0;
+    bottom: -6px;
     height: 1px;
-
     background: linear-gradient(
         to right,
         transparent,
-        #e7d8c9,
+        #eee,
         transparent
     );
 }

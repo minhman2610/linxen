@@ -1,16 +1,27 @@
 {{-- =====================================================
-   PRODUCT BREADCRUMB – FLORAL (HOME + CATEGORY)
+   PRODUCT BREADCRUMB – COUTURE FRAMES
 ===================================================== --}}
 @if(!empty($breadcrumbs))
-    <div class="lx-floral-breadcrumb">
+    <nav class="lx-couture-breadcrumb" aria-label="breadcrumb">
 
-        {{-- HOA TRANG TRÍ --}}
-        <span class="lx-floral-decor">❀ ❀ ❀</span>
-
-        {{-- TEXT (ONE LINE) --}}
-        <span class="lx-floral-text">
-            Trang chủ · {{ collect($breadcrumbs)->pluck('name')->join(' · ') }}
+        {{-- HOME --}}
+        <span class="lx-couture-item home">
+            <span class="lx-couture-label">Trang chủ</span>
         </span>
 
-    </div>
+        @foreach($breadcrumbs as $crumb)
+            {{-- CONNECTOR --}}
+            <span class="lx-couture-connector">
+                ✦
+            </span>
+
+            {{-- ITEM --}}
+            <span class="lx-couture-item {{ empty($crumb['url']) ? 'active' : '' }}">
+                <span class="lx-couture-label">
+                    {{ $crumb['name'] }}
+                </span>
+            </span>
+        @endforeach
+
+    </nav>
 @endif
