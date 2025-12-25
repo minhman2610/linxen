@@ -52,7 +52,7 @@ Route::domain('linxen.vn')
         Route::get('/checkout', [PageController::class, 'checkout'])
             ->name('linxen.checkout');
 
-        Route::post('/checkout/place-order', [PageController::class, 'placeOrder'])
+        Route::get('/checkout/place-order', [PageController::class, 'placeOrder'])
             ->name('linxen.checkout.place_order');
 
         // 👤 ACCOUNT
