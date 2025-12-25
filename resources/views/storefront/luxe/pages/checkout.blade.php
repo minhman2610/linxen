@@ -8,7 +8,14 @@
     $shippingFee = $subtotal >= 1000000 ? 0 : 30000;
     $total       = $subtotal + $shippingFee;
 
-    // 🔒 SNAPSHOT CART CHO CHECKOUT.JS (AN TOÀN BLADE)
+    /*
+    |--------------------------------------------------------------------------
+    | 🔒 SNAPSHOT CART CHO CHECKOUT.JS (ERP REQUIRE)
+    |--------------------------------------------------------------------------
+    | ERP BẮT BUỘC:
+    | - items[].product_id
+    | - qty, price
+    */
     $checkoutCart = [];
     foreach ($cartItems as $item) {
         $checkoutCart[] = [
@@ -144,6 +151,7 @@
                 </div>
             </div>
 
+            {{-- PAYMENT METHOD --}}
             <div class="lx-checkout-payment">
                 <div class="lx-payment-badge">
                     <span class="lx-payment-icon">💵</span>
@@ -156,6 +164,7 @@
                 </div>
             </div>
 
+            {{-- ACTIONS --}}
             <div class="lx-checkout-actions">
                 <button type="submit"
                         class="lx-btn-primary lx-btn-full lx-btn-checkout">
@@ -174,7 +183,7 @@
         </aside>
 
         {{-- =========================
-            SNAPSHOT CART → JS (FIX LỖI BLADE)
+            SNAPSHOT CART → CHECKOUT.JS
         ========================== --}}
         <script>
             window.__CHECKOUT_CART__ = {!! json_encode($checkoutCart, JSON_UNESCAPED_UNICODE) !!};

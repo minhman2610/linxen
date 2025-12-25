@@ -55,6 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fd = new FormData(form);
 
+        // Snapshot cart được inject từ Blade (BẮT BUỘC có product_id)
+        const items = Array.isArray(window.__CHECKOUT_CART__)
+            ? window.__CHECKOUT_CART__
+            : [];
+
+        if (!items.length) {
+            errBox.innerText = 'Giỏ hàng không hợp lệ. Vui lòng quay lại giỏ hàng.';
+            errBox.style.display = 'block';
+            return;
+        }
+
         const payload = {
             storefront: 'linxen',
 
@@ -70,6 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 ward_name:     wardSel?.selectedOptions[0]?.text || '',
                 note: fd.get('note') || null,
             },
+
+            // 🔥 ERP REQUIRE: items[].product_id
+            items: items.map(i => ({
+                product_id: i.product_id,
+                qty:        i.qty,
+                price:      i.price,
+                note:       i.note || null,
+            })),
         };
 
         // Disable submit để tránh double click
@@ -110,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // ✅ Thành công → sang trang chi tiết đơn hàng
+            // ✅ Thành công → trang chi tiết đơn hàng
             window.location.href = `/account/orders/${json.order_code}`;
 
         } catch (err) {
