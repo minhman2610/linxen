@@ -1,4 +1,4 @@
-<header class="lx-header {{ request()->routeIs('linxen.home') ? 'lx-header--transparent' : '' }}">
+<header >
 
     {{-- MENU (MOBILE) --}}
     <button
@@ -36,7 +36,7 @@
     <span
         class="cart-count"
         id="lxHeaderCartCount">
-        123{{ array_sum(array_column(session('cart', []), 'qty')) }}
+        {{ array_sum(array_column(session('cart', []), 'qty')) }}
     </span>
 </a>
 
