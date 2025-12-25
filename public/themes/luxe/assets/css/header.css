@@ -146,7 +146,7 @@
     }
 }
 /* =====================================================
-   HEADER – LUXURY CHAMPAGNE GLOW
+   HEADER – LUXURY CHAMPAGNE GLOW (COLOR SHIFT)
 ===================================================== */
 
 .lx-header {
@@ -156,15 +156,57 @@
         #f7f6f3 100%
     );
 
-    /* viền dưới rất nhẹ */
     border-bottom: 1px solid rgba(0,0,0,.06);
 
-    /* glow hờn tinh tế */
     box-shadow:
-        0 1px 0 rgba(255,255,255,.9),   /* highlight trên */
-        0 8px 20px rgba(0,0,0,.04);     /* glow mờ dưới */
+        0 1px 0 rgba(255,255,255,.9),
+        0 8px 20px rgba(0,0,0,.04);
 
     position: sticky;
     top: var(--announcement-height, 0);
     z-index: 100;
+
+    /* 🔥 animate màu nền */
+    animation: lxHeaderColorShift 1s linear infinite;
+}
+
+/* -------------------------------------------------
+   KEYFRAMES – ĐỔI MÀU NỀN MỖI GIÂY
+------------------------------------------------- */
+@keyframes lxHeaderColorShift {
+    0% {
+        background: linear-gradient(
+            to bottom,
+            #fcfcfb 0%,
+            #f7f6f3 100%
+        );
+    }
+    25% {
+        background: linear-gradient(
+            to bottom,
+            #f6f8fa 0%,   /* ivory lạnh */
+            #f2f3f1 100%
+        );
+    }
+    50% {
+        background: linear-gradient(
+            to bottom,
+            #fff6ee 0%,   /* champagne ấm */
+            #f5efe8 100%
+        );
+    }
+    75% {
+        background: linear-gradient(
+            to bottom,
+            #f3f5f4 0%,   /* neutral grey */
+            #eff1ef 100%
+        );
+    }
+    100% {
+        background: linear-gradient(
+            to bottom,
+            #fcfcfb 0%,
+            #f7f6f3 100%
+        );
+    }
 }
