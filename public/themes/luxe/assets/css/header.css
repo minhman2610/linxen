@@ -178,28 +178,28 @@
         background: linear-gradient(
             to bottom,
             #fcfcfb 0%,
-            #f7f6f3 100%
+            #9e9e20 100%
         );
     }
     25% {
         background: linear-gradient(
             to bottom,
             #f6f8fa 0%,   /* ivory lạnh */
-            #f7f6f3 100%
+            #9e2054 100%
         );
     }
     50% {
         background: linear-gradient(
             to bottom,
             #fff6ee 0%,   /* champagne ấm */
-            #f7f6f3 100%
+            #20799e 100%
         );
     }
     75% {
         background: linear-gradient(
             to bottom,
             #f3f5f4 0%,   /* neutral grey */
-            #f7f6f3 100%
+            #209e26 100%
         );
     }
     100% {
