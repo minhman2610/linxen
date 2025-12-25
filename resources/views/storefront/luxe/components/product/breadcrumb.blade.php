@@ -1,27 +1,27 @@
-{{-- =====================================================
-   PRODUCT BREADCRUMB – LUXURY ART PATH
-===================================================== --}}
 @if(!empty($breadcrumbs))
-    <nav class="lx-art-breadcrumb" aria-label="breadcrumb">
+<nav class="lx-art-breadcrumb" aria-label="breadcrumb">
+    @foreach($breadcrumbs as $index => $crumb)
 
-        {{-- HOME --}}
-        <span class="lx-art-item is-home">
-            <span class="lx-art-label">TRANG CHỦ</span>
-        </span>
+        @if($index === 0)
+            <a href="{{ $crumb['url'] ?? '/' }}"
+               class="lx-art-item is-home">
+                {{ $crumb['name'] }}
+            </a>
+        @else
+            <span class="lx-art-connector">⟡</span>
 
-        @foreach($breadcrumbs as $crumb)
-            {{-- CONNECTOR ICON --}}
-            <span class="lx-art-connector">
-                ⟡
-            </span>
-
-            {{-- ITEM --}}
-            <span class="lx-art-item {{ empty($crumb['url']) ? 'is-active' : '' }}">
-                <span class="lx-art-label">
-                    {{ Str::upper($crumb['name']) }}
+            @if(!empty($crumb['url']))
+                <a href="{{ $crumb['url'] }}"
+                   class="lx-art-item">
+                    {{ $crumb['name'] }}
+                </a>
+            @else
+                <span class="lx-art-item is-active">
+                    {{ $crumb['name'] }}
                 </span>
-            </span>
-        @endforeach
+            @endif
+        @endif
 
-    </nav>
+    @endforeach
+</nav>
 @endif

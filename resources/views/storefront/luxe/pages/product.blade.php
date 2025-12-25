@@ -1,264 +1,90 @@
 @extends('storefront.luxe.layouts.app')
 
 @section('content')
+<section class="lx-product-detail lx-pdp">
 
-@php
-    use Illuminate\Support\Str;
+    <div class="lx-product-content lx-pdp-content">
 
-    $images     = $images ?? [];
-    $variants   = $variants ?? [];
-    $attributes = $attributes ?? [];
-@endphp
+        {{-- ================= BREADCRUMB ================= --}}
+        @include('storefront.luxe.components.product.breadcrumb', [
+            'breadcrumbs' => $breadcrumbs
+        ])
 
-<section class="lx-product-detail">
-    
-    {{-- =====================================================
-       PRODUCT GALLERY – SWIPER PRO
-    ===================================================== --}}
-    <div class="lx-product-gallery">
+        {{-- ================= PRODUCT LAYOUT ================= --}}
+        <div class="lx-product-layout">
 
-        <div class="swiper lx-product-main-swiper">
-            <div class="swiper-wrapper">
-                @foreach($images as $index => $img)
-                    <div class="swiper-slide">
-                        <img
-                            src="{{ $img['mobile'] ?? $img['thumb'] }}"
-                            data-full="{{ $img['full'] }}"
-                            alt="{{ $product['name'] ?? '' }}"
-                            loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
-                            class="lx-main-image">
+            {{-- LEFT: GALLERY --}}
+            <div class="lx-product-gallery-wrap">
+                @include('storefront.luxe.components.product.gallery', [
+                    'images'  => $images,
+                    'product' => $product
+                ])
+            </div>
+
+            {{-- RIGHT: INFO --}}
+            <div class="lx-product-info">
+
+                {{-- BRAND HERO --}}
+                <div class="lx-brand-hero">
+                    <div class="lx-brand-typewriter"
+                         data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY">
+                        LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY
                     </div>
-                @endforeach
-            </div>
 
-            <div class="swiper-pagination"></div>
-            <div class="lx-gallery-nav lx-gallery-prev"></div>
-            <div class="lx-gallery-nav lx-gallery-next"></div>
-        </div>
-
-        @if(count($images) > 1)
-            <div class="swiper lx-product-thumb-swiper">
-                <div class="swiper-wrapper">
-                    @foreach($images as $img)
-                        <div class="swiper-slide">
-                            <img src="{{ $img['thumb'] }}" loading="lazy" alt="">
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
-    </div>
-
-    {{-- =====================================================
-   PRODUCT CONTENT – DESIGNED
-===================================================== --}}
-<div class="lx-product-content">
-
-    <div class="lx-product-info">
-
-        {{-- 🧭 BREADCRUMB --}}
-        <div class="lx-product-breadcrumb">
-            @include('storefront.luxe.components.product.breadcrumb', [
-                'breadcrumbs' => $breadcrumbs
-            ])
-        </div>
-
-        {{-- =====================================================
-   BRAND HERO – LIN XÉN
-===================================================== --}}
-<div class="lx-brand-hero">
-
-    {{-- BRAND STATEMENT --}}
-    <div class="lx-brand-typewriter"
-         data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY">
-        LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY
-    </div>
-
-    {{-- PRODUCT TITLE --}}
-    <h1 class="lx-product-title luxury-title">
-        <span class="lx-title-icon">✦</span>
-        {{ $product['name'] ?? '' }}
-    </h1>
-
-</div>
-
-
-        {{-- =====================================================
-   PRODUCT IDENTITY + PRICE + CAPTION
-===================================================== --}}
-
-{{-- META / IDENTITY TAGS --}}
-<div class="lx-product-meta couture-meta">
-    @if(!empty($product['code']))
-        <span class="lx-meta-tag">
-            MÃ {{ $product['code'] }}
-        </span>
-    @endif
-
-    <span class="lx-meta-tag accent">
-        THIẾT KẾ LIN XÉN
-    </span>
-</div>
-
-{{-- PRICE – LUXURY MOMENT --}}
-<div class="lx-product-price-wrap couture-price">
-    <span class="lx-product-price">
-        {{ number_format($product['price'] ?? 0) }}₫
-    </span>
-    <span class="lx-price-note">
-        ĐÃ BAO GỒM VAT
-    </span>
-</div>
-
-{{-- DESCRIPTION – LOOKBOOK CAPTION --}}
-<div class="lx-product-description couture-caption">
-    {!! nl2br(e(
-        $product['description']
-        ?? 'Thiết kế tinh tế, phom dáng chuẩn, dễ mặc trong nhiều hoàn cảnh.'
-    )) !!}
-</div>
-
-
-        {{-- =====================================================
-   VARIANTS – ONE ROW PER ATTRIBUTE
-===================================================== --}}
-@if(!empty($attributes))
-    <div class="lx-product-variants" id="lxVariants">
-
-        @foreach($attributes as $attr => $values)
-            @php $attrKey = Str::slug($attr, '_'); @endphp
-
-            <div class="lx-variant-row"
-                 data-attr="{{ $attr }}"
-                 data-attr-key="{{ $attrKey }}">
-
-                {{-- LABEL --}}
-                <div class="lx-variant-label">
-                    {{ Str::upper($attr) }}
+                    <h1 class="lx-product-title luxury-title">
+                        <span class="lx-title-icon">✦</span>
+                        {{ $product['name'] ?? '' }}
+                    </h1>
                 </div>
 
-                {{-- VALUES --}}
-                <div class="lx-variant-options">
-                    @foreach($values as $val)
-                        <button
-                            type="button"
-                            class="variant-option"
-                            data-attr="{{ $attr }}"
-                            data-attr-key="{{ $attrKey }}"
-                            data-value="{{ $val }}">
-                            {{ $val }}
-                        </button>
-                    @endforeach
+                {{-- META --}}
+                <div class="lx-product-meta">
+                    @if(!empty($product['code']))
+                        <span class="lx-meta-tag">
+                            MÃ {{ $product['code'] }}
+                        </span>
+                    @endif
+                    <span class="lx-meta-tag accent">
+                        THIẾT KẾ LIN XÉN
+                    </span>
                 </div>
 
-            </div>
-
-        @endforeach
-
-    </div>
-@endif
-
-
-        {{-- STOCK --}}
-        <p class="lx-product-stock" id="lxStock">
-            Chọn đầy đủ biến thể để xem tình trạng
-        </p>
-
-        {{-- ACTIONS --}}
-        <div class="lx-product-actions">
-
-            <div class="lx-qty">
-                <button type="button" onclick="changeQty(-1)">−</button>
-                <input type="number" id="lxQty" value="1" min="1">
-                <button type="button" onclick="changeQty(1)">+</button>
-            </div>
-
-            <button
-                class="lx-btn-primary lx-btn-full"
-                id="lxAddToCartBtn"
-                type="button">
-                <span class="lx-btn-icon">👜</span>
-                Thêm vào giỏ
-            </button>
-        </div>
-
-        {{-- TRUST --}}
-        <ul class="lx-product-trust">
-            <li>Thiết kế độc quyền LIN XÉN</li>
-            <li>Chất liệu chọn lọc – Form chuẩn</li>
-            <li>Đổi trả trong 7 ngày</li>
-        </ul>
-
-    </div>
-</div>
-
-
-        {{-- =====================================================
-           ACCORDION – GIẢI QUYẾT LĂN TĂN
-        ===================================================== --}}
-        <div class="lx-product-accordion">
-
-            <details open>
-                <summary>Chất liệu & phom dáng</summary>
-                <p>Chất liệu cao cấp, mềm mại, đứng phom. Thiết kế tôn dáng, dễ mặc.</p>
-            </details>
-
-            <details>
-                <summary>Hướng dẫn chọn size</summary>
-                <p>Nếu bạn ở giữa hai size, nên chọn size lớn hơn để mặc thoải mái.</p>
-            </details>
-
-            <details>
-                <summary>Bảo quản</summary>
-                <p>Giặt tay nhẹ, không vắt mạnh, phơi nơi thoáng mát.</p>
-            </details>
-
-            <details>
-                <summary>Đổi trả</summary>
-                <p>Hỗ trợ đổi trả trong 7 ngày nếu sản phẩm chưa qua sử dụng.</p>
-            </details>
-
-        </div>
-
-        {{-- =====================================================
-           SOCIAL PROOF – NHẸ
-        ===================================================== --}}
-        <div class="lx-product-social-proof">
-            <p>💬 <strong>Khách hàng LIN XÉN:</strong> “Form váy rất tôn dáng, mặc lên nhìn gọn và sang.”</p>
-        </div>
-
-        {{-- =====================================================
-           PHỐI CÙNG
-        ===================================================== --}}
-        @if(!empty($relatedProducts))
-            <section class="lx-related-products">
-                <h3>Phối cùng</h3>
-                <div class="lx-related-grid">
-                    @foreach($relatedProducts as $rp)
-                        <a href="{{ route('linxen.product', ['slug' => $rp['slug']]) }}"
-                           class="lx-related-card">
-                            <img src="{{ $rp['thumb_mobile'] }}" alt="">
-                            <span>{{ $rp['name'] }}</span>
-                            <strong>{{ number_format($rp['price']) }}₫</strong>
-                        </a>
-                    @endforeach
+                {{-- PRICE --}}
+                <div class="lx-product-price-wrap">
+                    <span class="lx-product-price">
+                        {{ number_format($product['price'] ?? 0) }}₫
+                    </span>
+                    <span class="lx-price-note">
+                        ĐÃ BAO GỒM VAT
+                    </span>
                 </div>
-            </section>
-        @endif
 
+                {{-- DESCRIPTION --}}
+                <div class="lx-product-description">
+                    {!! nl2br(e(
+                        $product['description']
+                        ?? 'Thiết kế tinh tế, phom dáng chuẩn, dễ mặc trong nhiều hoàn cảnh.'
+                    )) !!}
+                </div>
+
+                {{-- VARIANTS --}}
+                @include('storefront.luxe.components.product.variants', [
+                    'attributes' => $attributes
+                ])
+
+                {{-- STOCK --}}
+                <p class="lx-product-stock" id="lxStock">
+                    Chọn đầy đủ biến thể để xem tình trạng
+                </p>
+
+                {{-- ACTIONS --}}
+                @include('storefront.luxe.components.product.actions')
+
+                {{-- TRUST --}}
+                @include('storefront.luxe.components.product.trust')
+
+            </div>
+        </div>
     </div>
-
 </section>
-
-{{-- =====================================================
-   STICKY CTA – MOBILE
-===================================================== --}}
-<div class="lx-sticky-cta" id="lxStickyCTA">
-    <span class="price">{{ number_format($product['price'] ?? 0) }}₫</span>
-    <button onclick="document.getElementById('lxAddToCartBtn').click()">
-        Thêm vào giỏ
-    </button>
-</div>
-
 @endsection
