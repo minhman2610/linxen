@@ -1,0 +1,53 @@
+/* =====================================================
+   PRODUCT BREADCRUMB
+===================================================== */
+.lx-breadcrumb {
+    width: 100%;
+    padding: 8px 12px;
+    overflow-x: auto;
+    box-sizing: border-box;
+}
+
+.lx-breadcrumb::-webkit-scrollbar {
+    display: none;
+}
+
+.lx-breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.lx-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.lx-breadcrumb-home {
+    display: flex;
+    align-items: center;
+    color: #9ca3af;
+}
+
+.lx-breadcrumb-sep {
+    margin: 0 4px;
+    color: #c4c4c4;
+}
+
+.lx-breadcrumb-link {
+    color: #9ca3af;
+    text-decoration: none;
+}
+
+.lx-breadcrumb-link:hover {
+    text-decoration: underline;
+}
+
+.lx-breadcrumb-current {
+    color: #111;
+    font-weight: 500;
+}

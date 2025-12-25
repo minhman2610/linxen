@@ -109,19 +109,54 @@ public function product(string $slug, ErpStorefrontApi $erp)
     |--------------------------------------------------------------------------
     | MEDIA – STOREFRONT (PROGRESSIVE GALLERY)
     |--------------------------------------------------------------------------
-    | ERP trả về:
-    | - thumb_url
-    | - thumb_mobile
-    | - images[]: { thumb, mobile, full }
-    |--------------------------------------------------------------------------
     */
     $images = $product['images'] ?? [];
 
-    // Ảnh chính: ưu tiên mobile của ảnh đầu
     $mainImage = $images[0]['mobile']
         ?? $product['thumb_mobile']
         ?? $product['thumb_url']
         ?? null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🧭 BREADCRUMB – CATEGORY TREE
+    |--------------------------------------------------------------------------
+    | ERP khuyến nghị trả:
+    | $product['categories'] = [
+    |   { id, name, slug, parent_id }
+    | ]
+    |--------------------------------------------------------------------------
+    */
+    $breadcrumbs = [];
+
+    if (!empty($product['categories'])) {
+
+        /**
+         * Ví dụ ERP trả category path đã sort sẵn:
+         * [
+         *   ['name' => 'Đồ Nữ', 'slug' => 'do-nu'],
+         *   ['name' => 'Váy', 'slug' => 'vay'],
+         *   ['name' => 'Váy thiết kế', 'slug' => 'vay-thiet-ke'],
+         * ]
+         */
+        foreach ($product['categories'] as $cat) {
+            $breadcrumbs[] = [
+                'name' => $cat['name'],
+                'url'  => '/collection/' . $cat['slug'],
+            ];
+        }
+
+    } else {
+        /**
+         * Fallback an toàn (ERP chưa map category)
+         */
+        $breadcrumbs = [
+            [
+                'name' => 'Sản phẩm',
+                'url'  => '/collections',
+            ],
+        ];
+    }
 
     return view(
         "storefront.{$this->theme}.pages.product",
@@ -133,15 +168,19 @@ public function product(string $slug, ErpStorefrontApi $erp)
             'variants'   => $variants,
             'attributes' => $attributes,
 
-            // 🖼 GALLERY (MỚI)
+            // 🖼 GALLERY
             'images'     => $images,
             'mainImage'  => $mainImage,
+
+            // 🧭 BREADCRUMB
+            'breadcrumbs'=> $breadcrumbs,
 
             // 🏷 BRAND
             'brand'      => $this->brand,
         ]
     );
 }
+
 
 
     /* =====================================================
