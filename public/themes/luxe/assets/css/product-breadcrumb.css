@@ -1,104 +1,37 @@
 /* =====================================================
-   COUTURE BREADCRUMB – POLISHED FINAL
+   LUXURY BREADCRUMB – QUIET FASHION
 ===================================================== */
 
-.lx-couture-breadcrumb {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    margin-bottom: 18px;        /* ✅ FIX: không cắn nội dung dưới */
-    padding-bottom: 6px;        /* tạo khoảng thở */
-
-    white-space: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+.lx-luxury-breadcrumb {
+    margin-bottom: 20px; /* khoảng thở rõ ràng */
 }
 
-.lx-couture-breadcrumb::-webkit-scrollbar {
-    display: none;
-}
-
-/* ================= ITEM FRAME ================= */
-
-.lx-couture-item {
-    display: inline-flex;
-    align-items: center;
-
-    padding: 7px 16px;          /* rộng hơn → sang hơn */
-    border-radius: 999px;
-
-    /* 🎨 nền nhẹ, không phẳng */
-    background: linear-gradient(
-        to bottom,
-        #ffffff,
-        #fafafa
-    );
-
-    border: 1px solid #e6e6e6;
+.lx-luxury-text {
+    display: block;
 
     font-size: 11px;
-    letter-spacing: 0.18em;     /* ✨ couture feel */
-    text-transform: uppercase; /* ✅ chỉ mục viết hoa */
+    letter-spacing: 0.22em;      /* rất quan trọng */
+    text-transform: uppercase;
 
+    color: #9ca3af;              /* xám luxury */
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Separator */
+.lx-luxury-sep {
+    margin: 0 10px;
+    color: #d1d5db;
+}
+
+/* Item */
+.lx-luxury-item {
     color: #6b7280;
 }
 
-/* HOME – khác nhẹ */
-.lx-couture-item.home {
-    background: linear-gradient(
-        to bottom,
-        #fafafa,
-        #f3f3f3
-    );
-    border-style: dashed;
-}
-
-/* ACTIVE – điểm nhấn tinh tế */
-.lx-couture-item.active {
-    border-color: #c7a26d;      /* champagne */
+/* Item cuối (current context) */
+.lx-luxury-item:last-child {
     color: #111;
-    background: linear-gradient(
-        to bottom,
-        #fffdf8,
-        #fdf6ea
-    );
-}
-
-/* LABEL */
-.lx-couture-label {
-    position: relative;
-    z-index: 1;
-}
-
-/* ================= CONNECTOR ================= */
-
-.lx-couture-connector {
-    flex-shrink: 0;
-
-    font-size: 12px;
-    color: #c7a26d;
-    opacity: 0.85;
-
-    transform: translateY(-1px); /* canh thị giác */
-}
-
-/* ================= DECOR LINE (OPTIONAL) ================= */
-
-.lx-couture-breadcrumb::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -8px;              /* ✅ đẩy xa nội dung dưới */
-
-    height: 1px;
-    background: linear-gradient(
-        to right,
-        transparent,
-        #eee,
-        transparent
-    );
 }
