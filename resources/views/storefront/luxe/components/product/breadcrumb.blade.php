@@ -1,15 +1,17 @@
 {{-- =====================================================
-   PRODUCT EDITORIAL CONTEXT (ART BREADCRUMB)
+   PRODUCT BREADCRUMB – FLORAL RIBBON
 ===================================================== --}}
 @if(!empty($breadcrumbs))
-    <div class="lx-editorial-context">
+    <div class="lx-floral-breadcrumb">
 
-        {{-- MARKER LINE --}}
-        <span class="lx-context-line"></span>
+        {{-- HOA TRANG TRÍ --}}
+        <span class="lx-floral-decor">
+            ❀ ❀ ❀
+        </span>
 
-        {{-- CONTEXT TEXT --}}
-        <span class="lx-context-text">
-            {{ collect($breadcrumbs)->pluck('name')->join(' · ') }}
+        {{-- TEXT --}}
+        <span class="lx-floral-text">
+            {{ collect($breadcrumbs)->pluck('name')->join('  ·  ') }}
         </span>
 
     </div>

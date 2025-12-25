@@ -1,33 +1,51 @@
 /* =====================================================
-   PRODUCT EDITORIAL CONTEXT – QUIET LUXURY
+   FLORAL BREADCRUMB – FEMININE & COUTURE
 ===================================================== */
 
-/* Wrapper */
-.lx-editorial-context {
+.lx-floral-breadcrumb {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
-/* Vertical marker line */
-.lx-context-line {
-    width: 2px;
-    height: 18px;
-    background: #111;
+/* Hoa trang trí */
+.lx-floral-decor {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #d4af37; /* champagne gold */
+    opacity: 0.9;
     flex-shrink: 0;
 }
 
-/* Context text */
-.lx-context-text {
+/* Text breadcrumb */
+.lx-floral-text {
     font-size: 11px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #9ca3af;
 
-    line-height: 1.4;
+    color: #9b8f82; /* nude / champagne */
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Đường hoa mảnh phía dưới */
+.lx-floral-breadcrumb::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 20%;
+    bottom: -4px;
+    height: 1px;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        #e7d8c9,
+        transparent
+    );
 }
