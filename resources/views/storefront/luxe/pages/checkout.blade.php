@@ -76,12 +76,13 @@
 
         {{-- RIGHT --}}
 <aside class="lx-checkout-right">
-    <h3>Đơn hàng của bạn</h3>
 
+    <h3 class="lx-checkout-title">Đơn hàng của bạn</h3>
+
+    {{-- ITEMS --}}
     <div class="lx-checkout-items">
         @foreach($cartItems as $item)
             <div class="lx-checkout-item">
-                {{-- THUMB --}}
                 <div class="lx-checkout-thumb">
                     <img
                         src="{{ $item['image'] ?? asset('images/no-image.png') }}"
@@ -90,7 +91,6 @@
                     >
                 </div>
 
-                {{-- INFO --}}
                 <div class="lx-checkout-item-info">
                     <div class="lx-checkout-item-name">
                         {{ $item['name'] }}
@@ -115,35 +115,57 @@
 
     <hr class="lx-checkout-divider">
 
-    <div class="lx-checkout-summary-row">
-        <span>Tạm tính</span>
-        <span>{{ number_format($subtotal) }}₫</span>
+    {{-- SUMMARY --}}
+    <div class="lx-checkout-summary">
+        <div class="lx-checkout-summary-row">
+            <span>Tạm tính</span>
+            <span>{{ number_format($subtotal) }}₫</span>
+        </div>
+
+        <div class="lx-checkout-summary-row">
+            <span>Vận chuyển</span>
+            <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
+        </div>
+
+        <div class="lx-checkout-summary-total">
+            <span>Tổng cộng</span>
+            <span>{{ number_format($total) }}₫</span>
+        </div>
     </div>
 
-    <div class="lx-checkout-summary-row">
-        <span>Vận chuyển</span>
-        <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
+    {{-- PAYMENT METHOD --}}
+    <div class="lx-checkout-payment">
+        <div class="lx-payment-badge">
+            <span class="lx-payment-icon">💵</span>
+            <div>
+                <strong>Thanh toán khi nhận hàng (COD)</strong>
+                <div class="lx-payment-hint">
+                    Thanh toán cho nhân viên giao hàng
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="lx-checkout-summary-total">
-        <span>Tổng cộng</span>
-        <span>{{ number_format($total) }}₫</span>
-    </div>
-
+    {{-- ACTIONS --}}
     <div class="lx-checkout-actions">
-    <button type="submit" class="lx-btn-primary lx-btn-full lx-btn-checkout">
-        <span class="lx-btn-main">ĐẶT HÀNG</span>
-        <span class="lx-btn-sub">Thanh toán khi nhận hàng (COD)</span>
-    </button>
+        <button
+            type="submit"
+            class="lx-btn-primary lx-btn-full lx-btn-checkout"
+        >
+            <span class="lx-btn-main">ĐẶT HÀNG</span>
+            <span class="lx-btn-sub">
+                Xác nhận đơn • Thanh toán COD
+            </span>
+        </button>
 
-    <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
-        ← Tiếp tục mua sắm
-    </a>
-</div>
-
+        <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
+            ← Tiếp tục mua sắm
+        </a>
+    </div>
 
     <div id="lx-checkout-error" class="lx-checkout-error" style="display:none"></div>
 </aside>
+
 
 
     </form>
