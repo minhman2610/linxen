@@ -130,9 +130,17 @@
         <span>{{ number_format($total) }}₫</span>
     </div>
 
-    <button type="submit" class="lx-btn-primary lx-btn-full">
-        ĐẶT HÀNG
+    <div class="lx-checkout-actions">
+    <button type="submit" class="lx-btn-primary lx-btn-full lx-btn-checkout">
+        <span class="lx-btn-main">ĐẶT HÀNG</span>
+        <span class="lx-btn-sub">Thanh toán khi nhận hàng (COD)</span>
     </button>
+
+    <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
+        ← Tiếp tục mua sắm
+    </a>
+</div>
+
 
     <div id="lx-checkout-error" class="lx-checkout-error" style="display:none"></div>
 </aside>
