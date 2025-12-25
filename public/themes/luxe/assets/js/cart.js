@@ -78,29 +78,37 @@
      * REMOVE ITEM
      * =================================================
      */
-    window.removeItem = async function (sku) {
+    let pendingRemoveSku = null;
 
-        if (!confirm('Bạn muốn xoá sản phẩm này khỏi giỏ hàng?')) {
-            return;
-        }
+function showConfirmRemove(sku) {
+    pendingRemoveSku = sku;
+    document.getElementById('lxConfirmOverlay').classList.add('show');
+}
 
-        const card = document.querySelector(`.lx-cart-card[data-sku="${sku}"]`);
-        if (!card) return;
+function hideConfirmRemove() {
+    pendingRemoveSku = null;
+    document.getElementById('lxConfirmOverlay').classList.remove('show');
+}
 
-        setCardLoading(card, true);
+// nút Cancel
+document.getElementById('lxConfirmCancel')?.addEventListener('click', hideConfirmRemove);
 
-        try {
-            await post('/cart/remove', {
-                sku: sku
-            });
+// nút OK
+document.getElementById('lxConfirmOk')?.addEventListener('click', async () => {
+    if (!pendingRemoveSku) return;
 
-            window.location.reload();
+    hideConfirmRemove();
 
-        } catch (e) {
-            console.error('❌ Remove item error:', e);
-            alert('Không thể xoá sản phẩm. Vui lòng thử lại.');
-            setCardLoading(card, false);
-        }
-    };
+    try {
+        await post('/cart/remove', {
+            sku: pendingRemoveSku
+        });
+
+        window.location.reload();
+    } catch (e) {
+        alert('Không thể xoá sản phẩm. Vui lòng thử lại.');
+    }
+});
+
 
 })();

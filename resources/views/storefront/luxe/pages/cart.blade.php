@@ -141,5 +141,19 @@
         </div>
     @endif
 
-</section>
+</section
+<div class="lx-confirm-overlay" id="lxConfirmOverlay">
+    <div class="lx-confirm-box">
+        <div class="lx-confirm-title">Xóa sản phẩm?</div>
+        <div class="lx-confirm-desc">
+            Sản phẩm này sẽ bị xóa khỏi giỏ hàng.<br>
+            Hành động này không thể hoàn tác.
+        </div>
+
+        <div class="lx-confirm-actions">
+            <button class="lx-btn-cancel" id="lxConfirmCancel">Hủy</button>
+            <button class="lx-btn-danger" id="lxConfirmOk">Xóa</button>
+        </div>
+    </div>
+</div>
 @endsection
