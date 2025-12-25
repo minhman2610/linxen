@@ -185,21 +185,21 @@
         background: linear-gradient(
             to bottom,
             #f6f8fa 0%,   /* ivory lạnh */
-            #f2f3f1 100%
+            #f7f6f3 100%
         );
     }
     50% {
         background: linear-gradient(
             to bottom,
             #fff6ee 0%,   /* champagne ấm */
-            #f5efe8 100%
+            #f7f6f3 100%
         );
     }
     75% {
         background: linear-gradient(
             to bottom,
             #f3f5f4 0%,   /* neutral grey */
-            #eff1ef 100%
+            #f7f6f3 100%
         );
     }
     100% {
