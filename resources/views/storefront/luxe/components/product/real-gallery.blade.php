@@ -1,83 +1,58 @@
 {{-- ===================================================== --}}
-{{-- REAL CUSTOMER STORY STRIP --}}
+{{-- REAL CUSTOMER – EDITORIAL HERO --}}
 {{-- ===================================================== --}}
 
 @php
     $ugcCount = is_array($ugcMedia ?? null) ? count($ugcMedia) : 0;
+    $main = $ugcMedia[0] ?? null;
 @endphp
 
-<section class="lx-real-story">
+<section class="lx-real-editorial">
 
-    {{-- HEADER --}}
-    <div class="lx-real-story-head">
-        <h3>LIN XÉN trong đời sống thật</h3>
-        <p>
-            {{ $ugcCount > 0
-                ? 'Hình ảnh & video do khách hàng ghi lại khi sử dụng sản phẩm'
-                : 'Khách hàng đang trải nghiệm sản phẩm, nội dung sẽ sớm được cập nhật'
-            }}
-        </p>
-    </div>
+    {{-- HERO --}}
+    <div class="lx-real-hero">
 
-    {{-- STORY LIST --}}
-    <div class="lx-real-story-list">
-
-        @if($ugcCount > 0)
-
-            @foreach($ugcMedia as $index => $media)
-
-                <article class="lx-real-story-item">
-
-                    {{-- MEDIA --}}
-                    <div class="lx-real-story-media">
-
-                        @if($media['type'] === 'image')
-                            <img
-                                src="{{ $media['url'] }}"
-                                alt="Khách hàng mặc LIN XÉN"
-                                loading="lazy">
-                        @endif
-
-                        @if($media['type'] === 'video')
-                            <video
-                                src="{{ $media['url'] }}"
-                                muted
-                                loop
-                                playsinline
-                                preload="metadata"
-                                @if(!empty($media['poster']))
-                                    poster="{{ $media['poster'] }}"
-                                @endif
-                            ></video>
-
-                            <span class="lx-story-play">▶</span>
-                        @endif
-
-                    </div>
-
-                    {{-- CAPTION --}}
-                    <div class="lx-real-story-caption">
-                        <span class="lx-story-index">
-                            {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
-                        </span>
-
-                        <p>
-                            Khách hàng LIN XÉN chia sẻ trải nghiệm khi mặc thiết kế này
-                        </p>
-                    </div>
-
-                </article>
-
-            @endforeach
-
-        @else
-            {{-- EMPTY --}}
-            <div class="lx-real-story-empty">
-                <p>Chưa có hình ảnh & video thực tế cho sản phẩm này</p>
-                <small>LIN XÉN sẽ cập nhật ngay khi có trải nghiệm từ khách hàng</small>
-            </div>
+        @if($main && $main['type'] === 'image')
+            <img src="{{ $main['url'] }}" alt="LIN XÉN ngoài đời thực">
         @endif
 
+        @if($main && $main['type'] === 'video')
+            <video
+                src="{{ $main['url'] }}"
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                @if(!empty($main['poster'])) poster="{{ $main['poster'] }}" @endif
+            ></video>
+        @endif
+
+        <div class="lx-real-hero-overlay">
+            <h3>LIN XÉN</h3>
+            <span>ngoài đời thực</span>
+        </div>
     </div>
+
+    {{-- THUMB STRIP --}}
+    @if($ugcCount > 1)
+    <div class="lx-real-strip">
+
+        @foreach($ugcMedia as $index => $media)
+            @if($index > 0)
+                <button
+                    class="lx-real-thumb"
+                    data-type="{{ $media['type'] }}"
+                    data-url="{{ $media['url'] }}"
+                    @if(!empty($media['poster']))
+                        data-poster="{{ $media['poster'] }}"
+                    @endif
+                >
+                    <img src="{{ $media['poster'] ?? $media['url'] }}" alt="">
+                </button>
+            @endif
+        @endforeach
+
+    </div>
+    @endif
 
 </section>
