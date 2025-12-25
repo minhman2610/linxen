@@ -93,7 +93,7 @@ public function product(string $slug, ErpStorefrontApi $erp)
 {
     $product = $erp->product($this->brand, $slug);
 
-    if (empty($product)) {
+    if (empty($product) || !is_array($product)) {
         abort(404);
     }
 
@@ -121,12 +121,9 @@ public function product(string $slug, ErpStorefrontApi $erp)
     |--------------------------------------------------------------------------
     | 👥 REAL CUSTOMER MEDIA (UGC FROM ERP)
     |--------------------------------------------------------------------------
-    | ERP trả:
-    | - real_media_gallery (array)
-    | - real_media_count   (int)
-    |--------------------------------------------------------------------------
     */
-    $ugcMedia = is_array($product['real_media_gallery'] ?? null)
+    $ugcMedia = isset($product['real_media_gallery'])
+        && is_array($product['real_media_gallery'])
         ? $product['real_media_gallery']
         : [];
 
@@ -142,7 +139,7 @@ public function product(string $slug, ErpStorefrontApi $erp)
     */
     $breadcrumbs = [];
 
-    if (!empty($product['categories'])) {
+    if (!empty($product['categories']) && is_array($product['categories'])) {
 
         foreach ($product['categories'] as $cat) {
             $breadcrumbs[] = [
@@ -152,7 +149,6 @@ public function product(string $slug, ErpStorefrontApi $erp)
         }
 
     } else {
-        // Fallback an toàn
         $breadcrumbs = [
             [
                 'name' => 'Sản phẩm',
@@ -163,14 +159,14 @@ public function product(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 🔁 SUGGESTED PRODUCTS (FROM ERP – RANDOM)
+    | 🔁 SUGGESTED PRODUCTS (FROM ERP)
     |--------------------------------------------------------------------------
-    | ERP trả:
-    | - suggested_products (array)
-    | - suggested_count    (int)
+    | 🔴 FIX QUAN TRỌNG:
+    | ERP trả snake_case → LIN XÉN PHẢI ĐỌC ĐÚNG KEY
     |--------------------------------------------------------------------------
     */
-    $suggestedProducts = is_array($product['suggested_products'] ?? null)
+    $suggestedProducts = isset($product['suggested_products'])
+        && is_array($product['suggested_products'])
         ? $product['suggested_products']
         : [];
 
@@ -181,6 +177,18 @@ public function product(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
+    | 🔍 DEBUG TẠM (CÓ THỂ XOÁ SAU)
+    |--------------------------------------------------------------------------
+    */
+    /*
+    \Log::debug('[LINXEN PDP]', [
+        'suggested_count' => $suggestedCount,
+        'suggested_products' => $suggestedProducts,
+    ]);
+    */
+
+    /*
+    |--------------------------------------------------------------------------
     | RENDER VIEW
     |--------------------------------------------------------------------------
     */
@@ -188,32 +196,33 @@ public function product(string $slug, ErpStorefrontApi $erp)
         "storefront.{$this->theme}.pages.product",
         [
             // 🧾 DATA GỐC ERP
-            'product'            => $product,
+            'product'           => $product,
 
             // 🎛 BIẾN THỂ
-            'variants'           => $variants,
-            'attributes'         => $attributes,
+            'variants'          => $variants,
+            'attributes'        => $attributes,
 
             // 🖼 GALLERY CHÍNH
-            'images'             => $images,
-            'mainImage'          => $mainImage,
+            'images'            => $images,
+            'mainImage'         => $mainImage,
 
             // 👥 REAL MEDIA (UGC)
-            'ugcMedia'           => $ugcMedia,
-            'ugcCount'           => $ugcCount,
+            'ugcMedia'          => $ugcMedia,
+            'ugcCount'          => $ugcCount,
 
-            // 🔁 SẢN PHẨM GỢI Ý
-            'suggestedProducts'  => $suggestedProducts,
-            'suggestedCount'     => $suggestedCount,
+            // 🔁 SẢN PHẨM GỢI Ý (KEY ĐÃ ĐÚNG)
+            'suggestedProducts' => $suggestedProducts,
+            'suggestedCount'    => $suggestedCount,
 
             // 🧭 BREADCRUMB
-            'breadcrumbs'        => $breadcrumbs,
+            'breadcrumbs'       => $breadcrumbs,
 
             // 🏷 BRAND
-            'brand'              => $this->brand,
+            'brand'             => $this->brand,
         ]
     );
 }
+
 
 
 
