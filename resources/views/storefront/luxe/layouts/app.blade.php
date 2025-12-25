@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="/themes/luxe/assets/css/product.css">
     <link rel="stylesheet"
       href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
+      <link rel="stylesheet"
+      href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
 
       {{-- Swiper CSS --}}
 <link rel="stylesheet"
