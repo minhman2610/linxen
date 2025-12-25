@@ -41,37 +41,31 @@
 /* ================= ITEM ================= */
 
 .lx-art-item {
-    position: relative;
-    z-index: 1;
-
     display: inline-flex;
     align-items: center;
 
-    padding: 6px 12px;        /* 🔽 nhỏ hơn → hiện nhiều item */
-    border-radius: 2px;
+    padding: 0;                /* ❗ cực quan trọng */
+    border: none;
+    background: none;
 
-    background: #fff;
-    border: 1px solid #dedede; /* 🔼 đậm hơn */
-
-    font-size: 11px;
-    letter-spacing: 0.14em;   /* 🔽 giảm tracking */
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
 
-    color: #4b5563;           /* 🔼 đậm hơn */
+    color: #9ca3af;
 }
 
 /* HOME */
 .lx-art-item.is-home {
-    border-style: dashed;
-    color: #6b7280;
+    color: #bfa16a; /* champagne */
 }
 
 /* ACTIVE */
 .lx-art-item.is-active {
-    border-color: #111;
     color: #111;
-    background: #fafafa;
+    font-weight: 500;
 }
+
 
 /* LABEL */
 .lx-art-label {
