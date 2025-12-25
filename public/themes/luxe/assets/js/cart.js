@@ -134,7 +134,7 @@
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        }, 10000);
     }
 
     function showErrorToast(message) {
