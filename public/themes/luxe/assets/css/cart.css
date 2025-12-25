@@ -327,13 +327,15 @@
         margin-top: 6px;
     }
 }
-/* ================= CONFIRM POPUP ================= */
+/* ================= CONFIRM POPUP – LUXE ================= */
 
 .lx-confirm-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.35);
-    backdrop-filter: blur(6px);
+    background: rgba(15, 15, 15, .45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
     z-index: 9999;
 
     display: none;
@@ -345,24 +347,33 @@
     display: flex;
 }
 
+/* BOX */
 .lx-confirm-box {
     width: 320px;
-    background: linear-gradient(180deg, #ffffff, #f7f6f3);
-    border-radius: 18px;
-    padding: 20px;
+    max-width: calc(100vw - 32px);
+
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #f6f5f2 100%
+    );
+
+    border-radius: 20px;
+    padding: 22px 20px 20px;
 
     box-shadow:
-        0 20px 40px rgba(0,0,0,.18),
-        inset 0 1px 0 rgba(255,255,255,.9);
+        0 24px 48px rgba(0,0,0,.22),
+        inset 0 1px 0 rgba(255,255,255,.95);
 
     text-align: center;
-    animation: lxPop .25s ease;
+
+    animation: lxConfirmPop .28s cubic-bezier(.2,.8,.2,1);
 }
 
-@keyframes lxPop {
+@keyframes lxConfirmPop {
     from {
         opacity: 0;
-        transform: translateY(8px) scale(.96);
+        transform: translateY(10px) scale(.95);
     }
     to {
         opacity: 1;
@@ -370,43 +381,60 @@
     }
 }
 
+/* TITLE */
 .lx-confirm-title {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     color: #111;
+    letter-spacing: .2px;
 }
 
+/* DESCRIPTION */
 .lx-confirm-desc {
-    font-size: 13.5px;
+    font-size: 14px;
     color: #555;
-    margin: 10px 0 18px;
-    line-height: 1.45;
+    margin: 10px 0 20px;
+    line-height: 1.5;
 }
 
+/* ACTIONS */
 .lx-confirm-actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .lx-confirm-actions button {
     flex: 1;
-    height: 40px;
-    border-radius: 12px;
-    font-size: 14px;
+    height: 42px;
+    border-radius: 14px;
+    font-size: 14.5px;
     font-weight: 600;
     cursor: pointer;
+    transition: all .18s ease;
 }
 
 /* CANCEL */
 .lx-btn-cancel {
-    background: #f3f3f3;
+    background: #f1f1f1;
     border: none;
     color: #333;
 }
 
+.lx-btn-cancel:hover {
+    background: #e7e7e7;
+}
+
 /* DELETE */
 .lx-btn-danger {
-    background: linear-gradient(135deg, #b91c1c, #dc2626);
+    background: linear-gradient(
+        135deg,
+        #b91c1c 0%,
+        #dc2626 100%
+    );
     border: none;
     color: #fff;
+}
+
+.lx-btn-danger:hover {
+    filter: brightness(1.05);
 }

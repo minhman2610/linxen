@@ -19,7 +19,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',          // 🔥 CỰC KỲ QUAN TRỌNG
+                'Accept': 'application/json', // 🔥 BẮT BUỘC
                 'X-CSRF-TOKEN': token
             },
             body: JSON.stringify(payload),
@@ -39,7 +39,6 @@
         if (!card) return;
 
         card.classList.toggle('is-loading', loading);
-
         card.querySelectorAll('button').forEach(btn => {
             btn.disabled = loading;
         });
@@ -75,40 +74,46 @@
 
     /**
      * =================================================
-     * REMOVE ITEM
+     * REMOVE ITEM – CONFIRM POPUP
      * =================================================
      */
+
     let pendingRemoveSku = null;
 
-function showConfirmRemove(sku) {
-    pendingRemoveSku = sku;
-    document.getElementById('lxConfirmOverlay').classList.add('show');
-}
+    // expose cho inline onclick
+    window.showConfirmRemove = function (sku) {
+        pendingRemoveSku = sku;
+        document.getElementById('lxConfirmOverlay')?.classList.add('show');
+    };
 
-function hideConfirmRemove() {
-    pendingRemoveSku = null;
-    document.getElementById('lxConfirmOverlay').classList.remove('show');
-}
-
-// nút Cancel
-document.getElementById('lxConfirmCancel')?.addEventListener('click', hideConfirmRemove);
-
-// nút OK
-document.getElementById('lxConfirmOk')?.addEventListener('click', async () => {
-    if (!pendingRemoveSku) return;
-
-    hideConfirmRemove();
-
-    try {
-        await post('/cart/remove', {
-            sku: pendingRemoveSku
-        });
-
-        window.location.reload();
-    } catch (e) {
-        alert('Không thể xoá sản phẩm. Vui lòng thử lại.');
+    function hideConfirmRemove() {
+        pendingRemoveSku = null;
+        document.getElementById('lxConfirmOverlay')?.classList.remove('show');
     }
-});
 
+    // Cancel
+    document.getElementById('lxConfirmCancel')
+        ?.addEventListener('click', hideConfirmRemove);
+
+    // OK
+    document.getElementById('lxConfirmOk')
+        ?.addEventListener('click', async () => {
+
+            if (!pendingRemoveSku) return;
+
+            hideConfirmRemove();
+
+            try {
+                await post('/cart/remove', {
+                    sku: pendingRemoveSku
+                });
+
+                window.location.reload();
+
+            } catch (e) {
+                console.error('❌ Remove item error:', e);
+                alert('Không thể xoá sản phẩm. Vui lòng thử lại.');
+            }
+        });
 
 })();
