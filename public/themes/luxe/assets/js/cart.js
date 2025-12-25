@@ -1,7 +1,7 @@
 /**
  * =====================================================
  * 🛒 CART – LIN XÉN
- * Add to cart (AJAX) + Qty + Toast (FINAL)
+ * Add to cart (AJAX) + Qty + Toast + Variant Validate
  * =====================================================
  */
 (function () {
@@ -54,7 +54,7 @@
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
-        }, 2200);
+        }, 2400);
     }
 
     /* ================= CART COUNT ================= */
@@ -65,6 +65,45 @@
         });
     }
 
+    /* =====================================================
+     * ✅ VALIDATE VARIANTS BEFORE ADD TO CART
+     * ===================================================== */
+    function validateVariants() {
+
+        const rows = document.querySelectorAll('.lx-variant-row');
+        if (!rows.length) return true; // không có biến thể
+
+        let invalidRow = null;
+
+        rows.forEach(row => {
+            if (!row.dataset.selected && !invalidRow) {
+                invalidRow = row;
+            }
+        });
+
+        if (invalidRow) {
+            // highlight biến thể chưa chọn
+            invalidRow.classList.add('lx-variant-error');
+
+            setTimeout(() => {
+                invalidRow.classList.remove('lx-variant-error');
+            }, 1200);
+
+            // scroll tới biến thể
+            invalidRow.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+
+            const label = invalidRow.querySelector('.lx-variant-label')?.textContent || 'biến thể';
+
+            showToast(`Vui lòng chọn ${label.toLowerCase()}`, 'error');
+            return false;
+        }
+
+        return true;
+    }
+
     /* ================= ADD TO CART ================= */
     document.addEventListener('click', function (e) {
 
@@ -72,6 +111,9 @@
         if (!btn) return;
 
         e.preventDefault();
+
+        // ❌ VALIDATE VARIANTS
+        if (!validateVariants()) return;
 
         const payload = {
             sku:   btn.dataset.sku,

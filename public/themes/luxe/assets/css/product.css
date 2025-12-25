@@ -313,6 +313,17 @@
     opacity: .4;
     cursor: not-allowed;
 }
+.lx-variant-row.lx-variant-error {
+    animation: lxShake .25s ease-in-out 2;
+}
+
+@keyframes lxShake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
+}
 
 /* =====================================================
    STOCK – SUBTLE STATUS
