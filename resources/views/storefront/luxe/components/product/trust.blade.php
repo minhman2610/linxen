@@ -1,37 +1,49 @@
-<section class="lx-brand-simple visual">
+<section class="lx-brand-experience">
 
-    {{-- TITLE --}}
-    <h3 class="lx-simple-title">
-        Mua váy online<br>
-        <span>nhưng bạn vẫn được thử trước</span>
-    </h3>
+    {{-- FRAME TITLE --}}
+    <div class="lx-exp-head">
+        <h3>
+            Mua váy online<br>
+            <span>nhưng cảm giác như mua tại cửa hàng</span>
+        </h3>
+    </div>
 
-    {{-- POINTS --}}
-    <div class="lx-simple-cards">
+    {{-- EXPERIENCE FLOW --}}
+    <div class="lx-exp-flow">
 
-        <div class="lx-simple-card">
-            <div class="lx-card-icon">👗</div>
-            <h4>Thử tại nhà</h4>
-            <p>Shipper giao đến, bạn mặc thử như ở cửa hàng.</p>
+        <div class="lx-exp-step">
+            <div class="lx-exp-icon">👗</div>
+            <div class="lx-exp-content">
+                <strong>Thử tại nhà</strong>
+                <p>Giao tận nơi · Mặc thử thoải mái</p>
+            </div>
         </div>
 
-        <div class="lx-simple-card highlight">
-            <div class="lx-card-icon">❤️</div>
-            <h4>Ưng thì nhận</h4>
-            <p>Chỉ thanh toán khi bạn thật sự thích.</p>
+        <div class="lx-exp-line"></div>
+
+        <div class="lx-exp-step highlight">
+            <div class="lx-exp-icon">❤️</div>
+            <div class="lx-exp-content">
+                <strong>Ưng thì nhận</strong>
+                <p>Chỉ thanh toán khi bạn thật sự thích</p>
+            </div>
         </div>
 
-        <div class="lx-simple-card">
-            <div class="lx-card-icon">🔄</div>
-            <h4>Không ưng thì đổi</h4>
-            <p>Đổi trong 15 ngày, LIN XÉN hỗ trợ tận nơi.</p>
+        <div class="lx-exp-line"></div>
+
+        <div class="lx-exp-step">
+            <div class="lx-exp-icon">🔄</div>
+            <div class="lx-exp-content">
+                <strong>Không ưng thì đổi</strong>
+                <p>15 ngày · LIN XÉN hỗ trợ tận nơi</p>
+            </div>
         </div>
 
     </div>
 
-    {{-- TRUST LINE --}}
-    <div class="lx-simple-trust">
-        Không cần vội · Không cần giải thích<br>
+    {{-- TRUST STATEMENT --}}
+    <div class="lx-exp-trust">
+        Không áp lực mua · Không cần giải thích<br>
         <strong>Bạn cứ thử, còn lại để LIN XÉN lo</strong>
     </div>
 

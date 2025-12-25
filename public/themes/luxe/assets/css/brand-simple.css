@@ -1,85 +1,116 @@
 /* =====================================================
-   BRAND SIMPLE – VISUAL & TOUCHABLE
+   BRAND EXPERIENCE – PREMIUM FRAME
 ===================================================== */
 
-.lx-brand-simple.visual {
-    margin: 48px 0;
-    text-align: center;
+.lx-brand-experience {
+    margin: 64px 0;
+    padding: 32px 24px;
+
+    border: 1px solid #eee;
+    border-radius: 12px;
+
+    background: linear-gradient(
+        to bottom,
+        #ffffff,
+        #fafafa
+    );
 }
 
-/* TITLE */
-.lx-simple-title {
+/* HEADER */
+.lx-exp-head {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.lx-exp-head h3 {
     font-size: 22px;
     font-weight: 600;
     color: #111;
     line-height: 1.35;
-    margin-bottom: 28px;
 }
 
-.lx-simple-title span {
+.lx-exp-head span {
+    display: block;
+    margin-top: 6px;
     font-size: 14px;
     font-weight: 400;
     color: #6b7280;
 }
 
-/* CARDS */
-.lx-simple-cards {
+/* FLOW */
+.lx-exp-flow {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
 }
 
-.lx-simple-card {
-    padding: 20px 16px;
-    border: 1px solid #eee;
-    border-radius: 8px;
+/* STEP */
+.lx-exp-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 18px;
     background: #fff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
 }
 
-.lx-simple-card.highlight {
+.lx-exp-step.highlight {
     border-color: #111;
 }
 
-.lx-card-icon {
+/* ICON */
+.lx-exp-icon {
     font-size: 28px;
-    margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
-.lx-simple-card h4 {
+/* TEXT */
+.lx-exp-content strong {
+    display: block;
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: #111;
 }
 
-.lx-simple-card p {
+.lx-exp-content p {
     font-size: 13px;
     color: #6b7280;
-    line-height: 1.6;
+}
+
+/* LINE */
+.lx-exp-line {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        #d1d5db,
+        transparent
+    );
 }
 
 /* TRUST */
-.lx-simple-trust {
-    margin-top: 24px;
+.lx-exp-trust {
+    text-align: center;
+    margin-top: 32px;
     font-size: 13px;
     color: #6b7280;
 }
 
 /* MOBILE */
 @media (max-width: 768px) {
-    .lx-simple-cards {
+
+    .lx-exp-flow {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 
-    .lx-simple-card {
-        text-align: left;
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-    }
-
-    .lx-card-icon {
-        font-size: 24px;
-        margin-top: 2px;
+    .lx-exp-line {
+        display: none;
     }
 }
