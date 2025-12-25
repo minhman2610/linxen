@@ -3,11 +3,16 @@
 {{-- ===================================================== --}}
 
 @php
-    $count = is_array($suggestedProducts ?? null) ? count($suggestedProducts) : 0;
+    $suggestedProducts = is_array($suggestedProducts ?? null)
+        ? $suggestedProducts
+        : [];
+
+    $count = count($suggestedProducts);
 @endphp
 
 <section class="lx-suggested-products">
 
+    {{-- HEADER --}}
     <div class="lx-suggested-head">
         <h3>
             <span>✦</span>
@@ -18,36 +23,50 @@
         </p>
     </div>
 
+    {{-- LIST --}}
     @if($count > 0)
         <div class="lx-suggested-scroll">
 
             @foreach($suggestedProducts as $item)
-                <a href="{{ $item['url'] ?? '#' }}" class="lx-suggested-card">
+
+                @php
+                    $url   = $item['url'] ?? '#';
+                    $name  = $item['name'] ?? '';
+                    $price = $item['price'] ?? null;
+
+                    $thumb = $item['thumb_mobile']
+                        ?? $item['thumb']
+                        ?? asset('images/no-image.png');
+                @endphp
+
+                <a href="{{ $url }}" class="lx-suggested-card">
 
                     <div class="lx-suggested-image">
                         <img
-                            src="{{ $item['thumb_mobile'] ?? $item['thumb'] ?? '' }}"
-                            alt="{{ $item['name'] ?? '' }}"
+                            src="{{ $thumb }}"
+                            alt="{{ $name }}"
                             loading="lazy">
                     </div>
 
                     <div class="lx-suggested-info">
                         <div class="lx-suggested-name">
-                            {{ $item['name'] ?? '' }}
+                            {{ $name }}
                         </div>
 
-                        @if(!empty($item['price']))
+                        @if($price)
                             <div class="lx-suggested-price">
-                                {{ number_format($item['price']) }}₫
+                                {{ number_format($price) }}₫
                             </div>
                         @endif
                     </div>
 
                 </a>
+
             @endforeach
 
         </div>
     @else
+        {{-- EMPTY STATE --}}
         <div class="lx-suggested-empty">
             Sản phẩm gợi ý đang được cập nhật
         </div>
