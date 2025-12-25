@@ -47,6 +47,8 @@
 @if (request()->routeIs('product.*') || request()->routeIs('linxen.product'))
     <link rel="stylesheet"
           href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
+    <link rel="stylesheet"
+      href="{{ asset('themes/luxe/assets/css/product-actions.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-actions.css')) }}">
 @endif
 
       <link rel="stylesheet"

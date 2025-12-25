@@ -1,17 +1,39 @@
-<div class="lx-product-actions">
+{{-- =====================================================
+   PRODUCT ACTIONS – LUXURY CTA
+===================================================== --}}
+<div class="lx-product-actions lx-pdp-actions">
 
-    <div class="lx-qty">
-        <button type="button" onclick="changeQty(-1)">−</button>
-        <input type="number" id="lxQty" value="1" min="1">
-        <button type="button" onclick="changeQty(1)">+</button>
+    {{-- QUANTITY --}}
+    <div class="lx-qty luxury-qty">
+        <button type="button"
+                class="lx-qty-btn"
+                aria-label="Giảm số lượng"
+                onclick="changeQty(-1)">
+            −
+        </button>
+
+        <input type="number"
+               id="lxQty"
+               class="lx-qty-input"
+               value="1"
+               min="1"
+               aria-label="Số lượng">
+
+        <button type="button"
+                class="lx-qty-btn"
+                aria-label="Tăng số lượng"
+                onclick="changeQty(1)">
+            +
+        </button>
     </div>
 
+    {{-- ADD TO CART --}}
     <button
-        class="lx-btn-primary lx-btn-full"
+        class="lx-btn-addtocart"
         id="lxAddToCartBtn"
         type="button">
         <span class="lx-btn-icon">👜</span>
-        Thêm vào giỏ
+        <span class="lx-btn-text">Thêm vào giỏ</span>
     </button>
 
 </div>

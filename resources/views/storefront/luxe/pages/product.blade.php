@@ -72,11 +72,6 @@
                     'attributes' => $attributes
                 ])
 
-                {{-- STOCK --}}
-                <p class="lx-product-stock" id="lxStock">
-                    Chọn đầy đủ biến thể để xem tình trạng
-                </p>
-
                 {{-- ACTIONS --}}
                 @include('storefront.luxe.components.product.actions')
 
