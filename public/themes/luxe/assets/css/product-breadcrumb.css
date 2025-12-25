@@ -1,53 +1,37 @@
 /* =====================================================
-   PRODUCT BREADCRUMB
+   PRODUCT INFO – BREADCRUMB
 ===================================================== */
-.lx-breadcrumb {
-    width: 100%;
-    padding: 8px 12px;
-    overflow-x: auto;
-    box-sizing: border-box;
+.lx-product-breadcrumb {
+    margin-bottom: 6px;
 }
 
-.lx-breadcrumb::-webkit-scrollbar {
-    display: none;
+/* reset padding breadcrumb gốc */
+.lx-product-info .lx-breadcrumb {
+    padding: 0;
 }
 
-.lx-breadcrumb-list {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-    font-size: 13px;
+/* list gọn hơn */
+.lx-product-info .lx-breadcrumb-list {
+    font-size: 12px;
+    line-height: 1.4;
     color: #9ca3af;
 }
 
-.lx-breadcrumb-item {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
+/* icon home gọn */
+.lx-product-info .lx-breadcrumb-home svg {
+    width: 13px;
+    height: 13px;
+    display: block;
 }
 
-.lx-breadcrumb-home {
-    display: flex;
-    align-items: center;
-    color: #9ca3af;
+/* separator tinh tế */
+.lx-product-info .lx-breadcrumb-sep {
+    margin: 0 3px;
+    color: #d1d5db;
 }
 
-.lx-breadcrumb-sep {
-    margin: 0 4px;
-    color: #c4c4c4;
-}
-
-.lx-breadcrumb-link {
-    color: #9ca3af;
-    text-decoration: none;
-}
-
-.lx-breadcrumb-link:hover {
-    text-decoration: underline;
-}
-
-.lx-breadcrumb-current {
-    color: #111;
-    font-weight: 500;
+/* item hiện tại */
+.lx-product-info .lx-breadcrumb-current {
+    color: #6b7280;
+    font-weight: 400;
 }
