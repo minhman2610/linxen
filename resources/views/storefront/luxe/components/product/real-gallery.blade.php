@@ -9,30 +9,10 @@
 
 <section class="lx-real-editorial">
 
-    {{-- HEADER / TITLE --}}
-    <div class="lx-real-editorial-head">
-
-        <div class="lx-real-typewriter"
-             data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY">
-            LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY
-        </div>
-
-        <h3 class="lx-real-product-title">
-            @if(!empty($product['code']))
-                <span class="lx-real-code">MÃ {{ $product['code'] }}</span>
-            @endif
-            {{ $product['name'] ?? '' }}
-        </h3>
-
-        <p class="lx-real-desc">
-            Hình ảnh & video thực tế từ khách hàng
-            <strong>({{ $ugcCount }})</strong>
-        </p>
-    </div>
-
     {{-- HERO --}}
     <div class="lx-real-hero">
 
+        {{-- MEDIA --}}
         @if($main && $main['type'] === 'image')
             <img src="{{ $main['url'] }}" alt="LIN XÉN ngoài đời thực">
         @endif
@@ -48,31 +28,59 @@
             ></video>
         @endif
 
-        <div class="lx-real-hero-overlay">
-            <span>Ảnh khách hàng thật</span>
+        {{-- HERO CAPTION (SLOGAN) --}}
+        <div class="lx-real-hero-caption">
+
+            <div class="lx-real-typewriter"
+                 data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY">
+                LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY
+            </div>
+
+            <span class="lx-real-hero-tag">
+                Ảnh khách hàng thật
+            </span>
+
         </div>
+    </div>
+
+    {{-- INFO BLOCK (DƯỚI ẢNH) --}}
+    <div class="lx-real-info">
+
+        <h3 class="lx-real-product-title">
+            @if(!empty($product['code']))
+                <span class="lx-real-code">MÃ {{ $product['code'] }}</span>
+            @endif
+            {{ $product['name'] ?? '' }}
+        </h3>
+
+        <p class="lx-real-desc">
+            Hình ảnh & video thực tế từ khách hàng
+            <strong>({{ $ugcCount }})</strong>
+        </p>
+
     </div>
 
     {{-- THUMB STRIP --}}
     @if($ugcCount > 1)
-    <div class="lx-real-strip">
+        <div class="lx-real-strip">
 
-        @foreach($ugcMedia as $index => $media)
-            @if($index > 0)
-                <button
-                    class="lx-real-thumb"
-                    data-type="{{ $media['type'] }}"
-                    data-url="{{ $media['url'] }}"
-                    @if(!empty($media['poster']))
-                        data-poster="{{ $media['poster'] }}"
-                    @endif
-                >
-                    <img src="{{ $media['poster'] ?? $media['url'] }}" alt="">
-                </button>
-            @endif
-        @endforeach
+            @foreach($ugcMedia as $index => $media)
+                @if($index > 0)
+                    <button
+                        class="lx-real-thumb"
+                        data-type="{{ $media['type'] }}"
+                        data-url="{{ $media['url'] }}"
+                        @if(!empty($media['poster']))
+                            data-poster="{{ $media['poster'] }}"
+                        @endif
+                    >
+                        <img src="{{ $media['poster'] ?? $media['url'] }}" alt="">
+                    </button>
+                @endif
+            @endforeach
 
-    </div>
+        </div>
     @endif
 
 </section>
+

@@ -1,15 +1,15 @@
 /**
  * =====================================================
- * REAL CUSTOMER GALLERY – VIDEO CONTROL
- * Source: 3MG ERP (UGC / Research Media)
+ * REAL CUSTOMER – VIDEO CONTROL + TYPEWRITER LOOP
+ * Source: 3MG ERP (UGC)
  * =====================================================
  */
-
 (function () {
 
-    /**
-     * Pause all videos except the current one
-     */
+    /* =====================================================
+     * VIDEO CONTROL (GIỮ NGUYÊN LOGIC CŨ)
+     * ===================================================== */
+
     function pauseOtherVideos(currentVideo) {
         document
             .querySelectorAll('.lx-real-item.video video')
@@ -20,9 +20,6 @@
             });
     }
 
-    /**
-     * Toggle play / pause on click
-     */
     document.addEventListener('click', function (e) {
 
         const item = e.target.closest('.lx-real-item.video');
@@ -44,9 +41,6 @@
         }
     });
 
-    /**
-     * Auto pause video when out of viewport (mobile friendly)
-     */
     if ('IntersectionObserver' in window) {
 
         const observer = new IntersectionObserver((entries) => {
@@ -68,15 +62,49 @@
             .forEach(video => observer.observe(video));
     }
 
-})();
-document.querySelectorAll('.lx-real-typewriter').forEach(el => {
-    const text = el.dataset.text;
-    let i = 0;
-    el.textContent = '';
+    /* =====================================================
+     * TYPEWRITER – LOOP FOREVER (GÕ → XOÁ → LẶP)
+     * ===================================================== */
 
-    const timer = setInterval(() => {
-        el.textContent += text[i];
-        i++;
-        if (i >= text.length) clearInterval(timer);
-    }, 60);
-});
+    document.querySelectorAll('.lx-real-typewriter').forEach(el => {
+
+        const text = el.dataset.text || '';
+        let index = 0;
+        let isDeleting = false;
+
+        const typingSpeed  = 70;   // tốc độ gõ
+        const deletingSpeed = 40;  // tốc độ xoá
+        const holdAfterType = 1600; // dừng sau khi gõ xong
+        const holdAfterDelete = 600; // dừng sau khi xoá xong
+
+        function loop() {
+
+            if (!isDeleting) {
+                // GÕ CHỮ
+                el.textContent = text.substring(0, index + 1);
+                index++;
+
+                if (index === text.length) {
+                    setTimeout(() => isDeleting = true, holdAfterType);
+                }
+            } else {
+                // XOÁ CHỮ
+                el.textContent = text.substring(0, index - 1);
+                index--;
+
+                if (index === 0) {
+                    isDeleting = false;
+                    setTimeout(() => {}, holdAfterDelete);
+                }
+            }
+
+            setTimeout(
+                loop,
+                isDeleting ? deletingSpeed : typingSpeed
+            );
+        }
+
+        loop();
+    });
+
+})();
