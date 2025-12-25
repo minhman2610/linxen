@@ -171,7 +171,7 @@
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
-        }, 2200);
+        }, 4000);
     }
 
     /* ================= ADD TO CART ================= */
