@@ -14,8 +14,8 @@
     padding: 6px 10px;
     height: 40px;
 
-    background: #fff;
-    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;          /* ivory */
+    border-bottom: 1px solid #ededed;
 
     position: sticky;
     top: var(--announcement-height, 0);
