@@ -69,3 +69,14 @@
     }
 
 })();
+document.querySelectorAll('.lx-real-typewriter').forEach(el => {
+    const text = el.dataset.text;
+    let i = 0;
+    el.textContent = '';
+
+    const timer = setInterval(() => {
+        el.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(timer);
+    }, 60);
+});

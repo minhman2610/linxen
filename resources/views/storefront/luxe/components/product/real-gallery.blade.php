@@ -1,5 +1,5 @@
 {{-- ===================================================== --}}
-{{-- REAL CUSTOMER – EDITORIAL HERO --}}
+{{-- REAL CUSTOMER – EDITORIAL HERO (ENHANCED) --}}
 {{-- ===================================================== --}}
 
 @php
@@ -8,6 +8,27 @@
 @endphp
 
 <section class="lx-real-editorial">
+
+    {{-- HEADER / TITLE --}}
+    <div class="lx-real-editorial-head">
+
+        <div class="lx-real-typewriter"
+             data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY">
+            LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY
+        </div>
+
+        <h3 class="lx-real-product-title">
+            @if(!empty($product['code']))
+                <span class="lx-real-code">MÃ {{ $product['code'] }}</span>
+            @endif
+            {{ $product['name'] ?? '' }}
+        </h3>
+
+        <p class="lx-real-desc">
+            Hình ảnh & video thực tế từ khách hàng
+            <strong>({{ $ugcCount }})</strong>
+        </p>
+    </div>
 
     {{-- HERO --}}
     <div class="lx-real-hero">
@@ -28,8 +49,7 @@
         @endif
 
         <div class="lx-real-hero-overlay">
-            <h3>LIN XÉN</h3>
-            <span>ngoài đời thực</span>
+            <span>Ảnh khách hàng thật</span>
         </div>
     </div>
 
