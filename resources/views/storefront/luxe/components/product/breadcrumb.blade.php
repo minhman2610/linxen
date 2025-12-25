@@ -1,40 +1,26 @@
 {{-- =====================================================
-   PRODUCT CONTEXT LINE (BREADCRUMB – EDITORIAL)
+   PRODUCT CATEGORY TABS (BREADCRUMB)
 ===================================================== --}}
-<nav
-    class="lx-product-context"
-    aria-label="breadcrumb"
-    itemscope
-    itemtype="https://schema.org/BreadcrumbList"
->
-    <span class="lx-context-home"
-          itemprop="itemListElement"
-          itemscope
-          itemtype="https://schema.org/ListItem">
-        <a href="/" itemprop="item">
-            <span itemprop="name">Trang chủ</span>
-        </a>
-        <meta itemprop="position" content="1">
-    </span>
+<nav class="lx-category-tabs" aria-label="breadcrumb">
 
-    @if(!empty($breadcrumbs))
-        <span class="lx-context-sep">·</span>
+    {{-- HOME TAB --}}
+    <a href="/" class="lx-cat-tab">
+        <span class="lx-cat-icon">🏠</span>
+        <span class="lx-cat-text">Trang chủ</span>
+    </a>
 
-        {{-- CHỈ LẤY CATEGORY CUỐI (PRIMARY) --}}
-        @php $last = last($breadcrumbs); @endphp
+    @foreach($breadcrumbs as $crumb)
+        @if(!empty($crumb['url']))
+            <a href="{{ $crumb['url'] }}" class="lx-cat-tab">
+                <span class="lx-cat-icon">🏷️</span>
+                <span class="lx-cat-text">{{ $crumb['name'] }}</span>
+            </a>
+        @else
+            <span class="lx-cat-tab active">
+                <span class="lx-cat-icon">👗</span>
+                <span class="lx-cat-text">{{ $crumb['name'] }}</span>
+            </span>
+        @endif
+    @endforeach
 
-        <span class="lx-context-category"
-              itemprop="itemListElement"
-              itemscope
-              itemtype="https://schema.org/ListItem">
-            @if(!empty($last['url']))
-                <a href="{{ $last['url'] }}" itemprop="item">
-                    <span itemprop="name">{{ $last['name'] }}</span>
-                </a>
-            @else
-                <span itemprop="name">{{ $last['name'] }}</span>
-            @endif
-            <meta itemprop="position" content="2">
-        </span>
-    @endif
 </nav>

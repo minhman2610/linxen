@@ -1,103 +1,55 @@
 /* =====================================================
-   PRODUCT BREADCRUMB – CLEAN & SINGLE LINE
+   CATEGORY TABS – PRODUCT DETAIL
 ===================================================== */
 
-.lx-product-breadcrumb {
-    margin-bottom: 6px;
-}
-
-/* container */
-.lx-product-info .lx-breadcrumb {
-    padding: 0;
-    overflow: hidden;
-}
-
-/* list = 1 dòng duy nhất */
-.lx-product-info .lx-breadcrumb-list {
+.lx-category-tabs {
     display: flex;
-    align-items: center;
-    gap: 0;
-    font-size: 12px;
-    line-height: 1.4;
-    color: #9ca3af;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
 
-    white-space: nowrap;
-    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* mỗi item */
-.lx-product-info .lx-breadcrumb-item {
-    display: flex;
-    align-items: center;
-    min-width: 0; /* QUAN TRỌNG để ellipsis hoạt động */
+.lx-category-tabs::-webkit-scrollbar {
+    display: none;
 }
 
-/* link + current */
-.lx-product-info .lx-breadcrumb-link,
-.lx-product-info .lx-breadcrumb-current {
-    display: block;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* màu */
-.lx-product-info .lx-breadcrumb-link {
-    color: #9ca3af;
-}
-
-.lx-product-info .lx-breadcrumb-current {
-    color: #6b7280;
-}
-
-/* icon home */
-.lx-product-info .lx-breadcrumb-home {
-    display: flex;
-    align-items: center;
-    margin-right: 4px;
-}
-
-.lx-product-info .lx-breadcrumb-home svg {
-    width: 13px;
-    height: 13px;
-}
-
-/* ❌ ẨN separator cũ */
-.lx-product-info .lx-breadcrumb
-/* =====================================================
-   PRODUCT CONTEXT LINE – PREMIUM EDITORIAL
-===================================================== */
-
-.lx-product-context {
-    display: flex;
+/* TAB */
+.lx-cat-tab {
+    flex: 0 0 auto;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
 
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
 
-    color: #9ca3af;
-    margin-bottom: 6px;
-
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-/* link */
-.lx-product-context a {
-    color: inherit;
-    text-decoration: none;
-}
-
-/* separator */
-.lx-context-sep {
-    opacity: .6;
-}
-
-/* category nổi hơn home */
-.lx-context-category {
-    color: #6b7280;
+    font-size: 12px;
     font-weight: 500;
+
+    background: #f3f4f6;
+    color: #374151;
+    text-decoration: none;
+
+    border: 1px solid #e5e7eb;
+}
+
+/* ICON */
+.lx-cat-icon {
+    font-size: 13px;
+    line-height: 1;
+}
+
+/* ACTIVE TAB */
+.lx-cat-tab.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* HOVER */
+.lx-cat-tab:hover {
+    background: #e5e7eb;
 }
