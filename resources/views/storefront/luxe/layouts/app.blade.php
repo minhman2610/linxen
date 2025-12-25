@@ -8,145 +8,135 @@
     <title>{{ $brand ?? 'LIN XÉN' }} — ĐAM MÊ VÁY</title>
 
     {{-- ============================
-        BASE CSS
+        BASE CSS (GLOBAL)
     ============================= --}}
     <link rel="stylesheet" href="/themes/luxe/assets/css/base.css">
     <link rel="stylesheet" href="/themes/luxe/assets/css/theme.css">
     <link rel="stylesheet" href="/themes/luxe/assets/css/icons.css">
-
-    {{-- ============================
-        MOBILE MENU CSS
-    ============================= --}}
     <link rel="stylesheet" href="/themes/luxe/assets/css/mobile-menu.css">
 
     {{-- ============================
-   HOME ONLY CSS
-============================= --}}
-@if (request()->routeIs('home') || request()->routeIs('linxen.home'))
+        HEADER / FOOTER (GLOBAL)
+    ============================= --}}
     <link rel="stylesheet"
-          href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
+          href="/themes/luxe/assets/css/header.css?v={{ filemtime(public_path('themes/luxe/assets/css/header.css')) }}">
 
     <link rel="stylesheet"
-          href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}">
-
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
-@endif
-
-    <link rel="stylesheet"
-      href="/themes/luxe/assets/css/header.css?v={{ filemtime(public_path('themes/luxe/assets/css/header.css')) }}">
+          href="/themes/luxe/assets/css/footer.css?v={{ file_exists(public_path('themes/luxe/assets/css/footer.css'))
+                ? filemtime(public_path('themes/luxe/assets/css/footer.css'))
+                : time() }}">
 
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">
-    <link rel="stylesheet"
-      href="/themes/luxe/assets/css/footer.css?v={{ file_exists(public_path('themes/luxe/assets/css/footer.css')) 
-            ? filemtime(public_path('themes/luxe/assets/css/footer.css')) 
-            : time() }}">
-    
+
     {{-- ============================
-   PRODUCT ONLY CSS
-============================= --}}
-@if (request()->routeIs('product.*') || request()->routeIs('linxen.product'))
+        HOME ONLY CSS
+    ============================= --}}
+    @if(request()->routeIs('home') || request()->routeIs('linxen.home'))
+        <link rel="stylesheet"
+              href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
+        <link rel="stylesheet"
+              href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}">
+        <link rel="stylesheet"
+              href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
+    @endif
+
+    {{-- ============================
+        PRODUCT ONLY CSS
+    ============================= --}}
+    @if(request()->routeIs('product.*') || request()->routeIs('linxen.product'))
+        <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
+        <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/product-actions.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-actions.css')) }}">
+        <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/brand-simple.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/brand-simple.css')) }}">
+        <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/product-real-gallery.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-real-gallery.css')) }}">
+        <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/product-suggested.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-suggested.css')) }}">
+        <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
+    @endif
+
+    {{-- ============================
+        CART ONLY CSS
+    ============================= --}}
+    @if(request()->routeIs('linxen.cart'))
+        <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}">
+    @endif
+
+    {{-- ============================
+        CHECKOUT ONLY CSS
+    ============================= --}}
+    @if(Route::is('linxen.checkout'))
+        <link rel="stylesheet"
+              href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
+    @endif
+
+    {{-- Swiper CSS --}}
     <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
-    <link rel="stylesheet"
-      href="{{ asset('themes/luxe/assets/css/product-actions.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-actions.css')) }}">
-      <link rel="stylesheet"
-      href="{{ asset('themes/luxe/assets/css/brand-simple.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/brand-simple.css')) }}">
-          {{-- REAL CUSTOMER GALLERY --}}
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product-real-gallery.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-real-gallery.css')) }}">
-          <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product-suggested.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-suggested.css')) }}">
+          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
-@endif
-
-@if(request()->routeIs('linxen.cart'))
-    <link
-        rel="stylesheet"
-        href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}"
-    >
-@endif
-
-
-      <link rel="stylesheet"
-      href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
-
-      {{-- Swiper CSS --}}
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-     
     {{-- Page-specific head --}}
     @stack('head')
 </head>
 
 <body class="luxe-body">
 
-    {{-- ============================
-        ANNOUNCEMENT BAR
-    ============================= --}}
+    {{-- ANNOUNCEMENT --}}
     @include('storefront.luxe.components.announcement')
 
-    {{-- ============================
-        HEADER (GLOBAL)
-    ============================= --}}
+    {{-- HEADER --}}
     @include('storefront.luxe.components.header')
 
-    {{-- ============================
-        MOBILE MENU SIDEBAR
-    ============================= --}}
+    {{-- MOBILE MENU --}}
     @include('storefront.luxe.components.mobile-menu')
 
-    {{-- ============================
-        MAIN CONTENT
-    ============================= --}}
+    {{-- MAIN CONTENT --}}
     <main class="luxe-main">
         @yield('content')
     </main>
 
-    {{-- ============================
-        FOOTER (GLOBAL)
-    ============================= --}}
+    {{-- FOOTER --}}
     @include('storefront.luxe.components.footer')
 
     {{-- ============================
-    BOTTOM NAVIGATION (MOBILE)
-    Chỉ hiển thị ở HOME
-============================= --}}
-@if (request()->routeIs('home') || request()->routeIs('linxen.home'))
-    @include('storefront.luxe.components.bottom-nav')
-@endif
-
+        BOTTOM NAV (HOME ONLY)
+    ============================= --}}
+    @if(request()->routeIs('home') || request()->routeIs('linxen.home'))
+        @include('storefront.luxe.components.bottom-nav')
+    @endif
 
     {{-- ============================
         SCRIPTS
     ============================= --}}
-    {{-- Swiper JS --}}
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    {{-- ============================
-   PRODUCT ONLY JS
-============================= --}}
-@if (request()->routeIs('product.*') || request()->routeIs('linxen.product'))
-    <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
-    <script src="{{ asset('themes/luxe/assets/js/product-real-gallery.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
+    {{-- Swiper --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    
-@endif
+    {{-- PRODUCT ONLY JS --}}
+    @if(request()->routeIs('product.*') || request()->routeIs('linxen.product'))
+        <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
+        <script src="{{ asset('themes/luxe/assets/js/product-real-gallery.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product-real-gallery.js')) }}"></script>
+    @endif
+
+    {{-- CART ONLY JS --}}
     @if(request()->routeIs('linxen.cart'))
-    <script
-        src="{{ asset('themes/luxe/assets/js/cart.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/cart.js')) }}">
-    </script>
-@endif
+        <script src="{{ asset('themes/luxe/assets/js/cart.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/cart.js')) }}"></script>
+    @endif
 
+    {{-- CHECKOUT ONLY JS (ANTI CACHE) --}}
+    @if(Route::is('linxen.checkout') && file_exists(public_path('themes/luxe/assets/js/checkout.js')))
+        <script
+            src="/themes/luxe/assets/js/checkout.js?v={{ filemtime(public_path('themes/luxe/assets/js/checkout.js')) }}"
+            defer>
+        </script>
+    @endif
 
-     <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
-
+    {{-- GLOBAL JS --}}
+    <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
     <script src="{{ asset('themes/luxe/assets/js/theme.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/theme.js')) }}"></script>
-
-
-   
-
-    
 
     {{-- Page-specific scripts --}}
     @stack('scripts')
