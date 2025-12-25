@@ -96,7 +96,7 @@
 /* -----------------------------------------------
    HOME – TRANSPARENT HEADER
 ----------------------------------------------- */
-.lx-header--transparent {
+/*.lx-header--transparent {
     background: transparent !important;
     border-bottom: none !important;
 
@@ -116,7 +116,7 @@
 .lx-header--transparent .cart-count {
     background: #fff;
     color: #000;
-}
+}*/
 
 /* -----------------------------------------------
    DESKTOP
