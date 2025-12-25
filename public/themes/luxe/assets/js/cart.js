@@ -8,22 +8,25 @@
 (function () {
 
     /**
-     * Helper: POST JSON với CSRF
+     * Helper: POST JSON với CSRF (ANTI 302)
      */
     async function post(url, payload = {}) {
-        const token = document.querySelector('meta[name="csrf-token"]')?.content;
+        const token = document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content');
 
         const res = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',          // 🔥 CỰC KỲ QUAN TRỌNG
                 'X-CSRF-TOKEN': token
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
         });
 
         if (!res.ok) {
-            throw new Error('Request failed');
+            throw new Error(`Request failed: ${res.status}`);
         }
 
         return res.json();
@@ -34,6 +37,7 @@
      */
     function setCardLoading(card, loading = true) {
         if (!card) return;
+
         card.classList.toggle('is-loading', loading);
 
         card.querySelectorAll('button').forEach(btn => {
@@ -59,11 +63,11 @@
                 delta: delta
             });
 
-            // reload để đảm bảo session là source of truth
+            // Session là source of truth → reload an toàn
             window.location.reload();
 
         } catch (e) {
-            console.error('Update qty error:', e);
+            console.error('❌ Update qty error:', e);
             alert('Không thể cập nhật số lượng. Vui lòng thử lại.');
             setCardLoading(card, false);
         }
@@ -93,7 +97,7 @@
             window.location.reload();
 
         } catch (e) {
-            console.error('Remove item error:', e);
+            console.error('❌ Remove item error:', e);
             alert('Không thể xoá sản phẩm. Vui lòng thử lại.');
             setCardLoading(card, false);
         }
