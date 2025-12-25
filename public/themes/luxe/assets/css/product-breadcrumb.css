@@ -1,5 +1,5 @@
 /* =====================================================
-   LUXURY ART BREADCRUMB – SIGNATURE
+   LUXURY ART BREADCRUMB – REFINED BALANCE
 ===================================================== */
 
 .lx-art-breadcrumb {
@@ -7,10 +7,10 @@
 
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;                 /* 🔽 giảm gap */
 
-    margin-bottom: 22px;     /* không cắn nội dung dưới */
-    padding-bottom: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
 
     white-space: nowrap;
     overflow-x: auto;
@@ -21,7 +21,7 @@
     display: none;
 }
 
-/* ĐƯỜNG DẪN NGHỆ THUẬT PHÍA SAU */
+/* ĐƯỜNG DẪN PHÍA SAU */
 .lx-art-breadcrumb::after {
     content: "";
     position: absolute;
@@ -33,7 +33,7 @@
     background: linear-gradient(
         to right,
         transparent,
-        #e5e7eb,
+        #e0e0e0,              /* 🔼 đậm hơn */
         transparent
     );
 }
@@ -47,35 +47,35 @@
     display: inline-flex;
     align-items: center;
 
-    padding: 8px 18px;
-    border-radius: 2px; /* KHÔNG bo tròn → couture */
+    padding: 6px 12px;        /* 🔽 nhỏ hơn → hiện nhiều item */
+    border-radius: 2px;
 
     background: #fff;
-
-    border: 1px solid #e5e7eb;
+    border: 1px solid #dedede; /* 🔼 đậm hơn */
 
     font-size: 11px;
-    letter-spacing: 0.26em;      /* rất quan trọng */
+    letter-spacing: 0.14em;   /* 🔽 giảm tracking */
     text-transform: uppercase;
 
+    color: #4b5563;           /* 🔼 đậm hơn */
+}
+
+/* HOME */
+.lx-art-item.is-home {
+    border-style: dashed;
     color: #6b7280;
 }
 
-/* HOME – khác nhẹ */
-.lx-art-item.is-home {
-    border-style: dashed;
-    color: #9ca3af;
-}
-
-/* ACTIVE – điểm nhấn cao cấp */
+/* ACTIVE */
 .lx-art-item.is-active {
     border-color: #111;
     color: #111;
+    background: #fafafa;
 }
 
 /* LABEL */
 .lx-art-label {
-    position: relative;
+    line-height: 1.2;
 }
 
 /* ================= CONNECTOR ================= */
@@ -83,9 +83,9 @@
 .lx-art-connector {
     flex-shrink: 0;
 
-    font-size: 13px;
-    color: #c7a26d;          /* champagne gold */
-    opacity: 0.9;
+    font-size: 12px;
+    color: #bfa16a;          /* 🔼 champagne rõ hơn */
+    opacity: 0.95;
 
     transform: translateY(-1px);
 }
