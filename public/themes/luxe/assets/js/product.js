@@ -365,68 +365,80 @@ function showAddToCartToast(product) {
 
 
     /* ================= ADD TO CART ================= */
-    document.addEventListener('click', function (e) {
+document.addEventListener('click', function (e) {
 
-        const btn = e.target.closest('[data-add-to-cart]');
-        if (!btn) return;
+    const btn = e.target.closest('[data-add-to-cart]');
+    if (!btn) return;
 
-        e.preventDefault();
+    e.preventDefault();
 
-        // 🔥 QUAN TRỌNG: validate FAIL → TUYỆT ĐỐI KHÔNG DISABLE
-        if (!validateVariants()) {
-            btn.disabled = false;
-            btn.classList.remove('is-loading');
-            return;
+    // Validate biến thể
+    if (!validateVariants()) {
+        btn.disabled = false;
+        btn.classList.remove('is-loading');
+        return;
+    }
+
+    // 🔴 BẮT BUỘC PHẢI CÓ PRODUCT_ID
+    const productId = btn.dataset.productId;
+
+    if (!productId || isNaN(productId)) {
+        showErrorToast('Sản phẩm chưa sẵn sàng bán');
+        return;
+    }
+
+    const payload = {
+        sku:        btn.dataset.sku,
+        product_id: Number(productId),              // 🔥 FIX CỐT LÕI
+        name:       btn.dataset.name,
+        price:      Number(btn.dataset.price || 0),
+        image:      btn.dataset.image || null,
+        qty:        Number(btn.dataset.qty || 1),
+        attrs:      btn.dataset.attrs
+            ? JSON.parse(btn.dataset.attrs)
+            : {}
+    };
+
+    btn.classList.add('is-loading');
+    btn.disabled = true;
+
+    fetch('/cart/add', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute('content')
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success) {
+
+            updateCartCount(res.cart_count);
+
+            showAddToCartToast({
+                name:  payload.name,
+                image: payload.image,
+                qty:   payload.qty,
+                total: payload.price * payload.qty,
+                attrs: payload.attrs
+            });
+
+        } else {
+            showErrorToast(res.message || 'Không thể thêm sản phẩm');
         }
-
-        const payload = {
-            sku:   btn.dataset.sku,
-            name:  btn.dataset.name,
-            price: Number(btn.dataset.price || 0),
-            image: btn.dataset.image || null,
-            qty:   Number(btn.dataset.qty || 1),
-            attrs: btn.dataset.attrs ? JSON.parse(btn.dataset.attrs) : {}
-        };
-
-        btn.classList.add('is-loading');
-        btn.disabled = true;
-
-        fetch('/cart/add', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document
-                    .querySelector('meta[name="csrf-token"]')
-                    ?.getAttribute('content')
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(res => {
-            if (res.success) {
-
-                updateCartCount(res.cart_count);
-
-                showAddToCartToast({
-                    name:  payload.name,
-                    image: payload.image,
-                    qty:   payload.qty,
-                    total: payload.price * payload.qty,
-                    attrs: payload.attrs
-                });
-
-            } else {
-                showErrorToast(res.message || 'Không thể thêm sản phẩm');
-            }
-        })
-        .catch(() => {
-            showErrorToast('Có lỗi xảy ra, vui lòng thử lại');
-        })
-        .finally(() => {
-            btn.classList.remove('is-loading');
-            btn.disabled = false;
-        });
+    })
+    .catch(() => {
+        showErrorToast('Có lỗi xảy ra, vui lòng thử lại');
+    })
+    .finally(() => {
+        btn.classList.remove('is-loading');
+        btn.disabled = false;
     });
+});
+
 
 })();

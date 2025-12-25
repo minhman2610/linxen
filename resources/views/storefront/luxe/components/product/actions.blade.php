@@ -34,15 +34,25 @@
         id="lxAddToCartBtn"
         type="button"
         data-add-to-cart
+
+        {{-- 🔑 ID ERP / KiotViet (BẮT BUỘC) --}}
+        data-product-id="{{ $productId }}"
+
+        {{-- SKU hiển thị / tracking --}}
         data-sku="{{ $product['sku'] ?? $product['code'] }}"
+
         data-name="{{ $product['name'] }}"
         data-price="{{ $product['price'] ?? 0 }}"
         data-image="{{ $mainImage ?? '' }}"
         data-qty="1"
-        data-attrs='@json([])'>
+
+        {{-- Attrs sẽ được JS update khi chọn biến thể --}}
+        data-attrs='@json([])'
+>
     <span class="lx-btn-icon">👜</span>
     <span class="lx-btn-text">Thêm vào giỏ</span>
 </button>
+
 
 
 </div>
