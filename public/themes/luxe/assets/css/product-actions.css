@@ -1,24 +1,24 @@
 /* =====================================================
-   PRODUCT ACTIONS – CLEAN CONTROL BAR
+   PRODUCT ACTIONS – SINGLE ROW BAR (FIXED)
 ===================================================== */
 
 .lx-pdp .lx-product-actions {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 14px;
-    margin: 28px 0;
+    display: flex;                 /* 🔑 LUÔN 1 HÀNG */
     align-items: center;
+    gap: 12px;
+    margin: 28px 0;
 }
 
 /* ================= QUANTITY BAR ================= */
 
 .lx-pdp .lx-qty-bar {
     display: inline-grid;
-    grid-template-columns: 42px 56px 42px;
+    grid-template-columns: 40px 52px 40px;
     height: 44px;
 
     border: 1px solid #e5e7eb;
     background: #fff;
+    flex-shrink: 0;               /* ❗ không bị ép nhỏ */
 }
 
 .lx-pdp .lx-qty-btn {
@@ -35,12 +35,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    transition: background .15s ease;
-}
-
-.lx-pdp .lx-qty-btn:hover {
-    background: #f9fafb;
 }
 
 .lx-pdp .lx-qty-input {
@@ -59,13 +53,15 @@
 /* ================= ADD TO CART ================= */
 
 .lx-pdp .lx-btn-addtocart {
-    height: 44px; /* 🔑 BẰNG HẾT */
+    height: 44px;
+    flex: 1;                      /* 🔑 chiếm phần còn lại */
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
 
-    padding: 0 24px;
+    padding: 0 20px;
 
     background: #111;
     color: #fff;
@@ -77,26 +73,10 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
 
-    transition: background .2s ease;
-}
-
-.lx-pdp .lx-btn-addtocart:hover {
-    background: #000;
+    white-space: nowrap;          /* ❗ không xuống dòng */
 }
 
 .lx-pdp .lx-btn-icon {
     font-size: 15px;
     line-height: 1;
-}
-
-/* ================= MOBILE ================= */
-
-@media (max-width: 767px) {
-    .lx-pdp .lx-product-actions {
-        grid-template-columns: 1fr;
-    }
-
-    .lx-pdp .lx-btn-addtocart {
-        width: 100%;
-    }
 }
