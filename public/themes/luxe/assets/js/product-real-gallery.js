@@ -1,69 +1,63 @@
 /**
  * =====================================================
- * REAL CUSTOMER – VIDEO CONTROL + TYPEWRITER LOOP
- * Source: 3MG ERP (UGC)
+ * REAL CUSTOMER – HERO SWITCH + TYPEWRITER
  * =====================================================
  */
 (function () {
 
     /* =====================================================
-     * VIDEO CONTROL (GIỮ NGUYÊN LOGIC CŨ)
+     * HERO SWITCH (CLICK THUMB)
      * ===================================================== */
 
-    function pauseOtherVideos(currentVideo) {
-        document
-            .querySelectorAll('.lx-real-item.video video')
-            .forEach(video => {
-                if (video !== currentVideo) {
-                    video.pause();
-                }
-            });
+    const hero = document.querySelector('.lx-real-hero');
+    const thumbs = document.querySelectorAll('.lx-real-thumb');
+
+    if (!hero || thumbs.length === 0) return;
+
+    function renderHero({ type, url, poster }) {
+
+        // Xóa media cũ (chỉ xóa img/video, giữ caption)
+        hero.querySelectorAll('img, video').forEach(el => el.remove());
+
+        let media;
+
+        if (type === 'video') {
+            media = document.createElement('video');
+            media.src = url;
+            media.muted = true;
+            media.loop = true;
+            media.playsInline = true;
+            media.autoplay = true;
+            if (poster) media.poster = poster;
+        } else {
+            media = document.createElement('img');
+            media.src = url;
+            media.alt = 'LIN XÉN ngoài đời thực';
+        }
+
+        hero.prepend(media);
     }
 
-    document.addEventListener('click', function (e) {
+    thumbs.forEach((btn, idx) => {
 
-        const item = e.target.closest('.lx-real-item.video');
-        if (!item) return;
+        btn.addEventListener('click', () => {
 
-        const video = item.querySelector('video');
-        const icon  = item.querySelector('.lx-play-icon');
+            thumbs.forEach(t => t.classList.remove('is-active'));
+            btn.classList.add('is-active');
 
-        if (!video) return;
-
-        pauseOtherVideos(video);
-
-        if (video.paused) {
-            video.play().catch(() => {});
-            if (icon) icon.style.opacity = 0;
-        } else {
-            video.pause();
-            if (icon) icon.style.opacity = 1;
-        }
-    });
-
-    if ('IntersectionObserver' in window) {
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const video = entry.target;
-                const icon  = video.closest('.lx-real-item')?.querySelector('.lx-play-icon');
-
-                if (!entry.isIntersecting) {
-                    video.pause();
-                    if (icon) icon.style.opacity = 1;
-                }
+            renderHero({
+                type: btn.dataset.type,
+                url: btn.dataset.url,
+                poster: btn.dataset.poster
             });
-        }, {
-            threshold: 0.4
         });
 
-        document
-            .querySelectorAll('.lx-real-item.video video')
-            .forEach(video => observer.observe(video));
-    }
+        // set thumb đầu tiên active
+        if (idx === 0) btn.classList.add('is-active');
+    });
 
     /* =====================================================
-     * TYPEWRITER – LOOP FOREVER (GÕ → XOÁ → LẶP)
+     * TYPEWRITER – LOOP FOREVER
      * ===================================================== */
 
     document.querySelectorAll('.lx-real-typewriter').forEach(el => {
@@ -72,15 +66,14 @@
         let index = 0;
         let isDeleting = false;
 
-        const typingSpeed  = 70;   // tốc độ gõ
-        const deletingSpeed = 40;  // tốc độ xoá
-        const holdAfterType = 1600; // dừng sau khi gõ xong
-        const holdAfterDelete = 600; // dừng sau khi xoá xong
+        const typingSpeed   = 70;
+        const deletingSpeed = 40;
+        const holdAfterType = 1600;
+        const holdAfterDelete = 600;
 
         function loop() {
 
             if (!isDeleting) {
-                // GÕ CHỮ
                 el.textContent = text.substring(0, index + 1);
                 index++;
 
@@ -88,7 +81,6 @@
                     setTimeout(() => isDeleting = true, holdAfterType);
                 }
             } else {
-                // XOÁ CHỮ
                 el.textContent = text.substring(0, index - 1);
                 index--;
 
