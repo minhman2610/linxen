@@ -13,41 +13,55 @@
 <section class="lx-product-detail">
 
     {{-- =====================================================
-       PRODUCT GALLERY – FULL BLEED
+       PRODUCT GALLERY – SWIPER (FULL BLEED)
     ===================================================== --}}
     <div class="lx-product-gallery">
 
-        <div class="lx-product-main" id="lxProductMain">
-            <img
-                id="lxMainImage"
-                src="{{ $mainImage }}"
-                data-index="0"
-                alt="{{ $product['name'] ?? '' }}"
-                loading="eager">
+        {{-- MAIN SWIPER --}}
+        <div class="swiper lx-product-main-swiper">
+            <div class="swiper-wrapper">
 
-            {{-- Subtle navigation zones --}}
-            <button class="lx-gallery-btn prev" id="lxGalleryPrev" aria-label="Previous"></button>
-            <button class="lx-gallery-btn next" id="lxGalleryNext" aria-label="Next"></button>
+                @foreach($images as $index => $img)
+                    <div class="swiper-slide">
+                        <img
+                            src="{{ $img['mobile'] ?? $img['thumb'] }}"
+                            data-full="{{ $img['full'] }}"
+                            alt="{{ $product['name'] ?? '' }}"
+                            loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                            class="lx-main-image">
+                    </div>
+                @endforeach
+
+            </div>
+
+            {{-- Pagination --}}
+            <div class="swiper-pagination"></div>
+
+            {{-- Subtle navigation --}}
+            <div class="lx-gallery-nav lx-gallery-prev"></div>
+            <div class="lx-gallery-nav lx-gallery-next"></div>
         </div>
 
+        {{-- THUMBNAILS --}}
         @if(count($images) > 1)
-            <div class="lx-product-thumbs" id="lxProductThumbs">
-                @foreach($images as $index => $img)
-                    <img
-                        src="{{ $img['thumb'] }}"
-                        data-full="{{ $img['full'] }}"
-                        data-index="{{ $index }}"
-                        class="{{ $index === 0 ? 'active' : '' }}"
-                        alt="{{ $product['name'] ?? '' }} thumbnail {{ $index + 1 }}"
-                        loading="lazy">
-                @endforeach
+            <div class="swiper lx-product-thumb-swiper">
+                <div class="swiper-wrapper">
+                    @foreach($images as $index => $img)
+                        <div class="swiper-slide">
+                            <img
+                                src="{{ $img['thumb'] }}"
+                                alt=""
+                                loading="lazy">
+                        </div>
+                    @endforeach
+                </div>
             </div>
         @endif
 
     </div>
 
     {{-- =====================================================
-       PRODUCT CONTENT – CONTAINER (FIX CẮN MÉP)
+       PRODUCT CONTENT – CONTAINER
     ===================================================== --}}
     <div class="lx-product-content">
 
@@ -84,9 +98,7 @@
                 <span class="lx-product-price">
                     {{ number_format($product['price'] ?? 0) }}₫
                 </span>
-                <span class="lx-price-note">
-                    Giá đã bao gồm VAT
-                </span>
+                <span class="lx-price-note">Giá đã bao gồm VAT</span>
             </div>
 
             {{-- DESCRIPTION --}}
@@ -104,17 +116,13 @@
                 <div class="lx-product-variants" id="lxVariants">
 
                     @foreach($attributes as $attr => $values)
-                        @php
-                            $attrKey = Str::slug($attr, '_');
-                        @endphp
+                        @php $attrKey = Str::slug($attr, '_'); @endphp
 
                         <div class="lx-attr-group"
                              data-attr="{{ $attr }}"
                              data-attr-key="{{ $attrKey }}">
 
-                            <label class="lx-attr-label">
-                                {{ $attr }}
-                            </label>
+                            <label class="lx-attr-label">{{ $attr }}</label>
 
                             <div class="lx-attr-values">
                                 @foreach($values as $val)
@@ -140,9 +148,7 @@
                 Vui lòng chọn đầy đủ biến thể
             </p>
 
-            {{-- =====================================================
-               ACTIONS
-            ===================================================== --}}
+            {{-- ACTIONS --}}
             <div class="lx-product-actions">
 
                 <div class="lx-qty">
@@ -160,7 +166,7 @@
 
             </div>
 
-            {{-- TRUST / USP --}}
+            {{-- TRUST --}}
             <ul class="lx-product-trust">
                 <li>✔ Thiết kế độc quyền LIN XÉN</li>
                 <li>✔ Chất liệu cao cấp, chọn lọc</li>
@@ -168,14 +174,8 @@
             </ul>
 
         </div>
-        {{-- /product-info --}}
-
     </div>
-    {{-- /product-content --}}
 
 </section>
-
-{{-- TOAST --}}
-<div id="lxToast" class="lx-toast"></div>
 
 @endsection

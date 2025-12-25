@@ -1,286 +1,117 @@
-/**
- * =====================================================
- * PRODUCT PAGE JS – LIN XÉN (LUXE THEME)
- * =====================================================
- * Gallery: Progressive + Swipe + Slide
- * No Swiper dependency
- */
+/* =====================================================
+   PRODUCT GALLERY – SWIPER PRO (LIN XÉN)
+   Scope: Gallery only (SAFE)
+===================================================== */
 
-(function () {
-    'use strict';
+document.addEventListener('DOMContentLoaded', () => {
 
-    /* =====================================================
-     * 1️⃣ GALLERY – MAIN + THUMBS + SLIDE
-     * ===================================================== */
-    function initGallery() {
-        const mainWrap = document.getElementById('lxProductMain');
-        const mainImg  = document.getElementById('lxMainImage');
-        const thumbs   = document.querySelectorAll('#lxProductThumbs img');
-        const btnPrev  = document.getElementById('lxGalleryPrev');
-        const btnNext  = document.getElementById('lxGalleryNext');
+    const mainEl  = document.querySelector('.lx-product-main-swiper');
+    const thumbEl = document.querySelector('.lx-product-thumb-swiper');
 
-        if (!mainWrap || !mainImg || !thumbs.length) return;
-
-        let currentIndex = 0;
-        const total = thumbs.length;
-
-        let startX = 0;
-        let currentX = 0;
-        let isDragging = false;
-
-        function setActiveThumb(index) {
-            thumbs.forEach(t => t.classList.remove('active'));
-            thumbs[index]?.classList.add('active');
-        }
-
-        function slideTo(index, direction = 1) {
-            if (index < 0 || index >= total || index === currentIndex) {
-                mainImg.style.transition = 'transform .25s ease';
-                mainImg.style.transform = 'translateX(0)';
-                return;
-            }
-
-            const nextSrc = thumbs[index].dataset.full;
-
-            const nextImg = document.createElement('img');
-            nextImg.src = nextSrc;
-            nextImg.className = 'lx-slide-img';
-            nextImg.style.transform = `translateX(${direction * 100}%)`;
-
-            mainWrap.appendChild(nextImg);
-
-            requestAnimationFrame(() => {
-                mainImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
-                nextImg.style.transition = 'transform .35s cubic-bezier(.4,0,.2,1)';
-
-                mainImg.style.transform = `translateX(${-direction * 100}%)`;
-                nextImg.style.transform = 'translateX(0)';
-            });
-
-            nextImg.onload = () => {
-                setTimeout(() => {
-                    mainImg.src = nextSrc;
-                    mainImg.style.transition = 'none';
-                    mainImg.style.transform = 'translateX(0)';
-
-                    mainWrap.removeChild(nextImg);
-                    currentIndex = index;
-                    setActiveThumb(index);
-                }, 350);
-            };
-        }
-
-        /* CLICK THUMB */
-        thumbs.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                const idx = parseInt(thumb.dataset.index, 10);
-                const dir = idx > currentIndex ? 1 : -1;
-                slideTo(idx, dir);
-            });
-        });
-
-        /* BUTTONS */
-        btnPrev?.addEventListener('click', () => {
-            slideTo(currentIndex - 1, -1);
-        });
-
-        btnNext?.addEventListener('click', () => {
-            slideTo(currentIndex + 1, 1);
-        });
-
-        /* SWIPE – DRAG FOLLOW + RELEASE SLIDE */
-        mainWrap.addEventListener('touchstart', e => {
-            startX = e.touches[0].clientX;
-            currentX = startX;
-            isDragging = true;
-            mainImg.style.transition = 'none';
-        }, { passive: true });
-
-        mainWrap.addEventListener('touchmove', e => {
-            if (!isDragging) return;
-
-            currentX = e.touches[0].clientX;
-            const deltaX = currentX - startX;
-
-            mainImg.style.transform = `translateX(${deltaX}px)`;
-        }, { passive: true });
-
-        mainWrap.addEventListener('touchend', () => {
-            if (!isDragging) return;
-            isDragging = false;
-
-            const deltaX = currentX - startX;
-
-            if (Math.abs(deltaX) > 60) {
-                if (deltaX < 0) {
-                    slideTo(currentIndex + 1, 1);
-                } else {
-                    slideTo(currentIndex - 1, -1);
-                }
-            } else {
-                mainImg.style.transition = 'transform .25s ease';
-                mainImg.style.transform = 'translateX(0)';
-            }
-        });
-
-        /* INIT */
-        setActiveThumb(0);
-    }
+    if (!mainEl) return;
 
     /* =====================================================
-     * 2️⃣ VARIANT SELECTION
-     * ===================================================== */
-    const selectedAttrs = {};
+       THUMB SWIPER
+    ===================================================== */
+    let thumbSwiper = null;
 
-    function initVariants() {
-        const options = document.querySelectorAll('.variant-option');
+    if (thumbEl) {
+        thumbSwiper = new Swiper(thumbEl, {
+            slidesPerView: 'auto',
+            spaceBetween: 8,
+            freeMode: true,
+            watchSlidesProgress: true,
+            watchOverflow: true,
 
-        options.forEach(option => {
-            option.addEventListener('click', () => {
-                const attrKey = option.dataset.attrKey;
-                const value   = option.dataset.value;
-
-                document
-                    .querySelectorAll(`.variant-option[data-attr-key="${attrKey}"]`)
-                    .forEach(el => el.classList.remove('active'));
-
-                option.classList.add('active');
-                selectedAttrs[attrKey] = value;
-
-                updateStockInfo();
-            });
+            resistanceRatio: 0.85,
         });
     }
 
-    function updateStockInfo() {
-        const stockEl = document.getElementById('lxStock');
-        if (!stockEl) return;
-
-        const totalAttrs = document.querySelectorAll('.lx-attr-group').length;
-        const selectedCount = Object.keys(selectedAttrs).length;
-
-        if (selectedCount < totalAttrs) {
-            stockEl.textContent = 'Vui lòng chọn đầy đủ biến thể';
-            stockEl.classList.remove('in-stock');
-            return;
-        }
-
-        stockEl.textContent = '✔ Còn hàng – Giao nhanh';
-        stockEl.classList.add('in-stock');
-    }
-
     /* =====================================================
-     * 3️⃣ QTY CONTROL
-     * ===================================================== */
-    window.changeQty = function (delta) {
-        const input = document.getElementById('lxQty');
-        if (!input) return;
+       MAIN SWIPER
+    ===================================================== */
+    const mainSwiper = new Swiper(mainEl, {
+        slidesPerView: 1,
+        spaceBetween: 4,
+        speed: 450,
+        loop: false,
 
-        let val = parseInt(input.value || 1, 10);
-        val += delta;
-        if (val < 1) val = 1;
+        effect: 'slide',
 
-        input.value = val;
-    };
+        // 👇 Drag feel (rất quan trọng)
+        followFinger: true,
+        touchRatio: 1,
+        resistanceRatio: 0.85,
+        touchReleaseOnEdges: true,
 
-    /* =====================================================
-     * 4️⃣ ADD TO CART (AJAX)
-     * ===================================================== */
-    function initAddToCart() {
-        const btn = document.getElementById('lxAddToCartBtn');
-        if (!btn) return;
+        // 👇 GPU + progress
+        watchSlidesProgress: true,
 
-        btn.addEventListener('click', async () => {
-            const qtyInput = document.getElementById('lxQty');
-            const stockEl  = document.getElementById('lxStock');
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
 
-            if (stockEl && !stockEl.classList.contains('in-stock')) {
-                showToast('Vui lòng chọn đầy đủ biến thể');
-                return;
-            }
+        navigation: {
+            nextEl: '.lx-gallery-next',
+            prevEl: '.lx-gallery-prev',
+        },
 
-            const payload = {
-                sku: buildSku(),
-                name: document.querySelector('.lx-product-title')?.textContent?.trim(),
-                price: extractPrice(),
-                image: document.getElementById('lxMainImage')?.src || null,
-                qty: parseInt(qtyInput?.value || 1, 10),
-                attrs: selectedAttrs,
-            };
+        thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
 
-            try {
-                const res = await fetch('/linxen/cart/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': getCsrfToken(),
-                    },
-                    body: JSON.stringify(payload),
-                });
+        on: {
+            init(swiper) {
+                progressiveLoad(swiper);
+                preloadNearby(swiper);
+            },
 
-                const data = await res.json();
-
-                if (data.success) {
-                    showToast('Đã thêm vào giỏ hàng');
-                    updateCartBadge(data.cart_count);
-                } else {
-                    showToast('Không thể thêm sản phẩm');
-                }
-            } catch {
-                showToast('Lỗi kết nối, vui lòng thử lại');
-            }
-        });
-    }
-
-    function buildSku() {
-        const base =
-            document.querySelector('.lx-product-title')?.textContent?.trim() || 'SKU';
-        const attrs = Object.values(selectedAttrs).join('-');
-        return attrs ? `${base}-${attrs}` : base;
-    }
-
-    function extractPrice() {
-        const el = document.querySelector('.lx-product-price');
-        if (!el) return 0;
-        return parseInt(el.textContent.replace(/[^\d]/g, ''), 10) || 0;
-    }
-
-    function getCsrfToken() {
-        return document
-            .querySelector('meta[name="csrf-token"]')
-            ?.getAttribute('content');
-    }
-
-    function updateCartBadge(count) {
-        const badge = document.getElementById('lxHeaderCartCount');
-        if (badge && typeof count !== 'undefined') {
-            badge.textContent = count;
-        }
-    }
-
-    /* =====================================================
-     * 5️⃣ TOAST
-     * ===================================================== */
-    function showToast(message) {
-        const toast = document.getElementById('lxToast');
-        if (!toast) return;
-
-        toast.textContent = message;
-        toast.classList.add('show');
-
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 2200);
-    }
-
-    /* =====================================================
-     * INIT
-     * ===================================================== */
-    document.addEventListener('DOMContentLoaded', () => {
-        initGallery();
-        initVariants();
-        initAddToCart();
+            slideChangeTransitionStart(swiper) {
+                progressiveLoad(swiper);
+                preloadNearby(swiper);
+            },
+        },
     });
 
-})();
+    /* =====================================================
+       PROGRESSIVE LOAD – MOBILE/THUMB → FULL
+    ===================================================== */
+    function progressiveLoad(swiper) {
+        const slide = swiper.slides[swiper.activeIndex];
+        if (!slide) return;
+
+        const img = slide.querySelector('img');
+        if (!img) return;
+
+        const full = img.dataset.full;
+        if (!full || img.dataset.loaded === '1') return;
+
+        const loader = new Image();
+        loader.src = full;
+
+        loader.onload = () => {
+            img.src = full;
+            img.dataset.loaded = '1';
+        };
+    }
+
+    /* =====================================================
+       PRELOAD NEXT / PREV (CHỐNG GIẬT)
+    ===================================================== */
+    function preloadNearby(swiper) {
+        [swiper.activeIndex + 1, swiper.activeIndex - 1].forEach(i => {
+            const slide = swiper.slides[i];
+            if (!slide) return;
+
+            const img = slide.querySelector('img');
+            if (!img) return;
+
+            const full = img.dataset.full;
+            if (!full || img.dataset.preloaded === '1') return;
+
+            const preload = new Image();
+            preload.src = full;
+            img.dataset.preloaded = '1';
+        });
+    }
+
+});
