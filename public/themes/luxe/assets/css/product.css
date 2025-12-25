@@ -150,36 +150,6 @@
         height: 94px;
     }
 }
-/* ===============================
-   GALLERY CATEGORY BAR
-================================ */
-.lx-gallery-categories {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-
-    -webkit-overflow-scrolling: touch;
-}
-
-.lx-gallery-cat {
-    flex: 0 0 auto;
-    padding: 6px 14px;
-    font-size: 13px;
-    border-radius: 999px;
-    border: 1px solid #e5e5e5;
-    background: #fff;
-    color: #555;
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-.lx-gallery-cat.active {
-    background: #000;
-    color: #fff;
-    border-color: #000;
-}
 
 
 /* =====================================================
@@ -467,4 +437,139 @@
         padding-left: 24px;
         padding-right: 24px;
     }
+}
+/* ===============================
+   PRODUCT INFO – DESIGN
+================================ */
+
+.lx-product-brandline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 6px;
+}
+
+.lx-divider {
+    width: 24px;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.lx-product-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 6px;
+}
+
+.lx-product-meta {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.lx-meta-chip {
+    font-size: 11px;
+    padding: 4px 8px;
+    background: #f3f4f6;
+    border-radius: 999px;
+    color: #374151;
+}
+
+.lx-product-price-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.lx-product-price {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+}
+
+.lx-price-note {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* DESCRIPTION */
+.lx-product-description {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4b5563;
+    margin-bottom: 16px;
+}
+
+/* VARIANTS */
+.lx-attr-group {
+    margin-bottom: 14px;
+}
+
+.lx-attr-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.lx-attr-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.variant-option {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.variant-option:hover {
+    border-color: #111;
+}
+
+.variant-option.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* ACTIONS */
+.lx-product-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.lx-btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #111;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* TRUST */
+.lx-product-trust {
+    margin-top: 14px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.lx-product-trust li {
+    margin-bottom: 4px;
 }

@@ -51,102 +51,112 @@
     </div>
 
     {{-- =====================================================
-       PRODUCT CONTENT
-    ===================================================== --}}
-    <div class="lx-product-content">
+   PRODUCT CONTENT – DESIGNED
+===================================================== --}}
+<div class="lx-product-content">
 
-        {{-- ================= PRODUCT INFO ================= --}}
-        <div class="lx-product-info">
-            {{-- 🧭 BREADCRUMB --}}
+    <div class="lx-product-info">
+
+        {{-- 🧭 BREADCRUMB --}}
         <div class="lx-product-breadcrumb">
             @include('storefront.luxe.components.product.breadcrumb', [
                 'breadcrumbs' => $breadcrumbs
             ])
         </div>
-            <div class="lx-product-brandline">
-                <span class="lx-brand">{{ strtoupper($brand) }}</span>
-                <span class="lx-divider">—</span>
-                <span class="lx-tagline">Thiết kế tinh tế cho vẻ đẹp hiện đại</span>
-            </div>
 
-            <h1 class="lx-product-title">
-                {{ $product['name'] ?? '' }}
-            </h1>
-
-            <div class="lx-product-meta">
-                @if(!empty($product['code']))
-                    <span>Mã SP: <strong>{{ $product['code'] }}</strong></span>
-                    <span class="dot">•</span>
-                @endif
-                <span>Hàng thiết kế</span>
-            </div>
-
-            <div class="lx-product-price-wrap">
-                <span class="lx-product-price">
-                    {{ number_format($product['price'] ?? 0) }}₫
-                </span>
-                <span class="lx-price-note">Đã bao gồm VAT</span>
-            </div>
-
-            <div class="lx-product-description">
-                {!! nl2br(e(
-                    $product['description']
-                    ?? 'Thiết kế tinh tế, phom dáng chuẩn, dễ mặc trong nhiều hoàn cảnh.'
-                )) !!}
-            </div>
-
-            {{-- ================= VARIANTS ================= --}}
-            @if(!empty($attributes))
-                <div class="lx-product-variants" id="lxVariants">
-                    @foreach($attributes as $attr => $values)
-                        @php $attrKey = Str::slug($attr, '_'); @endphp
-                        <div class="lx-attr-group" data-attr="{{ $attr }}" data-attr-key="{{ $attrKey }}">
-                            <label class="lx-attr-label">{{ $attr }}</label>
-                            <div class="lx-attr-values">
-                                @foreach($values as $val)
-                                    <button
-                                        type="button"
-                                        class="variant-option"
-                                        data-attr="{{ $attr }}"
-                                        data-attr-key="{{ $attrKey }}"
-                                        data-value="{{ $val }}">
-                                        {{ $val }}
-                                    </button>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-
-            <p class="lx-product-stock" id="lxStock">
-                Vui lòng chọn đầy đủ biến thể
-            </p>
-
-            {{-- ================= ACTIONS ================= --}}
-            <div class="lx-product-actions">
-                <div class="lx-qty">
-                    <button type="button" onclick="changeQty(-1)">−</button>
-                    <input type="number" id="lxQty" value="1" min="1">
-                    <button type="button" onclick="changeQty(1)">+</button>
-                </div>
-
-                <button
-                    class="lx-btn-primary lx-btn-full"
-                    id="lxAddToCartBtn"
-                    type="button">
-                    Thêm vào giỏ hàng
-                </button>
-            </div>
-
-            {{-- ================= TRUST ================= --}}
-            <ul class="lx-product-trust">
-                <li>✔ Thiết kế độc quyền LIN XÉN</li>
-                <li>✔ Chất liệu chọn lọc, form chuẩn</li>
-                <li>✔ Đổi trả trong 7 ngày</li>
-            </ul>
-
+        {{-- BRAND LINE --}}
+        <div class="lx-product-brandline">
+            <span class="lx-brand">{{ strtoupper($brand) }}</span>
+            <span class="lx-divider"></span>
+            <span class="lx-tagline">Designed for modern elegance</span>
         </div>
+
+        {{-- TITLE --}}
+        <h1 class="lx-product-title">
+            {{ $product['name'] ?? '' }}
+        </h1>
+
+        {{-- META --}}
+        <div class="lx-product-meta">
+            @if(!empty($product['code']))
+                <span class="lx-meta-chip">Mã {{ $product['code'] }}</span>
+            @endif
+            <span class="lx-meta-chip">Hàng thiết kế</span>
+        </div>
+
+        {{-- PRICE --}}
+        <div class="lx-product-price-wrap">
+            <span class="lx-product-price">
+                {{ number_format($product['price'] ?? 0) }}₫
+            </span>
+            <span class="lx-price-note">VAT included</span>
+        </div>
+
+        {{-- DESCRIPTION --}}
+        <div class="lx-product-description">
+            {!! nl2br(e(
+                $product['description']
+                ?? 'Thiết kế tinh tế, phom dáng chuẩn, dễ mặc trong nhiều hoàn cảnh.'
+            )) !!}
+        </div>
+
+        {{-- VARIANTS --}}
+        @if(!empty($attributes))
+            <div class="lx-product-variants" id="lxVariants">
+                @foreach($attributes as $attr => $values)
+                    @php $attrKey = Str::slug($attr, '_'); @endphp
+                    <div class="lx-attr-group" data-attr="{{ $attr }}" data-attr-key="{{ $attrKey }}">
+                        <label class="lx-attr-label">{{ $attr }}</label>
+                        <div class="lx-attr-values">
+                            @foreach($values as $val)
+                                <button
+                                    type="button"
+                                    class="variant-option"
+                                    data-attr="{{ $attr }}"
+                                    data-attr-key="{{ $attrKey }}"
+                                    data-value="{{ $val }}">
+                                    {{ $val }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        {{-- STOCK --}}
+        <p class="lx-product-stock" id="lxStock">
+            Chọn đầy đủ biến thể để xem tình trạng
+        </p>
+
+        {{-- ACTIONS --}}
+        <div class="lx-product-actions">
+
+            <div class="lx-qty">
+                <button type="button" onclick="changeQty(-1)">−</button>
+                <input type="number" id="lxQty" value="1" min="1">
+                <button type="button" onclick="changeQty(1)">+</button>
+            </div>
+
+            <button
+                class="lx-btn-primary lx-btn-full"
+                id="lxAddToCartBtn"
+                type="button">
+                <span class="lx-btn-icon">👜</span>
+                Thêm vào giỏ
+            </button>
+        </div>
+
+        {{-- TRUST --}}
+        <ul class="lx-product-trust">
+            <li>Thiết kế độc quyền LIN XÉN</li>
+            <li>Chất liệu chọn lọc – Form chuẩn</li>
+            <li>Đổi trả trong 7 ngày</li>
+        </ul>
+
+    </div>
+</div>
+
 
         {{-- =====================================================
            ACCORDION – GIẢI QUYẾT LĂN TĂN
