@@ -33,22 +33,13 @@
    aria-label="Cart">
 
     <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
-    <span class="cart-count js-cart-count">
-    {{ array_sum(array_column(session('cart', []), 'qty')) }}
-</span>
-
+    <span
+        class="cart-count"
+        id="lxHeaderCartCount">
+        {{ array_sum(array_column(session('cart', []), 'qty')) }}
+    </span>
 </a>
-{{-- CART --}}
-<a href="{{ route('linxen.cart') }}"
-   class="lx-header-btn cart-btn"
-   aria-label="Cart">
 
-    <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
-    <span class="cart-count js-cart-count">
-    {{ array_sum(array_column(session('cart', []), 'qty')) }}
-</span>
-
-</a>
 
 </header>
 
