@@ -70,11 +70,7 @@
     {{-- ============================
     CHECKOUT FLOW CSS
 ============================ --}}
-@if(
-    request()->routeIs('linxen.checkout')
-    || request()->routeIs('linxen.place_order')
-    || request()->routeIs('linxen.checkout.success')
-)
+@if(request()->routeIs('linxen.checkout*'))
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
 @endif
