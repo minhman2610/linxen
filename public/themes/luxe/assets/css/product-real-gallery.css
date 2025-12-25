@@ -133,3 +133,128 @@
     color: #fff;
     border-radius: 6px;
 }
+/* ================= EDITORIAL HEADER (ENHANCED) ================= */
+
+.lx-real-editorial-head {
+    position: relative;
+    text-align: center;
+    padding: 0 20px 28px;
+    margin-bottom: 36px;
+}
+
+/* subtle divider */
+.lx-real-editorial-head::after {
+    content: '';
+    display: block;
+    width: 64px;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        #d1d5db,
+        transparent
+    );
+    margin: 20px auto 0;
+}
+
+/* ================= TYPEWRITER ================= */
+
+.lx-real-typewriter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .22em;
+    color: #9ca3af;
+
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* icon before brand line */
+.lx-real-typewriter::before {
+    content: '✦';
+    font-size: 12px;
+    color: #111;
+    opacity: .85;
+}
+
+/* ================= PRODUCT TITLE ================= */
+
+.lx-real-product-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111;
+    line-height: 1.45;
+
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+/* PRODUCT CODE */
+.lx-real-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: .08em;
+}
+
+/* icon before code */
+.lx-real-code::before {
+    content: '⌗';
+    font-size: 13px;
+    opacity: .7;
+}
+
+/* ================= DESCRIPTION ================= */
+
+.lx-real-desc {
+    margin-top: 10px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* icon before desc */
+.lx-real-desc::before {
+    content: '📸';
+    font-size: 15px;
+    line-height: 1;
+}
+
+/* count highlight */
+.lx-real-desc strong {
+    font-weight: 600;
+    color: #111;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (min-width: 768px) {
+
+    .lx-real-editorial-head {
+        padding-bottom: 40px;
+        margin-bottom: 48px;
+    }
+
+    .lx-real-product-title {
+        font-size: 24px;
+    }
+
+    .lx-real-typewriter {
+        font-size: 12px;
+    }
+}
