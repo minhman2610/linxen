@@ -132,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // ✅ Thành công → trang đặt hàng thành công (route legacy)
             window.location.href = `/checkout/place-order?order_code=${json.order_code}`;
 
-
         } catch (err) {
             console.error('🔥 Fetch error:', err);
             errBox.innerText = 'Không kết nối được server.';

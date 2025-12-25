@@ -460,21 +460,23 @@ public function checkout()
         ]
     );
 }
-/* =====================================================
- * 🧾 PLACE ORDER (LEGACY / FALLBACK)
- * ===================================================== */
+/**
+ * =====================================================
+ * 🧾 PLACE ORDER (LEGACY / SUCCESS PAGE)
+ * =====================================================
+ */
 public function placeOrder(Request $request)
 {
-    // Checkout chính đã xử lý bằng AJAX → ERP
-    // Hàm này giữ lại để tránh break route cũ
-
+    // Clear cart (an toàn, phòng reload)
     session()->forget('cart');
+
+    // Có thể dùng order_code nếu muốn show sau này
+    $orderCode = $request->query('order_code');
 
     return redirect()
         ->route('linxen.home')
-        ->with('success', 'Đặt hàng thành công');
+        ->with('success', 'Đặt hàng thành công! Chúng tôi sẽ liên hệ sớm nhất.');
 }
-
 
     /* =====================================================
      * 👤 ACCOUNT (placeholder)

@@ -67,13 +67,11 @@
               href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}">
     @endif
 
-    {{-- ============================
-        CHECKOUT ONLY CSS
-    ============================= --}}
-    @if(Route::is('linxen.checkout'))
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
-    @endif
+    @if(Route::is('linxen.checkout') || Route::is('linxen.checkout.success'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
+@endif
+
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"

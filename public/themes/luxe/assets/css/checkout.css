@@ -345,3 +345,63 @@
 .lx-checkout-continue:hover {
     text-decoration: underline;
 }
+/* ===============================
+   CHECKOUT SUCCESS
+================================ */
+
+.lx-checkout-success {
+    padding: 48px 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.lx-success-card {
+    max-width: 520px;
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 28px;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,.08);
+}
+
+.lx-success-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+    font-size: 36px;
+    line-height: 64px;
+    font-weight: 600;
+}
+
+.lx-success-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.lx-success-message {
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.lx-success-note {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    color: #4b5563;
+    margin-bottom: 28px;
+}
+
+.lx-success-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
