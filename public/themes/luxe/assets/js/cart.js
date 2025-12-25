@@ -131,10 +131,10 @@
         box.appendChild(toast);
         requestAnimationFrame(() => toast.classList.add('show'));
 
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 10000);
+        // setTimeout(() => {
+        //     toast.classList.remove('show');
+        //     setTimeout(() => toast.remove(), 300);
+        // }, 10000);
     }
 
     function showErrorToast(message) {
