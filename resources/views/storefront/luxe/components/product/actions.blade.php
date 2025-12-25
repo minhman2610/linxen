@@ -1,32 +1,48 @@
 {{-- =====================================================
-   PRODUCT ACTIONS – CLEAN CONTROL BAR
+   PRODUCT ACTIONS – CLEAN CONTROL BAR (AJAX READY)
 ===================================================== --}}
 <div class="lx-product-actions lx-pdp-actions">
 
     {{-- QUANTITY --}}
     <div class="lx-qty-bar">
-        <button type="button"
-                class="lx-qty-btn"
-                aria-label="Giảm số lượng"
-                onclick="changeQty(-1)">−</button>
+        <button
+            type="button"
+            class="lx-qty-btn"
+            aria-label="Giảm số lượng"
+            onclick="changeQty(-1)"
+        >−</button>
 
-        <input type="number"
-               id="lxQty"
-               class="lx-qty-input"
-               value="1"
-               min="1"
-               aria-label="Số lượng">
+        <input
+            type="number"
+            id="lxQty"
+            class="lx-qty-input"
+            value="1"
+            min="1"
+            aria-label="Số lượng"
+        >
 
-        <button type="button"
-                class="lx-qty-btn"
-                aria-label="Tăng số lượng"
-                onclick="changeQty(1)">+</button>
+        <button
+            type="button"
+            class="lx-qty-btn"
+            aria-label="Tăng số lượng"
+            onclick="changeQty(1)"
+        >+</button>
     </div>
 
     {{-- ADD TO CART --}}
-    <button class="lx-btn-addtocart"
-            id="lxAddToCartBtn"
-            type="button">
+    <button
+        class="lx-btn-addtocart"
+        id="lxAddToCartBtn"
+        type="button"
+
+        data-add-to-cart
+        data-sku="{{ $product['sku'] ?? '' }}"
+        data-name="{{ $product['name'] ?? '' }}"
+        data-price="{{ $product['price'] ?? 0 }}"
+        data-image="{{ $mainImage ?? '' }}"
+        data-qty="1"
+        data-attrs='@json($attributes ?? [])'
+    >
         <span class="lx-btn-icon">👜</span>
         <span class="lx-btn-text">Thêm vào giỏ</span>
     </button>
