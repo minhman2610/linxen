@@ -132,6 +132,11 @@
 
     
 @endif
+    @if(request()->routeIs('linxen.cart'))
+    <script
+        src="{{ asset('themes/luxe/assets/js/cart.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/cart.js')) }}">
+    </script>
+@endif
 
 
      <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
