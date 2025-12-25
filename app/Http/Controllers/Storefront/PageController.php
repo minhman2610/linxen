@@ -467,16 +467,17 @@ public function checkout()
  */
 public function placeOrder(Request $request)
 {
-    // Clear cart (an toàn, phòng reload)
+    // Clear cart (an toàn, phòng reload / back)
     session()->forget('cart');
 
-    // Có thể dùng order_code nếu muốn show sau này
+    // Lấy mã đơn nếu có (từ checkout JS redirect)
     $orderCode = $request->query('order_code');
 
-    return redirect()
-        ->route('linxen.home')
-        ->with('success', 'Đặt hàng thành công! Chúng tôi sẽ liên hệ sớm nhất.');
+    return view('storefront.luxe.pages.checkout-success', [
+        'orderCode' => $orderCode,
+    ]);
 }
+
 
     /* =====================================================
      * 👤 ACCOUNT (placeholder)
