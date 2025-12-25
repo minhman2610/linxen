@@ -84,53 +84,81 @@
 </div>
 
 
-        {{-- META --}}
-        <div class="lx-product-meta">
-            @if(!empty($product['code']))
-                <span class="lx-meta-chip">Mã {{ $product['code'] }}</span>
-            @endif
-            <span class="lx-meta-chip">Hàng thiết kế</span>
-        </div>
+        {{-- =====================================================
+   PRODUCT IDENTITY + PRICE + CAPTION
+===================================================== --}}
 
-        {{-- PRICE --}}
-        <div class="lx-product-price-wrap">
-            <span class="lx-product-price">
-                {{ number_format($product['price'] ?? 0) }}₫
-            </span>
-            <span class="lx-price-note">VAT included</span>
-        </div>
+{{-- META / IDENTITY TAGS --}}
+<div class="lx-product-meta couture-meta">
+    @if(!empty($product['code']))
+        <span class="lx-meta-tag">
+            MÃ {{ $product['code'] }}
+        </span>
+    @endif
 
-        {{-- DESCRIPTION --}}
-        <div class="lx-product-description">
-            {!! nl2br(e(
-                $product['description']
-                ?? 'Thiết kế tinh tế, phom dáng chuẩn, dễ mặc trong nhiều hoàn cảnh.'
-            )) !!}
-        </div>
+    <span class="lx-meta-tag accent">
+        THIẾT KẾ LIN XÉN
+    </span>
+</div>
 
-        {{-- VARIANTS --}}
-        @if(!empty($attributes))
-            <div class="lx-product-variants" id="lxVariants">
-                @foreach($attributes as $attr => $values)
-                    @php $attrKey = Str::slug($attr, '_'); @endphp
-                    <div class="lx-attr-group" data-attr="{{ $attr }}" data-attr-key="{{ $attrKey }}">
-                        <label class="lx-attr-label">{{ $attr }}</label>
-                        <div class="lx-attr-values">
-                            @foreach($values as $val)
-                                <button
-                                    type="button"
-                                    class="variant-option"
-                                    data-attr="{{ $attr }}"
-                                    data-attr-key="{{ $attrKey }}"
-                                    data-value="{{ $val }}">
-                                    {{ $val }}
-                                </button>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
+{{-- PRICE – LUXURY MOMENT --}}
+<div class="lx-product-price-wrap couture-price">
+    <span class="lx-product-price">
+        {{ number_format($product['price'] ?? 0) }}₫
+    </span>
+    <span class="lx-price-note">
+        ĐÃ BAO GỒM VAT
+    </span>
+</div>
+
+{{-- DESCRIPTION – LOOKBOOK CAPTION --}}
+<div class="lx-product-description couture-caption">
+    {!! nl2br(e(
+        $product['description']
+        ?? 'Thiết kế tinh tế, phom dáng chuẩn, dễ mặc trong nhiều hoàn cảnh.'
+    )) !!}
+</div>
+
+
+        {{-- =====================================================
+   VARIANTS – ONE ROW PER ATTRIBUTE
+===================================================== --}}
+@if(!empty($attributes))
+    <div class="lx-product-variants" id="lxVariants">
+
+        @foreach($attributes as $attr => $values)
+            @php $attrKey = Str::slug($attr, '_'); @endphp
+
+            <div class="lx-variant-row"
+                 data-attr="{{ $attr }}"
+                 data-attr-key="{{ $attrKey }}">
+
+                {{-- LABEL --}}
+                <div class="lx-variant-label">
+                    {{ Str::upper($attr) }}
+                </div>
+
+                {{-- VALUES --}}
+                <div class="lx-variant-options">
+                    @foreach($values as $val)
+                        <button
+                            type="button"
+                            class="variant-option"
+                            data-attr="{{ $attr }}"
+                            data-attr-key="{{ $attrKey }}"
+                            data-value="{{ $val }}">
+                            {{ $val }}
+                        </button>
+                    @endforeach
+                </div>
+
             </div>
-        @endif
+
+        @endforeach
+
+    </div>
+@endif
+
 
         {{-- STOCK --}}
         <p class="lx-product-stock" id="lxStock">
