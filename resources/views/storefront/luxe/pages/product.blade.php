@@ -86,7 +86,15 @@
         'ugcMedia' => $ugcMedia ?? []
     ])
 
+    {{-- SUGGESTED PRODUCTS (FROM 3MG ERP) --}}
+    @if(($suggestedCount ?? 0) > 0)
+        @include('storefront.luxe.components.product.suggested-products', [
+            'suggestedProducts' => $suggestedProducts ?? []
+        ])
+    @endif
+
 </div>
+
 
             </div>
         </div>

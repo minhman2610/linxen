@@ -54,6 +54,8 @@
           {{-- REAL CUSTOMER GALLERY --}}
     <link rel="stylesheet"
           href="{{ asset('themes/luxe/assets/css/product-real-gallery.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-real-gallery.css')) }}">
+          <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/product-suggested.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-suggested.css')) }}">
 
 @endif
 
