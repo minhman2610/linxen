@@ -75,44 +75,68 @@
         </div>
 
         {{-- RIGHT --}}
-        <aside class="lx-checkout-right">
-            <h3>Đơn hàng của bạn</h3>
+<aside class="lx-checkout-right">
+    <h3>Đơn hàng của bạn</h3>
 
-            <div class="lx-checkout-items">
-                @foreach($cartItems as $item)
-                    <div class="lx-checkout-item">
-                        <div>
-                            {{ $item['name'] }}
-                            <span>× {{ $item['qty'] }}</span>
-                        </div>
-                        <div>
-                            {{ number_format(($item['price'] ?? 0) * $item['qty']) }}₫
-                        </div>
+    <div class="lx-checkout-items">
+        @foreach($cartItems as $item)
+            <div class="lx-checkout-item">
+                {{-- THUMB --}}
+                <div class="lx-checkout-thumb">
+                    <img
+                        src="{{ $item['image'] ?? asset('images/no-image.png') }}"
+                        alt="{{ $item['name'] }}"
+                        loading="lazy"
+                    >
+                </div>
+
+                {{-- INFO --}}
+                <div class="lx-checkout-item-info">
+                    <div class="lx-checkout-item-name">
+                        {{ $item['name'] }}
                     </div>
-                @endforeach
+
+                    @if(!empty($item['attrs']))
+                        <div class="lx-checkout-item-variant">
+                            {{ implode(' · ', $item['attrs']) }}
+                        </div>
+                    @endif
+
+                    <div class="lx-checkout-item-meta">
+                        <span>SL: {{ $item['qty'] }}</span>
+                        <strong>
+                            {{ number_format(($item['price'] ?? 0) * $item['qty']) }}₫
+                        </strong>
+                    </div>
+                </div>
             </div>
+        @endforeach
+    </div>
 
-            <div class="lx-checkout-summary-row">
-                <span>Tạm tính</span>
-                <span>{{ number_format($subtotal) }}₫</span>
-            </div>
+    <hr class="lx-checkout-divider">
 
-            <div class="lx-checkout-summary-row">
-                <span>Vận chuyển</span>
-                <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
-            </div>
+    <div class="lx-checkout-summary-row">
+        <span>Tạm tính</span>
+        <span>{{ number_format($subtotal) }}₫</span>
+    </div>
 
-            <div class="lx-checkout-summary-total">
-                <span>Tổng cộng</span>
-                <span>{{ number_format($total) }}₫</span>
-            </div>
+    <div class="lx-checkout-summary-row">
+        <span>Vận chuyển</span>
+        <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
+    </div>
 
-            <button type="submit" class="lx-btn-primary lx-btn-full">
-                ĐẶT HÀNG
-            </button>
+    <div class="lx-checkout-summary-total">
+        <span>Tổng cộng</span>
+        <span>{{ number_format($total) }}₫</span>
+    </div>
 
-            <div id="lx-checkout-error" class="lx-checkout-error" style="display:none"></div>
-        </aside>
+    <button type="submit" class="lx-btn-primary lx-btn-full">
+        ĐẶT HÀNG
+    </button>
+
+    <div id="lx-checkout-error" class="lx-checkout-error" style="display:none"></div>
+</aside>
+
 
     </form>
     @endif

@@ -390,18 +390,33 @@ public function checkout()
     |    (phòng session lỗi / data cũ)
     |--------------------------------------------------------------------------
     */
-    $cartItems = array_filter($cart, function ($item) {
-        return is_array($item)
-            && isset(
-                $item['sku'],
-                $item['name'],
-                $item['price'],
-                $item['qty']
-            )
-            && is_numeric($item['price'])
-            && is_numeric($item['qty'])
-            && $item['qty'] > 0;
-    });
+    $cartItems = [];
+
+    foreach ($cart as $sku => $item) {
+
+        if (
+            !is_array($item)
+            || empty($sku)
+            || empty($item['name'])
+            || !isset($item['price'], $item['qty'])
+            || !is_numeric($item['price'])
+            || !is_numeric($item['qty'])
+            || (int) $item['qty'] <= 0
+        ) {
+            continue;
+        }
+
+        $cartItems[$sku] = [
+            'sku'   => $sku,
+            'name'  => $item['name'],
+            'price'=> (float) $item['price'],
+            'qty'  => (int) $item['qty'],
+
+            // Optional fields – phục vụ UI checkout
+            'image'=> $item['image'] ?? null,
+            'attrs'=> is_array($item['attrs'] ?? null) ? $item['attrs'] : [],
+        ];
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -429,6 +444,7 @@ public function checkout()
         ]
     );
 }
+
 
 
     public function placeOrder(Request $request)
