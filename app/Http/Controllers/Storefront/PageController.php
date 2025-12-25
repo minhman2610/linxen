@@ -99,6 +99,29 @@ public function product(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
+    | 🔑 PRODUCT ID – ERP / KIOTVIET (CỰC KỲ QUAN TRỌNG)
+    |--------------------------------------------------------------------------
+    | BẮT BUỘC chuẩn hoá để:
+    | - addToCart()
+    | - checkout
+    | - ERP createOrder
+    |--------------------------------------------------------------------------
+    */
+    $productId = $product['id']
+        ?? $product['product_id']
+        ?? null;
+
+    if (!$productId) {
+        \Log::error('[LINXEN PDP] Missing product_id from ERP', [
+            'slug'    => $slug,
+            'product' => $product,
+        ]);
+
+        abort(500, 'Sản phẩm chưa được đồng bộ ERP');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | VARIANTS & ATTRIBUTES
     |--------------------------------------------------------------------------
     */
@@ -140,14 +163,12 @@ public function product(string $slug, ErpStorefrontApi $erp)
     $breadcrumbs = [];
 
     if (!empty($product['categories']) && is_array($product['categories'])) {
-
         foreach ($product['categories'] as $cat) {
             $breadcrumbs[] = [
                 'name' => $cat['name'],
                 'url'  => '/collection/' . $cat['slug'],
             ];
         }
-
     } else {
         $breadcrumbs = [
             [
@@ -160,9 +181,6 @@ public function product(string $slug, ErpStorefrontApi $erp)
     /*
     |--------------------------------------------------------------------------
     | 🔁 SUGGESTED PRODUCTS (FROM ERP)
-    |--------------------------------------------------------------------------
-    | 🔴 FIX QUAN TRỌNG:
-    | ERP trả snake_case → LIN XÉN PHẢI ĐỌC ĐÚNG KEY
     |--------------------------------------------------------------------------
     */
     $suggestedProducts = isset($product['suggested_products'])
@@ -177,18 +195,6 @@ public function product(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 🔍 DEBUG TẠM (CÓ THỂ XOÁ SAU)
-    |--------------------------------------------------------------------------
-    */
-    /*
-    \Log::debug('[LINXEN PDP]', [
-        'suggested_count' => $suggestedCount,
-        'suggested_products' => $suggestedProducts,
-    ]);
-    */
-
-    /*
-    |--------------------------------------------------------------------------
     | RENDER VIEW
     |--------------------------------------------------------------------------
     */
@@ -197,6 +203,9 @@ public function product(string $slug, ErpStorefrontApi $erp)
         [
             // 🧾 DATA GỐC ERP
             'product'           => $product,
+
+            // 🔑 ID ERP – DÙNG CHO ADD TO CART
+            'productId'         => (int) $productId,
 
             // 🎛 BIẾN THỂ
             'variants'          => $variants,
@@ -210,7 +219,7 @@ public function product(string $slug, ErpStorefrontApi $erp)
             'ugcMedia'          => $ugcMedia,
             'ugcCount'          => $ugcCount,
 
-            // 🔁 SẢN PHẨM GỢI Ý (KEY ĐÃ ĐÚNG)
+            // 🔁 SẢN PHẨM GỢI Ý
             'suggestedProducts' => $suggestedProducts,
             'suggestedCount'    => $suggestedCount,
 
@@ -222,6 +231,7 @@ public function product(string $slug, ErpStorefrontApi $erp)
         ]
     );
 }
+
 
 
 
@@ -259,42 +269,47 @@ public function product(string $slug, ErpStorefrontApi $erp)
     }
 
     /**
-     * ➕ ADD TO CART (AJAX – SESSION)
-     */
-    public function addToCart(Request $request)
-    {
-        $data = $request->validate([
-            'sku'   => 'required|string',
-            'name'  => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'image' => 'nullable|string',
-            'qty'   => 'required|integer|min:1',
-            'attrs' => 'nullable|array',
-        ]);
+ * ➕ ADD TO CART (AJAX – SESSION)
+ */
+public function addToCart(Request $request)
+{
+    $data = $request->validate([
+        'sku'        => 'required|string',
+        'product_id' => 'required|integer', // 🔥 BẮT BUỘC – ID ERP / KiotViet
+        'name'       => 'required|string',
+        'price'      => 'required|numeric|min:0',
+        'image'      => 'nullable|string',
+        'qty'        => 'required|integer|min:1',
+        'attrs'      => 'nullable|array',
+    ]);
 
-        $cart = session()->get('cart', []);
+    $cart = session()->get('cart', []);
 
-        if (isset($cart[$data['sku']])) {
-            $cart[$data['sku']]['qty'] += $data['qty'];
-        } else {
-            $cart[$data['sku']] = [
-                'sku'   => $data['sku'],
-                'name'  => $data['name'],
-                'price' => $data['price'],
-                'image' => $data['image'] ?? null,
-                'qty'   => $data['qty'],
-                'attrs' => $data['attrs'] ?? [],
-            ];
-        }
-
-        session()->put('cart', $cart);
-
-        return response()->json([
-            'success'    => true,
-            'message'    => 'Đã thêm vào giỏ hàng',
-            'cart_count' => array_sum(array_column($cart, 'qty')),
-        ]);
+    if (isset($cart[$data['sku']])) {
+        // ➕ Cộng số lượng nếu đã có
+        $cart[$data['sku']]['qty'] += $data['qty'];
+    } else {
+        // 🆕 Thêm mới sản phẩm
+        $cart[$data['sku']] = [
+            'sku'        => $data['sku'],
+            'product_id' => (int) $data['product_id'], // 🔥 QUAN TRỌNG
+            'name'       => $data['name'],
+            'price'      => (float) $data['price'],
+            'image'      => $data['image'] ?? null,
+            'qty'        => (int) $data['qty'],
+            'attrs'      => $data['attrs'] ?? [],
+        ];
     }
+
+    session()->put('cart', $cart);
+
+    return response()->json([
+        'success'    => true,
+        'message'    => 'Đã thêm vào giỏ hàng',
+        'cart_count' => array_sum(array_column($cart, 'qty')),
+    ]);
+}
+
 
     /**
  * 🔄 UPDATE CART QTY (AJAX)
