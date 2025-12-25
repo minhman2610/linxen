@@ -612,3 +612,71 @@
     font-size: 16px;
     color: #111;
 }
+/* =====================================================
+   COUTURE META – PRICE – CAPTION
+===================================================== */
+
+/* ---------- META / IDENTITY ---------- */
+.couture-meta {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+    margin: 16px 0 18px;
+}
+
+.lx-meta-tag {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+
+    padding: 6px 14px;
+    border-radius: 999px;
+
+    background: rgba(17,17,17,0.04);
+    color: #6b7280;
+}
+
+/* accent tag */
+.lx-meta-tag.accent {
+    background: rgba(199,162,109,0.16); /* champagne tint */
+    color: #6b5a3c;
+}
+
+/* ---------- PRICE ---------- */
+.couture-price {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 14px;
+
+    margin-bottom: 22px;
+}
+
+.lx-product-price {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+
+    color: #111;
+}
+
+.lx-price-note {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    color: #9ca3af;
+}
+
+/* ---------- DESCRIPTION / CAPTION ---------- */
+.couture-caption {
+    max-width: 560px;
+    margin: 0 auto 30px;
+
+    font-size: 14px;
+    line-height: 1.85;
+
+    text-align: center;
+    color: #4b5563;
+}
