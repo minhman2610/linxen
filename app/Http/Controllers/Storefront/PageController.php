@@ -119,26 +119,28 @@ public function product(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 🧭 BREADCRUMB – CATEGORY TREE
+    | 👥 REAL CUSTOMER MEDIA (UGC FROM ERP)
     |--------------------------------------------------------------------------
-    | ERP khuyến nghị trả:
-    | $product['categories'] = [
-    |   { id, name, slug, parent_id }
-    | ]
+    | ERP trả:
+    | - real_media_gallery (array)
+    | - real_media_count   (int)
+    |--------------------------------------------------------------------------
+    */
+    $ugcMedia = is_array($product['real_media_gallery'] ?? null)
+        ? $product['real_media_gallery']
+        : [];
+
+    $ugcCount = (int) ($product['real_media_count'] ?? count($ugcMedia));
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🧭 BREADCRUMB – CATEGORY TREE
     |--------------------------------------------------------------------------
     */
     $breadcrumbs = [];
 
     if (!empty($product['categories'])) {
 
-        /**
-         * Ví dụ ERP trả category path đã sort sẵn:
-         * [
-         *   ['name' => 'Đồ Nữ', 'slug' => 'do-nu'],
-         *   ['name' => 'Váy', 'slug' => 'vay'],
-         *   ['name' => 'Váy thiết kế', 'slug' => 'vay-thiet-ke'],
-         * ]
-         */
         foreach ($product['categories'] as $cat) {
             $breadcrumbs[] = [
                 'name' => $cat['name'],
@@ -147,9 +149,7 @@ public function product(string $slug, ErpStorefrontApi $erp)
         }
 
     } else {
-        /**
-         * Fallback an toàn (ERP chưa map category)
-         */
+        // Fallback an toàn
         $breadcrumbs = [
             [
                 'name' => 'Sản phẩm',
@@ -158,28 +158,38 @@ public function product(string $slug, ErpStorefrontApi $erp)
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | RENDER VIEW
+    |--------------------------------------------------------------------------
+    */
     return view(
         "storefront.{$this->theme}.pages.product",
         [
             // 🧾 DATA GỐC
-            'product'    => $product,
+            'product'     => $product,
 
             // 🎛 BIẾN THỂ
-            'variants'   => $variants,
-            'attributes' => $attributes,
+            'variants'    => $variants,
+            'attributes'  => $attributes,
 
-            // 🖼 GALLERY
-            'images'     => $images,
-            'mainImage'  => $mainImage,
+            // 🖼 GALLERY CHÍNH
+            'images'      => $images,
+            'mainImage'   => $mainImage,
+
+            // 👥 REAL MEDIA (UGC)
+            'ugcMedia'    => $ugcMedia,
+            'ugcCount'    => $ugcCount,
 
             // 🧭 BREADCRUMB
-            'breadcrumbs'=> $breadcrumbs,
+            'breadcrumbs' => $breadcrumbs,
 
             // 🏷 BRAND
-            'brand'      => $this->brand,
+            'brand'       => $this->brand,
         ]
     );
 }
+
 
 
 
