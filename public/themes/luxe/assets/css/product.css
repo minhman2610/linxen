@@ -339,4 +339,23 @@
 .lx-pdp .lx-product-trust li {
     margin-bottom: 4px;
 }
+/* =====================================================
+   PDP BOTTOM GROUP – SPACING CONTROL
+===================================================== */
+
+.lx-pdp-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 28px; /* 👈 khoảng cách CHUẨN giữa các section */
+}
+
+/* Giảm margin mặc định của từng section */
+.lx-pdp-bottom > * {
+    margin-top: 0 !important;
+}
+
+/* REAL GALLERY không cần margin-top lớn nữa */
+.lx-pdp-bottom .lx-real-editorial {
+    margin-top: 0;
+}
 

@@ -72,15 +72,21 @@
                     'attributes' => $attributes
                 ])
 
-                {{-- ACTIONS --}}
-                @include('storefront.luxe.components.product.actions')
+                {{-- PDP BOTTOM GROUP --}}
+<div class="lx-pdp-bottom">
 
-                {{-- TRUST --}}
-                @include('storefront.luxe.components.product.trust')
-                {{-- REAL CUSTOMER GALLERY (FROM 3MG ERP) --}}
-@include('storefront.luxe.components.product.real-gallery', [
-    'ugcMedia' => $ugcMedia ?? []
-])
+    {{-- ACTIONS --}}
+    @include('storefront.luxe.components.product.actions')
+
+    {{-- TRUST --}}
+    @include('storefront.luxe.components.product.trust')
+
+    {{-- REAL CUSTOMER GALLERY (FROM 3MG ERP) --}}
+    @include('storefront.luxe.components.product.real-gallery', [
+        'ugcMedia' => $ugcMedia ?? []
+    ])
+
+</div>
 
             </div>
         </div>
