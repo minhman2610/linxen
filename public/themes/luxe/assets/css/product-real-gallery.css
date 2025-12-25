@@ -151,3 +151,31 @@
         font-size: 22px;
     }
 }
+.lx-real-gallery.is-empty .lx-real-scroll {
+    justify-content: center;
+}
+
+.lx-real-empty {
+    width: 100%;
+    padding: 24px 0;
+    text-align: center;
+}
+
+.lx-real-empty-box {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.lx-real-empty-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.lx-real-count {
+    font-size: 13px;
+    font-weight: 400;
+    color: #9ca3af;
+    margin-left: 6px;
+}
