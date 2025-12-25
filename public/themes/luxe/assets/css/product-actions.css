@@ -392,3 +392,28 @@
         width: 100%;
     }
 }
+.lx-toast-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.lx-toast-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.lx-toast-btn-primary {
+    background: #111;
+    color: #fff;
+    text-align: center;
+}
+
+.lx-toast-btn-ghost {
+    background: #f3f4f6;
+    color: #111;
+    border: none;
+}
