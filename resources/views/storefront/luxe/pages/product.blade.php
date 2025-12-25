@@ -64,17 +64,23 @@
             ])
         </div>
 
-        {{-- BRAND LINE --}}
-        <div class="lx-product-brandline">
-            <span class="lx-brand">{{ strtoupper($brand) }}</span>
-            <span class="lx-divider"></span>
-            <span class="lx-tagline">Designed for modern elegance</span>
-        </div>
+        {{-- =====================================================
+   BRAND STATEMENT – LIN XÉN
+===================================================== --}}
+<div class="lx-brand-statement">
 
-        {{-- TITLE --}}
-        <h1 class="lx-product-title">
-            {{ $product['name'] ?? '' }}
-        </h1>
+    <div class="lx-brand-mark">
+        <span class="lx-brand-name">LIN XÉN</span>
+        <span class="lx-brand-sep">—</span>
+        <span class="lx-brand-claim">CHÚNG TÔI ĐAM MÊ VÁY</span>
+    </div>
+
+    <h1 class="lx-product-title">
+        {{ $product['name'] ?? '' }}
+    </h1>
+
+</div>
+
 
         {{-- META --}}
         <div class="lx-product-meta">
