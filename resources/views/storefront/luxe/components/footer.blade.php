@@ -59,12 +59,4 @@
 
     </div>
 
-    {{-- =========================
-        BOTTOM STRIP
-    ========================== --}}
-    <div class="lx-footer-bottom">
-        <span>© {{ date('Y') }} LIN XÉN</span>
-        <span>Designed for real life</span>
-    </div>
-
 </footer>
