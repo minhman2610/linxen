@@ -508,6 +508,70 @@
     font-weight: 600;
     color: #111;
 }
+/* =====================================================
+   TOAST HEADER – WITH CLOSE
+===================================================== */
+
+.lx-toast-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.lx-toast-head-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* nút đóng */
+.lx-toast-close {
+    appearance: none;
+    border: none;
+    background: transparent;
+
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 600;
+
+    color: #9ca3af;
+    cursor: pointer;
+
+    padding: 4px 6px;
+    border-radius: 6px;
+
+    transition: all .2s ease;
+}
+
+.lx-toast-close:hover {
+    background: rgba(0,0,0,.06);
+    color: #111;
+}
+
+/* =====================================================
+   TOAST META – GỌN & RÕ
+===================================================== */
+
+.lx-toast-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-top: 6px;
+    font-size: 13px;
+}
+
+.lx-toast-qty {
+    color: #6b7280;
+}
+
+.lx-toast-price {
+    font-weight: 700;
+    letter-spacing: .01em;
+}
 
 
 /* =====================================================
