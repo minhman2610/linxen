@@ -1,23 +1,45 @@
 /* =====================================================
-   SUGGESTED PRODUCTS – PDP
+   SUGGESTED PRODUCTS – EDITORIAL STYLE
 ===================================================== */
 
+/* ================= WRAPPER ================= */
+
 .lx-suggested-products {
-    padding-top: 12px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
 }
 
-/* ================= HEAD ================= */
+/* ================= HEAD (LEFT ALIGN) ================= */
 
 .lx-suggested-head {
     padding: 0 16px;
-    margin-bottom: 12px;
-    text-align: center;
+    margin-bottom: 14px;
+    text-align: left;
+    position: relative;
+}
+
+.lx-suggested-head::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 3px;
+    border-radius: 2px;
+    background: linear-gradient(
+        to bottom,
+        #111,
+        #d1d5db
+    );
 }
 
 .lx-suggested-head h3 {
+    padding-left: 12px;
     font-size: 18px;
     font-weight: 600;
     color: #111;
+    line-height: 1.3;
 }
 
 .lx-suggested-head h3 span {
@@ -25,6 +47,7 @@
 }
 
 .lx-suggested-head p {
+    padding-left: 12px;
     margin-top: 4px;
     font-size: 14px;
     color: #6b7280;
@@ -34,9 +57,10 @@
 
 .lx-suggested-scroll {
     display: flex;
-    gap: 12px;
-    padding: 0 16px 8px;
+    gap: 14px;
+    padding: 0 16px 10px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .lx-suggested-scroll::-webkit-scrollbar {
@@ -47,28 +71,35 @@
 
 .lx-suggested-card {
     flex: 0 0 auto;
-    width: 140px;
+    width: 150px;
     text-decoration: none;
     color: inherit;
 }
 
+/* IMAGE */
 .lx-suggested-image {
+    position: relative;
     aspect-ratio: 3 / 4;
-    border-radius: 14px;
+    border-radius: 18px;
     overflow: hidden;
     background: #f3f4f6;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.08);
+    transition: transform .25s ease, box-shadow .25s ease;
 }
 
 .lx-suggested-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
-/* ================= INFO ================= */
-
+/* INFO FLOAT */
 .lx-suggested-info {
-    margin-top: 6px;
+    margin-top: 8px;
+    padding: 0 2px;
 }
 
 .lx-suggested-name {
@@ -84,26 +115,40 @@
     color: #7c3aed;
 }
 
+/* ================= HOVER (DESKTOP) ================= */
+
+@media (hover: hover) {
+    .lx-suggested-card:hover .lx-suggested-image {
+        transform: translateY(-3px);
+        box-shadow:
+            0 14px 28px rgba(0,0,0,.14);
+    }
+}
+
 /* ================= EMPTY ================= */
 
 .lx-suggested-empty {
     padding: 12px 16px;
-    text-align: center;
+    text-align: left;
     font-size: 14px;
     color: #9ca3af;
 }
 
-/* ================= DESKTOP ================= */
+/* ================= TABLET / DESKTOP ================= */
 
 @media (min-width: 768px) {
 
     .lx-suggested-scroll {
-        gap: 16px;
+        gap: 18px;
         padding-left: 24px;
         padding-right: 24px;
     }
 
     .lx-suggested-card {
-        width: 180px;
+        width: 190px;
+    }
+
+    .lx-suggested-head h3 {
+        font-size: 20px;
     }
 }
