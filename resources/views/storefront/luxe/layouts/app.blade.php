@@ -33,6 +33,8 @@
           href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
 @endif
 
+    <link rel="stylesheet"
+      href="/themes/luxe/assets/css/header.css?v={{ filemtime(public_path('themes/luxe/assets/css/header.css')) }}">
 
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">

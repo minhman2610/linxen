@@ -1,0 +1,147 @@
+/* =====================================================
+   LUXE HEADER – COMPACT / PREMIUM
+   Scope: Header only (SAFE)
+===================================================== */
+
+/* -----------------------------------------------
+   HEADER BASE
+----------------------------------------------- */
+.lx-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 6px 10px;
+    height: 48px;
+
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+
+    position: sticky;
+    top: var(--announcement-height, 0);
+
+    z-index: 100;
+    pointer-events: auto;
+}
+
+/* -----------------------------------------------
+   HEADER BUTTONS
+----------------------------------------------- */
+.lx-header-btn {
+    background: none;
+    border: none;
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.lx-header-btn img {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+/* -----------------------------------------------
+   LOGO
+----------------------------------------------- */
+.lx-header-logo {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    line-height: 1;
+}
+
+.lx-header-logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.lx-header-logo-link:hover {
+    opacity: .85;
+}
+
+/* -----------------------------------------------
+   CART BADGE
+----------------------------------------------- */
+.cart-btn {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+
+    width: 14px;
+    height: 14px;
+
+    background: #000;
+    color: #fff;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+}
+
+/* -----------------------------------------------
+   HOME – TRANSPARENT HEADER
+----------------------------------------------- */
+.lx-header--transparent {
+    background: transparent !important;
+    border-bottom: none !important;
+
+    position: absolute;
+    top: calc(var(--announcement-height, 0));
+    left: 0;
+    width: 100%;
+
+    height: 48px;
+    z-index: 110;
+}
+
+.lx-header--transparent .lx-header-logo {
+    color: #111;
+}
+
+.lx-header--transparent .cart-count {
+    background: #fff;
+    color: #000;
+}
+
+/* -----------------------------------------------
+   DESKTOP
+----------------------------------------------- */
+@media (min-width: 768px) {
+    .lx-header {
+        padding: 8px 16px;
+        height: 56px;
+    }
+
+    .lx-header-btn img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .lx-header-logo {
+        font-size: 22px;
+        letter-spacing: 2px;
+    }
+
+    .cart-count {
+        width: 15px;
+        height: 15px;
+        font-size: 10px;
+        top: -4px;
+        right: -4px;
+    }
+}
