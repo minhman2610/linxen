@@ -16,3 +16,7 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
+
+.lx-art-breadcrumb::-webkit-scrollbar {
+    display: none;
+}
