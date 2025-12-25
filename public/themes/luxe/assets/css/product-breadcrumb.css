@@ -1,5 +1,5 @@
 /* =====================================================
-   LUXURY ART BREADCRUMB – REFINED BALANCE
+   LUXURY ART BREADCRUMB – SIGNATURE
 ===================================================== */
 
 .lx-art-breadcrumb {
@@ -7,10 +7,10 @@
 
     display: flex;
     align-items: center;
-    gap: 8px;                 /* 🔽 giảm gap */
+    gap: 12px;
 
-    margin-bottom: 20px;
-    padding-bottom: 8px;
+    margin-bottom: 22px;     /* không cắn nội dung dưới */
+    padding-bottom: 10px;
 
     white-space: nowrap;
     overflow-x: auto;
@@ -19,4 +19,57 @@
 
 .lx-art-breadcrumb::-webkit-scrollbar {
     display: none;
+}
+
+
+/* ================= ITEM ================= */
+
+.lx-art-item {
+    position: relative;
+    z-index: 1;
+
+    display: inline-flex;
+    align-items: center;
+
+    padding: 8px 18px;
+    border-radius: 2px; /* KHÔNG bo tròn → couture */
+
+    background: #fff;
+
+    border: 1px solid #e5e7eb;
+
+    font-size: 11px;
+    letter-spacing: 0.26em;      /* rất quan trọng */
+    text-transform: uppercase;
+
+    color: #6b7280;
+}
+
+/* HOME – khác nhẹ */
+.lx-art-item.is-home {
+    border-style: dashed;
+    color: #9ca3af;
+}
+
+/* ACTIVE – điểm nhấn cao cấp */
+.lx-art-item.is-active {
+    border-color: #111;
+    color: #111;
+}
+
+/* LABEL */
+.lx-art-label {
+    position: relative;
+}
+
+/* ================= CONNECTOR ================= */
+
+.lx-art-connector {
+    flex-shrink: 0;
+
+    font-size: 13px;
+    color: #c7a26d;          /* champagne gold */
+    opacity: 0.9;
+
+    transform: translateY(-1px);
 }
