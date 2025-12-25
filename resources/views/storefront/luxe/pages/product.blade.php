@@ -11,9 +11,7 @@
 @endphp
 
 <section class="lx-product-detail">
-    @include('storefront.luxe.components.product.breadcrumb', [
-    'breadcrumbs' => $breadcrumbs
-])
+    
     {{-- =====================================================
        PRODUCT GALLERY – SWIPER PRO
     ===================================================== --}}
@@ -59,7 +57,12 @@
 
         {{-- ================= PRODUCT INFO ================= --}}
         <div class="lx-product-info">
-
+            {{-- 🧭 BREADCRUMB --}}
+        <div class="lx-product-breadcrumb">
+            @include('storefront.luxe.components.product.breadcrumb', [
+                'breadcrumbs' => $breadcrumbs
+            ])
+        </div>
             <div class="lx-product-brandline">
                 <span class="lx-brand">{{ strtoupper($brand) }}</span>
                 <span class="lx-divider">—</span>
