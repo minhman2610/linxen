@@ -1,26 +1,16 @@
 {{-- =====================================================
-   PRODUCT CATEGORY PATH – CONNECTED
+   PRODUCT EDITORIAL CONTEXT (ART BREADCRUMB)
 ===================================================== --}}
-<nav class="lx-cat-path" aria-label="breadcrumb">
+@if(!empty($breadcrumbs))
+    <div class="lx-editorial-context">
 
-    {{-- HOME --}}
-    <a href="/" class="lx-cat-node">
-        <span class="lx-cat-icon">🏠</span>
-        <span class="lx-cat-text">Trang chủ</span>
-    </a>
+        {{-- MARKER LINE --}}
+        <span class="lx-context-line"></span>
 
-    @foreach($breadcrumbs as $crumb)
-        @if(!empty($crumb['url']))
-            <a href="{{ $crumb['url'] }}" class="lx-cat-node">
-                <span class="lx-cat-icon">🏷️</span>
-                <span class="lx-cat-text">{{ $crumb['name'] }}</span>
-            </a>
-        @else
-            <span class="lx-cat-node active">
-                <span class="lx-cat-icon">👗</span>
-                <span class="lx-cat-text">{{ $crumb['name'] }}</span>
-            </span>
-        @endif
-    @endforeach
+        {{-- CONTEXT TEXT --}}
+        <span class="lx-context-text">
+            {{ collect($breadcrumbs)->pluck('name')->join(' · ') }}
+        </span>
 
-</nav>
+    </div>
+@endif
