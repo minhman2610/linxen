@@ -304,3 +304,24 @@
 .lx-product-trust li {
     margin-bottom: 6px;
 }
+/* =====================================================
+   PRODUCT CONTENT – CONTAINER SYSTEM
+===================================================== */
+
+.lx-product-content {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 16px; /* mobile safe padding */
+}
+
+@media (min-width: 768px) {
+    .lx-product-content {
+        padding: 0 24px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .lx-product-content {
+        padding: 0 32px;
+    }
+}
