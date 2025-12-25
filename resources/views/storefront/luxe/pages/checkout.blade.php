@@ -12,9 +12,6 @@
     |--------------------------------------------------------------------------
     | 🔒 SNAPSHOT CART CHO CHECKOUT.JS (ERP REQUIRE)
     |--------------------------------------------------------------------------
-    | ERP BẮT BUỘC:
-    | - items[].product_id
-    | - qty, price
     */
     $checkoutCart = [];
     foreach ($cartItems as $item) {
@@ -53,18 +50,47 @@
             LEFT – SHIPPING INFO
         ========================== --}}
         <div class="lx-checkout-left">
+
             <h3>Thông tin giao hàng</h3>
 
+            {{-- PHONE – PRIMARY IDENTITY --}}
+            <div class="lx-form-group lx-form-phone">
+                <label>Số điện thoại</label>
+                <input type="tel"
+                       name="phone"
+                       id="lx-phone"
+                       placeholder="Nhập số điện thoại"
+                       autocomplete="tel"
+                       required>
+
+                {{-- STATUS MESSAGE (AJAX) --}}
+                <div id="lx-phone-status"
+                     class="lx-phone-status"
+                     style="display:none"></div>
+            </div>
+
+            {{-- LOGIN PASSWORD (HIDDEN BY DEFAULT) --}}
+            <div class="lx-form-group"
+                 id="lx-login-password"
+                 style="display:none">
+                <label>Mật khẩu</label>
+                <input type="password"
+                       name="password"
+                       placeholder="Nhập mật khẩu để đăng nhập"
+                       autocomplete="current-password">
+            </div>
+
+            {{-- NAME --}}
             <div class="lx-form-group">
                 <label>Họ và tên</label>
-                <input type="text" name="name" required>
+                <input type="text"
+                       name="name"
+                       id="lx-name"
+                       placeholder="Họ và tên người nhận"
+                       required>
             </div>
 
-            <div class="lx-form-group">
-                <label>Số điện thoại</label>
-                <input type="tel" name="phone" required>
-            </div>
-
+            {{-- LOCATION --}}
             <div class="lx-form-row">
                 <div class="lx-form-group">
                     <label>Khu vực</label>
@@ -81,15 +107,23 @@
                 </div>
             </div>
 
+            {{-- ADDRESS --}}
             <div class="lx-form-group">
                 <label>Số nhà, tên đường</label>
-                <input type="text" name="street" required>
+                <input type="text"
+                       name="street"
+                       placeholder="Ví dụ: 12 Nguyễn Trãi"
+                       required>
             </div>
 
+            {{-- NOTE --}}
             <div class="lx-form-group">
                 <label>Ghi chú</label>
-                <textarea name="note" rows="2"></textarea>
+                <textarea name="note"
+                          rows="2"
+                          placeholder="Ghi chú cho đơn hàng (nếu có)"></textarea>
             </div>
+
         </div>
 
         {{-- =========================
