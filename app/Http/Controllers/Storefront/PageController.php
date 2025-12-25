@@ -296,20 +296,36 @@ public function product(string $slug, ErpStorefrontApi $erp)
         ]);
     }
 
-    public function updateCart(Request $request)
+    /**
+ * 🔄 UPDATE CART QTY (AJAX)
+ * Nhận: sku + delta (+1 / -1)
+ */
+public function updateCart(Request $request)
 {
     $data = $request->validate([
-        'sku' => 'required|string',
-        'qty' => 'required|integer|min:1',
+        'sku'   => 'required|string',
+        'delta' => 'required|integer|in:-1,1',
     ]);
 
     $cart = session('cart', []);
 
+    // SKU không tồn tại
     if (!isset($cart[$data['sku']])) {
-        return response()->json(['success' => false], 404);
+        return response()->json([
+            'success' => false,
+            'message' => 'Sản phẩm không tồn tại trong giỏ hàng',
+        ], 404);
     }
 
-    $cart[$data['sku']]['qty'] = $data['qty'];
+    // Update qty
+    $cart[$data['sku']]['qty'] += $data['delta'];
+
+    // Nếu qty <= 0 → xoá sản phẩm
+    if ($cart[$data['sku']]['qty'] <= 0) {
+        unset($cart[$data['sku']]);
+    }
+
+    // Lưu session
     session(['cart' => $cart]);
 
     return response()->json([
@@ -329,17 +345,17 @@ public function removeFromCart(Request $request)
 
     $cart = session('cart', []);
 
-    // SKU không tồn tại → vẫn trả success (idempotent)
+    // Nếu SKU không tồn tại → vẫn success (idempotent)
     if (!isset($cart[$data['sku']])) {
         return response()->json([
             'success'    => true,
+            'cart'       => $cart,
             'cart_count' => array_sum(array_column($cart, 'qty')),
         ]);
     }
 
     unset($cart[$data['sku']]);
 
-    // Cập nhật session
     session(['cart' => $cart]);
 
     return response()->json([
