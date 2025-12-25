@@ -146,67 +146,77 @@
     }
 }
 /* =====================================================
-   HEADER – LUXURY CHAMPAGNE GLOW (COLOR SHIFT)
+   HEADER – LUXURY CHAMPAGNE GLOW (ENHANCED COLOR SHIFT)
 ===================================================== */
 
 .lx-header {
     background: linear-gradient(
         to bottom,
-        #fcfcfb 0%,
-        #f7f6f3 100%
+        #fdfcf9 0%,
+        #f3f1ea 100%
     );
 
-    border-bottom: 1px solid rgba(0,0,0,.06);
+    border-bottom: 1px solid rgba(0,0,0,.08);
 
     box-shadow:
-        0 1px 0 rgba(255,255,255,.9),
-        0 8px 20px rgba(0,0,0,.04);
+        0 1px 0 rgba(255,255,255,.95),
+        0 10px 28px rgba(0,0,0,.06);
 
     position: sticky;
     top: var(--announcement-height, 0);
     z-index: 100;
 
-    /* 🔥 animate màu nền – ĐÈN SHOWROOM */
+    /* 🔥 đèn ambient – rõ hơn nhưng vẫn mượt */
     animation: lxHeaderColorShift 4s ease-in-out infinite;
 }
 
 /* -------------------------------------------------
-   KEYFRAMES – LUXURY AMBIENT COLOR SHIFT
+   KEYFRAMES – AMBIENT LIGHT (RÕ HƠN)
 ------------------------------------------------- */
 @keyframes lxHeaderColorShift {
+
+    /* IVORY NEUTRAL */
     0% {
         background: linear-gradient(
             to bottom,
-            #fcfcfb 0%,
-            #f7f6f3 100%
+            #fdfcf9 0%,
+            #f3f1ea 100%
         );
     }
+
+    /* COOL PEARL */
     25% {
         background: linear-gradient(
             to bottom,
-            #f8f7f4 0%,   /* warm ivory */
-            #f1efe9 100%
+            #f4f7fa 0%,
+            #e8edf1 100%
         );
     }
+
+    /* WARM CHAMPAGNE */
     50% {
         background: linear-gradient(
             to bottom,
-            #fff9f3 0%,   /* champagne light */
-            #f3ede4 100%
+            #fff1e6 0%,
+            #ead8c7 100%
         );
     }
+
+    /* SOFT STONE */
     75% {
         background: linear-gradient(
             to bottom,
-            #f5f6f5 0%,   /* soft stone */
-            #eff1ef 100%
+            #f1f3f2 0%,
+            #e2e6e4 100%
         );
     }
+
+    /* BACK TO IVORY */
     100% {
         background: linear-gradient(
             to bottom,
-            #fcfcfb 0%,
-            #f7f6f3 100%
+            #fdfcf9 0%,
+            #f3f1ea 100%
         );
     }
 }
