@@ -35,8 +35,8 @@
     <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
     <span
         class="cart-count"
-        id="lxHeaderCartCount123">
-        {{ array_sum(array_column(session('cart', []), 'qty')) }}
+        id="lxHeaderCartCount">
+        123{{ array_sum(array_column(session('cart', []), 'qty')) }}
     </span>
 </a>
 
