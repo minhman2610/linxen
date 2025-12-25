@@ -28,13 +28,25 @@
     </a>
 
     {{-- CART --}}
-    <a href="{{ route('linxen.cart') }}" class="lx-header-btn cart-btn" aria-label="Cart">
-        <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
+<a href="{{ route('linxen.cart') }}"
+   class="lx-header-btn cart-btn"
+   aria-label="Cart">
 
-        <span class="cart-count" id="lxHeaderCartCount">
-            {{ array_sum(array_column(session('cart', []), 'qty')) }}
-        </span>
-    </a>
+    <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
+
+    @php
+        $cartCount = array_sum(array_column(session('cart', []), 'qty'));
+    @endphp
+
+    <span
+        class="cart-count"
+        id="lxHeaderCartCount"
+        style="{{ $cartCount > 0 ? '' : 'display:none;' }}"
+    >
+        {{ $cartCount }}
+    </span>
+</a>
+
 
 </header>
 
