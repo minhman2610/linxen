@@ -34,16 +34,12 @@
 
     <img src="{{ asset('themes/luxe/assets/icons/icon-cart.svg') }}" alt="Cart">
 
-    @php
-        $cartCount = array_sum(array_column(session('cart', []), 'qty'));
-    @endphp
+    
 
     <span
         class="cart-count"
-        id="lxHeaderCartCount"
-        style="{{ $cartCount > 0 ? '' : 'display:none;' }}"
-    >
-        {{ $cartCount }}
+        id="lxHeaderCartCount">
+        {{ array_sum(array_column(session('cart', []), 'qty')) }}
     </span>
 </a>
 
