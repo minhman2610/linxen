@@ -409,12 +409,13 @@ public function checkout()
         $cartItems[$sku] = [
             'sku'   => $sku,
             'name'  => $item['name'],
-            'price'=> (float) $item['price'],
-            'qty'  => (int) $item['qty'],
+            'price' => (float) $item['price'],
+            'qty'   => (int) $item['qty'],
 
-            // Optional fields – phục vụ UI checkout
-            'image'=> $item['image'] ?? null,
-            'attrs'=> is_array($item['attrs'] ?? null) ? $item['attrs'] : [],
+            // Optional fields – phục vụ UI + checkout.js
+            'image' => $item['image'] ?? null,
+            'attrs' => is_array($item['attrs'] ?? null) ? $item['attrs'] : [],
+            'product_id' => $item['product_id'] ?? null,
         ];
     }
 
@@ -444,18 +445,21 @@ public function checkout()
         ]
     );
 }
+/* =====================================================
+ * 🧾 PLACE ORDER (LEGACY / FALLBACK)
+ * ===================================================== */
+public function placeOrder(Request $request)
+{
+    // Checkout chính đã xử lý bằng AJAX → ERP
+    // Hàm này giữ lại để tránh break route cũ
 
+    session()->forget('cart');
 
+    return redirect()
+        ->route('linxen.home')
+        ->with('success', 'Đặt hàng thành công');
+}
 
-    public function placeOrder(Request $request)
-    {
-        // TODO: tạo đơn hàng + sync ERP
-        session()->forget('cart');
-
-        return redirect()
-            ->route('linxen.home')
-            ->with('success', 'Đặt hàng thành công');
-    }
 
     /* =====================================================
      * 👤 ACCOUNT (placeholder)
