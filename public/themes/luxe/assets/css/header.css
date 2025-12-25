@@ -146,25 +146,70 @@
     }
 }
 /* =====================================================
-   HEADER – LUXURY CHAMPAGNE GLOW
+   HEADER – AMBIENT LIGHT EFFECT (LUXURY)
 ===================================================== */
 
 .lx-header {
+    position: sticky;
+    top: var(--announcement-height, 0);
+    z-index: 100;
+
+    /* nền cơ bản */
     background: linear-gradient(
         to bottom,
         #fcfcfb 0%,
         #f7f6f3 100%
     );
 
-    /* viền dưới rất nhẹ */
     border-bottom: 1px solid rgba(0,0,0,.06);
 
-    /* glow hờn tinh tế */
+    /* glow nền */
     box-shadow:
-        0 1px 0 rgba(255,255,255,.9),   /* highlight trên */
-        0 8px 20px rgba(0,0,0,.04);     /* glow mờ dưới */
+        0 1px 0 rgba(255,255,255,.9),
+        0 10px 24px rgba(0,0,0,.05);
 
-    position: sticky;
-    top: var(--announcement-height, 0);
-    z-index: 100;
+    overflow: hidden; /* cho pseudo-element */
+}
+
+/* -------------------------------------------------
+   LAYER ÁNH SÁNG CHUYỂN ĐỘNG
+------------------------------------------------- */
+.lx-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+        120deg,
+        rgba(255,220,180,.12),   /* champagne ấm */
+        rgba(230,235,255,.12),   /* ivory lạnh */
+        rgba(240,230,210,.12)    /* ngà trung tính */
+    );
+
+    opacity: .6;
+    pointer-events: none;
+
+    animation: lxHeaderAmbient 28s ease-in-out infinite;
+}
+
+/* -------------------------------------------------
+   KEYFRAMES – ĐÈN THAY ĐỔI MÀU RẤT CHẬM
+------------------------------------------------- */
+@keyframes lxHeaderAmbient {
+    0% {
+        transform: translateX(-30%);
+        opacity: .45;
+    }
+    33% {
+        transform: translateX(0%);
+        opacity: .6;
+    }
+    66% {
+        transform: translateX(30%);
+        opacity: .55;
+    }
+    100% {
+        transform: translateX(-30%);
+        opacity: .45;
+    }
 }
