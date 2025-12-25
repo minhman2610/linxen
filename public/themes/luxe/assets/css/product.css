@@ -470,6 +470,19 @@
 .lx-toast-product.lx-toast-error .lx-toast-icon {
     color: #dc2626;
 }
+/* =========================================
+   🔥 FIX TRIỆT ĐỂ: TOAST KHÔNG CHẶN CLICK
+========================================= */
+
+/* Container chỉ để layout – KHÔNG ăn click */
+.lx-toast-container {
+    pointer-events: none !important;
+}
+
+/* Toast hiển thị vẫn click được (nếu cần) */
+.lx-toast-product {
+    pointer-events: auto;
+}
 
 /* =====================================================
    MOBILE OPTIMIZE
