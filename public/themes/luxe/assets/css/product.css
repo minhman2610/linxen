@@ -2,6 +2,8 @@
    PRODUCT DETAIL – GALLERY (LIN XÉN)
    Layout: Main Image + Thumbnails
    Progressive + Swipe + Slide
+/* =====================================================
+   PRODUCT DETAIL – GALLERY (SWIPER PRO)
 ===================================================== */
 
 /* =====================================================
@@ -13,97 +15,67 @@
 }
 
 /* =====================================================
-   MAIN IMAGE
+   MAIN SWIPER
 ===================================================== */
-.lx-product-main {
-    position: relative;
+.lx-product-main-swiper {
     width: 100%;
+    position: relative;
     overflow: hidden;
-
-    /* cho phép swipe ngang, khoá dọc */
-    touch-action: pan-y;
 }
 
-.lx-product-main img {
+/* SWIPER SLIDE */
+.lx-product-main-swiper .swiper-slide {
+    width: 100%;
+}
+
+/* MAIN IMAGE */
+.lx-product-main-swiper img {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
     display: block;
 
     background: #f4f4f4;
+
+    /* GPU hint */
     will-change: transform;
 }
 
-/* IMG TẠM DÙNG KHI SLIDE */
-.lx-slide-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-
-    will-change: transform;
-    pointer-events: none;
+/* PAGINATION (DOTS) */
+.lx-product-main-swiper .swiper-pagination {
+    bottom: 10px !important;
 }
 
-/* =====================================================
-   THUMBNAILS
-===================================================== */
-.lx-product-thumbs {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-    padding-bottom: 2px;
-
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.lx-product-thumbs img {
-    width: 64px;
-    height: 86px;
-
-    object-fit: cover;
-    display: block;
-
-    cursor: pointer;
-    opacity: .45;
-
-    transition: opacity .15s ease, outline .15s ease;
-}
-
-/* ACTIVE THUMB */
-.lx-product-thumbs img.active {
+.lx-product-main-swiper .swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,.55);
     opacity: 1;
-    outline: 2px solid #111;
-    outline-offset: 2px;
+    margin: 0 4px !important;
+}
+
+.lx-product-main-swiper .swiper-pagination-bullet-active {
+    background: #fff;
 }
 
 /* =====================================================
-   GALLERY NAV – SUBTLE / INVISIBLE STYLE
+   SUBTLE NAVIGATION (NEXT / PREV)
 ===================================================== */
 
-/* VÙNG CLICK ẨN */
-.lx-gallery-btn {
+.lx-gallery-nav {
     position: absolute;
     top: 0;
     bottom: 0;
     width: 20%;
-
     z-index: 5;
-    background: transparent;
-    border: none;
     cursor: pointer;
 }
 
-/* LEFT / RIGHT ZONE */
-.lx-gallery-btn.prev { left: 0; }
-.lx-gallery-btn.next { right: 0; }
+.lx-gallery-prev { left: 0; }
+.lx-gallery-next { right: 0; }
 
-/* ICON MŨI TÊN RẤT NHẸ */
-.lx-gallery-btn::after {
+/* ARROW ICON */
+.lx-gallery-nav::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -111,28 +83,74 @@
     width: 8px;
     height: 8px;
 
-    border-top: 1.5px solid rgba(255,255,255,.6);
-    border-right: 1.5px solid rgba(255,255,255,.6);
+    border-top: 1.5px solid rgba(255,255,255,.65);
+    border-right: 1.5px solid rgba(255,255,255,.65);
 
     opacity: 0;
     transition: opacity .25s ease;
 }
 
-.lx-gallery-btn.prev::after {
+.lx-gallery-prev::after {
     left: 14px;
     transform: translateY(-50%) rotate(-135deg);
 }
 
-.lx-gallery-btn.next::after {
+.lx-gallery-next::after {
     right: 14px;
     transform: translateY(-50%) rotate(45deg);
 }
 
-/* CHỈ GỢI Ý NHẸ KHI CHẠM / HOVER */
-.lx-product-main:hover .lx-gallery-btn::after,
-.lx-product-main:active .lx-gallery-btn::after {
-    opacity: .8;
+/* SHOW ON HOVER / TOUCH */
+.lx-product-main-swiper:hover .lx-gallery-nav::after,
+.lx-product-main-swiper:active .lx-gallery-nav::after {
+    opacity: .85;
 }
+
+/* =====================================================
+   THUMB SWIPER
+===================================================== */
+.lx-product-thumb-swiper {
+    margin-top: 10px;
+}
+
+/* THUMB SLIDE */
+.lx-product-thumb-swiper .swiper-slide {
+    width: 64px;
+    height: 86px;
+    opacity: .45;
+    cursor: pointer;
+}
+
+/* ACTIVE THUMB */
+.lx-product-thumb-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}
+
+/* THUMB IMAGE */
+.lx-product-thumb-swiper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* =====================================================
+   DESKTOP ENHANCEMENT
+===================================================== */
+@media (min-width: 768px) {
+    .lx-product-gallery {
+        position: sticky;
+        top: 80px;
+    }
+
+    .lx-product-thumb-swiper .swiper-slide {
+        width: 70px;
+        height: 94px;
+    }
+}
+
 
 /* =====================================================
    DESKTOP ENHANCEMENT
