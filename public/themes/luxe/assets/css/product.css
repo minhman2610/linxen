@@ -35,7 +35,7 @@
 }
 
 /* =====================================================
-   PRODUCT GALLERY – SWIPER
+   PRODUCT GALLERY – FULL BLEED MAIN IMAGE
 ===================================================== */
 
 .lx-pdp .lx-product-gallery {
@@ -43,21 +43,29 @@
     margin-bottom: 16px;
 }
 
+/* ===== MAIN SWIPER – FULL BLEED ===== */
+
 .lx-pdp .lx-product-main-swiper {
     position: relative;
     overflow: hidden;
+
+    /* full bleed trick */
+    margin-left: calc(-1 * var(--lx-content-padding, 16px));
+    margin-right: calc(-1 * var(--lx-content-padding, 16px));
 }
 
 .lx-pdp .lx-product-main-swiper img {
     width: 100%;
+    height: auto;
     aspect-ratio: 3 / 4;
     object-fit: cover;
     display: block;
     background: #f4f4f4;
 }
 
+/* Pagination */
 .lx-pdp .lx-product-main-swiper .swiper-pagination {
-    bottom: 10px !important;
+    bottom: 12px !important;
 }
 
 .lx-pdp .lx-product-main-swiper .swiper-pagination-bullet {
@@ -72,9 +80,10 @@
     background: #fff;
 }
 
-/* Thumbnails */
+/* ===== THUMBNAILS – STAY INSIDE ===== */
+
 .lx-pdp .lx-product-thumb-swiper {
-    margin-top: 10px;
+    margin-top: 12px;
 }
 
 .lx-pdp .lx-product-thumb-swiper .swiper-slide {
@@ -96,7 +105,14 @@
     object-fit: cover;
 }
 
+/* ===== RESPONSIVE PADDING SYNC ===== */
+
 @media (min-width: 768px) {
+    .lx-pdp .lx-product-main-swiper {
+        margin-left: -24px;
+        margin-right: -24px;
+    }
+
     .lx-pdp .lx-product-gallery {
         position: sticky;
         top: 80px;
@@ -107,6 +123,14 @@
         height: 94px;
     }
 }
+
+@media (min-width: 1280px) {
+    .lx-pdp .lx-product-main-swiper {
+        margin-left: -32px;
+        margin-right: -32px;
+    }
+}
+
 
 /* =====================================================
    BREADCRUMB – CONTEXT ART
