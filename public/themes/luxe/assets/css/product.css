@@ -217,93 +217,6 @@
     text-align: center;
     color: #4b5563;
 }
-
-/* =====================================================
-   VARIANTS – ONE ROW PER ATTRIBUTE
-===================================================== */
-
-.lx-product-variants {
-    margin: 24px 0;
-}
-
-.lx-variant-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.lx-variant-label {
-    flex: 0 0 80px;
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #6b7280;
-}
-
-.lx-variant-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.variant-option {
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    font-size: 12px;
-    color: #374151;
-    cursor: pointer;
-    transition: all .2s ease;
-}
-
-.variant-option.active {
-    background: #111;
-    color: #fff;
-    border-color: #111;
-}
-
-.variant-option.disabled {
-    opacity: .4;
-    cursor: not-allowed;
-}
-
-/* =====================================================
-   STOCK INFO
-===================================================== */
-
-.lx-product-stock {
-    text-align: center;
-    font-size: 12px;
-    color: #6b7280;
-    margin-bottom: 16px;
-}
-
-/* =====================================================
-   ACTIONS
-===================================================== */
-
-.lx-product-actions {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin: 28px 0;
-}
-
-/* =====================================================
-   TRUST
-===================================================== */
-
-.lx-product-trust {
-    text-align: center;
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.lx-product-trust li {
-    margin-bottom: 6px;
-}
 /* =====================================================
    PRODUCT CONTENT – CONTAINER SYSTEM
 ===================================================== */
@@ -311,7 +224,7 @@
 .lx-product-content {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 0 16px; /* mobile safe padding */
+    padding: 0 16px;
 }
 
 @media (min-width: 768px) {
@@ -325,6 +238,98 @@
         padding: 0 32px;
     }
 }
+
+/* =====================================================
+   VARIANTS – STACKED (ONE ATTRIBUTE PER BLOCK)
+===================================================== */
+
+.lx-product-variants {
+    margin: 24px 0;
+}
+
+.lx-product-variants .lx-variant-row {
+    display: block;           /* ❗ chặn mọi flex / grid cũ */
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.lx-product-variants .lx-variant-label {
+    display: block;
+    margin-bottom: 8px;
+
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+
+.lx-product-variants .lx-variant-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.lx-product-variants .variant-option {
+    padding: 8px 14px;
+    border-radius: 999px;
+
+    border: 1px solid #e5e7eb;
+    background: #fff;
+
+    font-size: 12px;
+    color: #374151;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.lx-product-variants .variant-option.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.lx-product-variants .variant-option.disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* =====================================================
+   STOCK INFO
+===================================================== */
+
+.lx-product-stock {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.lx-product-actions {
+    display: flex;
+    gap: 14px;
+    margin: 28px 0;
+    justify-content: flex-start;
+}
+
+/* =====================================================
+   TRUST
+===================================================== */
+
+.lx-product-trust {
+    font-size: 12px;
+    color: #6b7280;
+    text-align: left;
+    padding-left: 0;
+}
+
+.lx-product-trust li {
+    margin-bottom: 6px;
+}
+
 /* =====================================================
    ALIGN LEFT – FROM PRICE DOWN
 ===================================================== */
@@ -339,43 +344,3 @@
     margin-right: 0;
 }
 
-.lx-product-variants {
-    text-align: left;
-}
-
-.lx-product-stock {
-    text-align: left;
-}
-
-.lx-product-actions {
-    justify-content: flex-start;
-}
-
-.lx-product-trust {
-    text-align: left;
-    padding-left: 0;
-}
-/* =====================================================
-   FIX VARIANTS – DISPLAY AS ROWS (NOT COLUMNS)
-===================================================== */
-
-.lx-variant-row {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 18px;
-}
-
-.lx-variant-label {
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #6b7280;
-}
-
-.lx-variant-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
