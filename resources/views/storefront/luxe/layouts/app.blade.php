@@ -19,6 +19,10 @@
     ============================= --}}
     <link rel="stylesheet" href="/themes/luxe/assets/css/mobile-menu.css">
 
+    {{-- ============================
+   HOME ONLY CSS
+============================= --}}
+@if (request()->routeIs('home') || request()->routeIs('linxen.home'))
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
 
@@ -27,6 +31,8 @@
 
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
+@endif
+
 
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">
@@ -34,9 +40,15 @@
       href="/themes/luxe/assets/css/footer.css?v={{ file_exists(public_path('themes/luxe/assets/css/footer.css')) 
             ? filemtime(public_path('themes/luxe/assets/css/footer.css')) 
             : time() }}">
-    <link rel="stylesheet" href="/themes/luxe/assets/css/product.css">
+    
+    {{-- ============================
+   PRODUCT ONLY CSS
+============================= --}}
+@if (request()->routeIs('product.*') || request()->routeIs('linxen.product'))
     <link rel="stylesheet"
-      href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
+          href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
+@endif
+
       <link rel="stylesheet"
       href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
 
@@ -91,7 +103,13 @@
     ============================= --}}
     {{-- Swiper JS --}}
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    {{-- ============================
+   PRODUCT ONLY JS
+============================= --}}
+@if (request()->routeIs('product.*') || request()->routeIs('linxen.product'))
     <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
+@endif
+
 
      <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
 
