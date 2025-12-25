@@ -5,10 +5,7 @@
 
     <div class="lx-product-content lx-pdp-content">
 
-        {{-- ================= BREADCRUMB ================= --}}
-        @include('storefront.luxe.components.product.breadcrumb', [
-            'breadcrumbs' => $breadcrumbs
-        ])
+        
 
         {{-- ================= PRODUCT LAYOUT ================= --}}
         <div class="lx-product-layout">
@@ -23,7 +20,10 @@
 
             {{-- RIGHT: INFO --}}
             <div class="lx-product-info">
-
+                {{-- ================= BREADCRUMB ================= --}}
+        @include('storefront.luxe.components.product.breadcrumb', [
+            'breadcrumbs' => $breadcrumbs
+        ])
                 {{-- BRAND HERO --}}
                 <div class="lx-brand-hero">
                     <div class="lx-brand-typewriter"
