@@ -296,48 +296,59 @@ public function product(string $slug, ErpStorefrontApi $erp)
         ]);
     }
 
-    /**
-     * 🔄 UPDATE QTY (AJAX)
-     */
     public function updateCart(Request $request)
-    {
-        $data = $request->validate([
-            'sku' => 'required|string',
-            'qty' => 'required|integer|min:1',
-        ]);
+{
+    $data = $request->validate([
+        'sku' => 'required|string',
+        'qty' => 'required|integer|min:1',
+    ]);
 
-        $cart = session()->get('cart', []);
+    $cart = session('cart', []);
 
-        if (isset($cart[$data['sku']])) {
-            $cart[$data['sku']]['qty'] = $data['qty'];
-            session()->put('cart', $cart);
-        }
+    if (!isset($cart[$data['sku']])) {
+        return response()->json(['success' => false], 404);
+    }
 
+    $cart[$data['sku']]['qty'] = $data['qty'];
+    session(['cart' => $cart]);
+
+    return response()->json([
+        'success'    => true,
+        'cart'       => $cart,
+        'cart_count' => array_sum(array_column($cart, 'qty')),
+    ]);
+}
+/**
+ * ❌ REMOVE ITEM (AJAX)
+ */
+public function removeFromCart(Request $request)
+{
+    $data = $request->validate([
+        'sku' => 'required|string',
+    ]);
+
+    $cart = session('cart', []);
+
+    // SKU không tồn tại → vẫn trả success (idempotent)
+    if (!isset($cart[$data['sku']])) {
         return response()->json([
             'success'    => true,
             'cart_count' => array_sum(array_column($cart, 'qty')),
         ]);
     }
 
-    /**
-     * ❌ REMOVE ITEM (AJAX)
-     */
-    public function removeFromCart(Request $request)
-    {
-        $data = $request->validate([
-            'sku' => 'required|string',
-        ]);
+    unset($cart[$data['sku']]);
 
-        $cart = session()->get('cart', []);
-        unset($cart[$data['sku']]);
+    // Cập nhật session
+    session(['cart' => $cart]);
 
-        session()->put('cart', $cart);
+    return response()->json([
+        'success'    => true,
+        'cart'       => $cart,
+        'cart_count' => array_sum(array_column($cart, 'qty')),
+    ]);
+}
 
-        return response()->json([
-            'success'    => true,
-            'cart_count' => array_sum(array_column($cart, 'qty')),
-        ]);
-    }
 
     /* =====================================================
  * 💳 CHECKOUT
