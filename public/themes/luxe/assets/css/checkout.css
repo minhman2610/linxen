@@ -1,63 +1,65 @@
 /* =====================================================
-   CHECKOUT PAGE – LIN XÉN
+   CHECKOUT – MOBILE FIRST (LIN XÉN)
 ===================================================== */
 
 .lx-checkout-page {
     max-width: 1100px;
-    margin: 48px auto 80px;
-    padding: 0 16px;
+    margin: 32px auto 80px;
+    padding: 0 14px;
 }
 
 /* HEADER */
 .lx-checkout-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
 }
 
 .lx-checkout-header h1 {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 600;
-    color: #111;
 }
 
 .lx-checkout-back {
     font-size: 14px;
-    color: #555;
+    color: #6b7280;
     text-decoration: none;
 }
 
-/* CONTENT GRID */
+/* ===== CONTENT ===== */
 .lx-checkout-content {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-/* LEFT – FORM */
-.lx-checkout-left {
+/* ===== CARD STYLE ===== */
+.lx-checkout-left,
+.lx-checkout-right {
     background: #fff;
     border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 14px;
+    padding: 16px;
 }
 
-.lx-checkout-left h3 {
-    font-size: 18px;
-    margin-bottom: 20px;
+/* TITLES */
+.lx-checkout-left h3,
+.lx-checkout-right h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
 }
 
 /* FORM */
 .lx-form-group {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .lx-form-group label {
-    display: block;
     font-size: 13px;
-    color: #444;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    display: block;
+    color: #374151;
 }
 
 .lx-form-group input,
@@ -65,39 +67,18 @@
 .lx-form-group select {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
     font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
 }
 
 .lx-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-
-/* RIGHT – SUMMARY */
-.lx-checkout-right {
-    background: #fafafa;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 24px;
-    position: sticky;
-    top: 24px;
-}
-
-.lx-checkout-right h3 {
-    font-size: 18px;
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 /* ITEMS */
-.lx-checkout-items {
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
-}
-
 .lx-checkout-item {
     display: flex;
     justify-content: space-between;
@@ -106,12 +87,13 @@
 }
 
 .lx-checkout-item span {
-    color: #6b7280;
     font-size: 13px;
+    color: #6b7280;
 }
 
 /* SUMMARY */
-.lx-checkout-summary-row {
+.lx-checkout-summary-row,
+.lx-checkout-summary-total {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
@@ -119,17 +101,15 @@
 }
 
 .lx-checkout-summary-total {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 16px;
     font-size: 16px;
     font-weight: 600;
+    margin-top: 12px;
 }
 
 /* BUTTON */
 .lx-btn-full {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 16px;
     padding: 14px;
     font-size: 15px;
 }
@@ -144,8 +124,30 @@
     font-size: 14px;
 }
 
-/* EMPTY */
-.lx-checkout-empty {
-    text-align: center;
-    padding: 60px 0;
+/* =====================================================
+   DESKTOP ≥ 1024px
+===================================================== */
+@media (min-width: 1024px) {
+
+    .lx-checkout-content {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    .lx-form-row {
+        flex-direction: row;
+    }
+
+    .lx-checkout-right {
+        position: sticky;
+        top: 24px;
+    }
+
+    .lx-checkout-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
