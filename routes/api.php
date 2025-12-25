@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\CheckoutController;
-use App\Http\Controllers\Api\LocationProxyController;
-
 /*
 |--------------------------------------------------------------------------
 | 🔌 API – STOREFRONT (LIN XÉN)
@@ -14,19 +11,21 @@ use App\Http\Controllers\Api\LocationProxyController;
 | - Proxy location / ward từ ERP
 |--------------------------------------------------------------------------
 */
+use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\LocationProxyController;
 
-Route::prefix('storefront')->group(function () {
+Route::domain('linxen.vn')          // 🔥 QUAN TRỌNG
+    ->middleware(['web'])           // 🔥 QUAN TRỌNG
+    ->prefix('storefront')
+    ->group(function () {
 
-    // 🧾 Tạo đơn hàng từ checkout LIN XÉN
-    Route::post('/orders', [CheckoutController::class, 'create'])
-        ->name('api.storefront.orders.create');
+        Route::post('/orders', [CheckoutController::class, 'create'])
+            ->name('api.storefront.orders.create');
 
-    // 📍 Danh sách khu vực (proxy từ ERP)
-    Route::get('/locations', [LocationProxyController::class, 'locations'])
-        ->name('api.storefront.locations');
+        Route::get('/locations', [LocationProxyController::class, 'locations'])
+            ->name('api.storefront.locations');
 
-    // 🏠 Danh sách phường / xã theo khu vực
-    Route::get('/locations/{locationId}/wards', [LocationProxyController::class, 'wards'])
-        ->name('api.storefront.wards');
+        Route::get('/locations/{locationId}/wards', [LocationProxyController::class, 'wards'])
+            ->name('api.storefront.wards');
+    });
 
-});
