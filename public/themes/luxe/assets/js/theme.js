@@ -3,24 +3,6 @@
    Mobile-first interactions
    ========================================================================== */
 
-/**
- * 1) AUTO UPDATE CART BADGE (from localStorage or API)
- */
-function updateCartBadge() {
-    try {
-        let count = localStorage.getItem('cart_count');
-        if (!count) count = 0;
-
-        const badge = document.querySelector('.cart-count');
-        if (badge) {
-            badge.textContent = count;
-        }
-    } catch (e) {
-        console.error('Cart badge update error:', e);
-    }
-}
-updateCartBadge();
-
 
 /**
  * 2) MOBILE BOTTOM BAR — MORE TOGGLE
