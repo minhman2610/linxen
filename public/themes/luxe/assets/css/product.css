@@ -1,47 +1,39 @@
 /* =====================================================
-   PRODUCT DETAIL – GALLERY (LIN XÉN)
-   Layout: Main Image + Thumbnails
-   Progressive + Swipe + Slide
-/* =====================================================
-   PRODUCT DETAIL – GALLERY (SWIPER PRO)
+   PRODUCT DETAIL – LIN XÉN (LUXURY ART SYSTEM)
 ===================================================== */
 
 /* =====================================================
-   WRAPPER
+   RESET / BASE
 ===================================================== */
+
+.lx-product-info {
+    padding-top: 8px;
+    color: #111;
+}
+
+/* =====================================================
+   PRODUCT GALLERY – SWIPER PRO
+===================================================== */
+
 .lx-product-gallery {
     width: 100%;
     margin-bottom: 16px;
 }
 
-/* =====================================================
-   MAIN SWIPER
-===================================================== */
 .lx-product-main-swiper {
     width: 100%;
     position: relative;
     overflow: hidden;
 }
 
-/* SWIPER SLIDE */
-.lx-product-main-swiper .swiper-slide {
-    width: 100%;
-}
-
-/* MAIN IMAGE */
 .lx-product-main-swiper img {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
     display: block;
-
     background: #f4f4f4;
-
-    /* GPU hint */
-    will-change: transform;
 }
 
-/* PAGINATION (DOTS) */
 .lx-product-main-swiper .swiper-pagination {
     bottom: 10px !important;
 }
@@ -58,62 +50,11 @@
     background: #fff;
 }
 
-/* =====================================================
-   SUBTLE NAVIGATION (NEXT / PREV)
-===================================================== */
-
-.lx-gallery-nav {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 20%;
-    z-index: 5;
-    cursor: pointer;
-}
-
-.lx-gallery-prev { left: 0; }
-.lx-gallery-next { right: 0; }
-
-/* ARROW ICON */
-.lx-gallery-nav::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-
-    width: 8px;
-    height: 8px;
-
-    border-top: 1.5px solid rgba(255,255,255,.65);
-    border-right: 1.5px solid rgba(255,255,255,.65);
-
-    opacity: 0;
-    transition: opacity .25s ease;
-}
-
-.lx-gallery-prev::after {
-    left: 14px;
-    transform: translateY(-50%) rotate(-135deg);
-}
-
-.lx-gallery-next::after {
-    right: 14px;
-    transform: translateY(-50%) rotate(45deg);
-}
-
-/* SHOW ON HOVER / TOUCH */
-.lx-product-main-swiper:hover .lx-gallery-nav::after,
-.lx-product-main-swiper:active .lx-gallery-nav::after {
-    opacity: .85;
-}
-
-/* =====================================================
-   THUMB SWIPER
-===================================================== */
+/* Thumbnails */
 .lx-product-thumb-swiper {
     margin-top: 10px;
 }
 
-/* THUMB SLIDE */
 .lx-product-thumb-swiper .swiper-slide {
     width: 64px;
     height: 86px;
@@ -121,24 +62,18 @@
     cursor: pointer;
 }
 
-/* ACTIVE THUMB */
 .lx-product-thumb-swiper .swiper-slide-thumb-active {
     opacity: 1;
     outline: 2px solid #111;
     outline-offset: 2px;
 }
 
-/* THUMB IMAGE */
 .lx-product-thumb-swiper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
 }
 
-/* =====================================================
-   DESKTOP ENHANCEMENT
-===================================================== */
 @media (min-width: 768px) {
     .lx-product-gallery {
         position: sticky;
@@ -151,428 +86,45 @@
     }
 }
 
-
 /* =====================================================
-   DESKTOP ENHANCEMENT
-===================================================== */
-@media (min-width: 768px) {
-    .lx-product-gallery {
-        position: sticky;
-        top: 80px;
-    }
-
-    .lx-product-thumbs img {
-        width: 70px;
-        height: 94px;
-    }
-}
-/* =====================================================
-   PRODUCT INFO – PREMIUM STYLE
+   BREADCRUMB – CONTEXT ART (NO BORDER)
 ===================================================== */
 
-.lx-product-info {
-    padding-top: 8px;
-}
-
-/* -----------------------------------------------------
-   BRAND LINE
------------------------------------------------------ */
-.lx-product-brandline {
+.lx-art-breadcrumb {
     display: flex;
     align-items: center;
     gap: 6px;
-
-    font-size: 12px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-
-    color: #777;
-    margin-bottom: 6px;
-}
-
-.lx-product-brandline .lx-brand {
-    font-weight: 600;
-    color: #111;
-}
-
-.lx-product-brandline .lx-divider {
-    opacity: .5;
-}
-
-.lx-product-brandline .lx-tagline {
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
-/* -----------------------------------------------------
-   TITLE
------------------------------------------------------ */
-.lx-product-title {
-    font-size: 22px;
-    line-height: 1.25;
-    font-weight: 500;
-
-    color: #111;
-    margin-bottom: 8px;
-}
-
-/* -----------------------------------------------------
-   META
------------------------------------------------------ */
-.lx-product-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    font-size: 13px;
-    color: #777;
     margin-bottom: 12px;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 
-.lx-meta-item strong {
-    font-weight: 500;
-    color: #111;
+.lx-art-breadcrumb::-webkit-scrollbar {
+    display: none;
 }
 
-.lx-meta-dot {
-    opacity: .5;
-}
-
-/* -----------------------------------------------------
-   PRICE
------------------------------------------------------ */
-.lx-product-price-wrap {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-
-    margin-bottom: 12px;
-}
-
-.lx-product-price {
-    font-size: 24px;
-    font-weight: 600;
-    color: #111;
-}
-
-.lx-price-note {
-    font-size: 12px;
-    color: #888;
-}
-
-/* -----------------------------------------------------
-   DESCRIPTION
------------------------------------------------------ */
-.lx-product-description {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #444;
-
-    margin-bottom: 18px;
-}
-
-/* -----------------------------------------------------
-   VARIANTS
------------------------------------------------------ */
-.lx-product-variants {
-    margin-bottom: 12px;
-}
-
-.lx-attr-group {
-    margin-bottom: 14px;
-}
-
-.lx-attr-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    color: #111;
-
-    margin-bottom: 6px;
-}
-
-/* VALUES */
-.lx-attr-values {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-/* VARIANT OPTION */
-.variant-option {
-    min-width: 40px;
-    padding: 8px 12px;
-
-    border: 1px solid #ddd;
-    border-radius: 6px;
-
-    background: #fff;
-    font-size: 13px;
-    color: #111;
-
-    cursor: pointer;
-    transition: all .15s ease;
-}
-
-.variant-option:hover {
-    border-color: #111;
-}
-
-.variant-option.active {
-    border-color: #111;
-    background: #111;
-    color: #fff;
-}
-
-/* -----------------------------------------------------
-   STOCK
------------------------------------------------------ */
-.lx-product-stock {
-    font-size: 13px;
-    color: #999;
-    margin-bottom: 14px;
-}
-
-.lx-product-stock.in-stock {
-    color: #0a7a3b;
-}
-
-/* -----------------------------------------------------
-   ACTIONS
------------------------------------------------------ */
-.lx-product-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    margin-bottom: 16px;
-}
-
-/* QTY */
-.lx-qty {
-    display: flex;
-    align-items: center;
-
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.lx-qty button {
-    width: 32px;
-    height: 36px;
-
-    border: none;
-    background: #f7f7f7;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.lx-qty input {
-    width: 40px;
-    height: 36px;
-
-    border: none;
-    text-align: center;
-    font-size: 14px;
-}
-
-/* CTA */
-.lx-btn-primary {
-    height: 36px;
-    padding: 0 18px;
-
-    border: none;
-    border-radius: 6px;
-
-    background: #111;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 500;
-
-    cursor: pointer;
-    transition: opacity .15s ease;
-}
-
-.lx-btn-primary:hover {
-    opacity: .85;
-}
-
-.lx-btn-full {
-    flex: 1;
-}
-
-/* -----------------------------------------------------
-   TRUST / USP
------------------------------------------------------ */
-.lx-product-trust {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    font-size: 13px;
-    color: #555;
-}
-
-.lx-product-trust li {
-    margin-bottom: 6px;
-}
-/* =====================================================
-   PRODUCT DETAIL – CONTENT CONTAINER
-===================================================== */
-
-.lx-product-content {
-    padding-left: 16px;
-    padding-right: 16px;
-}
-
-/* DESKTOP */
-@media (min-width: 768px) {
-    .lx-product-content {
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-
-        padding-left: 24px;
-        padding-right: 24px;
-    }
-}
-/* ===============================
-   PRODUCT INFO – DESIGN
-================================ */
-
-.lx-product-brandline {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    letter-spacing: .08em;
+.lx-art-item {
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #9ca3af;
-    margin-bottom: 6px;
 }
 
-.lx-divider {
-    width: 24px;
-    height: 1px;
-    background: #e5e7eb;
+.lx-art-item.is-home {
+    color: #bfa16a;
 }
 
-.lx-product-title {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.35;
-    margin-bottom: 6px;
-}
-
-.lx-product-meta {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 10px;
-}
-
-.lx-meta-chip {
-    font-size: 11px;
-    padding: 4px 8px;
-    background: #f3f4f6;
-    border-radius: 999px;
-    color: #374151;
-}
-
-.lx-product-price-wrap {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.lx-product-price {
-    font-size: 22px;
-    font-weight: 700;
+.lx-art-item.is-active {
     color: #111;
-}
-
-.lx-price-note {
-    font-size: 11px;
-    color: #9ca3af;
-}
-
-/* DESCRIPTION */
-.lx-product-description {
-    font-size: 13px;
-    line-height: 1.6;
-    color: #4b5563;
-    margin-bottom: 16px;
-}
-
-/* VARIANTS */
-.lx-attr-group {
-    margin-bottom: 14px;
-}
-
-.lx-attr-label {
-    font-size: 12px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    display: block;
-}
-
-.lx-attr-values {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.variant-option {
-    padding: 8px 12px;
-    border-radius: 999px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all .2s;
-}
-
-.variant-option:hover {
-    border-color: #111;
-}
-
-.variant-option.active {
-    background: #111;
-    color: #fff;
-    border-color: #111;
-}
-
-/* ACTIONS */
-.lx-product-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-}
-
-.lx-btn-primary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: #111;
-    color: #fff;
-    border-radius: 10px;
-    font-size: 14px;
     font-weight: 500;
 }
 
-/* TRUST */
-.lx-product-trust {
-    margin-top: 14px;
-    font-size: 12px;
-    color: #6b7280;
+.lx-art-connector {
+    font-size: 10px;
+    color: #d1d5db;
+    opacity: .8;
 }
 
-.lx-product-trust li {
-    margin-bottom: 4px;
-}
 /* =====================================================
    BRAND HERO – LIN XÉN
 ===================================================== */
@@ -582,74 +134,63 @@
     margin-bottom: 18px;
 }
 
-/* BRAND STATEMENT */
 .lx-brand-typewriter {
     font-size: 12px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
-
-    color: #c7a26d; /* champagne */
+    color: #c7a26d;
     font-weight: 500;
-
     margin-bottom: 14px;
 }
 
-/* PRODUCT TITLE */
 .luxury-title {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-
     font-size: 21px;
     font-weight: 600;
     line-height: 1.35;
     color: #111;
 }
 
-/* ICON */
 .lx-title-icon {
     font-size: 16px;
-    color: #111;
 }
+
 /* =====================================================
-   COUTURE META – PRICE – CAPTION
+   META – PRICE – DESCRIPTION (COUTURE)
 ===================================================== */
 
-/* ---------- META / IDENTITY ---------- */
-.couture-meta {
+.lx-product-meta {
     display: flex;
     justify-content: center;
     gap: 10px;
-
     margin: 16px 0 18px;
 }
 
+.lx-meta-chip,
 .lx-meta-tag {
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-
     padding: 6px 14px;
     border-radius: 999px;
-
     background: rgba(17,17,17,0.04);
     color: #6b7280;
 }
 
-/* accent tag */
 .lx-meta-tag.accent {
-    background: rgba(199,162,109,0.16); /* champagne tint */
+    background: rgba(199,162,109,0.16);
     color: #6b5a3c;
 }
 
-/* ---------- PRICE ---------- */
-.couture-price {
+/* Price */
+.lx-product-price-wrap {
     display: flex;
     justify-content: center;
     align-items: baseline;
     gap: 14px;
-
     margin-bottom: 22px;
 }
 
@@ -657,7 +198,6 @@
     font-size: 30px;
     font-weight: 700;
     letter-spacing: 0.02em;
-
     color: #111;
 }
 
@@ -665,80 +205,102 @@
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-
     color: #9ca3af;
 }
 
-/* ---------- DESCRIPTION / CAPTION ---------- */
-.couture-caption {
+/* Description */
+.lx-product-description {
     max-width: 560px;
     margin: 0 auto 30px;
-
     font-size: 14px;
     line-height: 1.85;
-
     text-align: center;
     color: #4b5563;
 }
+
 /* =====================================================
-   VARIANTS – ROW BASED (SIZE / COLOR SEPARATED)
+   VARIANTS – ONE ROW PER ATTRIBUTE
 ===================================================== */
 
 .lx-product-variants {
     margin: 24px 0;
 }
 
-/* Mỗi biến thể là 1 dòng */
 .lx-variant-row {
     display: flex;
     align-items: center;
     gap: 16px;
-
     margin-bottom: 16px;
 }
 
-/* LABEL bên trái */
 .lx-variant-label {
-    flex: 0 0 80px; /* cố định để các dòng thẳng hàng */
-
+    flex: 0 0 80px;
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-
     color: #6b7280;
 }
 
-/* OPTIONS bên phải */
 .lx-variant-options {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
 
-/* OPTION BUTTON */
 .variant-option {
     padding: 8px 14px;
     border-radius: 999px;
-
     border: 1px solid #e5e7eb;
     background: #fff;
-
     font-size: 12px;
     color: #374151;
     cursor: pointer;
-
     transition: all .2s ease;
 }
 
-/* ACTIVE */
 .variant-option.active {
     background: #111;
     color: #fff;
     border-color: #111;
 }
 
-/* DISABLED (nếu có sau này) */
 .variant-option.disabled {
     opacity: .4;
     cursor: not-allowed;
+}
+
+/* =====================================================
+   STOCK INFO
+===================================================== */
+
+.lx-product-stock {
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.lx-product-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin: 28px 0;
+}
+
+/* =====================================================
+   TRUST
+===================================================== */
+
+.lx-product-trust {
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.lx-product-trust li {
+    margin-bottom: 6px;
 }
