@@ -2,13 +2,22 @@
 
 @section('content')
 
-<link rel="stylesheet" href="/themes/luxe/assets/css/checkout.css">
-
 @php
     $cartItems   = $cart ?? [];
     $subtotal    = collect($cartItems)->sum(fn($i) => ($i['price'] ?? 0) * ($i['qty'] ?? 0));
     $shippingFee = $subtotal >= 500000 ? 0 : 30000;
     $total       = $subtotal + $shippingFee;
+
+    // 🔒 SNAPSHOT CART CHO CHECKOUT.JS (AN TOÀN BLADE)
+    $checkoutCart = [];
+    foreach ($cartItems as $item) {
+        $checkoutCart[] = [
+            'product_id' => $item['product_id'] ?? null,
+            'qty'        => (int) $item['qty'],
+            'price'      => (float) $item['price'],
+            'note'       => null,
+        ];
+    }
 @endphp
 
 <section class="lx-checkout-page">
@@ -83,7 +92,6 @@
 
             <h3 class="lx-checkout-title">Đơn hàng của bạn</h3>
 
-            {{-- ITEMS --}}
             <div class="lx-checkout-items">
                 @foreach($cartItems as $item)
                     <div class="lx-checkout-item">
@@ -119,7 +127,6 @@
 
             <hr class="lx-checkout-divider">
 
-            {{-- SUMMARY --}}
             <div class="lx-checkout-summary">
                 <div class="lx-checkout-summary-row">
                     <span>Tạm tính</span>
@@ -137,7 +144,6 @@
                 </div>
             </div>
 
-            {{-- PAYMENT METHOD --}}
             <div class="lx-checkout-payment">
                 <div class="lx-payment-badge">
                     <span class="lx-payment-icon">💵</span>
@@ -150,16 +156,11 @@
                 </div>
             </div>
 
-            {{-- ACTIONS --}}
             <div class="lx-checkout-actions">
-                <button
-                    type="submit"
-                    class="lx-btn-primary lx-btn-full lx-btn-checkout"
-                >
+                <button type="submit"
+                        class="lx-btn-primary lx-btn-full lx-btn-checkout">
                     <span class="lx-btn-main">ĐẶT HÀNG</span>
-                    <span class="lx-btn-sub">
-                        Xác nhận đơn • Thanh toán COD
-                    </span>
+                    <span class="lx-btn-sub">Xác nhận đơn • Thanh toán COD</span>
                 </button>
 
                 <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
@@ -173,19 +174,10 @@
         </aside>
 
         {{-- =========================
-            SNAPSHOT CART FOR CHECKOUT.JS
+            SNAPSHOT CART → JS (FIX LỖI BLADE)
         ========================== --}}
         <script>
-            window.__CHECKOUT_CART__ = @json(
-                collect($cartItems)->map(function ($item) {
-                    return [
-                        'product_id' => $item['product_id'] ?? null,
-                        'qty'        => $item['qty'],
-                        'price'      => $item['price'],
-                        'note'       => null,
-                    ];
-                })->values()
-            );
+            window.__CHECKOUT_CART__ = {!! json_encode($checkoutCart, JSON_UNESCAPED_UNICODE) !!};
         </script>
 
     </form>
