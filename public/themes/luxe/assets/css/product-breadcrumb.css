@@ -1,37 +1,67 @@
 /* =====================================================
-   PRODUCT INFO – BREADCRUMB
+   PRODUCT BREADCRUMB – CLEAN & SINGLE LINE
 ===================================================== */
+
 .lx-product-breadcrumb {
     margin-bottom: 6px;
 }
 
-/* reset padding breadcrumb gốc */
+/* container */
 .lx-product-info .lx-breadcrumb {
     padding: 0;
+    overflow: hidden;
 }
 
-/* list gọn hơn */
+/* list = 1 dòng duy nhất */
 .lx-product-info .lx-breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 0;
     font-size: 12px;
     line-height: 1.4;
     color: #9ca3af;
+
+    white-space: nowrap;
+    overflow: hidden;
 }
 
-/* icon home gọn */
+/* mỗi item */
+.lx-product-info .lx-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    min-width: 0; /* QUAN TRỌNG để ellipsis hoạt động */
+}
+
+/* link + current */
+.lx-product-info .lx-breadcrumb-link,
+.lx-product-info .lx-breadcrumb-current {
+    display: block;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* màu */
+.lx-product-info .lx-breadcrumb-link {
+    color: #9ca3af;
+}
+
+.lx-product-info .lx-breadcrumb-current {
+    color: #6b7280;
+}
+
+/* icon home */
+.lx-product-info .lx-breadcrumb-home {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
 .lx-product-info .lx-breadcrumb-home svg {
     width: 13px;
     height: 13px;
-    display: block;
 }
 
-/* separator tinh tế */
-.lx-product-info .lx-breadcrumb-sep {
-    margin: 0 3px;
-    color: #d1d5db;
-}
-
-/* item hiện tại */
-.lx-product-info .lx-breadcrumb-current {
-    color: #6b7280;
-    font-weight: 400;
-}
+/* ❌ ẨN separator cũ */
+.lx-product-info .lx-breadcrumb
