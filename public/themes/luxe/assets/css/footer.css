@@ -1,13 +1,13 @@
 /* =====================================================
-   FOOTER — LIN XÉN (EDITORIAL STYLE)
+   FOOTER — LIN XÉN (LUXURY EDITORIAL)
 ===================================================== */
 
 .lx-footer {
-    margin-top: 10px;
-    padding: 48px 20px 20px;
-    background: #fafafa;
-    border-top: 1px solid #eee;
-    color: #111;
+    margin-top: 72px;
+    padding: 56px 20px 24px;
+    background: #f7f6f4;
+    border-top: 1px solid #e5e3df;
+    color: #1c1c1c;
 }
 
 .lx-footer-inner {
@@ -20,133 +20,121 @@
 .lx-footer-top {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
-    gap: 32px;
+    gap: 40px;
 }
 
 /* BRAND */
 .lx-footer-brand h3 {
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: .5px;
+    letter-spacing: .6px;
     margin-bottom: 6px;
+    color: #1c1c1c;
 }
 
 .lx-footer-tagline {
     font-size: 14px;
     font-weight: 500;
-    color: #444;
-    margin-bottom: 8px;
+    color: #b8a48a;
+    margin-bottom: 10px;
 }
 
 .lx-footer-desc {
     font-size: 13.5px;
-    line-height: 1.6;
-    color: #666;
+    line-height: 1.7;
+    color: #6b6b6b;
 }
 
-/* STATS */
+/* ================= STATS ================= */
+
 .lx-footer-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 18px;
 }
 
 .lx-stat {
-    padding-left: 12px;
-    border-left: 2px solid #111;
+    padding-left: 14px;
+    border-left: 2px solid #b8a48a;
 }
 
 .lx-stat strong {
     display: block;
     font-size: 18px;
     font-weight: 600;
+    color: #1c1c1c;
 }
 
 .lx-stat span {
     font-size: 12.5px;
-    color: #666;
+    color: #6b6b6b;
 }
 
 /* ================= SERVICES ================= */
 
 .lx-footer-services {
-    margin-top: 28px;
+    margin-top: 32px;
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
 }
 
 .lx-footer-services span {
-    padding: 6px 12px;
+    padding: 7px 16px;
     font-size: 12.5px;
     border-radius: 999px;
-    background: #f3f4f6;
-    color: #333;
+    background: rgba(184,164,138,.15);
+    color: #5a4f43;
 }
 
 /* ================= LINKS – EDITORIAL ================= */
 
 .lx-footer-links {
     margin-top: 32px;
-    padding-left: 14px;
-    border-left: 2px solid #111;
+    padding-left: 16px;
+    border-left: 2px solid #b8a48a;
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .lx-footer-links a {
     position: relative;
     font-size: 14px;
-    color: #333;
+    color: #1c1c1c;
     text-decoration: none;
     padding-left: 6px;
 
-    transition: color .2s ease, transform .2s ease;
+    transition: color .25s ease, transform .25s ease;
 }
 
 .lx-footer-links a::before {
-    content: '→';
+    content: '—';
     position: absolute;
-    left: -10px;
+    left: -12px;
+    color: #b8a48a;
     opacity: 0;
-    color: #111;
-    transition: opacity .2s ease, left .2s ease;
+    transition: opacity .25s ease;
 }
 
 .lx-footer-links a:hover {
-    color: #000;
+    color: #111;
     transform: translateX(2px);
 }
 
 .lx-footer-links a:hover::before {
     opacity: 1;
-    left: -14px;
 }
-
-/* MOBILE */
-@media (max-width: 768px) {
-    .lx-footer-links {
-        padding-left: 0;
-        border-left: none;
-        gap: 12px;
-    }
-
-    .lx-footer-links a::before {
-        display: none;
-    }
-}
-
 
 /* ================= BOTTOM ================= */
 
 .lx-footer-bottom {
-    margin-top: 36px;
-    padding-top: 14px;
-    border-top: 1px solid #eee;
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e3df;
     font-size: 12px;
-    color: #888;
+    color: #8a8a8a;
 
     display: flex;
     justify-content: space-between;
@@ -158,11 +146,16 @@
 
     .lx-footer-top {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 28px;
     }
 
     .lx-footer-stats {
         grid-template-columns: 1fr;
+    }
+
+    .lx-footer-links {
+        padding-left: 0;
+        border-left: none;
     }
 
     .lx-footer-bottom {
