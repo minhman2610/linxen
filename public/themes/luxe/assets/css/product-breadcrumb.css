@@ -65,3 +65,39 @@
 
 /* ❌ ẨN separator cũ */
 .lx-product-info .lx-breadcrumb
+/* =====================================================
+   PRODUCT CONTEXT LINE – PREMIUM EDITORIAL
+===================================================== */
+
+.lx-product-context {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+
+    color: #9ca3af;
+    margin-bottom: 6px;
+
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* link */
+.lx-product-context a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* separator */
+.lx-context-sep {
+    opacity: .6;
+}
+
+/* category nổi hơn home */
+.lx-context-category {
+    color: #6b7280;
+    font-weight: 500;
+}
