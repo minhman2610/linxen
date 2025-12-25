@@ -31,46 +31,35 @@ document.addEventListener('DOMContentLoaded', () => {
        MAIN SWIPER
     ===================================================== */
     const mainSwiper = new Swiper(mainEl, {
-        slidesPerView: 1,
-        spaceBetween: 4,
-        speed: 450,
-        loop: false,
+    slidesPerView: 1,
+    spaceBetween: 4,
+    speed: 450,
+    loop: false,
 
-        effect: 'slide',
+    effect: 'slide',
 
-        // 👇 Drag feel (rất quan trọng)
-        followFinger: true,
-        touchRatio: 1,
-        resistanceRatio: 0.85,
-        touchReleaseOnEdges: true,
+    followFinger: true,
+    touchRatio: 1,
+    resistanceRatio: 0.85,
 
-        // 👇 GPU + progress
-        watchSlidesProgress: true,
+    // ❌ BỎ DÒNG NÀY
+    // touchReleaseOnEdges: true,
 
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
+    watchSlidesProgress: true,
 
-        navigation: {
-            nextEl: '.lx-gallery-next',
-            prevEl: '.lx-gallery-prev',
-        },
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
 
-        thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
+    navigation: {
+        nextEl: '.lx-gallery-next',
+        prevEl: '.lx-gallery-prev',
+    },
 
-        on: {
-            init(swiper) {
-                progressiveLoad(swiper);
-                preloadNearby(swiper);
-            },
+    thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
+});
 
-            slideChangeTransitionStart(swiper) {
-                progressiveLoad(swiper);
-                preloadNearby(swiper);
-            },
-        },
-    });
 
     /* =====================================================
        PROGRESSIVE LOAD – MOBILE/THUMB → FULL
