@@ -12,7 +12,7 @@
     justify-content: space-between;
 
     padding: 6px 10px;
-    height: 48px;
+    height: 40px;
 
     background: #fff;
     border-bottom: 1px solid #f0f0f0;
@@ -124,7 +124,7 @@
 @media (min-width: 768px) {
     .lx-header {
         padding: 8px 16px;
-        height: 40px;
+        height: 46px;
     }
 
     .lx-header-btn img {
