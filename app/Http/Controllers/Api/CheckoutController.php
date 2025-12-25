@@ -21,7 +21,6 @@ class CheckoutController extends Controller
         $this->erpBaseUrl = rtrim(config('services.erp.base_url'), '/');
     }
 
-
 public function checkPhone(Request $request): JsonResponse
 {
     $request->validate([
