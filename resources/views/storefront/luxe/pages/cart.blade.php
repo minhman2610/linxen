@@ -140,9 +140,7 @@
 
         </div>
     @endif
-
-</section
-<div class="lx-confirm-overlay" id="lxConfirmOverlay">
+    <div class="lx-confirm-overlay" id="lxConfirmOverlay">
     <div class="lx-confirm-box">
         <div class="lx-confirm-title">Xóa sản phẩm?</div>
         <div class="lx-confirm-desc">
@@ -156,4 +154,6 @@
         </div>
     </div>
 </div>
+</section
+
 @endsection
