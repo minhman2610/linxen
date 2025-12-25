@@ -51,6 +51,10 @@
       href="{{ asset('themes/luxe/assets/css/product-actions.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-actions.css')) }}">
       <link rel="stylesheet"
       href="{{ asset('themes/luxe/assets/css/brand-simple.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/brand-simple.css')) }}">
+          {{-- REAL CUSTOMER GALLERY --}}
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/product-real-gallery.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-real-gallery.css')) }}">
+
 @endif
 
       <link rel="stylesheet"
