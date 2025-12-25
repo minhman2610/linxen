@@ -93,49 +93,64 @@
 
     function showAddToCartToast(product) {
 
-        const box = ensureToastBox();
+    const box = ensureToastBox();
 
-        const variantText = product.attrs && Object.keys(product.attrs).length
-            ? Object.values(product.attrs).join(' · ')
-            : '';
+    const variantText = product.attrs && Object.keys(product.attrs).length
+        ? Object.values(product.attrs).join(' · ')
+        : '';
 
-        const toast = document.createElement('div');
-        toast.className = 'lx-toast-product';
+    const toast = document.createElement('div');
+    toast.className = 'lx-toast-product';
 
-        toast.innerHTML = `
-            <div class="lx-toast-head">
+    toast.innerHTML = `
+        <div class="lx-toast-head">
+            <div class="lx-toast-head-left">
                 <span class="lx-toast-icon">✓</span>
                 <span class="lx-toast-title">Đã thêm vào giỏ hàng</span>
             </div>
 
-            <div class="lx-toast-body">
-                <div class="lx-toast-thumb">
-                    <img src="${product.image || '/images/no-image.png'}" alt="">
-                </div>
+            <button class="lx-toast-close" aria-label="Đóng thông báo">✕</button>
+        </div>
 
-                <div class="lx-toast-info">
-                    <div class="lx-toast-name">${product.name}</div>
+        <div class="lx-toast-body">
+            <div class="lx-toast-thumb">
+                <img src="${product.image || '/images/no-image.png'}" alt="">
+            </div>
 
-                    ${variantText ? `
-                        <div class="lx-toast-variant">${variantText}</div>
-                    ` : ''}
+            <div class="lx-toast-info">
+                <div class="lx-toast-name">${product.name}</div>
 
-                    <div class="lx-toast-meta">
-                        <span>x${product.qty}</span>
-                        <strong>${product.total.toLocaleString()}₫</strong>
-                    </div>
+                ${variantText ? `
+                    <div class="lx-toast-variant">${variantText}</div>
+                ` : ''}
+
+                <div class="lx-toast-meta">
+                    <span class="lx-toast-qty">x${product.qty}</span>
+                    <strong class="lx-toast-price">${product.total.toLocaleString()}₫</strong>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
-        box.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.add('show'));
+    box.appendChild(toast);
 
-        // setTimeout(() => {
-        //     toast.classList.remove('show');
-        //     setTimeout(() => toast.remove(), 300);
-        // }, 10000);
-    }
+    // show animation
+    requestAnimationFrame(() => toast.classList.add('show'));
+
+    // ✕ close handler
+    toast.querySelector('.lx-toast-close').addEventListener('click', () => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    });
+
+    // auto close (tuỳ chọn – anh bật/tắt thoải mái)
+    setTimeout(() => {
+        if (!toast.isConnected) return;
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 6000);
+}
+
 
     function showErrorToast(message) {
         const box = ensureToastBox();
