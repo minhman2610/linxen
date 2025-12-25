@@ -24,12 +24,7 @@ class CheckoutController extends Controller
      * STOREFRONT (LIN XÉN) → ERP
      * =====================================================
      */
-    public function create(Request $request)
-{
-    dd('HIT CHECKOUT CONTROLLER');
-}
-
-    public function create1(Request $request): JsonResponse
+    public function create(Request $request): JsonResponse
     {
         /*
         |--------------------------------------------------------------------------
