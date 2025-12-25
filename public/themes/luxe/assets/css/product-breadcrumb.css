@@ -1,37 +1,91 @@
 /* =====================================================
-   LUXURY BREADCRUMB – QUIET FASHION
+   LUXURY ART BREADCRUMB – SIGNATURE
 ===================================================== */
 
-.lx-luxury-breadcrumb {
-    margin-bottom: 20px; /* khoảng thở rõ ràng */
-}
+.lx-art-breadcrumb {
+    position: relative;
 
-.lx-luxury-text {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 
-    font-size: 11px;
-    letter-spacing: 0.22em;      /* rất quan trọng */
-    text-transform: uppercase;
-
-    color: #9ca3af;              /* xám luxury */
+    margin-bottom: 22px;     /* không cắn nội dung dưới */
+    padding-bottom: 10px;
 
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Separator */
-.lx-luxury-sep {
-    margin: 0 10px;
-    color: #d1d5db;
+.lx-art-breadcrumb::-webkit-scrollbar {
+    display: none;
 }
 
-/* Item */
-.lx-luxury-item {
+/* ĐƯỜNG DẪN NGHỆ THUẬT PHÍA SAU */
+.lx-art-breadcrumb::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        #e5e7eb,
+        transparent
+    );
+}
+
+/* ================= ITEM ================= */
+
+.lx-art-item {
+    position: relative;
+    z-index: 1;
+
+    display: inline-flex;
+    align-items: center;
+
+    padding: 8px 18px;
+    border-radius: 2px; /* KHÔNG bo tròn → couture */
+
+    background: #fff;
+
+    border: 1px solid #e5e7eb;
+
+    font-size: 11px;
+    letter-spacing: 0.26em;      /* rất quan trọng */
+    text-transform: uppercase;
+
     color: #6b7280;
 }
 
-/* Item cuối (current context) */
-.lx-luxury-item:last-child {
+/* HOME – khác nhẹ */
+.lx-art-item.is-home {
+    border-style: dashed;
+    color: #9ca3af;
+}
+
+/* ACTIVE – điểm nhấn cao cấp */
+.lx-art-item.is-active {
+    border-color: #111;
     color: #111;
+}
+
+/* LABEL */
+.lx-art-label {
+    position: relative;
+}
+
+/* ================= CONNECTOR ================= */
+
+.lx-art-connector {
+    flex-shrink: 0;
+
+    font-size: 13px;
+    color: #c7a26d;          /* champagne gold */
+    opacity: 0.9;
+
+    transform: translateY(-1px);
 }
