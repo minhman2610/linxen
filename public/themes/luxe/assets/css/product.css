@@ -265,73 +265,102 @@
 }
 
 /* =====================================================
-   VARIANTS – STACKED (ONE ATTRIBUTE PER BLOCK)
+   VARIANTS – LUXE STACKED (SAFE CLICK)
 ===================================================== */
 
 .lx-pdp .lx-product-variants {
-    margin: 22px 0;
+    margin: 22px 0 26px;
 }
 
 .lx-pdp .lx-variant-row {
     display: block;
     width: 100%;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    position: relative;
 }
 
 .lx-pdp .lx-variant-label {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     font-size: 10.5px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: #6b7280;
 }
 
+/* OPTIONS */
 .lx-pdp .lx-variant-options {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
+/* OPTION BASE */
 .lx-pdp .variant-option {
-    padding: 7px 13px;
+    padding: 7px 14px;
     border-radius: 999px;
     border: 1px solid #e5e7eb;
     background: #fff;
     font-size: 12px;
     color: #374151;
     cursor: pointer;
-    transition: all .15s ease;
+
+    transition:
+        background .15s ease,
+        color .15s ease,
+        border-color .15s ease,
+        transform .12s ease;
 }
 
+/* HOVER */
+@media (hover: hover) {
+    .lx-pdp .variant-option:hover {
+        border-color: #9ca3af;
+        transform: translateY(-1px);
+    }
+}
+
+/* ACTIVE */
 .lx-pdp .variant-option.active {
     background: #111;
     color: #fff;
     border-color: #111;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
 }
 
+/* DISABLED (SAFE) */
 .lx-pdp .variant-option.disabled {
-    opacity: .4;
+    opacity: .45;
     cursor: not-allowed;
 }
+
+/* ================= VARIANT ERROR STATE ================= */
+
 .lx-variant-row.lx-variant-error {
-    animation: lxShake .25s ease-in-out 2;
+    animation: lxVariantShake .25s ease-in-out 2;
 }
 
-@keyframes lxShake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    50% { transform: translateX(4px); }
-    75% { transform: translateX(-2px); }
+.lx-variant-row.lx-variant-error .lx-variant-label {
+    color: #dc2626;
+}
+
+/* ❗ TUYỆT ĐỐI KHÔNG pointer-events: none ❗ */
+@keyframes lxVariantShake {
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(-4px); }
+    50%  { transform: translateX(4px); }
+    75%  { transform: translateX(-2px); }
     100% { transform: translateX(0); }
 }
+
 /* =====================================================
    ADD TO CART TOAST – PRODUCT (BOTTOM RIGHT)
 ===================================================== */
 
 .lx-toast-container {
     position: fixed;
-    right: 12px;
-    bottom: 72px; /* chừa bottom nav mobile */
+    right: 14px;
+    bottom: 76px; /* chừa bottom nav mobile */
     z-index: 9999;
 
     display: flex;
@@ -342,15 +371,17 @@
 /* ================= TOAST BASE ================= */
 
 .lx-toast-product {
-    width: 280px;
+    width: 290px;
     background: #ffffff;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 12px;
 
-    box-shadow: 0 12px 28px rgba(0,0,0,.18);
+    box-shadow:
+        0 12px 28px rgba(0,0,0,.18),
+        0 2px 6px rgba(0,0,0,.06);
 
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
     transition: all .3s ease;
 }
 
@@ -370,8 +401,8 @@
 
 .lx-toast-icon {
     font-size: 14px;
-    font-weight: 600;
-    color: #16a34a; /* xanh thành công */
+    font-weight: 700;
+    color: #16a34a; /* success green */
 }
 
 .lx-toast-title {
@@ -388,10 +419,10 @@
 }
 
 .lx-toast-thumb img {
-    width: 54px;
-    height: 72px;
+    width: 56px;
+    height: 74px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #f3f4f6;
 }
 
@@ -432,28 +463,12 @@
 
 /* ================= ERROR TOAST ================= */
 
-.lx-toast-error {
+.lx-toast-product.lx-toast-error {
     border-left: 4px solid #dc2626;
 }
 
-.lx-toast-error .lx-toast-icon {
+.lx-toast-product.lx-toast-error .lx-toast-icon {
     color: #dc2626;
-}
-
-/* =====================================================
-   VARIANT ERROR HIGHLIGHT (SHAKE)
-===================================================== */
-
-.lx-variant-row.lx-variant-error {
-    animation: lxVariantShake .25s ease-in-out 2;
-}
-
-@keyframes lxVariantShake {
-    0%   { transform: translateX(0); }
-    25%  { transform: translateX(-4px); }
-    50%  { transform: translateX(4px); }
-    75%  { transform: translateX(-2px); }
-    100% { transform: translateX(0); }
 }
 
 /* =====================================================

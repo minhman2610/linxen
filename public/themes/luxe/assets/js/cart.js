@@ -1,10 +1,10 @@
 /**
  * =====================================================
- * 🛒 CART – LIN XÉN
- * Add to cart (AJAX)
- * + Qty control
- * + Variant validate
- * + Rich product toast (bottom-right)
+ * 🛒 CART – LIN XÉN (FINAL STABLE)
+ * - Qty control
+ * - Variant validate (NO LOCK)
+ * - AJAX add to cart
+ * - Rich toast (bottom-right)
  * =====================================================
  */
 (function () {
@@ -42,7 +42,7 @@
     }
 
     /* =====================================================
-     * ✅ VALIDATE VARIANTS
+     * ✅ VALIDATE VARIANTS (KHÔNG KHOÁ UI)
      * ===================================================== */
     function validateVariants() {
 
@@ -59,10 +59,11 @@
 
         if (invalidRow) {
 
+            // ❗ CHỈ SHAKE – KHÔNG DISABLE GÌ CẢ
             invalidRow.classList.add('lx-variant-error');
             setTimeout(() => {
                 invalidRow.classList.remove('lx-variant-error');
-            }, 1200);
+            }, 600);
 
             invalidRow.scrollIntoView({
                 behavior: 'smooth',
@@ -81,7 +82,7 @@
     }
 
     /* =====================================================
-     * 🟢 RICH ADD-TO-CART TOAST
+     * 🟢 ADD TO CART TOAST (RICH)
      * ===================================================== */
     function showAddToCartToast(product) {
 
@@ -93,9 +94,7 @@
         }
 
         const variantText = product.attrs && Object.keys(product.attrs).length
-            ? Object.entries(product.attrs)
-                .map(([k, v]) => `${v}`)
-                .join(' · ')
+            ? Object.values(product.attrs).join(' · ')
             : '';
 
         const toast = document.createElement('div');
@@ -138,6 +137,7 @@
     }
 
     function showErrorToast(message) {
+
         let box = document.querySelector('.lx-toast-container');
         if (!box) {
             box = document.createElement('div');
@@ -173,6 +173,7 @@
 
         e.preventDefault();
 
+        // ❌ CHƯA CHỌN BIẾN THỂ → CHỈ RETURN
         if (!validateVariants()) return;
 
         const payload = {

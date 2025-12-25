@@ -1,6 +1,6 @@
 /* =====================================================
    PRODUCT GALLERY – SWIPER PRO (LIN XÉN)
-   Scope: Gallery only (SAFE)
+   Scope: Gallery + Variant only (SAFE)
 ===================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-       PRELOAD NEXT / PREV (CHỐNG GIẬT)
+       PRELOAD NEXT / PREV (ANTI JITTER)
     ===================================================== */
     function preloadNearby(swiper) {
         [swiper.activeIndex + 1, swiper.activeIndex - 1].forEach(i => {
@@ -120,21 +120,26 @@ document.addEventListener('click', function (e) {
     const row = option.closest('.lx-variant-row');
     if (!row) return;
 
-    // nếu bị disable thì không cho chọn
+    // nếu option bị disable → không cho chọn
     if (option.classList.contains('disabled')) return;
 
-    // bỏ active trong cùng attribute
+    // clear trạng thái error (🔥 FIX KẸT SAU VALIDATE)
+    row.classList.remove('lx-variant-error');
+
+    // bỏ active cũ trong cùng attribute
     row.querySelectorAll('.variant-option.active')
         .forEach(btn => btn.classList.remove('active'));
 
-    // set active cho option được chọn
+    // set active mới
     option.classList.add('active');
 
-    // lưu giá trị đã chọn
+    // lưu giá trị đã chọn để validate
     row.dataset.selected = option.dataset.value;
 
+    // sync attrs cho Add to Cart
     syncSelectedVariants();
 });
+
 
 /* =====================================================
    SYNC VARIANTS → ADD TO CART DATA
