@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
             freeMode: true,
             watchSlidesProgress: true,
             watchOverflow: true,
-
             resistanceRatio: 0.85,
         });
     }
@@ -31,35 +30,30 @@ document.addEventListener('DOMContentLoaded', () => {
        MAIN SWIPER
     ===================================================== */
     const mainSwiper = new Swiper(mainEl, {
-    slidesPerView: 1,
-    spaceBetween: 4,
-    speed: 450,
-    loop: false,
+        slidesPerView: 1,
+        spaceBetween: 4,
+        speed: 450,
+        loop: false,
+        effect: 'slide',
 
-    effect: 'slide',
+        followFinger: true,
+        touchRatio: 1,
+        resistanceRatio: 0.85,
 
-    followFinger: true,
-    touchRatio: 1,
-    resistanceRatio: 0.85,
+        watchSlidesProgress: true,
 
-    // ❌ BỎ DÒNG NÀY
-    // touchReleaseOnEdges: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
 
-    watchSlidesProgress: true,
+        navigation: {
+            nextEl: '.lx-gallery-next',
+            prevEl: '.lx-gallery-prev',
+        },
 
-    pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-    },
-
-    navigation: {
-        nextEl: '.lx-gallery-next',
-        prevEl: '.lx-gallery-prev',
-    },
-
-    thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
-});
-
+        thumbs: thumbSwiper ? { swiper: thumbSwiper } : undefined,
+    });
 
     /* =====================================================
        PROGRESSIVE LOAD – MOBILE/THUMB → FULL
@@ -103,4 +97,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    mainSwiper.on('slideChange', () => {
+        progressiveLoad(mainSwiper);
+        preloadNearby(mainSwiper);
+    });
+
+    progressiveLoad(mainSwiper);
+    preloadNearby(mainSwiper);
 });
+
+
+/* =====================================================
+   VARIANT SELECTOR – LIN XÉN
+   One attribute = one active option
+===================================================== */
+
+document.addEventListener('click', function (e) {
+
+    const option = e.target.closest('.variant-option');
+    if (!option) return;
+
+    const row = option.closest('.lx-variant-row');
+    if (!row) return;
+
+    // nếu bị disable thì không cho chọn
+    if (option.classList.contains('disabled')) return;
+
+    // bỏ active trong cùng attribute
+    row.querySelectorAll('.variant-option.active')
+        .forEach(btn => btn.classList.remove('active'));
+
+    // set active cho option được chọn
+    option.classList.add('active');
+
+    // lưu giá trị đã chọn
+    row.dataset.selected = option.dataset.value;
+
+    syncSelectedVariants();
+});
+
+/* =====================================================
+   SYNC VARIANTS → ADD TO CART DATA
+===================================================== */
+function syncSelectedVariants() {
+
+    const attrs = {};
+
+    document.querySelectorAll('.lx-variant-row').forEach(row => {
+        const key = row.dataset.attrKey;
+        const val = row.dataset.selected;
+
+        if (key && val) {
+            attrs[key] = val;
+        }
+    });
+
+    const btn = document.getElementById('lxAddToCartBtn');
+    if (btn) {
+        btn.dataset.attrs = JSON.stringify(attrs);
+    }
+}
