@@ -13,42 +13,55 @@
 <section class="lx-product-detail">
 
     {{-- =====================================================
-       PRODUCT GALLERY – SWIPER PRO
-    ===================================================== --}}
-    <div class="lx-product-gallery">
+   PRODUCT GALLERY – SWIPER PRO
+===================================================== --}}
+<div class="lx-product-gallery">
 
-        <div class="swiper lx-product-main-swiper">
+    {{-- CATEGORY BAR --}}
+    <div class="lx-gallery-categories">
+        <button class="lx-gallery-cat active" data-group="all">Tất cả</button>
+        <button class="lx-gallery-cat" data-group="model">Mẫu mặc</button>
+        <button class="lx-gallery-cat" data-group="detail">Chi tiết</button>
+        <button class="lx-gallery-cat" data-group="video">Video</button>
+        <button class="lx-gallery-cat" data-group="feedback">Feedback</button>
+    </div>
+
+    {{-- MAIN SWIPER --}}
+    <div class="swiper lx-product-main-swiper">
+        <div class="swiper-wrapper">
+            @foreach($images as $index => $img)
+                <div class="swiper-slide"
+                     data-group="{{ $img['group'] ?? 'model' }}">
+                    <img
+                        src="{{ $img['mobile'] ?? $img['thumb'] }}"
+                        data-full="{{ $img['full'] }}"
+                        alt="{{ $product['name'] ?? '' }}"
+                        loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                        class="lx-main-image">
+                </div>
+            @endforeach
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="lx-gallery-nav lx-gallery-prev"></div>
+        <div class="lx-gallery-nav lx-gallery-next"></div>
+    </div>
+
+    {{-- THUMB --}}
+    @if(count($images) > 1)
+        <div class="swiper lx-product-thumb-swiper">
             <div class="swiper-wrapper">
-                @foreach($images as $index => $img)
+                @foreach($images as $img)
                     <div class="swiper-slide">
-                        <img
-                            src="{{ $img['mobile'] ?? $img['thumb'] }}"
-                            data-full="{{ $img['full'] }}"
-                            alt="{{ $product['name'] ?? '' }}"
-                            loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
-                            class="lx-main-image">
+                        <img src="{{ $img['thumb'] }}" loading="lazy" alt="">
                     </div>
                 @endforeach
             </div>
-
-            <div class="swiper-pagination"></div>
-            <div class="lx-gallery-nav lx-gallery-prev"></div>
-            <div class="lx-gallery-nav lx-gallery-next"></div>
         </div>
+    @endif
 
-        @if(count($images) > 1)
-            <div class="swiper lx-product-thumb-swiper">
-                <div class="swiper-wrapper">
-                    @foreach($images as $img)
-                        <div class="swiper-slide">
-                            <img src="{{ $img['thumb'] }}" loading="lazy" alt="">
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
+</div>
 
-    </div>
 
     {{-- =====================================================
        PRODUCT CONTENT
