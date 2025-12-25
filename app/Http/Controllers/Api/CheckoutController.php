@@ -8,8 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-use App\Models\Customer\CustomerUser;
-use App\Models\Customer\CustomerProfile;
 use Throwable;
 
 class CheckoutController extends Controller
@@ -31,41 +29,12 @@ public function checkPhone(Request $request): JsonResponse
 
     /*
     |--------------------------------------------------------------------------
-    | 1️⃣ CHECK WEBSITE ACCOUNT (customer_users)
+    | 🔍 CHECK PHONE VIA ERP (SINGLE SOURCE OF TRUTH)
     |--------------------------------------------------------------------------
-    */
-    $customerUser = CustomerUser::where('phone', $phone)->first();
-
-    if ($customerUser) {
-        return response()->json([
-            'has_account'      => true,
-            'has_profile'      => (bool) $customerUser->profile,
-            'has_erp_history'  => false,
-        ]);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 2️⃣ CHECK WEBSITE PROFILE (guest / history)
-    |--------------------------------------------------------------------------
-    */
-    $profile = CustomerProfile::where('phone', $phone)->first();
-
-    if ($profile) {
-        return response()->json([
-            'has_account'      => false,
-            'has_profile'      => true,
-            'has_erp_history'  => false,
-            'name'             => $profile->name,
-        ]);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 3️⃣ CHECK ERP (KIOTVIET / ERP SYSTEM)
-    |--------------------------------------------------------------------------
-    | ERP ROUTE ĐỀ XUẤT:
-    | GET {ERP_BASE_URL}/api/storefront/customers/check-phone?phone=xxx
+    | ERP chịu trách nhiệm:
+    | - Phone có account website không?
+    | - Phone có lịch sử mua hàng không?
+    | - Có tên khách hàng không?
     |--------------------------------------------------------------------------
     */
     try {
@@ -78,36 +47,56 @@ public function checkPhone(Request $request): JsonResponse
                 ['phone' => $phone]
             );
 
-        if ($response->ok()) {
-            $json = $response->json();
+        if (!$response->ok()) {
+            Log::warning('⚠️ [CHECK PHONE ERP HTTP ERROR]', [
+                'phone'  => $phone,
+                'status' => $response->status(),
+            ]);
 
-            if (($json['found'] ?? false) === true) {
-                return response()->json([
-                    'has_account'      => false,
-                    'has_profile'      => false,
-                    'has_erp_history'  => true,
-                    'name'             => $json['name'] ?? null,
-                ]);
-            }
+            // Fail soft – coi như khách mới
+            return response()->json([
+                'has_account'      => false,
+                'has_profile'      => false,
+                'has_erp_history'  => false,
+            ]);
         }
 
-    } catch (Throwable $e) {
-        Log::warning('⚠️ [CHECK PHONE ERP FAILED]', [
+        $json = $response->json();
+
+        /*
+        |--------------------------------------------------------------------------
+        | ERP RESPONSE CONTRACT (EXPECTED)
+        |--------------------------------------------------------------------------
+        | {
+        |   "found": true,
+        |   "has_account": true|false,
+        |   "has_erp_history": true|false,
+        |   "name": "Nguyen Van A"
+        | }
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+            'has_account'      => (bool) ($json['has_account'] ?? false),
+            'has_profile'      => false, // storefront KHÔNG quyết profile
+            'has_erp_history'  => (bool) ($json['has_erp_history'] ?? false),
+            'name'             => $json['name'] ?? null,
+        ]);
+
+    } catch (\Throwable $e) {
+
+        Log::error('🔥 [CHECK PHONE ERP EXCEPTION]', [
             'phone' => $phone,
             'error' => $e->getMessage(),
         ]);
-    }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4️⃣ KHÁCH HOÀN TOÀN MỚI
-    |--------------------------------------------------------------------------
-    */
-    return response()->json([
-        'has_account'      => false,
-        'has_profile'      => false,
-        'has_erp_history'  => false,
-    ]);
+        // Fail soft – không chặn checkout
+        return response()->json([
+            'has_account'      => false,
+            'has_profile'      => false,
+            'has_erp_history'  => false,
+        ]);
+    }
 }
 
 
