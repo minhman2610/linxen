@@ -16,24 +16,3 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
-
-.lx-art-breadcrumb::-webkit-scrollbar {
-    display: none;
-}
-
-/* ĐƯỜNG DẪN PHÍA SAU */
-.lx-art-breadcrumb::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    height: 1px;
-    background: linear-gradient(
-        to right,
-        transparent,
-        #e0e0e0,              /* 🔼 đậm hơn */
-        transparent
-    );
-}
