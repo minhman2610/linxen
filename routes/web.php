@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Storefront\PageController;
 use App\Http\Controllers\Storefront\ReelsController;
 use App\Http\Controllers\Storefront\Api\LocationProxyController;
+use App\Http\Controllers\Api\CheckoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,14 +49,32 @@ Route::domain('linxen.vn')
         Route::post('/cart/remove', [PageController::class, 'removeFromCart'])
             ->name('linxen.cart.remove');
 
-        // 💳 CHECKOUT
+        // 💳 CHECKOUT PAGE
         Route::get('/checkout', [PageController::class, 'checkout'])
             ->name('linxen.checkout');
 
         Route::get('/checkout/place-order', [PageController::class, 'placeOrder'])
             ->name('linxen.checkout.place_order');
 
-        // 👤 ACCOUNT
+        /*
+        |--------------------------------------------------------------------------
+        | 🔑 CHECKOUT – AJAX & API
+        |--------------------------------------------------------------------------
+        */
+
+        // 🔍 Check phone (identity-first)
+        Route::post('/ajax/check-phone', [CheckoutController::class, 'checkPhone'])
+            ->name('checkout.check_phone');
+
+        // 📦 Create order (checkout submit)
+        Route::post('/api/storefront/orders', [CheckoutController::class, 'create'])
+            ->name('checkout.create');
+
+        /*
+        |--------------------------------------------------------------------------
+        | 👤 ACCOUNT
+        |--------------------------------------------------------------------------
+        */
         Route::get('/account', [PageController::class, 'account'])
             ->name('linxen.account');
 
@@ -65,4 +84,3 @@ Route::domain('linxen.vn')
         Route::get('/account/orders/{code}', [PageController::class, 'orderDetail'])
             ->name('linxen.account.order_detail');
     });
-

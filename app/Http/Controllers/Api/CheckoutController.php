@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+
+use App\Models\Customer\CustomerUser;
+use App\Models\Customer\CustomerProfile;
 use Throwable;
 
 class CheckoutController extends Controller
@@ -17,6 +20,97 @@ class CheckoutController extends Controller
     {
         $this->erpBaseUrl = rtrim(config('services.erp.base_url'), '/');
     }
+
+
+public function checkPhone(Request $request): JsonResponse
+{
+    $request->validate([
+        'phone' => 'required|string|max:20',
+    ]);
+
+    $phone = trim($request->input('phone'));
+
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ CHECK WEBSITE ACCOUNT (customer_users)
+    |--------------------------------------------------------------------------
+    */
+    $customerUser = CustomerUser::where('phone', $phone)->first();
+
+    if ($customerUser) {
+        return response()->json([
+            'has_account'      => true,
+            'has_profile'      => (bool) $customerUser->profile,
+            'has_erp_history'  => false,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ CHECK WEBSITE PROFILE (guest / history)
+    |--------------------------------------------------------------------------
+    */
+    $profile = CustomerProfile::where('phone', $phone)->first();
+
+    if ($profile) {
+        return response()->json([
+            'has_account'      => false,
+            'has_profile'      => true,
+            'has_erp_history'  => false,
+            'name'             => $profile->name,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 3️⃣ CHECK ERP (KIOTVIET / ERP SYSTEM)
+    |--------------------------------------------------------------------------
+    | ERP ROUTE ĐỀ XUẤT:
+    | GET {ERP_BASE_URL}/api/storefront/customers/check-phone?phone=xxx
+    |--------------------------------------------------------------------------
+    */
+    try {
+        $response = Http::withOptions([
+                'verify' => false,
+            ])
+            ->timeout(8)
+            ->get(
+                "{$this->erpBaseUrl}/api/storefront/customers/check-phone",
+                ['phone' => $phone]
+            );
+
+        if ($response->ok()) {
+            $json = $response->json();
+
+            if (($json['found'] ?? false) === true) {
+                return response()->json([
+                    'has_account'      => false,
+                    'has_profile'      => false,
+                    'has_erp_history'  => true,
+                    'name'             => $json['name'] ?? null,
+                ]);
+            }
+        }
+
+    } catch (Throwable $e) {
+        Log::warning('⚠️ [CHECK PHONE ERP FAILED]', [
+            'phone' => $phone,
+            'error' => $e->getMessage(),
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ KHÁCH HOÀN TOÀN MỚI
+    |--------------------------------------------------------------------------
+    */
+    return response()->json([
+        'has_account'      => false,
+        'has_profile'      => false,
+        'has_erp_history'  => false,
+    ]);
+}
+
 
     /**
      * =====================================================
