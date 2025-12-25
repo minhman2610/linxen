@@ -61,6 +61,14 @@
 
 @endif
 
+@if(request()->routeIs('linxen.cart'))
+    <link
+        rel="stylesheet"
+        href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}"
+    >
+@endif
+
+
       <link rel="stylesheet"
       href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
 
