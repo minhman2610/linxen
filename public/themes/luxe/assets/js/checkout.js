@@ -71,18 +71,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const payload = {
-            storefront: 'linxen',
+    storefront: 'linxen',
 
-            customer: {
-                name: fd.get('name'),
-                phone: fd.get('phone'),
-                street: fd.get('street'),
-                location_name: locationName,
-                ward_name: wardName,
-            },
+    customer: {
+        name: fd.get('name'),
+        phone: fd.get('phone'),
+        street: fd.get('street'),
 
-            items: items,
-        };
+        location_id: locSel.value,
+        ward_id: wardSel.value,
+
+        location_name: locSel.selectedOptions[0]?.text || '',
+        ward_name: wardSel.selectedOptions[0]?.text || '',
+    },
+
+    items: items,
+};
+
 
         try {
             // Disable submit để tránh double click
