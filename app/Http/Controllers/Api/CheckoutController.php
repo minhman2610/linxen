@@ -97,14 +97,15 @@ class CheckoutController extends Controller
         |--------------------------------------------------------------------------
         */
         try {
-            $response = Http::withHeaders([
-                    'Accept' => 'application/json',
-                ])
-                ->timeout(15)
-                ->post(
-                    "{$this->erpBaseUrl}/api/storefront/orders",
-                    $payload
-                );
+            $response = Http::withOptions([
+        'verify' => false, // 🔥 FIX SSL ERROR 60
+    ])
+    ->timeout(15)
+    ->post(
+        "{$this->erpBaseUrl}/api/storefront/orders",
+        $payload
+    );
+
 
             if ($response->failed()) {
                 Log::error('❌ [LINXEN → ERP CREATE ORDER FAILED]', [
