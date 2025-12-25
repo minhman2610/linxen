@@ -1,17 +1,15 @@
 {{-- =====================================================
-   PRODUCT BREADCRUMB – FLORAL RIBBON
+   PRODUCT BREADCRUMB – FLORAL (HOME + CATEGORY)
 ===================================================== --}}
 @if(!empty($breadcrumbs))
     <div class="lx-floral-breadcrumb">
 
         {{-- HOA TRANG TRÍ --}}
-        <span class="lx-floral-decor">
-            ❀ ❀ ❀
-        </span>
+        <span class="lx-floral-decor">❀ ❀ ❀</span>
 
-        {{-- TEXT --}}
+        {{-- TEXT (ONE LINE) --}}
         <span class="lx-floral-text">
-            {{ collect($breadcrumbs)->pluck('name')->join('  ·  ') }}
+            Trang chủ · {{ collect($breadcrumbs)->pluck('name')->join(' · ') }}
         </span>
 
     </div>

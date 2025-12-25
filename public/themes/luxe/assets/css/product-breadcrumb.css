@@ -1,43 +1,53 @@
 /* =====================================================
-   FLORAL BREADCRUMB – FEMININE & COUTURE
+   FLORAL BREADCRUMB – ONE LINE, WITH HOME
 ===================================================== */
 
 .lx-floral-breadcrumb {
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
     margin-bottom: 12px;
+
+    white-space: nowrap;
+    overflow: hidden;
 }
 
-/* Hoa trang trí */
+/* HOA – decoration layer */
 .lx-floral-decor {
-    font-size: 12px;
-    letter-spacing: 2px;
-    color: #d4af37; /* champagne gold */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #d4af37; /* champagne */
     opacity: 0.9;
-    flex-shrink: 0;
+
+    pointer-events: none;
 }
 
-/* Text breadcrumb */
+/* TEXT – nội dung chính */
 .lx-floral-text {
+    display: block;
+
+    padding-left: 52px; /* chừa chỗ cho hoa */
+    padding-right: 8px;
+
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
 
-    color: #9b8f82; /* nude / champagne */
+    color: #9b8f82;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* Đường hoa mảnh phía dưới */
+/* ĐƯỜNG HOA MẢNH */
 .lx-floral-breadcrumb::after {
     content: "";
     position: absolute;
-    left: 0;
+    left: 52px;
     right: 20%;
     bottom: -4px;
     height: 1px;
