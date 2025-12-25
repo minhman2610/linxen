@@ -30,21 +30,19 @@
     </div>
 
     {{-- ADD TO CART --}}
-    <button
-        class="lx-btn-addtocart"
+    <button class="lx-btn-addtocart"
         id="lxAddToCartBtn"
         type="button"
-
         data-add-to-cart
-        data-sku="{{ $product['sku'] ?? '' }}"
-        data-name="{{ $product['name'] ?? '' }}"
+        data-sku="{{ $product['sku'] ?? $product['code'] }}"
+        data-name="{{ $product['name'] }}"
         data-price="{{ $product['price'] ?? 0 }}"
         data-image="{{ $mainImage ?? '' }}"
         data-qty="1"
-        data-attrs='@json($attributes ?? [])'
-    >
-        <span class="lx-btn-icon">👜</span>
-        <span class="lx-btn-text">Thêm vào giỏ</span>
-    </button>
+        data-attrs='@json([])'>
+    <span class="lx-btn-icon">👜</span>
+    <span class="lx-btn-text">Thêm vào giỏ</span>
+</button>
+
 
 </div>
