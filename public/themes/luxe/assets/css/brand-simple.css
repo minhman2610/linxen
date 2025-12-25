@@ -1,0 +1,85 @@
+/* =====================================================
+   BRAND SIMPLE – VISUAL & TOUCHABLE
+===================================================== */
+
+.lx-brand-simple.visual {
+    margin: 48px 0;
+    text-align: center;
+}
+
+/* TITLE */
+.lx-simple-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111;
+    line-height: 1.35;
+    margin-bottom: 28px;
+}
+
+.lx-simple-title span {
+    font-size: 14px;
+    font-weight: 400;
+    color: #6b7280;
+}
+
+/* CARDS */
+.lx-simple-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.lx-simple-card {
+    padding: 20px 16px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.lx-simple-card.highlight {
+    border-color: #111;
+}
+
+.lx-card-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.lx-simple-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #111;
+}
+
+.lx-simple-card p {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* TRUST */
+.lx-simple-trust {
+    margin-top: 24px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .lx-simple-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .lx-simple-card {
+        text-align: left;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .lx-card-icon {
+        font-size: 24px;
+        margin-top: 2px;
+    }
+}
