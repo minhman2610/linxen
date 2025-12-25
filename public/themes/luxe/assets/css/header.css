@@ -166,40 +166,40 @@
     top: var(--announcement-height, 0);
     z-index: 100;
 
-    /* 🔥 animate màu nền */
-    animation: lxHeaderColorShift 1s linear infinite;
+    /* 🔥 animate màu nền – ĐÈN SHOWROOM */
+    animation: lxHeaderColorShift 4s ease-in-out infinite;
 }
 
 /* -------------------------------------------------
-   KEYFRAMES – ĐỔI MÀU NỀN MỖI GIÂY
+   KEYFRAMES – LUXURY AMBIENT COLOR SHIFT
 ------------------------------------------------- */
 @keyframes lxHeaderColorShift {
     0% {
         background: linear-gradient(
             to bottom,
             #fcfcfb 0%,
-            #9e9e20 100%
+            #f7f6f3 100%
         );
     }
     25% {
         background: linear-gradient(
             to bottom,
-            #f6f8fa 0%,   /* ivory lạnh */
-            #9e2054 100%
+            #f8f7f4 0%,   /* warm ivory */
+            #f1efe9 100%
         );
     }
     50% {
         background: linear-gradient(
             to bottom,
-            #fff6ee 0%,   /* champagne ấm */
-            #20799e 100%
+            #fff9f3 0%,   /* champagne light */
+            #f3ede4 100%
         );
     }
     75% {
         background: linear-gradient(
             to bottom,
-            #f3f5f4 0%,   /* neutral grey */
-            #209e26 100%
+            #f5f6f5 0%,   /* soft stone */
+            #eff1ef 100%
         );
     }
     100% {
@@ -210,3 +210,4 @@
         );
     }
 }
+
