@@ -153,26 +153,31 @@
 
 
     function showErrorToast(message) {
-        const box = ensureToastBox();
 
-        const toast = document.createElement('div');
-        toast.className = 'lx-toast-product lx-toast-error';
+    const box = ensureToastBox();
 
-        toast.innerHTML = `
-            <div class="lx-toast-head">
+    const toast = document.createElement('div');
+    toast.className = 'lx-toast-product lx-toast-error';
+
+    toast.innerHTML = `
+        <div class="lx-toast-head lx-toast-head-error">
+            <div class="lx-toast-head-left">
                 <span class="lx-toast-icon">!</span>
-                <span class="lx-toast-title">${message}</span>
+                <span class="lx-toast-title">${message.toUpperCase()}</span>
             </div>
-        `;
+        </div>
+    `;
 
-        box.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.add('show'));
+    box.appendChild(toast);
 
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 4000);
-    }
+    requestAnimationFrame(() => toast.classList.add('show'));
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
 
     /* ================= ADD TO CART ================= */
     document.addEventListener('click', function (e) {

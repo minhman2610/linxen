@@ -360,6 +360,23 @@
     color: #7f1d1d;
 }
 
+/* =====================================================
+   ERROR TOAST – ALIGN LEFT & CLEAR
+===================================================== */
+
+.lx-toast-head-error {
+    justify-content: flex-start;   /* 🔥 không space-between */
+}
+
+.lx-toast-head-error .lx-toast-title {
+    text-align: left;
+    text-transform: uppercase;     /* phòng khi JS không uppercase */
+    letter-spacing: .06em;
+
+    font-size: 15.5px;
+    font-weight: 800;
+    color: #7f1d1d;
+}
 
 /* ================= MOBILE ================= */
 
