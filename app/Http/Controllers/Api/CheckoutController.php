@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\JsonResponse;
 use Throwable;
 
 class CheckoutController extends Controller
@@ -21,14 +21,24 @@ class CheckoutController extends Controller
     /**
      * =====================================================
      * 🧾 CREATE ORDER
-     * LINXEN Storefront → ERP
+     * STOREFRONT (LIN XÉN) → ERP
      * =====================================================
      */
     public function create(Request $request): JsonResponse
     {
         /*
         |--------------------------------------------------------------------------
-        | 1️⃣ Validate dữ liệu checkout (chỉ customer info)
+        | 0️⃣ LOG RAW REQUEST (DEBUG)
+        |--------------------------------------------------------------------------
+        */
+        Log::info('🟡 [LINXEN CHECKOUT RAW REQUEST]', [
+            'all'  => $request->all(),
+            'json' => $request->json()->all(),
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | 1️⃣ Validate customer info
         |--------------------------------------------------------------------------
         */
         $data = $request->validate([
@@ -47,34 +57,33 @@ class CheckoutController extends Controller
         */
         $cart = session('cart', []);
 
-        if (empty($cart)) {
+        if (empty($cart) || !is_array($cart)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Giỏ hàng trống, không thể tạo đơn.',
             ], 422);
         }
 
-        Log::info('🛒 STOREFRONT CART RAW', [
+        Log::info('🛒 [LINXEN STOREFRONT CART]', [
             'cart' => $cart,
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | 3️⃣ Build items gửi ERP
+        | 3️⃣ Build items gửi ERP (DÙNG KV SKU)
         |--------------------------------------------------------------------------
         */
         $items = collect($cart)
             ->map(function ($item) {
                 return [
-                    // ⚠️ BẮT BUỘC là SKU KiotViet
-                    'kv_sku'  => $item['sku'] ?? $item['kv_sku'] ?? null,
-                    'qty'     => (int) ($item['qty'] ?? 1),
-                    'price'   => (float) ($item['price'] ?? 0),
-                    'note'    => $item['note'] ?? null,
-                    'rs_code' => $item['rs_code'] ?? null,
+                    // 🔑 BẮT BUỘC: SKU KiotViet
+                    'kv_sku' => $item['sku'] ?? null,
+                    'qty'    => (int) ($item['qty'] ?? 0),
+                    'price'  => (float) ($item['price'] ?? 0),
+                    'note'   => $item['note'] ?? null,
                 ];
             })
-            ->filter(fn ($i) => !empty($i['kv_sku']))
+            ->filter(fn ($i) => !empty($i['kv_sku']) && $i['qty'] > 0)
             ->values()
             ->all();
 
@@ -106,19 +115,23 @@ class CheckoutController extends Controller
             'items' => $items,
         ];
 
+        Log::info('📦 [LINXEN → ERP PAYLOAD]', [
+            'payload' => $payload,
+        ]);
+
         /*
         |--------------------------------------------------------------------------
-        | 5️⃣ Gọi ERP tạo đơn (có auth storefront)
+        | 5️⃣ Gọi ERP tạo đơn
         |--------------------------------------------------------------------------
         */
         try {
             $response = Http::withHeaders([
-                    'X-ERP-TOKEN'  => config('services.erp.api_token'),
-                    'X-STOREFRONT'=> config('services.erp.storefront'),
-                    'Accept'      => 'application/json',
+                    'X-ERP-TOKEN'   => config('services.erp.api_token'),
+                    'X-STOREFRONT' => config('services.erp.storefront'),
+                    'Accept'       => 'application/json',
                 ])
                 ->withOptions([
-                    'verify' => false, // fix curl error 60
+                    'verify' => false, // tránh lỗi SSL local
                 ])
                 ->timeout(15)
                 ->post(
@@ -127,11 +140,9 @@ class CheckoutController extends Controller
                 );
 
             if ($response->failed()) {
-                Log::error('❌ STOREFRONT → ERP create order failed', [
-                    'url'     => "{$this->erpBaseUrl}/api/sales/pos/orders",
-                    'payload' => $payload,
-                    'status'  => $response->status(),
-                    'body'    => $response->body(),
+                Log::error('❌ [LINXEN → ERP CREATE ORDER FAILED]', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
                 ]);
 
                 return response()->json([
@@ -163,7 +174,8 @@ class CheckoutController extends Controller
             ]);
 
         } catch (Throwable $e) {
-            Log::error('🔥 CheckoutController exception', [
+
+            Log::error('🔥 [LINXEN CHECKOUT EXCEPTION]', [
                 'error' => $e->getMessage(),
             ]);
 

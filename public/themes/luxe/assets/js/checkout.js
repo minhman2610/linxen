@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-     * SUBMIT CHECKOUT (AJAX → ERP)
+     * SUBMIT CHECKOUT (AJAX → /api/storefront/orders)
      * ===================================================== */
     const form   = document.getElementById('lx-checkout-form');
     const errBox = document.getElementById('lx-checkout-error');
@@ -55,45 +55,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fd = new FormData(form);
 
-        // Resolve location / ward name (ERP cần NAME, không chỉ ID)
-        const locationName = locSel?.selectedOptions[0]?.text || '';
-        const wardName     = wardSel?.selectedOptions[0]?.text || '';
-
-        // Snapshot cart được inject từ Blade
-        const items = Array.isArray(window.__CHECKOUT_CART__)
-            ? window.__CHECKOUT_CART__
-            : [];
-
-        if (!items.length) {
-            errBox.innerText = 'Giỏ hàng không hợp lệ. Vui lòng quay lại giỏ hàng.';
-            errBox.style.display = 'block';
-            return;
-        }
-
         const payload = {
-    storefront: 'linxen',
+            storefront: 'linxen',
 
-    customer: {
-        name: fd.get('name'),
-        phone: fd.get('phone'),
-        street: fd.get('street'),
+            customer: {
+                name:   fd.get('name'),
+                phone:  fd.get('phone'),
+                street: fd.get('street'),
 
-        location_id: locSel.value,
-        ward_id: wardSel.value,
+                location_id: locSel?.value || null,
+                ward_id:     wardSel?.value || null,
 
-        location_name: locSel.selectedOptions[0]?.text || '',
-        ward_name: wardSel.selectedOptions[0]?.text || '',
-    },
+                location_name: locSel?.selectedOptions[0]?.text || '',
+                ward_name:     wardSel?.selectedOptions[0]?.text || '',
+                note: fd.get('note') || null,
+            },
+        };
 
-    items: items,
-};
-
+        // Disable submit để tránh double click
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn?.setAttribute('disabled', 'disabled');
 
         try {
-            // Disable submit để tránh double click
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn?.setAttribute('disabled', 'disabled');
-
             const res = await fetch('/api/storefront/orders', {
                 method: 'POST',
                 headers: {
@@ -113,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 json = JSON.parse(text);
             } catch (e) {
-                console.error('❌ API trả về không phải JSON:', text);
+                console.error('❌ Response không phải JSON:', text);
                 errBox.innerText = 'Server lỗi (response không hợp lệ).';
                 errBox.style.display = 'block';
                 submitBtn?.removeAttribute('disabled');
@@ -134,9 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('🔥 Fetch error:', err);
             errBox.innerText = 'Không kết nối được server.';
             errBox.style.display = 'block';
-
-            const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn?.removeAttribute('disabled');
         }
     });
+
 });
