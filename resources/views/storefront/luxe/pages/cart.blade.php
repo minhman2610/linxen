@@ -91,11 +91,12 @@
                         </div>
 
                         <button
-                            class="lx-cart-remove"
-                            onclick="removeItem('{{ $sku }}')"
-                            aria-label="Xóa sản phẩm">
-                            ✕
-                        </button>
+    class="lx-cart-remove"
+    onclick="showConfirmRemove('{{ $sku }}')"
+    aria-label="Xóa sản phẩm">
+    ✕
+</button>
+
 
                     </article>
                 @endforeach
