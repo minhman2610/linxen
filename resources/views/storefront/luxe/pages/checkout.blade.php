@@ -5,10 +5,10 @@
 <link rel="stylesheet" href="/themes/luxe/assets/css/checkout.css">
 
 @php
-    $cartItems = $cart ?? [];
-    $subtotal = collect($cartItems)->sum(fn($i) => ($i['price'] ?? 0) * ($i['qty'] ?? 0));
+    $cartItems   = $cart ?? [];
+    $subtotal    = collect($cartItems)->sum(fn($i) => ($i['price'] ?? 0) * ($i['qty'] ?? 0));
     $shippingFee = $subtotal >= 500000 ? 0 : 30000;
-    $total = $subtotal + $shippingFee;
+    $total       = $subtotal + $shippingFee;
 @endphp
 
 <section class="lx-checkout-page">
@@ -33,7 +33,9 @@
     <form id="lx-checkout-form" class="lx-checkout-content">
         @csrf
 
-        {{-- LEFT --}}
+        {{-- =========================
+            LEFT – SHIPPING INFO
+        ========================== --}}
         <div class="lx-checkout-left">
             <h3>Thông tin giao hàng</h3>
 
@@ -74,102 +76,119 @@
             </div>
         </div>
 
-        {{-- RIGHT --}}
-<aside class="lx-checkout-right">
+        {{-- =========================
+            RIGHT – ORDER SUMMARY
+        ========================== --}}
+        <aside class="lx-checkout-right">
 
-    <h3 class="lx-checkout-title">Đơn hàng của bạn</h3>
+            <h3 class="lx-checkout-title">Đơn hàng của bạn</h3>
 
-    {{-- ITEMS --}}
-    <div class="lx-checkout-items">
-        @foreach($cartItems as $item)
-            <div class="lx-checkout-item">
-                <div class="lx-checkout-thumb">
-                    <img
-                        src="{{ $item['image'] ?? asset('images/no-image.png') }}"
-                        alt="{{ $item['name'] }}"
-                        loading="lazy"
-                    >
-                </div>
-
-                <div class="lx-checkout-item-info">
-                    <div class="lx-checkout-item-name">
-                        {{ $item['name'] }}
-                    </div>
-
-                    @if(!empty($item['attrs']))
-                        <div class="lx-checkout-item-variant">
-                            {{ implode(' · ', $item['attrs']) }}
+            {{-- ITEMS --}}
+            <div class="lx-checkout-items">
+                @foreach($cartItems as $item)
+                    <div class="lx-checkout-item">
+                        <div class="lx-checkout-thumb">
+                            <img
+                                src="{{ $item['image'] ?? asset('images/no-image.png') }}"
+                                alt="{{ $item['name'] }}"
+                                loading="lazy"
+                            >
                         </div>
-                    @endif
 
-                    <div class="lx-checkout-item-meta">
-                        <span>SL: {{ $item['qty'] }}</span>
-                        <strong>
-                            {{ number_format(($item['price'] ?? 0) * $item['qty']) }}₫
-                        </strong>
+                        <div class="lx-checkout-item-info">
+                            <div class="lx-checkout-item-name">
+                                {{ $item['name'] }}
+                            </div>
+
+                            @if(!empty($item['attrs']))
+                                <div class="lx-checkout-item-variant">
+                                    {{ implode(' · ', $item['attrs']) }}
+                                </div>
+                            @endif
+
+                            <div class="lx-checkout-item-meta">
+                                <span>SL: {{ $item['qty'] }}</span>
+                                <strong>
+                                    {{ number_format(($item['price'] ?? 0) * $item['qty']) }}₫
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <hr class="lx-checkout-divider">
+
+            {{-- SUMMARY --}}
+            <div class="lx-checkout-summary">
+                <div class="lx-checkout-summary-row">
+                    <span>Tạm tính</span>
+                    <span>{{ number_format($subtotal) }}₫</span>
+                </div>
+
+                <div class="lx-checkout-summary-row">
+                    <span>Vận chuyển</span>
+                    <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
+                </div>
+
+                <div class="lx-checkout-summary-total">
+                    <span>Tổng cộng</span>
+                    <span>{{ number_format($total) }}₫</span>
+                </div>
+            </div>
+
+            {{-- PAYMENT METHOD --}}
+            <div class="lx-checkout-payment">
+                <div class="lx-payment-badge">
+                    <span class="lx-payment-icon">💵</span>
+                    <div>
+                        <strong>Thanh toán khi nhận hàng (COD)</strong>
+                        <div class="lx-payment-hint">
+                            Thanh toán cho nhân viên giao hàng
+                        </div>
                     </div>
                 </div>
             </div>
-        @endforeach
-    </div>
 
-    <hr class="lx-checkout-divider">
+            {{-- ACTIONS --}}
+            <div class="lx-checkout-actions">
+                <button
+                    type="submit"
+                    class="lx-btn-primary lx-btn-full lx-btn-checkout"
+                >
+                    <span class="lx-btn-main">ĐẶT HÀNG</span>
+                    <span class="lx-btn-sub">
+                        Xác nhận đơn • Thanh toán COD
+                    </span>
+                </button>
 
-    {{-- SUMMARY --}}
-    <div class="lx-checkout-summary">
-        <div class="lx-checkout-summary-row">
-            <span>Tạm tính</span>
-            <span>{{ number_format($subtotal) }}₫</span>
-        </div>
-
-        <div class="lx-checkout-summary-row">
-            <span>Vận chuyển</span>
-            <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
-        </div>
-
-        <div class="lx-checkout-summary-total">
-            <span>Tổng cộng</span>
-            <span>{{ number_format($total) }}₫</span>
-        </div>
-    </div>
-
-    {{-- PAYMENT METHOD --}}
-    <div class="lx-checkout-payment">
-        <div class="lx-payment-badge">
-            <span class="lx-payment-icon">💵</span>
-            <div>
-                <strong>Thanh toán khi nhận hàng (COD)</strong>
-                <div class="lx-payment-hint">
-                    Thanh toán cho nhân viên giao hàng
-                </div>
+                <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
+                    ← Tiếp tục mua sắm
+                </a>
             </div>
-        </div>
-    </div>
 
-    {{-- ACTIONS --}}
-    <div class="lx-checkout-actions">
-        <button
-            type="submit"
-            class="lx-btn-primary lx-btn-full lx-btn-checkout"
-        >
-            <span class="lx-btn-main">ĐẶT HÀNG</span>
-            <span class="lx-btn-sub">
-                Xác nhận đơn • Thanh toán COD
-            </span>
-        </button>
+            <div id="lx-checkout-error"
+                 class="lx-checkout-error"
+                 style="display:none"></div>
+        </aside>
 
-        <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
-            ← Tiếp tục mua sắm
-        </a>
-    </div>
-
-    <div id="lx-checkout-error" class="lx-checkout-error" style="display:none"></div>
-</aside>
-
-
+        {{-- =========================
+            SNAPSHOT CART FOR CHECKOUT.JS
+        ========================== --}}
+        <script>
+            window.__CHECKOUT_CART__ = @json(
+                collect($cartItems)->map(function ($item) {
+                    return [
+                        'product_id' => $item['product_id'] ?? null,
+                        'qty'        => $item['qty'],
+                        'price'      => $item['price'],
+                        'note'       => null,
+                    ];
+                })->values()
+            );
+        </script>
 
     </form>
     @endif
 </section>
 @endsection
-
