@@ -213,3 +213,44 @@
         opacity: .45;
     }
 }
+/* =====================================================
+   HEADER – FAST AMBIENT LIGHT (1s LOOP)
+===================================================== */
+
+.lx-header {
+    position: sticky;
+    top: var(--announcement-height, 0);
+    z-index: 100;
+    overflow: hidden;
+}
+
+/* lớp ánh sáng động */
+.lx-header::before {
+    content: '';
+    position: absolute;
+    inset: -40%;
+
+    background: linear-gradient(
+        120deg,
+        rgba(255,215,185,.35),
+        rgba(230,235,255,.35),
+        rgba(245,230,200,.35),
+        rgba(220,235,255,.35)
+    );
+
+    background-size: 300% 300%;
+    pointer-events: none;
+    opacity: .65;
+
+    animation: lxHeaderFastAmbient 1s linear infinite;
+}
+
+/* animation đổi màu liên tục */
+@keyframes lxHeaderFastAmbient {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
