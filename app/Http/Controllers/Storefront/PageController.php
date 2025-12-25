@@ -130,7 +130,10 @@ public function product(string $slug, ErpStorefrontApi $erp)
         ? $product['real_media_gallery']
         : [];
 
-    $ugcCount = (int) ($product['real_media_count'] ?? count($ugcMedia));
+    $ugcCount = (int) (
+        $product['real_media_count']
+        ?? count($ugcMedia)
+    );
 
     /*
     |--------------------------------------------------------------------------
@@ -160,35 +163,58 @@ public function product(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
+    | 🔁 SUGGESTED PRODUCTS (FROM ERP – RANDOM)
+    |--------------------------------------------------------------------------
+    | ERP trả:
+    | - suggested_products (array)
+    | - suggested_count    (int)
+    |--------------------------------------------------------------------------
+    */
+    $suggestedProducts = is_array($product['suggested_products'] ?? null)
+        ? $product['suggested_products']
+        : [];
+
+    $suggestedCount = (int) (
+        $product['suggested_count']
+        ?? count($suggestedProducts)
+    );
+
+    /*
+    |--------------------------------------------------------------------------
     | RENDER VIEW
     |--------------------------------------------------------------------------
     */
     return view(
         "storefront.{$this->theme}.pages.product",
         [
-            // 🧾 DATA GỐC
-            'product'     => $product,
+            // 🧾 DATA GỐC ERP
+            'product'            => $product,
 
             // 🎛 BIẾN THỂ
-            'variants'    => $variants,
-            'attributes'  => $attributes,
+            'variants'           => $variants,
+            'attributes'         => $attributes,
 
             // 🖼 GALLERY CHÍNH
-            'images'      => $images,
-            'mainImage'   => $mainImage,
+            'images'             => $images,
+            'mainImage'          => $mainImage,
 
             // 👥 REAL MEDIA (UGC)
-            'ugcMedia'    => $ugcMedia,
-            'ugcCount'    => $ugcCount,
+            'ugcMedia'           => $ugcMedia,
+            'ugcCount'           => $ugcCount,
+
+            // 🔁 SẢN PHẨM GỢI Ý
+            'suggestedProducts'  => $suggestedProducts,
+            'suggestedCount'     => $suggestedCount,
 
             // 🧭 BREADCRUMB
-            'breadcrumbs' => $breadcrumbs,
+            'breadcrumbs'        => $breadcrumbs,
 
             // 🏷 BRAND
-            'brand'       => $this->brand,
+            'brand'              => $this->brand,
         ]
     );
 }
+
 
 
 
