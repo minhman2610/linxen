@@ -1,7 +1,10 @@
 /**
  * =====================================================
  * 🛒 CART – LIN XÉN
- * Add to cart (AJAX) + Qty + Toast + Variant Validate
+ * Add to cart (AJAX)
+ * + Qty control
+ * + Variant validate
+ * + Rich product toast (bottom-right)
  * =====================================================
  */
 (function () {
@@ -30,33 +33,6 @@
         if (btn) btn.dataset.qty = value;
     });
 
-    /* ================= TOAST ================= */
-    function showToast(message, type = 'success') {
-
-        let box = document.querySelector('.lx-toast-container');
-        if (!box) {
-            box = document.createElement('div');
-            box.className = 'lx-toast-container';
-            document.body.appendChild(box);
-        }
-
-        const toast = document.createElement('div');
-        toast.className = `lx-toast lx-toast-${type}`;
-        toast.innerHTML = `
-            <span class="lx-toast-icon">${type === 'success' ? '✓' : '!'}</span>
-            <span class="lx-toast-text">${message}</span>
-        `;
-
-        box.appendChild(toast);
-
-        requestAnimationFrame(() => toast.classList.add('show'));
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 2400);
-    }
-
     /* ================= CART COUNT ================= */
     function updateCartCount(count) {
         document.querySelectorAll('.cart-count').forEach(el => {
@@ -66,12 +42,12 @@
     }
 
     /* =====================================================
-     * ✅ VALIDATE VARIANTS BEFORE ADD TO CART
+     * ✅ VALIDATE VARIANTS
      * ===================================================== */
     function validateVariants() {
 
         const rows = document.querySelectorAll('.lx-variant-row');
-        if (!rows.length) return true; // không có biến thể
+        if (!rows.length) return true;
 
         let invalidRow = null;
 
@@ -82,26 +58,111 @@
         });
 
         if (invalidRow) {
-            // highlight biến thể chưa chọn
-            invalidRow.classList.add('lx-variant-error');
 
+            invalidRow.classList.add('lx-variant-error');
             setTimeout(() => {
                 invalidRow.classList.remove('lx-variant-error');
             }, 1200);
 
-            // scroll tới biến thể
             invalidRow.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
             });
 
-            const label = invalidRow.querySelector('.lx-variant-label')?.textContent || 'biến thể';
+            const label =
+                invalidRow.querySelector('.lx-variant-label')?.textContent
+                || 'biến thể';
 
-            showToast(`Vui lòng chọn ${label.toLowerCase()}`, 'error');
+            showErrorToast(`Vui lòng chọn ${label.toLowerCase()}`);
             return false;
         }
 
         return true;
+    }
+
+    /* =====================================================
+     * 🟢 RICH ADD-TO-CART TOAST
+     * ===================================================== */
+    function showAddToCartToast(product) {
+
+        let box = document.querySelector('.lx-toast-container');
+        if (!box) {
+            box = document.createElement('div');
+            box.className = 'lx-toast-container';
+            document.body.appendChild(box);
+        }
+
+        const variantText = product.attrs && Object.keys(product.attrs).length
+            ? Object.entries(product.attrs)
+                .map(([k, v]) => `${v}`)
+                .join(' · ')
+            : '';
+
+        const toast = document.createElement('div');
+        toast.className = 'lx-toast-product';
+
+        toast.innerHTML = `
+            <div class="lx-toast-head">
+                <span class="lx-toast-icon">✓</span>
+                <span class="lx-toast-title">Đã thêm vào giỏ hàng</span>
+            </div>
+
+            <div class="lx-toast-body">
+                <div class="lx-toast-thumb">
+                    <img src="${product.image || '/images/no-image.png'}" alt="">
+                </div>
+
+                <div class="lx-toast-info">
+                    <div class="lx-toast-name">${product.name}</div>
+
+                    ${variantText ? `
+                        <div class="lx-toast-variant">${variantText}</div>
+                    ` : ''}
+
+                    <div class="lx-toast-meta">
+                        <span>x${product.qty}</span>
+                        <strong>${product.total.toLocaleString()}₫</strong>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        box.appendChild(toast);
+
+        requestAnimationFrame(() => toast.classList.add('show'));
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function showErrorToast(message) {
+        let box = document.querySelector('.lx-toast-container');
+        if (!box) {
+            box = document.createElement('div');
+            box.className = 'lx-toast-container';
+            document.body.appendChild(box);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'lx-toast-product lx-toast-error';
+
+        toast.innerHTML = `
+            <div class="lx-toast-head">
+                <span class="lx-toast-icon">!</span>
+                <span class="lx-toast-title">${message}</span>
+            </div>
+        `;
+
+        box.appendChild(toast);
+
+        requestAnimationFrame(() => toast.classList.add('show'));
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 2200);
     }
 
     /* ================= ADD TO CART ================= */
@@ -112,7 +173,6 @@
 
         e.preventDefault();
 
-        // ❌ VALIDATE VARIANTS
         if (!validateVariants()) return;
 
         const payload = {
@@ -141,14 +201,23 @@
         .then(res => res.json())
         .then(res => {
             if (res.success) {
+
                 updateCartCount(res.cart_count);
-                showToast('Đã thêm vào giỏ hàng');
+
+                showAddToCartToast({
+                    name:  payload.name,
+                    image: payload.image,
+                    qty:   payload.qty,
+                    total: payload.price * payload.qty,
+                    attrs: payload.attrs
+                });
+
             } else {
-                showToast(res.message || 'Không thể thêm sản phẩm', 'error');
+                showErrorToast(res.message || 'Không thể thêm sản phẩm');
             }
         })
         .catch(() => {
-            showToast('Có lỗi xảy ra, vui lòng thử lại', 'error');
+            showErrorToast('Có lỗi xảy ra, vui lòng thử lại');
         })
         .finally(() => {
             btn.classList.remove('is-loading');
