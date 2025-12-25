@@ -134,10 +134,8 @@ class CheckoutController extends Controller
                     'verify' => false, // tránh lỗi SSL local
                 ])
                 ->timeout(15)
-                ->post(
-                    "{$this->erpBaseUrl}/api/sales/pos/orders",
-                    $payload
-                );
+                ->post("{$this->erpBaseUrl}/api/storefront/orders", $payload);
+
 
             if ($response->failed()) {
                 Log::error('❌ [LINXEN → ERP CREATE ORDER FAILED]', [
