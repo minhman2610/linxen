@@ -245,17 +245,18 @@ function syncSelectedVariants() {
     }
 
     /* ================= TOAST ================= */
-    function ensureToastBox() {
-        let box = document.querySelector('.lx-toast-container');
-        if (!box) {
-            box = document.createElement('div');
-            box.className = 'lx-toast-container';
-            document.body.appendChild(box);
-        }
-        return box;
-    }
 
-    function showAddToCartToast(product) {
+function ensureToastBox() {
+    let box = document.querySelector('.lx-toast-container');
+    if (!box) {
+        box = document.createElement('div');
+        box.className = 'lx-toast-container';
+        document.body.appendChild(box);
+    }
+    return box;
+}
+
+function showAddToCartToast(product) {
 
     const box = ensureToastBox();
 
@@ -267,6 +268,7 @@ function syncSelectedVariants() {
     toast.className = 'lx-toast-product';
 
     toast.innerHTML = `
+        <!-- HEADER -->
         <div class="lx-toast-head">
             <div class="lx-toast-head-left">
                 <span class="lx-toast-icon">✓</span>
@@ -276,6 +278,7 @@ function syncSelectedVariants() {
             <button class="lx-toast-close" aria-label="Đóng thông báo">✕</button>
         </div>
 
+        <!-- BODY -->
         <div class="lx-toast-body">
             <div class="lx-toast-thumb">
                 <img src="${product.image || '/images/no-image.png'}" alt="">
@@ -289,31 +292,49 @@ function syncSelectedVariants() {
                 ` : ''}
 
                 <div class="lx-toast-meta">
-                    <span class="lx-toast-qty">x${product.qty}</span>
-                    <strong class="lx-toast-price">${product.total.toLocaleString()}₫</strong>
+                    <span class="lx-toast-qty">Số lượng: x${product.qty}</span>
+                    <strong class="lx-toast-price">
+                        ${product.total.toLocaleString()}₫
+                    </strong>
                 </div>
             </div>
+        </div>
+
+        <!-- FOOTER ACTIONS -->
+        <div class="lx-toast-actions">
+            <a href="/cart" class="lx-toast-btn lx-toast-btn-primary">
+                Xem giỏ hàng
+            </a>
+            <button class="lx-toast-btn lx-toast-btn-ghost" data-toast-close>
+                Tiếp tục mua
+            </button>
         </div>
     `;
 
     box.appendChild(toast);
 
-    // show animation
+    /* ===== SHOW ANIMATION ===== */
     requestAnimationFrame(() => toast.classList.add('show'));
 
-    // ✕ close handler
-    toast.querySelector('.lx-toast-close').addEventListener('click', () => {
+    /* ===== CLOSE HANDLERS ===== */
+    const closeToast = () => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
-    });
+    };
 
-    // auto close (tuỳ chọn – anh bật/tắt thoải mái)
+    toast.querySelector('.lx-toast-close')
+        ?.addEventListener('click', closeToast);
+
+    toast.querySelector('[data-toast-close]')
+        ?.addEventListener('click', closeToast);
+
+    /* ===== AUTO CLOSE ===== */
     setTimeout(() => {
         if (!toast.isConnected) return;
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
+        closeToast();
     }, 6000);
 }
+
 
 
     function showErrorToast(message) {
