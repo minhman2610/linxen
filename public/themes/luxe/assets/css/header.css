@@ -146,41 +146,42 @@
     }
 }
 /* =====================================================
-   HEADER – LUXURY CHAMPAGNE GLOW (ENHANCED COLOR SHIFT)
+   HEADER – DUAL TONE LUXURY COLOR SHIFT
+   Trên đậm – Dưới nhạt – Chuyển màu theo thời gian
 ===================================================== */
 
 .lx-header {
     background: linear-gradient(
         to bottom,
-        #fdfcf9 0%,
-        #f3f1ea 100%
+        #e7e2d8 0%,   /* màu trên – đậm */
+        #fdfcf9 100%  /* màu dưới – nhạt */
     );
 
     border-bottom: 1px solid rgba(0,0,0,.08);
 
     box-shadow:
-        0 1px 0 rgba(255,255,255,.95),
+        0 1px 0 rgba(255,255,255,.9),
         0 10px 28px rgba(0,0,0,.06);
 
     position: sticky;
     top: var(--announcement-height, 0);
     z-index: 100;
 
-    /* 🔥 đèn ambient – rõ hơn nhưng vẫn mượt */
-    animation: lxHeaderColorShift 4s ease-in-out infinite;
+    /* 🔥 chuyển màu như đèn */
+    animation: lxHeaderDualTone 4s ease-in-out infinite;
 }
 
 /* -------------------------------------------------
-   KEYFRAMES – AMBIENT LIGHT (RÕ HƠN)
+   KEYFRAMES – 2 MÀU TƯƠNG PHẢN CHUYỂN ĐỔI
 ------------------------------------------------- */
-@keyframes lxHeaderColorShift {
+@keyframes lxHeaderDualTone {
 
-    /* IVORY NEUTRAL */
+    /* IVORY / STONE */
     0% {
         background: linear-gradient(
             to bottom,
-            #fdfcf9 0%,
-            #f3f1ea 100%
+            #e7e2d8 0%,
+            #fdfcf9 100%
         );
     }
 
@@ -188,8 +189,8 @@
     25% {
         background: linear-gradient(
             to bottom,
-            #f4f7fa 0%,
-            #e8edf1 100%
+            #dfe6ec 0%,
+            #f4f7fa 100%
         );
     }
 
@@ -197,17 +198,17 @@
     50% {
         background: linear-gradient(
             to bottom,
-            #fff1e6 0%,
-            #ead8c7 100%
+            #e3c9b0 0%,
+            #fff1e6 100%
         );
     }
 
-    /* SOFT STONE */
+    /* SOFT STONE GREY */
     75% {
         background: linear-gradient(
             to bottom,
-            #f1f3f2 0%,
-            #e2e6e4 100%
+            #d9ddda 0%,
+            #f5f6f5 100%
         );
     }
 
@@ -215,8 +216,8 @@
     100% {
         background: linear-gradient(
             to bottom,
-            #fdfcf9 0%,
-            #f3f1ea 100%
+            #e7e2d8 0%,
+            #fdfcf9 100%
         );
     }
 }
