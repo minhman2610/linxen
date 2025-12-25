@@ -2,6 +2,8 @@
 
 @section('content')
 
+<link rel="stylesheet" href="/themes/luxe/assets/css/checkout.css">
+
 @php
     $cartItems = $cart ?? [];
     $subtotal = collect($cartItems)->sum(fn($i) => ($i['price'] ?? 0) * ($i['qty'] ?? 0));
@@ -28,9 +30,7 @@
         </div>
     @else
 
-    {{-- ⚠️ KHÔNG DÙNG ACTION POST TRỰC TIẾP --}}
     <form id="lx-checkout-form" class="lx-checkout-content">
-
         @csrf
 
         {{-- LEFT --}}
@@ -47,7 +47,6 @@
                 <input type="tel" name="phone" required>
             </div>
 
-            {{-- LOCATION --}}
             <div class="lx-form-row">
                 <div class="lx-form-group">
                     <label>Khu vực</label>
@@ -76,8 +75,8 @@
         </div>
 
         {{-- RIGHT --}}
-        <div class="lx-checkout-right">
-            <h3>Đơn hàng</h3>
+        <aside class="lx-checkout-right">
+            <h3>Đơn hàng của bạn</h3>
 
             <div class="lx-checkout-items">
                 @foreach($cartItems as $item)
@@ -113,12 +112,13 @@
             </button>
 
             <div id="lx-checkout-error" class="lx-checkout-error" style="display:none"></div>
-        </div>
+        </aside>
 
     </form>
     @endif
 </section>
 @endsection
+
 
 @push('scripts')
 <script>

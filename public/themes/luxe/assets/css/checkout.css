@@ -1,0 +1,151 @@
+/* =====================================================
+   CHECKOUT PAGE – LIN XÉN
+===================================================== */
+
+.lx-checkout-page {
+    max-width: 1100px;
+    margin: 48px auto 80px;
+    padding: 0 16px;
+}
+
+/* HEADER */
+.lx-checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.lx-checkout-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #111;
+}
+
+.lx-checkout-back {
+    font-size: 14px;
+    color: #555;
+    text-decoration: none;
+}
+
+/* CONTENT GRID */
+.lx-checkout-content {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 32px;
+}
+
+/* LEFT – FORM */
+.lx-checkout-left {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.lx-checkout-left h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* FORM */
+.lx-form-group {
+    margin-bottom: 16px;
+}
+
+.lx-form-group label {
+    display: block;
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+.lx-form-group input,
+.lx-form-group textarea,
+.lx-form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.lx-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* RIGHT – SUMMARY */
+.lx-checkout-right {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 24px;
+    position: sticky;
+    top: 24px;
+}
+
+.lx-checkout-right h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+/* ITEMS */
+.lx-checkout-items {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.lx-checkout-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.lx-checkout-item span {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* SUMMARY */
+.lx-checkout-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.lx-checkout-summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* BUTTON */
+.lx-btn-full {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    font-size: 15px;
+}
+
+/* ERROR */
+.lx-checkout-error {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* EMPTY */
+.lx-checkout-empty {
+    text-align: center;
+    padding: 60px 0;
+}
