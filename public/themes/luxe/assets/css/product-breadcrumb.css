@@ -1,55 +1,74 @@
 /* =====================================================
-   CATEGORY TABS – PRODUCT DETAIL
+   CATEGORY PATH – ART CONNECTED
 ===================================================== */
 
-.lx-category-tabs {
+.lx-cat-path {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 12px;
     overflow-x: auto;
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-
-    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    position: relative;
 }
 
-.lx-category-tabs::-webkit-scrollbar {
+.lx-cat-path::-webkit-scrollbar {
     display: none;
 }
 
-/* TAB */
-.lx-cat-tab {
-    flex: 0 0 auto;
+/* ĐƯỜNG NỐI CHÍNH */
+.lx-cat-path::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 50%;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        #e5e7eb,
+        transparent
+    );
+    z-index: 0;
+}
+
+/* NODE */
+.lx-cat-node {
+    position: relative;
+    z-index: 1;
+
     display: inline-flex;
     align-items: center;
     gap: 6px;
 
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 999px;
 
     font-size: 12px;
     font-weight: 500;
 
-    background: #f3f4f6;
+    background: #fff;
     color: #374151;
     text-decoration: none;
 
     border: 1px solid #e5e7eb;
+    white-space: nowrap;
 }
 
 /* ICON */
 .lx-cat-icon {
     font-size: 13px;
-    line-height: 1;
 }
 
-/* ACTIVE TAB */
-.lx-cat-tab.active {
+/* ACTIVE */
+.lx-cat-node.active {
     background: #111;
     color: #fff;
     border-color: #111;
 }
 
 /* HOVER */
-.lx-cat-tab:hover {
-    background: #e5e7eb;
+.lx-cat-node:hover {
+    border-color: #111;
 }
