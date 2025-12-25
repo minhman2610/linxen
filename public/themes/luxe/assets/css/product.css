@@ -573,3 +573,42 @@
 .lx-product-trust li {
     margin-bottom: 4px;
 }
+/* =====================================================
+   BRAND HERO – LIN XÉN
+===================================================== */
+
+.lx-brand-hero {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+/* BRAND STATEMENT */
+.lx-brand-typewriter {
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+
+    color: #c7a26d; /* champagne */
+    font-weight: 500;
+
+    margin-bottom: 14px;
+}
+
+/* PRODUCT TITLE */
+.luxury-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #111;
+}
+
+/* ICON */
+.lx-title-icon {
+    font-size: 16px;
+    color: #111;
+}

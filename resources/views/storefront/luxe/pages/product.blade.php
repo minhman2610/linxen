@@ -65,17 +65,19 @@
         </div>
 
         {{-- =====================================================
-   BRAND STATEMENT – LIN XÉN
+   BRAND HERO – LIN XÉN
 ===================================================== --}}
-<div class="lx-brand-statement">
+<div class="lx-brand-hero">
 
-    <div class="lx-brand-mark">
-        <span class="lx-brand-name">LIN XÉN</span>
-        <span class="lx-brand-sep">—</span>
-        <span class="lx-brand-claim">CHÚNG TÔI ĐAM MÊ VÁY</span>
+    {{-- BRAND STATEMENT --}}
+    <div class="lx-brand-typewriter"
+         data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY">
+        LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY
     </div>
 
-    <h1 class="lx-product-title">
+    {{-- PRODUCT TITLE --}}
+    <h1 class="lx-product-title luxury-title">
+        <span class="lx-title-icon">✦</span>
         {{ $product['name'] ?? '' }}
     </h1>
 
