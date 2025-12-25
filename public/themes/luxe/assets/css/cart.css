@@ -1,0 +1,329 @@
+/* =====================================================
+   CART – LIN XÉN | LUXURY MINIMAL COMMERCE
+===================================================== */
+
+.lx-cart {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+    color: #111;
+}
+
+/* =====================
+   CART HEADER
+===================== */
+
+.lx-cart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.lx-cart-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+
+.lx-cart-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.lx-cart-continue {
+    font-size: 14px;
+    color: #111;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,.15);
+}
+
+.lx-cart-continue:hover {
+    opacity: .75;
+}
+
+/* =====================
+   EMPTY CART
+===================== */
+
+.lx-cart-empty {
+    text-align: center;
+    padding: 80px 16px;
+}
+
+.lx-cart-empty-icon {
+    font-size: 44px;
+    margin-bottom: 16px;
+}
+
+.lx-cart-empty h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.lx-cart-empty p {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+/* =====================
+   CART BODY
+===================== */
+
+.lx-cart-body {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 28px;
+}
+
+/* =====================
+   CART LIST
+===================== */
+
+.lx-cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* =====================
+   CART CARD
+===================== */
+
+.lx-cart-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 88px 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+
+    padding: 16px;
+    border-radius: 16px;
+    background: #fff;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.06),
+        0 1px 0 rgba(255,255,255,.9);
+
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.lx-cart-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 14px 32px rgba(0,0,0,.08),
+        0 1px 0 rgba(255,255,255,.9);
+}
+
+/* =====================
+   CART THUMB
+===================== */
+
+.lx-cart-thumb img {
+    width: 88px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #f3f4f6;
+}
+
+/* =====================
+   CART INFO
+===================== */
+
+.lx-cart-info {
+    min-width: 0;
+}
+
+.lx-cart-name {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 4px;
+}
+
+.lx-cart-variant {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.lx-cart-unit-price {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* =====================
+   QTY CONTROL
+===================== */
+
+.lx-cart-qty {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lx-cart-qty button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.15);
+    background: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.lx-cart-qty span {
+    min-width: 24px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* =====================
+   LINE TOTAL
+===================== */
+
+.lx-cart-line-total {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* =====================
+   REMOVE BUTTON
+===================== */
+
+.lx-cart-remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #9ca3af;
+    cursor: pointer;
+}
+
+.lx-cart-remove:hover {
+    color: #111;
+}
+
+/* =====================
+   SUMMARY
+===================== */
+
+.lx-cart-summary {
+    position: sticky;
+    top: 96px;
+
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+
+    box-shadow:
+        0 14px 36px rgba(0,0,0,.08),
+        0 1px 0 rgba(255,255,255,.9);
+}
+
+.lx-summary-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.lx-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.lx-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 16px;
+    font-weight: 700;
+    margin: 16px 0 20px;
+}
+
+/* =====================
+   BUTTON
+===================== */
+
+.lx-btn-primary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 999px;
+
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.lx-btn-primary:hover {
+    opacity: .9;
+}
+
+.lx-btn-full {
+    width: 100%;
+}
+
+/* =====================
+   SUMMARY NOTE
+===================== */
+
+.lx-summary-note {
+    margin-top: 18px;
+    padding-left: 16px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.lx-summary-note li {
+    margin-bottom: 6px;
+}
+
+/* =====================
+   MOBILE
+===================== */
+
+@media (max-width: 768px) {
+
+    .lx-cart-body {
+        grid-template-columns: 1fr;
+    }
+
+    .lx-cart-summary {
+        position: static;
+        margin-top: 24px;
+    }
+
+    .lx-cart-card {
+        grid-template-columns: 80px 1fr;
+        grid-template-areas:
+            "thumb info"
+            "thumb qty"
+            "thumb total";
+    }
+
+    .lx-cart-qty {
+        margin-top: 6px;
+    }
+
+    .lx-cart-line-total {
+        margin-top: 6px;
+    }
+}
