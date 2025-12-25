@@ -1,10 +1,10 @@
 /**
  * =====================================================
- * 🛒 CART – LIN XÉN (FINAL STABLE)
+ * 🛒 CART – LIN XÉN (FINAL NO-LOCK)
  * - Qty control
- * - Variant validate (NO LOCK)
+ * - Variant validate (KHÔNG khoá UI)
  * - AJAX add to cart
- * - Rich toast (bottom-right)
+ * - Rich toast
  * =====================================================
  */
 (function () {
@@ -42,7 +42,7 @@
     }
 
     /* =====================================================
-     * ✅ VALIDATE VARIANTS (KHÔNG KHOÁ UI)
+     * ✅ VALIDATE VARIANTS – KHÔNG DISABLE GÌ CẢ
      * ===================================================== */
     function validateVariants() {
 
@@ -59,7 +59,6 @@
 
         if (invalidRow) {
 
-            // ❗ CHỈ SHAKE – KHÔNG DISABLE GÌ CẢ
             invalidRow.classList.add('lx-variant-error');
             setTimeout(() => {
                 invalidRow.classList.remove('lx-variant-error');
@@ -81,17 +80,20 @@
         return true;
     }
 
-    /* =====================================================
-     * 🟢 ADD TO CART TOAST (RICH)
-     * ===================================================== */
-    function showAddToCartToast(product) {
-
+    /* ================= TOAST ================= */
+    function ensureToastBox() {
         let box = document.querySelector('.lx-toast-container');
         if (!box) {
             box = document.createElement('div');
             box.className = 'lx-toast-container';
             document.body.appendChild(box);
         }
+        return box;
+    }
+
+    function showAddToCartToast(product) {
+
+        const box = ensureToastBox();
 
         const variantText = product.attrs && Object.keys(product.attrs).length
             ? Object.values(product.attrs).join(' · ')
@@ -127,7 +129,6 @@
         `;
 
         box.appendChild(toast);
-
         requestAnimationFrame(() => toast.classList.add('show'));
 
         setTimeout(() => {
@@ -137,13 +138,7 @@
     }
 
     function showErrorToast(message) {
-
-        let box = document.querySelector('.lx-toast-container');
-        if (!box) {
-            box = document.createElement('div');
-            box.className = 'lx-toast-container';
-            document.body.appendChild(box);
-        }
+        const box = ensureToastBox();
 
         const toast = document.createElement('div');
         toast.className = 'lx-toast-product lx-toast-error';
@@ -156,7 +151,6 @@
         `;
 
         box.appendChild(toast);
-
         requestAnimationFrame(() => toast.classList.add('show'));
 
         setTimeout(() => {
@@ -173,8 +167,12 @@
 
         e.preventDefault();
 
-        // ❌ CHƯA CHỌN BIẾN THỂ → CHỈ RETURN
-        if (!validateVariants()) return;
+        // 🔥 QUAN TRỌNG: validate FAIL → TUYỆT ĐỐI KHÔNG DISABLE
+        if (!validateVariants()) {
+            btn.disabled = false;
+            btn.classList.remove('is-loading');
+            return;
+        }
 
         const payload = {
             sku:   btn.dataset.sku,
@@ -195,7 +193,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document
                     .querySelector('meta[name="csrf-token"]')
-                    .getAttribute('content')
+                    ?.getAttribute('content')
             },
             body: JSON.stringify(payload)
         })
