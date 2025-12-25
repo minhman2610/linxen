@@ -129,8 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // ✅ Thành công → trang chi tiết đơn hàng
-            window.location.href = `/account/orders/${json.order_code}`;
+            // ✅ Thành công → trang đặt hàng thành công (route legacy)
+            window.location.href = `/checkout/place-order?order_code=${json.order_code}`;
+
 
         } catch (err) {
             console.error('🔥 Fetch error:', err);
