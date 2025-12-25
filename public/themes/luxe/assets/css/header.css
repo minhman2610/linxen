@@ -153,8 +153,8 @@
 .lx-header {
     background: linear-gradient(
         to bottom,
-        #e3c9b0 0%,   /* màu trên – đậm */
-        #fff1e6 100%  /* màu dưới – nhạt */
+        #dfe6ec 0%,   /* màu trên – đậm */
+        #f4f7fa 100%  /* màu dưới – nhạt */
     );
 
     border-bottom: 1px solid rgba(0,0,0,.08);
