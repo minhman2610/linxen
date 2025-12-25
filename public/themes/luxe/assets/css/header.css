@@ -145,3 +145,26 @@
         right: -4px;
     }
 }
+/* =====================================================
+   HEADER – LUXURY CHAMPAGNE GLOW
+===================================================== */
+
+.lx-header {
+    background: linear-gradient(
+        to bottom,
+        #fcfcfb 0%,
+        #f7f6f3 100%
+    );
+
+    /* viền dưới rất nhẹ */
+    border-bottom: 1px solid rgba(0,0,0,.06);
+
+    /* glow hờn tinh tế */
+    box-shadow:
+        0 1px 0 rgba(255,255,255,.9),   /* highlight trên */
+        0 8px 20px rgba(0,0,0,.04);     /* glow mờ dưới */
+
+    position: sticky;
+    top: var(--announcement-height, 0);
+    z-index: 100;
+}
