@@ -3,45 +3,43 @@
     <div class="lx-footer-inner">
 
         {{-- =========================
-            BRAND BLOCK
+            TOP – BRAND & VALUE
         ========================== --}}
-        <div class="lx-footer-brand">
-            <h3>LIN XÉN</h3>
-            <p>
-                Thời trang nữ thiết kế hiện đại.<br>
-                Mặc thử tại nhà – Rồi hãy quyết định.
-            </p>
+        <div class="lx-footer-top">
+
+            {{-- BRAND STORY --}}
+            <div class="lx-footer-brand">
+                <h3>LIN XÉN</h3>
+                <p class="lx-footer-tagline">
+                    Thời trang nữ thiết kế cho đời sống hiện đại.
+                </p>
+                <p class="lx-footer-desc">
+                    LIN XÉN tập trung vào phom dáng chuẩn, chất liệu dễ mặc
+                    và trải nghiệm mua hàng không áp lực:
+                    <strong>mặc thử tại nhà – rồi hãy quyết định</strong>.
+                </p>
+            </div>
+
+            {{-- CONFIDENCE STATS --}}
+            <div class="lx-footer-stats">
+                <div class="lx-stat">
+                    <strong>50.000+</strong>
+                    <span>Khách hàng đã trải nghiệm</span>
+                </div>
+                <div class="lx-stat">
+                    <strong>98%</strong>
+                    <span>Hài lòng sau khi nhận hàng</span>
+                </div>
+                <div class="lx-stat">
+                    <strong>15 ngày</strong>
+                    <span>Đổi trả dễ dàng</span>
+                </div>
+            </div>
+
         </div>
 
         {{-- =========================
-            BRAND ACHIEVEMENTS
-        ========================== --}}
-        <div class="lx-footer-achievements">
-
-            <div class="lx-achievement">
-                <strong>50.000+</strong>
-                <span>Khách hàng đã mua & trải nghiệm</span>
-            </div>
-
-            <div class="lx-achievement">
-                <strong>1.200+</strong>
-                <span>Sản phẩm thiết kế & chọn lọc</span>
-            </div>
-
-            <div class="lx-achievement">
-                <strong>98%</strong>
-                <span>Khách hài lòng sau khi nhận hàng</span>
-            </div>
-
-            <div class="lx-achievement">
-                <strong>15 ngày</strong>
-                <span>Đổi hàng dễ dàng · Không rủi ro</span>
-            </div>
-
-        </div>
-
-        {{-- =========================
-            SERVICE HIGHLIGHTS (NGẮN)
+            MID – SERVICES
         ========================== --}}
         <div class="lx-footer-services">
             <span>Thử tại nhà</span>
