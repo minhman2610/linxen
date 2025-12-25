@@ -325,3 +325,33 @@
         padding: 0 32px;
     }
 }
+/* =====================================================
+   ALIGN LEFT – FROM PRICE DOWN
+===================================================== */
+
+.lx-product-price-wrap {
+    justify-content: flex-start;
+}
+
+.lx-product-description {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.lx-product-variants {
+    text-align: left;
+}
+
+.lx-product-stock {
+    text-align: left;
+}
+
+.lx-product-actions {
+    justify-content: flex-start;
+}
+
+.lx-product-trust {
+    text-align: left;
+    padding-left: 0;
+}
