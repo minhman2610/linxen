@@ -1,37 +1,41 @@
 /* =====================================================
-   PRODUCT ACTIONS – LUXURY CTA
-   Scope: .lx-pdp
+   PRODUCT ACTIONS – CLEAN CONTROL BAR
 ===================================================== */
 
-.lx-pdp .lx-pdp-actions {
-    display: flex;
+.lx-pdp .lx-product-actions {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    margin: 28px 0;
     align-items: center;
-    gap: 16px;
-    margin: 32px 0;
 }
 
-/* ================= QUANTITY ================= */
+/* ================= QUANTITY BAR ================= */
 
-.lx-pdp .luxury-qty {
-    display: inline-flex;
-    align-items: center;
+.lx-pdp .lx-qty-bar {
+    display: inline-grid;
+    grid-template-columns: 42px 56px 42px;
+    height: 44px;
 
     border: 1px solid #e5e7eb;
     background: #fff;
 }
 
 .lx-pdp .lx-qty-btn {
-    width: 42px;
-    height: 42px;
-
     border: none;
     background: transparent;
 
     font-size: 18px;
+    font-weight: 400;
     line-height: 1;
-    color: #111;
 
+    color: #111;
     cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     transition: background .15s ease;
 }
 
@@ -40,9 +44,6 @@
 }
 
 .lx-pdp .lx-qty-input {
-    width: 56px;
-    height: 42px;
-
     border: none;
     border-left: 1px solid #e5e7eb;
     border-right: 1px solid #e5e7eb;
@@ -58,27 +59,25 @@
 /* ================= ADD TO CART ================= */
 
 .lx-pdp .lx-btn-addtocart {
-    flex: 1;
-
+    height: 44px; /* 🔑 BẰNG HẾT */
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
 
-    height: 44px;
     padding: 0 24px;
 
     background: #111;
     color: #fff;
-
     border: none;
+
     cursor: pointer;
 
     font-size: 13px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
 
-    transition: all .2s ease;
+    transition: background .2s ease;
 }
 
 .lx-pdp .lx-btn-addtocart:hover {
@@ -86,19 +85,18 @@
 }
 
 .lx-pdp .lx-btn-icon {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1;
 }
 
 /* ================= MOBILE ================= */
 
 @media (max-width: 767px) {
-    .lx-pdp .lx-pdp-actions {
-        flex-direction: column;
-        align-items: stretch;
+    .lx-pdp .lx-product-actions {
+        grid-template-columns: 1fr;
     }
 
-    .lx-pdp .luxury-qty {
-        justify-content: center;
+    .lx-pdp .lx-btn-addtocart {
+        width: 100%;
     }
 }

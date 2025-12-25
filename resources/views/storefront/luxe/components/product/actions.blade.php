@@ -1,16 +1,14 @@
 {{-- =====================================================
-   PRODUCT ACTIONS – LUXURY CTA
+   PRODUCT ACTIONS – CLEAN CONTROL BAR
 ===================================================== --}}
 <div class="lx-product-actions lx-pdp-actions">
 
     {{-- QUANTITY --}}
-    <div class="lx-qty luxury-qty">
+    <div class="lx-qty-bar">
         <button type="button"
                 class="lx-qty-btn"
                 aria-label="Giảm số lượng"
-                onclick="changeQty(-1)">
-            −
-        </button>
+                onclick="changeQty(-1)">−</button>
 
         <input type="number"
                id="lxQty"
@@ -22,16 +20,13 @@
         <button type="button"
                 class="lx-qty-btn"
                 aria-label="Tăng số lượng"
-                onclick="changeQty(1)">
-            +
-        </button>
+                onclick="changeQty(1)">+</button>
     </div>
 
     {{-- ADD TO CART --}}
-    <button
-        class="lx-btn-addtocart"
-        id="lxAddToCartBtn"
-        type="button">
+    <button class="lx-btn-addtocart"
+            id="lxAddToCartBtn"
+            type="button">
         <span class="lx-btn-icon">👜</span>
         <span class="lx-btn-text">Thêm vào giỏ</span>
     </button>
