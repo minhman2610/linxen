@@ -92,10 +92,11 @@
 
                         <button
     class="lx-cart-remove"
-    onclick="showConfirmRemove('{{ $sku }}')"
+    data-sku="{{ $sku }}"
     aria-label="Xóa sản phẩm">
     ✕
 </button>
+
 
 
                     </article>

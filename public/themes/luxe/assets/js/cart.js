@@ -73,19 +73,17 @@
     };
 
     /**
-     * =================================================
-     * REMOVE ITEM – CONFIRM POPUP
-     * =================================================
-     */
-
-    /* =====================================================
-   REMOVE ITEM – CONFIRM POPUP (SAFE)
-===================================================== */
+ * =================================================
+ * REMOVE ITEM – CONFIRM POPUP (SAFE)
+ * =================================================
+ */
 
 let pendingRemoveSku = null;
 
-// expose cho inline onclick (Blade)
-window.showConfirmRemove = function (sku) {
+/**
+ * Show confirm popup
+ */
+function showConfirmRemove(sku) {
     if (!sku || typeof sku !== 'string') {
         console.warn('❌ showConfirmRemove called with invalid SKU:', sku);
         alert('Lỗi: Không xác định được sản phẩm cần xoá.');
@@ -93,15 +91,42 @@ window.showConfirmRemove = function (sku) {
     }
 
     pendingRemoveSku = sku;
+
     document.getElementById('lxConfirmOverlay')
         ?.classList.add('show');
-};
+}
 
+/**
+ * Hide confirm popup
+ */
 function hideConfirmRemove() {
     pendingRemoveSku = null;
+
     document.getElementById('lxConfirmOverlay')
         ?.classList.remove('show');
 }
+
+/**
+ * =================================================
+ * EVENT BINDINGS
+ * =================================================
+ */
+
+// Click nút xoá trên từng item (event delegation)
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.lx-cart-remove');
+    if (!btn) return;
+
+    const sku = btn.dataset.sku;
+
+    if (!sku) {
+        console.error('❌ Missing data-sku on remove button', btn);
+        alert('Lỗi dữ liệu sản phẩm. Vui lòng tải lại trang.');
+        return;
+    }
+
+    showConfirmRemove(sku);
+});
 
 // Cancel
 document.getElementById('lxConfirmCancel')
@@ -116,13 +141,15 @@ document.getElementById('lxConfirmOk')
             return;
         }
 
+        const skuToRemove = pendingRemoveSku;
         hideConfirmRemove();
 
         try {
             await post('/cart/remove', {
-                sku: pendingRemoveSku
+                sku: skuToRemove
             });
 
+            // Session là source of truth
             window.location.reload();
 
         } catch (e) {
@@ -130,6 +157,7 @@ document.getElementById('lxConfirmOk')
             alert('Không thể xoá sản phẩm. Vui lòng thử lại.');
         }
     });
+
 
 
 })();
