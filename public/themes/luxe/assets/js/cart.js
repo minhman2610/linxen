@@ -99,15 +99,16 @@
         btn.disabled = true;
 
         fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document
-                    .querySelector('meta[name="csrf-token"]')
-                    .getAttribute('content')
-            },
-            body: JSON.stringify(payload)
-        })
+    method: 'POST',
+    credentials: 'same-origin', // ⚠️ rất quan trọng
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content')
+    },
+    body: JSON.stringify(payload)
+})
         .then(res => res.json())
         .then(res => {
             if (res.success) {
