@@ -74,8 +74,9 @@
                 </div>
             @endif
 
-            <button type="submit"
-        class="lx-btn-primary lx-btn-full lx-btn-auth">
+            {{-- SUBMIT --}}
+<button type="submit"
+        class="lx-btn-primary lx-btn-full lx-btn-auth lx-btn-auth--highlight">
     <span class="lx-btn-main">Tạo tài khoản</span>
     <span class="lx-btn-sub">Miễn phí • Chỉ 30 giây</span>
 </button>
