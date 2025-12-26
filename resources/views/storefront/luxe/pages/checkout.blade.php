@@ -98,10 +98,11 @@
     <div class="lx-section-head">
         <strong>Địa chỉ nhận hàng</strong>
 
-        <a href="{{ route('linxen.account.addresses') }}"
-           class="lx-address-config-link">
-            ⚙️ Quản lý địa chỉ
-        </a>
+        <a href="{{ route('linxen.account') }}"
+   class="lx-address-config-link">
+    ⚙️ Quản lý địa chỉ
+</a>
+
     </div>
 
     @if(!empty($addresses))
