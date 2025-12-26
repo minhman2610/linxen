@@ -895,3 +895,18 @@
     background: linear-gradient(135deg, #ecd9b8, #d8bf8a);
     color: #2a2015;
 }
+.lx-btn-checkout {
+    background: linear-gradient(135deg, #c7a86b, #b08a4f);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 6px 18px rgba(176, 138, 79, 0.35);
+}
+
+.lx-btn-checkout:hover {
+    background: linear-gradient(135deg, #b8965c, #9f7a42);
+    box-shadow: 0 8px 22px rgba(176, 138, 79, 0.45);
+}
+
+.lx-btn-checkout:active {
+    transform: translateY(1px);
+}
