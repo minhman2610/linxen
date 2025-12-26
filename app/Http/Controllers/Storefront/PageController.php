@@ -522,15 +522,18 @@ public function account()
 {
     $customer = session('customer');
 
+    // ❌ Chưa đăng nhập → về trang login
     if (!$customer) {
         return redirect()
-            ->route('linxen.checkout')
+            ->route('linxen.login')
             ->with('warning', 'Vui lòng đăng nhập để tiếp tục.');
     }
 
+    // ✅ Đã đăng nhập
     return view('storefront.luxe.pages.account.index', [
         'customer' => (object) $customer,
     ]);
 }
+
 
 }
