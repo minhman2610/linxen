@@ -101,3 +101,13 @@
 .lx-btn-wide {
     width: 100%;
 }
+/* =====================================================
+   FIX LAYOUT CONFLICT – ACCOUNT PAGE
+===================================================== */
+
+/* Reset layout account khi là trang Address */
+.lx-account-page.lx-address-page {
+    display: block !important;
+    grid-template-columns: none !important;
+    align-items: unset !important;
+}
