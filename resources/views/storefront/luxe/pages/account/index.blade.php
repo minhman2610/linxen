@@ -63,27 +63,22 @@
             </a>
 
             {{-- SECURITY --}}
-            <div class="lx-account-card lx-account-card--danger">
+<div class="lx-account-card lx-account-card--danger"
+     onclick="openLogoutModal()"
+     role="button"
+     tabindex="0">
 
-                <div class="lx-account-card-left">
-                    <span class="lx-account-icon">🚪</span>
-                    <div>
-                        <strong>Đăng xuất</strong>
-                        <span>Thoát khỏi tài khoản hiện tại</span>
-                    </div>
-                </div>
+    <div class="lx-account-card-left">
+        <span class="lx-account-icon">🚪</span>
+        <div>
+            <strong>Đăng xuất</strong>
+            <span>Thoát khỏi tài khoản hiện tại</span>
+        </div>
+    </div>
 
-                <form method="POST"
-                      action="{{ route('linxen.logout') }}"
-                      onsubmit="return confirm('Bạn chắc chắn muốn đăng xuất?')">
-                    @csrf
-                    <button type="submit"
-                            class="lx-account-logout-btn">
-                        Đăng xuất
-                    </button>
-                </form>
+    <span class="lx-account-arrow">›</span>
+</div>
 
-            </div>
 
             {{-- SUPPORT --}}
             <a href="https://zalo.me/your-zalo-id"
@@ -143,5 +138,55 @@
     @endif
 
 </div>
+{{-- =========================
+    LOGOUT CONFIRM MODAL
+========================== --}}
+<div id="lxLogoutModal" class="lx-modal" style="display:none">
+
+    <div class="lx-modal-overlay" onclick="closeLogoutModal()"></div>
+
+    <div class="lx-modal-content lx-modal-confirm">
+
+        <div class="lx-modal-head">
+            <div class="lx-modal-icon">🚪</div>
+            <h3>Đăng xuất tài khoản?</h3>
+            <p>
+                Bạn sẽ cần đăng nhập lại để xem đơn hàng<br>
+                và quyền lợi thành viên.
+            </p>
+        </div>
+
+        <div class="lx-modal-actions">
+
+            <button type="button"
+                    class="lx-btn-secondary"
+                    onclick="closeLogoutModal()">
+                Ở lại
+            </button>
+
+            <form method="POST"
+                  action="{{ route('linxen.logout') }}">
+                @csrf
+                <button type="submit"
+                        class="lx-btn-danger">
+                    Đăng xuất
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
 
 @endsection
+<script>
+function openLogoutModal() {
+    const modal = document.getElementById('lxLogoutModal');
+    if (modal) modal.style.display = 'block';
+}
+
+function closeLogoutModal() {
+    const modal = document.getElementById('lxLogoutModal');
+    if (modal) modal.style.display = 'none';
+}
+</script>
