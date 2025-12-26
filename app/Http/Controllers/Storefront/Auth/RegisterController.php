@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -17,7 +16,7 @@ class RegisterController extends Controller
      */
     public function show()
     {
-        // Đã login → không vào register
+        // Đã login thì không cho đăng ký lại
         if (session()->has('customer')) {
             return redirect()->route('linxen.account.index');
         }
@@ -28,57 +27,48 @@ class RegisterController extends Controller
     /**
      * =====================================================
      * 📝 REGISTER (STOREFRONT → ERP AUTH)
-     * - Validate chặt phone + password
-     * - Chuẩn hoá phone
-     * - Auto login sau khi tạo
+     * - Chuẩn hoá SĐT (+84 → 0)
+     * - Validate SĐT & mật khẩu
+     * - Tạo tài khoản + auto login
      * =====================================================
      */
     public function register(Request $request)
     {
-        /**
-         * -------------------------------------------------
-         * 1️⃣ VALIDATE INPUT (STOREFRONT LEVEL)
-         * -------------------------------------------------
-         */
-        $data = $request->validate(
-            [
-                'phone'    => [
-                    'required',
-                    'string',
-                    'max:20',
-                    // VN phone: 0xxx hoặc +84xxx
-                    'regex:/^(0|\+84)[0-9]{9}$/',
-                ],
-                'email'    => 'nullable|email|max:255',
-                'password' => 'required|string|min:6|confirmed',
-            ],
-            [
-                'phone.required' => 'Vui lòng nhập số điện thoại.',
-                'phone.regex'    => 'Số điện thoại không hợp lệ.',
-                'password.min'   => 'Mật khẩu tối thiểu 6 ký tự.',
-                'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
-            ]
-        );
-
-        /**
-         * -------------------------------------------------
-         * 2️⃣ NORMALIZE PHONE → +84
-         * -------------------------------------------------
-         */
-        $phone = $data['phone'];
-
-        // if (Str::startsWith($phone, '0')) {
-        //     $phone = '+84' . substr($phone, 1);
-        // }
+        $data = $request->validate([
+            'phone'                 => 'required|string|max:20',
+            'email'                 => 'nullable|email|max:255',
+            'password'              => 'required|string|min:6|confirmed',
+        ]);
 
         try {
-            /**
-             * -------------------------------------------------
-             * 3️⃣ BUILD PAYLOAD GỬI ERP
-             * -------------------------------------------------
-             */
+            /*
+            |--------------------------------------------------------------------------
+            | 1️⃣ CHUẨN HOÁ SỐ ĐIỆN THOẠI
+            |--------------------------------------------------------------------------
+            */
+            $phone = $this->normalizePhone($data['phone']);
+
+            /*
+            |--------------------------------------------------------------------------
+            | 2️⃣ VALIDATE SỐ ĐIỆN THOẠI (SAU CHUẨN HOÁ)
+            |--------------------------------------------------------------------------
+            | Format hợp lệ: 0xxxxxxxxx (10 số)
+            */
+            if (!preg_match('/^0[0-9]{9}$/', $phone)) {
+                return back()
+                    ->withInput($request->except('password', 'password_confirmation'))
+                    ->withErrors([
+                        'register' => 'Số điện thoại không hợp lệ. Vui lòng nhập dạng 0xxxxxxxxx.',
+                    ]);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | 3️⃣ BUILD PAYLOAD GỬI ERP
+            |--------------------------------------------------------------------------
+            */
             $payload = [
-                'phone'    => $phone,
+                'phone'    => $phone,                 // ✅ luôn lưu 0xxxxxxxxx
                 'password' => $data['password'],
             ];
 
@@ -86,11 +76,11 @@ class RegisterController extends Controller
                 $payload['email'] = $data['email'];
             }
 
-            /**
-             * -------------------------------------------------
-             * 4️⃣ CALL ERP REGISTER API
-             * -------------------------------------------------
-             */
+            /*
+            |--------------------------------------------------------------------------
+            | 4️⃣ CALL ERP REGISTER API
+            |--------------------------------------------------------------------------
+            */
             $response = Http::withOptions([
                     'verify' => false,
                 ])
@@ -104,11 +94,11 @@ class RegisterController extends Controller
                     $payload
                 );
 
-            /**
-             * -------------------------------------------------
-             * ❌ ERP REGISTER FAIL
-             * -------------------------------------------------
-             */
+            /*
+            |--------------------------------------------------------------------------
+            | 5️⃣ ERP REGISTER FAIL
+            |--------------------------------------------------------------------------
+            */
             if ($response->failed()) {
                 $json = $response->json();
 
@@ -127,11 +117,11 @@ class RegisterController extends Controller
 
             $json = $response->json();
 
-            /**
-             * -------------------------------------------------
-             * ❌ RESPONSE KHÔNG HỢP LỆ
-             * -------------------------------------------------
-             */
+            /*
+            |--------------------------------------------------------------------------
+            | 6️⃣ RESPONSE KHÔNG HỢP LỆ
+            |--------------------------------------------------------------------------
+            */
             if (empty($json['success']) || empty($json['customer'])) {
                 return back()
                     ->withInput($request->except('password', 'password_confirmation'))
@@ -140,20 +130,20 @@ class RegisterController extends Controller
                     ]);
             }
 
-            /**
-             * -------------------------------------------------
-             * ✅ AUTO LOGIN → SET SESSION
-             * -------------------------------------------------
-             */
+            /*
+            |--------------------------------------------------------------------------
+            | 7️⃣ AUTO LOGIN – SET SESSION CUSTOMER
+            |--------------------------------------------------------------------------
+            */
             session([
                 'customer' => $json['customer'],
             ]);
 
-            /**
-             * -------------------------------------------------
-             * 🔁 REDIRECT
-             * -------------------------------------------------
-             */
+            /*
+            |--------------------------------------------------------------------------
+            | 8️⃣ REDIRECT SAU KHI ĐĂNG KÝ
+            |--------------------------------------------------------------------------
+            */
             return redirect()
                 ->route('linxen.account.index')
                 ->with('success', 'Tạo tài khoản thành công.');
@@ -170,5 +160,23 @@ class RegisterController extends Controller
                     'register' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
                 ]);
         }
+    }
+
+    /**
+     * =====================================================
+     * 🔁 NORMALIZE PHONE
+     * - +84xxxxxxxxx → 0xxxxxxxxx
+     * - Giữ nguyên nếu đã là 0xxxxxxxxx
+     * =====================================================
+     */
+    private function normalizePhone(string $phone): string
+    {
+        $phone = trim($phone);
+
+        if (str_starts_with($phone, '+84')) {
+            return '0' . substr($phone, 3);
+        }
+
+        return $phone;
     }
 }
