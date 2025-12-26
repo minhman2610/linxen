@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Storefront\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -17,7 +16,6 @@ class LoginController extends Controller
      */
     public function show()
     {
-        // Nếu đã login → không cho vào lại trang login
         if (session()->has('customer')) {
             return redirect()->route('linxen.account.index');
         }
@@ -38,63 +36,60 @@ class LoginController extends Controller
         ]);
 
         try {
-
-            /**
-             * ⚠️ GỌI ERP AUTH LOGIN
-             * ERP sẽ:
-             * - Xác thực
-             * - Trả customer info
-             * - Set session / cookie nếu cần
-             */
             $response = Http::withOptions([
                     'verify' => false,
                 ])
                 ->timeout(10)
                 ->withHeaders([
-                    'Accept'             => 'application/json',
-                    'X-Storefront-Code'  => 'linxen',
+                    'Accept'            => 'application/json',
+                    'X-Storefront-Code' => 'linxen',
                 ])
                 ->post(
                     config('services.erp.base_url') . '/api/storefront/auth/login',
                     $data
                 );
 
+            /**
+             * ❌ ERP LOGIN FAIL (401 / 422 / 500)
+             */
             if ($response->failed()) {
+                $json = $response->json();
+
                 Log::warning('❌ [STOREFRONT LOGIN FAILED]', [
                     'status' => $response->status(),
-                    'body'   => $response->body(),
+                    'body'   => $json,
                 ]);
 
                 return back()
-                    ->withInput()
+                    ->withInput($request->only('phone'))
                     ->withErrors([
-                        'login' => 'Số điện thoại hoặc mật khẩu không đúng.',
+                        'login' => $json['message']
+                            ?? 'Số điện thoại hoặc mật khẩu không đúng.',
                     ]);
             }
 
             $json = $response->json();
 
-            if (!($json['success'] ?? false) || empty($json['customer'])) {
+            /**
+             * ❌ ERP RESPONSE KHÔNG HỢP LỆ
+             */
+            if (empty($json['success']) || empty($json['customer'])) {
                 return back()
-                    ->withInput()
+                    ->withInput($request->only('phone'))
                     ->withErrors([
-                        'login' => $json['message'] ?? 'Đăng nhập thất bại.',
+                        'login' => 'Không thể đăng nhập. Vui lòng thử lại.',
                     ]);
             }
 
             /**
-             * =====================================================
-             * ✅ SET SESSION CUSTOMER (SOURCE OF TRUTH)
-             * =====================================================
+             * ✅ SET SESSION CUSTOMER
              */
             session([
                 'customer' => $json['customer'],
             ]);
 
             /**
-             * =====================================================
              * 🔁 REDIRECT SAU LOGIN
-             * =====================================================
              */
             return redirect()->intended(
                 route('linxen.account.index')
@@ -107,9 +102,9 @@ class LoginController extends Controller
             ]);
 
             return back()
-                ->withInput()
+                ->withInput($request->only('phone'))
                 ->withErrors([
-                    'login' => 'Không thể kết nối hệ thống. Vui lòng thử lại.',
+                    'login' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
                 ]);
         }
     }

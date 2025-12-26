@@ -18,35 +18,39 @@
             <p>Truy cập tài khoản để theo dõi đơn hàng & quyền lợi thành viên</p>
         </div>
 
-        {{-- FORM --}}
-        <form id="lxLoginForm" class="lx-auth-form">
+        {{-- FORM LOGIN --}}
+        <form id="lxLoginForm"
+              class="lx-auth-form"
+              method="POST"
+              action="{{ route('linxen.login.submit') }}">
 
             @csrf
 
             {{-- PHONE --}}
             <div class="lx-input-group">
-                <label>Số điện thoại</label>
+                <label for="phone">Số điện thoại</label>
                 <input type="tel"
                        name="phone"
-                       id="lxLoginPhone"
+                       id="phone"
+                       value="{{ old('phone') }}"
                        placeholder="Ví dụ: 0971 234 567"
                        required>
             </div>
 
             {{-- PASSWORD --}}
             <div class="lx-input-group">
-                <label>Mật khẩu</label>
+                <label for="password">Mật khẩu</label>
                 <input type="password"
                        name="password"
-                       id="lxLoginPassword"
+                       id="password"
                        placeholder="Nhập mật khẩu"
                        required>
             </div>
 
             {{-- ERROR --}}
-            @if ($errors->any())
+            @if ($errors->has('login'))
                 <div class="lx-auth-error">
-                    {{ $errors->first() }}
+                    {{ $errors->first('login') }}
                 </div>
             @endif
 
