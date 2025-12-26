@@ -58,9 +58,9 @@ class AccountController extends Controller
      */
     public function addresses()
     {
-        if (!auth()->check()) {
-            return redirect()->route('linxen.login');
-        }
+        // if (!auth()->check()) {
+        //     return redirect()->route('linxen.login');
+        // }
 
         $addresses = $this->erp->get('/api/storefront/customer/addresses');
 
