@@ -26,6 +26,13 @@
 
             @csrf
 
+            {{-- ❌ ERROR GLOBAL (ERP / LOGIC) --}}
+            @if ($errors->has('register'))
+                <div class="lx-auth-error lx-auth-error--global">
+                    {{ $errors->first('register') }}
+                </div>
+            @endif
+
             {{-- PHONE --}}
             <div class="lx-input-group">
                 <label for="phone">Số điện thoại</label>
@@ -34,7 +41,12 @@
                        id="phone"
                        value="{{ old('phone') }}"
                        placeholder="Ví dụ: 0971 234 567"
+                       class="{{ $errors->has('phone') ? 'is-error' : '' }}"
                        required>
+
+                @error('phone')
+                    <div class="lx-input-error">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- EMAIL (OPTIONAL) --}}
@@ -44,7 +56,12 @@
                        name="email"
                        id="email"
                        value="{{ old('email') }}"
-                       placeholder="Nhận thông báo & ưu đãi">
+                       placeholder="Nhận thông báo & ưu đãi"
+                       class="{{ $errors->has('email') ? 'is-error' : '' }}">
+
+                @error('email')
+                    <div class="lx-input-error">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- PASSWORD --}}
@@ -54,7 +71,12 @@
                        name="password"
                        id="password"
                        placeholder="Tối thiểu 6 ký tự"
+                       class="{{ $errors->has('password') ? 'is-error' : '' }}"
                        required>
+
+                @error('password')
+                    <div class="lx-input-error">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- PASSWORD CONFIRM --}}
@@ -64,41 +86,34 @@
                        name="password_confirmation"
                        id="password_confirmation"
                        placeholder="Nhập lại mật khẩu"
+                       class="{{ $errors->has('password_confirmation') ? 'is-error' : '' }}"
                        required>
+
+                @error('password_confirmation')
+                    <div class="lx-input-error">{{ $message }}</div>
+                @enderror
             </div>
 
-            {{-- ERROR --}}
-            @if ($errors->has('register'))
-                <div class="lx-auth-error">
-                    {{ $errors->first('register') }}
-                </div>
-            @endif
-
             {{-- SUBMIT --}}
-<button type="submit"
-        class="lx-btn-primary lx-btn-full lx-btn-auth lx-btn-auth--register">
-    <span class="lx-btn-main">Tạo tài khoản</span>
-    <span class="lx-btn-sub">Miễn phí • Chỉ 30 giây</span>
-</button>
-
+            <button type="submit"
+                    class="lx-btn-primary lx-btn-full lx-btn-auth lx-btn-auth--register">
+                <span class="lx-btn-main">Tạo tài khoản</span>
+                <span class="lx-btn-sub">Miễn phí • Chỉ 30 giây</span>
+            </button>
 
         </form>
 
         {{-- FOOTER --}}
         <div class="lx-auth-footer">
-
             <p class="lx-auth-register">
                 Đã có tài khoản?
-                <a href="{{ route('linxen.login') }}">
-                    Đăng nhập
-                </a>
+                <a href="{{ route('linxen.login') }}">Đăng nhập</a>
             </p>
 
             <a href="{{ route('linxen.home') }}"
                class="lx-auth-back">
                 ← Quay lại trang chủ
             </a>
-
         </div>
 
     </div>

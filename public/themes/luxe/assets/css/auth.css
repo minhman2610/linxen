@@ -183,3 +183,26 @@ button.lx-btn-primary.lx-btn-auth--register:active {
     font-size: 13px;
     color: #6b7280;
 }
+/* FIELD ERROR */
+.lx-input-error {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #b91c1c;
+}
+
+/* INPUT ERROR STATE */
+.lx-input-group input.is-error {
+    border-color: #ef4444;
+    background: #fff5f5;
+}
+
+/* GLOBAL ERROR */
+.lx-auth-error--global {
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fff1f2;
+    color: #b91c1c;
+    font-size: 13px;
+    line-height: 1.4;
+}
