@@ -63,21 +63,22 @@
         </form>
 
         {{-- FOOTER --}}
-        <div class="lx-auth-footer">
+<div class="lx-auth-footer">
 
-            <p class="lx-auth-register">
-                Chưa có tài khoản?
-                <a href="{{ route('linxen.checkout') }}">
-                    Đăng ký nhanh khi mua hàng
-                </a>
-            </p>
+    <p class="lx-auth-register">
+        Chưa có tài khoản?
+        <a href="{{ route('linxen.register') }}">
+            Đăng ký tài khoản LIN XÉN
+        </a>
+    </p>
 
-            <a href="{{ route('linxen.home') }}"
-               class="lx-auth-back">
-                ← Quay lại trang chủ
-            </a>
+    <a href="{{ route('linxen.home') }}"
+       class="lx-auth-back">
+        ← Quay lại trang chủ
+    </a>
 
-        </div>
+</div>
+
 
     </div>
 
