@@ -1,156 +1,144 @@
-/* Brand Highlight Zone */
-.lx-menu-brand-zone {
-    position: relative;
-    padding: 28px 20px;
-    background: linear-gradient(135deg, #000, #2b2b2b);
-    color: #fff;
-    text-align: left;
-}
+/* =====================================================
+   LUXE — MOBILE MENU & OVERLAY
+   Safe click · Premium · Mobile-first
+===================================================== */
 
-.lx-brand-logo {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    margin-bottom: 4px;
-}
-
-.lx-brand-tagline {
-    font-size: 13px;
-    opacity: 0.8;
-    letter-spacing: 0.5px;
-}
-
-/* Close button */
-.lx-menu-brand-zone .close-btn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #fff;
-}
-
-/* Overlay */
+/* OVERLAY */
 .lx-menu-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.45);
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 900;
+
     opacity: 0;
-    visibility: hidden;
-    transition: 0.3s ease;
-    z-index: 2000;
+    pointer-events: none;
+    transition: opacity .25s ease;
 }
 
-.lx-menu-overlay.active {
+.lx-menu-overlay.is-active {
     opacity: 1;
-    visibility: visible;
+    pointer-events: auto;
 }
 
-/* Sidebar */
+/* MOBILE MENU PANEL */
 .lx-mobile-menu {
     position: fixed;
     top: 0;
-    left: -85%;
-    width: 85%;
-    max-width: 320px;
-    height: 100vh;
-    background: #fff;
-    z-index: 2001;
-    transition: 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 2px 0 10px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-}
-
-.lx-mobile-menu.active {
     left: 0;
+    bottom: 0;
+
+    width: 82%;
+    max-width: 320px;
+    background: #ffffff;
+
+    z-index: 901;
+
+    transform: translateX(-100%);
+    transition: transform .3s ease;
+    pointer-events: none;
+
+    box-shadow: 8px 0 24px rgba(0,0,0,.12);
 }
 
-/* Profile zone */
-.lx-menu-profile {
+.lx-mobile-menu.is-open {
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+/* BRAND ZONE */
+.lx-menu-brand-zone {
+    padding: 18px 16px;
+    border-bottom: 1px solid #eee;
+
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid #efefef;
-    position: relative;
 }
 
-.lx-menu-profile .avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 12px;
-}
-
-.lx-menu-profile .hello {
-    font-size: 14px;
-    color: #555;
-}
-
-.lx-menu-profile .login-link {
-    display: block;
-    font-size: 15px;
-    color: #000;
+.lx-brand-logo {
     font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.04em;
 }
 
+.lx-brand-tagline {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* CLOSE BUTTON */
 .close-btn {
-    position: absolute;
-    right: 12px;
-    top: 12px;
-    border: none;
     background: none;
-    font-size: 22px;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
 }
 
-/* Menu list */
+/* MENU LIST */
 .lx-menu-list {
     list-style: none;
-    padding: 10px 0;
     margin: 0;
-    flex-grow: 1;
-    overflow-y: auto;
-}
-
-.lx-menu-item {
     padding: 0;
 }
 
+.lx-menu-item {
+    border-bottom: 1px solid #f2f2f2;
+}
+
+/* MENU LINK */
 .lx-menu-link {
+    width: 100%;
+    padding: 14px 16px;
+
     display: flex;
     align-items: center;
-    padding: 12px 18px;
+    gap: 10px;
+
+    background: none;
+    border: none;
     text-decoration: none;
-    color: #000;
-    font-size: 15px;
-    gap: 12px;
+    color: #111;
+    font-size: 14px;
+
+    cursor: pointer;
 }
 
+.lx-menu-link:hover {
+    background: #fafafa;
+}
+
+/* ICON */
 .menu-icon {
-    width: 22px;
-    opacity: 0.85;
+    width: 18px;
+    height: 18px;
+    opacity: .85;
 }
 
-/* Submenus */
-.has-sub .caret {
-    margin-left: auto;
-    width: 14px;
-    transform: rotate(0deg);
-    transition: 0.25s;
-}
-
+/* SUBMENU */
 .lx-submenu {
     display: none;
-    padding-left: 52px;
-    flex-direction: column;
+    padding-left: 18px;
+    background: #fafafa;
 }
 
-.lx-submenu.show {
-    display: flex;
+.lx-submenu a {
+    display: block;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #444;
+    text-decoration: none;
 }
 
-.has-sub.open .caret {
-    transform: rotate(90deg);
+.lx-submenu a:hover {
+    background: #f3f4f6;
+}
+
+/* SUBMENU TOGGLE */
+.lx-menu-item.has-sub.open > .lx-submenu {
+    display: block;
+}
+
+/* ACCESSIBILITY */
+.lx-menu-link:focus {
+    outline: none;
 }
