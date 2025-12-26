@@ -9,102 +9,116 @@
         return ($item['price'] ?? 0) * ($item['qty'] ?? 0);
     });
 
-    // 🚚 CHƯA CHỌN ĐỊA CHỈ / PHƯƠNG THỨC → CHƯA TÍNH SHIP
+    /*
+    |--------------------------------------------------------------------------
+    | 🚚 PHÍ VẬN CHUYỂN
+    | Chưa chọn địa chỉ & phương thức → KHÔNG TÍNH
+    |--------------------------------------------------------------------------
+    */
     $shippingFee = null;
 
-    // 👉 Tổng tiền hiện tại chỉ là TẠM TÍNH
+    // 👉 Tổng hiện tại chỉ là TẠM TÍNH
     $total = $subtotal;
-
-    $customer = session('customer') ?? null;
 @endphp
 
-<div class="lx-checkout-container">
+<div class="lx-cart">
 
     {{-- =========================
-        LEFT: SHIPPING + INFO
+        CART ITEMS
     ========================== --}}
-    <div class="lx-checkout-left">
+    <div class="lx-cart-items">
 
-        <h3>Thông tin giao hàng</h3>
+        <h2 class="lx-cart-title">Giỏ hàng</h2>
 
-        {{-- LOGIN BADGE --}}
-        @if($customer)
-            <div class="lx-login-badge">
-                👋 Xin chào
-                <strong>{{ $customer['name'] ?? $customer['phone'] }}</strong>
-                <span class="lx-login-note">
-                    Bạn đang mua hàng với tài khoản thành viên
-                </span>
+        @if(empty($cartItems))
+            <div class="lx-cart-empty">
+                <p>Giỏ hàng của bạn đang trống.</p>
+                <a href="{{ route('linxen.home') }}" class="lx-btn-secondary">
+                    Tiếp tục mua sắm
+                </a>
             </div>
-        @endif
+        @else
 
-        {{-- (Các block địa chỉ / form giao hàng giữ nguyên của anh) --}}
+            @foreach($cartItems as $sku => $item)
+                <div class="lx-cart-item">
+
+                    <div class="lx-cart-item-image">
+                        @if(!empty($item['image']))
+                            <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}">
+                        @endif
+                    </div>
+
+                    <div class="lx-cart-item-info">
+                        <h3 class="lx-cart-item-name">
+                            {{ $item['name'] }}
+                        </h3>
+
+                        @if(!empty($item['attrs']))
+                            <div class="lx-cart-item-attrs">
+                                @foreach($item['attrs'] as $key => $value)
+                                    <span>{{ $value }}</span>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <div class="lx-cart-item-price">
+                            {{ number_format($item['price']) }}₫
+                        </div>
+
+                        <div class="lx-cart-item-qty">
+                            <button type="button"
+                                    onclick="updateCartQty('{{ $sku }}', -1)">−</button>
+                            <input type="number"
+                                   value="{{ $item['qty'] }}"
+                                   readonly>
+                            <button type="button"
+                                    onclick="updateCartQty('{{ $sku }}', 1)">+</button>
+                        </div>
+
+                        <button type="button"
+                                class="lx-cart-item-remove"
+                                onclick="showConfirmRemove('{{ $sku }}')">
+                            ✕
+                        </button>
+                    </div>
+
+                </div>
+            @endforeach
+
+        @endif
 
     </div>
 
     {{-- =========================
-        RIGHT: ORDER SUMMARY
+        CART SUMMARY
     ========================== --}}
-    <div class="lx-checkout-right">
+    @if(!empty($cartItems))
+    <div class="lx-cart-summary">
 
-        <div class="lx-summary-box">
+        <div class="lx-summary-row">
+            <span>Tạm tính</span>
+            <strong>{{ number_format($subtotal) }}₫</strong>
+        </div>
 
-            <h4>Đơn hàng của bạn</h4>
+        <div class="lx-summary-row">
+            <span>Vận chuyển</span>
+            <strong class="lx-muted">Chưa xác định</strong>
+        </div>
 
-            {{-- ITEMS --}}
-            <div class="lx-summary-items">
-                @foreach($cartItems as $item)
-                    <div class="lx-summary-item">
-                        <div class="lx-summary-item-name">
-                            {{ $item['name'] }}
-                            <span class="lx-summary-qty">
-                                × {{ $item['qty'] }}
-                            </span>
-                        </div>
-                        <div class="lx-summary-item-price">
-                            {{ number_format($item['price'] * $item['qty']) }}₫
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+        <div class="lx-summary-total">
+            <span>Tạm tính</span>
+            <strong>{{ number_format($total) }}₫</strong>
+        </div>
 
-            {{-- SUBTOTAL --}}
-            <div class="lx-summary-row">
-                <span>Tạm tính</span>
-                <strong>{{ number_format($subtotal) }}₫</strong>
-            </div>
-
-            {{-- SHIPPING (PENDING) --}}
-            <div class="lx-summary-row lx-summary-row--pending">
-                <span>Vận chuyển</span>
-                <strong class="lx-muted">Chưa xác định</strong>
-            </div>
-
-            <div class="lx-summary-note--inline">
-                Phí vận chuyển sẽ được tính sau khi bạn chọn
-                <strong>địa chỉ nhận hàng</strong> và
-                <strong>phương thức giao hàng</strong>.
-            </div>
-
-            {{-- TOTAL --}}
-            <div class="lx-summary-total">
-                <span>Tạm tính</span>
-                <strong>{{ number_format($total) }}₫</strong>
-            </div>
-
-            {{-- PLACE ORDER --}}
-            <button type="submit"
-                    form="checkoutForm"
-                    class="lx-btn-primary lx-btn-full lx-btn-checkout">
-                <span class="lx-btn-main">ĐẶT HÀNG</span>
-                <span class="lx-btn-sub">
-                    Xác nhận đơn • Thanh toán COD
-                </span>
-            </button>
-
+        <div class="lx-cart-actions">
+            <a href="{{ route('linxen.checkout') }}"
+               class="lx-btn-primary lx-btn-full">
+                Thanh toán
+            </a>
         </div>
 
     </div>
+    @endif
 
 </div>
 
