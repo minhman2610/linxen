@@ -143,55 +143,47 @@
     color: #6b7280;
 }
 /* ======================================
-   AUTH CTA BUTTON – HIGH CONVERSION
+   AUTH CTA BUTTON – REGISTER
 ====================================== */
 
-.lx-btn-auth--highlight {
+.lx-btn-auth--register {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 4px;
 
-    padding: 16px 18px;
-    border-radius: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
 
-    background: linear-gradient(
-        135deg,
-        #1c1c1c,
-        #000000
-    );
+    background: #111;
+    color: #fff;
 
-    box-shadow:
-        0 12px 30px rgba(0,0,0,.18),
-        inset 0 1px 0 rgba(255,255,255,.08);
+    text-align: center;
+    cursor: pointer;
 
-    transition: all .18s ease;
+    transition: background .15s ease, transform .12s ease;
 }
 
 /* TEXT */
-.lx-btn-auth--highlight .lx-btn-main {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: .4px;
+.lx-btn-auth--register .lx-btn-main {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
 }
 
-.lx-btn-auth--highlight .lx-btn-sub {
+.lx-btn-auth--register .lx-btn-sub {
     font-size: 12px;
-    font-weight: 400;
-    color: rgba(255,255,255,.75);
+    color: rgba(255,255,255,.7);
 }
 
 /* HOVER */
-.lx-btn-auth--highlight:hover {
-    transform: translateY(-1px);
-    box-shadow:
-        0 18px 40px rgba(0,0,0,.25),
-        inset 0 1px 0 rgba(255,255,255,.12);
+.lx-btn-auth--register:hover {
+    background: #000;
 }
 
-/* ACTIVE (CLICK) */
-.lx-btn-auth--highlight:active {
-    transform: translateY(0);
-    box-shadow:
-        0 10px 20px rgba(0,0,0,.18);
+/* ACTIVE */
+.lx-btn-auth--register:active {
+    transform: translateY(1px);
 }
+
