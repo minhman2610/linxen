@@ -74,11 +74,12 @@
                 </div>
             @endif
 
-            {{-- SUBMIT --}}
             <button type="submit"
-                    class="lx-btn-primary lx-btn-full lx-btn-auth">
-                <span class="lx-btn-main">Tạo tài khoản</span>
-            </button>
+        class="lx-btn-primary lx-btn-full lx-btn-auth">
+    <span class="lx-btn-main">Tạo tài khoản</span>
+    <span class="lx-btn-sub">Miễn phí • Chỉ 30 giây</span>
+</button>
+
 
         </form>
 
