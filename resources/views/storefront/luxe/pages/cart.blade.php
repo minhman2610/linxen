@@ -116,7 +116,7 @@
                 <div class="lx-summary-row">
                     <span>Vận chuyển</span>
                     <strong class="lx-summary-muted">
-                        Tính tại bước thanh toán
+                        Chưa chọn địa chỉ giao hàng
                     </strong>
                 </div>
 
