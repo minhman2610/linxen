@@ -1,48 +1,60 @@
 /* =====================================================
-   ACCOUNT – ADDRESSES (LIN XÉN)
+   ACCOUNT – ADDRESSES V2 (CLEAN / SINGLE COLUMN)
 ===================================================== */
 
-.lx-address-page {
-    max-width: 920px;
+.lx-address-page-v2 {
+    max-width: 760px;
     margin: 0 auto;
+    padding: 24px 16px;
 }
 
-/* SECTION */
-.lx-address-section {
-    margin-top: 24px;
+/* HEADER */
+.lx-address-head {
+    margin-bottom: 32px;
 }
 
-/* LIST */
-.lx-address-list {
+.lx-address-head h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.lx-address-head p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* ADDRESS LIST */
+.lx-address-block {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
+    margin-bottom: 40px;
 }
 
-/* CARD */
-.lx-address-card {
+.lx-address-item {
     border: 1px solid #eee;
     border-radius: 12px;
-    padding: 16px 18px;
+    padding: 14px 16px;
     background: #fff;
-
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
 }
 
-.lx-address-card.is-default {
+.lx-address-item.is-default {
     border-color: #111;
     background: #fafafa;
 }
 
-/* MAIN */
-.lx-address-name {
+/* ADDRESS INFO */
+.lx-address-line-1 {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 6px;
+}
+
+.lx-address-name {
+    font-weight: 600;
 }
 
 .lx-address-phone {
@@ -50,8 +62,7 @@
     color: #6b7280;
 }
 
-/* BADGE */
-.lx-address-badge {
+.lx-address-tag {
     font-size: 12px;
     padding: 2px 8px;
     border-radius: 999px;
@@ -59,55 +70,51 @@
     color: #fff;
 }
 
-/* TEXT */
-.lx-address-text {
+.lx-address-line-2 {
     font-size: 14px;
     color: #374151;
     line-height: 1.5;
 }
 
-/* ACTIONS */
-.lx-address-actions {
-    display: flex;
-    align-items: center;
-}
-
-.lx-address-hint {
-    font-size: 13px;
-    color: #9ca3af;
-}
-
 /* EMPTY */
-.lx-address-empty {
-    padding: 24px;
+.lx-address-empty-v2 {
+    padding: 20px;
     border: 1px dashed #ddd;
     border-radius: 12px;
     text-align: center;
     color: #6b7280;
 }
 
-/* DIVIDER */
-.lx-divider {
-    margin: 32px 0;
-    border: none;
-    border-top: 1px solid #eee;
-}
-
 /* FORM */
-.lx-address-form-wrap {
-    max-width: 520px;
+.lx-address-form-box {
+    border-top: 1px solid #eee;
+    padding-top: 32px;
 }
 
-.lx-btn-wide {
-    width: 100%;
+.lx-address-form-box h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
 }
-/* =====================================================
-   FIX LAYOUT CONFLICT – ACCOUNT PAGE
-===================================================== */
 
-/* Reset layout account khi là trang Address */
-.lx-account-page.lx-address-page {
-    display: block !important;
-    grid-template-columns: none !important;
-    align-items: unset !important;
+.lx-address-form {
+    max-width: 420px;
 }
+
+/* FIELD */
+.lx-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.lx-field label {
+    font-size: 14px;
+    color: #374151;
+}
+
+.lx-field input,
+.lx-field textarea {
+    border: 1px solid #ddd;
+    border-radius:

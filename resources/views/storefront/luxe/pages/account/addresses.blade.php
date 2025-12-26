@@ -1,79 +1,72 @@
 @extends('storefront.luxe.layouts.app')
 
 @section('content')
-<section class="lx-account-page lx-address-page">
+<section class="lx-address-page-v2">
 
     {{-- HEADER --}}
-    <header class="lx-account-head">
+    <header class="lx-address-head">
         <h1>Địa chỉ nhận hàng</h1>
-        <p>Quản lý và cập nhật địa chỉ giao hàng của bạn</p>
+        <p>Quản lý và sử dụng địa chỉ cho giao hàng</p>
     </header>
 
     {{-- ADDRESS LIST --}}
-    <div class="lx-address-section">
+    <div class="lx-address-block">
 
         @if(!empty($addresses))
-            <div class="lx-address-list">
-                @foreach($addresses as $addr)
-                    <div class="lx-address-card {{ !empty($addr['is_default']) ? 'is-default' : '' }}">
-                        <div class="lx-address-main">
-                            <div class="lx-address-name">
-                                <strong>{{ $addr['name'] }}</strong>
-                                <span class="lx-address-phone">{{ $addr['phone'] }}</span>
+            @foreach($addresses as $addr)
+                <div class="lx-address-item {{ !empty($addr['is_default']) ? 'is-default' : '' }}">
 
-                                @if(!empty($addr['is_default']))
-                                    <span class="lx-address-badge">Mặc định</span>
-                                @endif
-                            </div>
+                    <div class="lx-address-info">
+                        <div class="lx-address-line-1">
+                            <span class="lx-address-name">{{ $addr['name'] }}</span>
+                            <span class="lx-address-phone">{{ $addr['phone'] }}</span>
 
-                            <p class="lx-address-text">
-                                {{ $addr['address'] }}
-                            </p>
+                            @if(!empty($addr['is_default']))
+                                <span class="lx-address-tag">Mặc định</span>
+                            @endif
                         </div>
 
-                        {{-- future actions --}}
-                        <div class="lx-address-actions">
-                            <span class="lx-address-hint">
-                                Dùng cho giao hàng
-                            </span>
+                        <div class="lx-address-line-2">
+                            {{ $addr['address'] }}
                         </div>
                     </div>
-                @endforeach
-            </div>
+
+                </div>
+            @endforeach
         @else
-            <div class="lx-address-empty">
-                <p>Bạn chưa có địa chỉ nhận hàng nào.</p>
+            <div class="lx-address-empty-v2">
+                Bạn chưa có địa chỉ nhận hàng nào.
             </div>
         @endif
 
     </div>
 
-    {{-- DIVIDER --}}
-    <hr class="lx-divider">
+    {{-- FORM --}}
+    <div class="lx-address-form-box">
+        <h2>Thêm địa chỉ mới</h2>
 
-    {{-- ADD NEW ADDRESS --}}
-    <div class="lx-address-form-wrap">
-        <h3 class="lx-section-title">Thêm địa chỉ mới</h3>
-
-        <form method="POST" class="lx-form lx-address-form">
+        <form method="POST" class="lx-address-form">
             @csrf
 
-            <div class="lx-form-group">
+            <div class="lx-field">
                 <label>Tên người nhận</label>
                 <input name="name" placeholder="Nguyễn Văn A" required>
             </div>
 
-            <div class="lx-form-group">
+            <div class="lx-field">
                 <label>Số điện thoại</label>
                 <input name="phone" placeholder="097xxxxxxx" required>
             </div>
 
-            <div class="lx-form-group">
+            <div class="lx-field">
                 <label>Địa chỉ chi tiết</label>
-                <input name="address" placeholder="Số nhà, đường, phường/xã, quận/huyện…" required>
+                <textarea name="address"
+                          rows="3"
+                          placeholder="Số nhà, đường, phường/xã, quận/huyện"
+                          required></textarea>
             </div>
 
-            <button class="lx-btn-primary lx-btn-wide">
+            <button class="lx-btn-primary lx-btn-block">
                 Thêm địa chỉ
             </button>
         </form>
