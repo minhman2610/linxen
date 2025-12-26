@@ -5,6 +5,7 @@ use App\Http\Controllers\Storefront\PageController;
 use App\Http\Controllers\Storefront\ReelsController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Storefront\Account\OrderController;
+use App\Http\Controllers\Storefront\Account\AccountController;
 use App\Http\Controllers\Storefront\Auth\LoginController;
 use App\Http\Controllers\Storefront\Auth\RegisterController;
 use App\Http\Controllers\Storefront\Auth\LogoutController;
@@ -23,7 +24,6 @@ Route::domain('linxen.vn')
         |--------------------------------------------------------------------------
         | 🔐 AUTH (LOGIN / REGISTER / LOGOUT)
         |--------------------------------------------------------------------------
-        | ❗ KHÔNG middleware storefront.auth
         */
         Route::get('/login', [LoginController::class, 'show'])
             ->name('linxen.login');
@@ -124,8 +124,10 @@ Route::domain('linxen.vn')
 
         /*
         |--------------------------------------------------------------------------
-        | 👤 ACCOUNT (CHECK LOGIN TRONG CONTROLLER)
+        | 👤 ACCOUNT
         |--------------------------------------------------------------------------
+        | ❗ Không dùng middleware auth ở route
+        | 👉 Check login trong controller (đúng style hiện tại của anh)
         */
         Route::prefix('account')
             ->name('linxen.account.')
@@ -134,10 +136,25 @@ Route::domain('linxen.vn')
                 Route::get('/', [PageController::class, 'account'])
                     ->name('index');
 
+                // 🧾 Orders
                 Route::get('/orders', [OrderController::class, 'index'])
                     ->name('orders');
 
                 Route::get('/orders/{code}', [OrderController::class, 'show'])
                     ->name('orders.show');
+
+                // 👤 Profile
+                Route::get('/profile', [AccountController::class, 'profile'])
+                    ->name('profile');
+
+                Route::post('/profile', [AccountController::class, 'updateProfile'])
+                    ->name('profile.update');
+
+                // 📍 Addresses
+                Route::get('/addresses', [AccountController::class, 'addresses'])
+                    ->name('addresses');
+
+                Route::post('/addresses', [AccountController::class, 'storeAddress'])
+                    ->name('addresses.store');
             });
     });
