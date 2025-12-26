@@ -289,3 +289,50 @@
 .lx-btn-auth--register:active {
     transform: translateY(1px);
 }
+/* ======================================
+   REGISTER CTA – FORCE OVERRIDE
+====================================== */
+
+button.lx-btn-primary.lx-btn-auth--register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    padding: 14px 16px;
+
+    background: #111;
+    color: #fff;
+
+    border: none;
+    border-radius: 12px;
+
+    text-align: center;
+    cursor: pointer;
+
+    transition: background .15s ease, transform .12s ease;
+}
+
+/* TEXT */
+button.lx-btn-primary.lx-btn-auth--register .lx-btn-main {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+button.lx-btn-primary.lx-btn-auth--register .lx-btn-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: rgba(255,255,255,.7);
+}
+
+/* HOVER */
+button.lx-btn-primary.lx-btn-auth--register:hover {
+    background: #000;
+}
+
+/* ACTIVE */
+button.lx-btn-primary.lx-btn-auth--register:active {
+    transform: translateY(1px);
+}
