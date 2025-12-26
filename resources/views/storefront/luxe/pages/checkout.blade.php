@@ -146,7 +146,7 @@
         @else
             <div class="lx-address-empty">
                 <span>Bạn chưa có địa chỉ nhận hàng.</span>
-                <a href="{{ route('linxen.account') }}">Thêm địa chỉ</a>
+                <a href="{{ route('linxen.account.index') }}">Thêm địa chỉ</a>
             </div>
         @endif
     </div>
