@@ -402,7 +402,6 @@ public function checkout()
     /*
     |--------------------------------------------------------------------------
     | 2️⃣ Chuẩn hoá & validate dữ liệu giỏ hàng
-    |    (phòng session lỗi / data cũ)
     |--------------------------------------------------------------------------
     */
     $cartItems = [];
@@ -426,8 +425,6 @@ public function checkout()
             'name'       => $item['name'],
             'price'      => (float) $item['price'],
             'qty'        => (int) $item['qty'],
-
-            // Optional fields – phục vụ UI + checkout.js
             'image'      => $item['image'] ?? null,
             'attrs'      => is_array($item['attrs'] ?? null) ? $item['attrs'] : [],
             'product_id' => $item['product_id'] ?? null,
@@ -449,10 +446,41 @@ public function checkout()
 
     /*
     |--------------------------------------------------------------------------
-    | 4️⃣ Trả view checkout
+    | 4️⃣ FETCH SHIPPING ADDRESSES FROM ERP (NẾU LOGIN)
     |--------------------------------------------------------------------------
-    | - justRegistered: chỉ true 1 lần (flash session)
-    | - customer: lấy từ session (nếu có)
+    */
+    $addresses = [];
+
+    $customer   = session('customer');
+    $loginToken = session('login_token'); // nếu anh đã lưu token
+
+    if ($customer && $loginToken) {
+        try {
+            $res = \Illuminate\Support\Facades\Http::withOptions([
+                    'verify' => false,
+                ])
+                ->timeout(5)
+                ->withHeaders([
+                    'X-Storefront-Code' => 'linxen',
+                    'Authorization'     => 'Bearer ' . $loginToken,
+                    'Accept'            => 'application/json',
+                ])
+                ->get("{$this->erpBaseUrl}/api/storefront/customers/addresses");
+
+            if ($res->ok()) {
+                $addresses = $res->json('addresses') ?? [];
+            }
+
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('[CHECKOUT FETCH ADDRESSES FAILED]', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 5️⃣ Trả view checkout
     |--------------------------------------------------------------------------
     */
     return view(
@@ -461,6 +489,7 @@ public function checkout()
             'cart'           => $cartItems,
             'brand'          => $this->brand,
             'justRegistered' => session('just_registered', false),
+            'addresses'      => $addresses, // ✅ NEW
         ]
     );
 }
