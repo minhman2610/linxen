@@ -422,14 +422,14 @@ public function checkout()
         }
 
         $cartItems[$sku] = [
-            'sku'   => $sku,
-            'name'  => $item['name'],
-            'price' => (float) $item['price'],
-            'qty'   => (int) $item['qty'],
+            'sku'        => $sku,
+            'name'       => $item['name'],
+            'price'      => (float) $item['price'],
+            'qty'        => (int) $item['qty'],
 
             // Optional fields – phục vụ UI + checkout.js
-            'image' => $item['image'] ?? null,
-            'attrs' => is_array($item['attrs'] ?? null) ? $item['attrs'] : [],
+            'image'      => $item['image'] ?? null,
+            'attrs'      => is_array($item['attrs'] ?? null) ? $item['attrs'] : [],
             'product_id' => $item['product_id'] ?? null,
         ];
     }
@@ -451,15 +451,20 @@ public function checkout()
     |--------------------------------------------------------------------------
     | 4️⃣ Trả view checkout
     |--------------------------------------------------------------------------
+    | - justRegistered: chỉ true 1 lần (flash session)
+    | - customer: lấy từ session (nếu có)
+    |--------------------------------------------------------------------------
     */
     return view(
         "storefront.{$this->theme}.pages.checkout",
         [
-            'cart'  => $cartItems,
-            'brand' => $this->brand,
+            'cart'           => $cartItems,
+            'brand'          => $this->brand,
+            'justRegistered' => session('just_registered', false),
         ]
     );
 }
+
 /**
  * =====================================================
  * 🧾 PLACE ORDER (LEGACY / SUCCESS PAGE)

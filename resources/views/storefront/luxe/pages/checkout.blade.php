@@ -37,14 +37,14 @@
             ← Quay lại giỏ hàng
         </a>
     </div>
-    @if($justRegistered && $customer)
+    @if(($justRegistered ?? false) && $customer)
     <div class="lx-member-success">
         <div class="lx-member-success-icon">🎉</div>
         <div class="lx-member-success-content">
             <strong>Đăng ký thành công!</strong>
             <div>
-                Chào mừng <b>{{ $customer->name ?? $customer->phone }}</b> trở thành
-                <b>thành viên LIN XÉN</b>.
+                Chào mừng <b>{{ $customer->name ?? $customer->phone }}</b>
+                trở thành <b>thành viên LIN XÉN</b>.
             </div>
             <div class="lx-member-success-sub">
                 Bạn đã được đăng nhập và có thể tiếp tục đặt hàng.
@@ -52,6 +52,7 @@
         </div>
     </div>
 @endif
+
 
     @if(empty($cartItems))
         <div class="lx-checkout-empty">
