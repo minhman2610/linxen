@@ -34,18 +34,13 @@ class ErpStorefrontApi
     /**
      * =====================================================
      * 👗 PRODUCT DETAIL
-     * slug format: ten-san-pham-product_id
      * =====================================================
      */
     public function product(string $brand, string $slug): ?array
     {
         $data = $this->get("/api/storefront/{$brand}/product/{$slug}");
 
-        if (empty($data) || !is_array($data)) {
-            return null;
-        }
-
-        return $data;
+        return empty($data) || !is_array($data) ? null : $data;
     }
 
     /**
@@ -114,8 +109,9 @@ class ErpStorefrontApi
 
         try {
             $res = Http::withToken($this->token)
+                ->withHeaders($this->buildHeaders())
                 ->withOptions([
-                    'verify'  => false, // 🔥 internal ERP
+                    'verify'  => false, // internal ERP
                     'timeout' => 8,
                 ])
                 ->acceptJson()
@@ -162,6 +158,7 @@ class ErpStorefrontApi
 
         try {
             $res = Http::withToken($this->token)
+                ->withHeaders($this->buildHeaders())
                 ->withOptions([
                     'verify'  => false,
                     'timeout' => 8,
@@ -187,5 +184,21 @@ class ErpStorefrontApi
             ]);
             return [];
         }
+    }
+
+    /**
+     * =====================================================
+     * 🧠 BUILD COMMON HEADERS
+     * =====================================================
+     */
+    protected function buildHeaders(): array
+    {
+        return array_filter([
+            // Identity customer (source of truth: storefront session)
+            'X-Customer-Phone' => session('customer.phone'),
+
+            // Optional – để ERP log context
+            'X-Storefront-Code' => 'LINXEN',
+        ]);
     }
 }
