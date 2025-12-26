@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'api/storefront/*',
         ]);
 
+        // ✅ REGISTER ROUTE MIDDLEWARE (LARAVEL 11)
+    $middleware->alias([
+        'storefront.auth' => \App\Http\Middleware\StorefrontAuth::class,
+    ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

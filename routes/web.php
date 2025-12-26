@@ -103,24 +103,26 @@ Route::domain('linxen.vn')
             ->name('checkout.create');
 
         /*
-        |--------------------------------------------------------------------------
-        | 👤 ACCOUNT
-        |--------------------------------------------------------------------------
-        */
-        Route::prefix('account')
-            ->middleware(['storefront.auth'])
-            ->name('linxen.account.')
-            ->group(function () {
+|--------------------------------------------------------------------------
+| 👤 ACCOUNT
+|--------------------------------------------------------------------------
+*/
+Route::prefix('account')
+    ->middleware(['storefront.auth'])
+    ->name('linxen.account.')
+    ->group(function () {
 
-                // Dashboard (để trống hoặc redirect orders)
-                Route::get('/', [PageController::class, 'account'])
-                    ->name('index');
+        // Dashboard tài khoản
+        Route::get('/', [PageController::class, 'account'])
+            ->name('index');
 
-                // 🧾 Orders
-                Route::get('/orders', [OrderController::class, 'index'])
-                    ->name('orders');
+        // 🧾 Danh sách đơn hàng
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders');
 
-                Route::get('/orders/{code}', [OrderController::class, 'show'])
-                    ->name('orders.show');
-            });
+        // 📦 Chi tiết đơn hàng
+        Route::get('/orders/{code}', [OrderController::class, 'show'])
+            ->name('orders.show');
+    });
+
     });
