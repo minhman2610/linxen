@@ -744,3 +744,29 @@
         transform: translateY(0) scale(1);
     }
 }
+.lx-member-success {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 16px 0 24px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+    border: 1px solid #bbf7d0;
+    color: #065f46;
+}
+
+.lx-member-success-icon {
+    font-size: 28px;
+}
+
+.lx-member-success-content strong {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.lx-member-success-sub {
+    font-size: 13px;
+    color: #047857;
+    margin-top: 2px;
+}

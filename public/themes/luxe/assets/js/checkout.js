@@ -184,72 +184,90 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-     * MODAL ACTIONS
-     * ===================================================== */
-    document.getElementById('lx-member-confirm')?.addEventListener('click', async () => {
+ * MODAL ACTIONS
+ * ===================================================== */
+document.getElementById('lx-member-confirm')?.addEventListener('click', async () => {
 
-        // KHÁCH CŨ → LOGIN
-        if (phoneState === 'existing') {
-            const pwd = document.getElementById('lx-member-password').value;
-            if (!pwd) {
-                alert('Vui lòng nhập mật khẩu');
-                return;
-            }
+    // =========================
+    // KHÁCH CŨ → LOGIN
+    // =========================
+    if (phoneState === 'existing') {
+        const pwd = document.getElementById('lx-member-password')?.value;
 
-            memberActionInput.value   = 'login';
-            memberPasswordInput.value = pwd;
-            closeMemberModal();
+        if (!pwd) {
+            alert('Vui lòng nhập mật khẩu');
             return;
         }
 
-        // KHÁCH MỚI → REGISTER + AUTO LOGIN
-        if (phoneState === 'new') {
-            const email = document.getElementById('lx-member-email').value;
-            const pwd   = document.getElementById('lx-member-new-password').value;
-            const pwd2  = document.getElementById('lx-member-new-password-confirm').value;
+        memberActionInput.value   = 'login';
+        memberPasswordInput.value = pwd;
+        closeMemberModal();
+        return;
+    }
 
-            if (!pwd || pwd.length < 6) {
-                alert('Mật khẩu cần ít nhất 6 ký tự');
-                return;
-            }
-            if (pwd !== pwd2) {
-                alert('Mật khẩu nhập lại không khớp');
-                return;
-            }
+    // =========================
+    // KHÁCH MỚI → REGISTER + AUTO LOGIN
+    // =========================
+    if (phoneState === 'new') {
+        const email = document.getElementById('lx-member-email')?.value?.trim();
+        const pwd   = document.getElementById('lx-member-new-password')?.value;
+        const pwd2  = document.getElementById('lx-member-new-password-confirm')?.value;
 
-            try {
-                const res = await fetch('/ajax/register-inline', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute('content'),
-                    },
-                    credentials: 'same-origin',
-                    body: JSON.stringify({
-                        phone: phoneInput.value.trim(),
-                        email,
-                        password: pwd,
-                    }),
-                });
-
-                const json = await res.json();
-
-                if (!json.success) {
-                    alert(json.message || 'Không tạo được tài khoản');
-                    return;
-                }
-
-                // ERP ĐÃ LOGIN → RELOAD CHECKOUT
-                window.location.reload();
-
-            } catch (e) {
-                alert('Lỗi kết nối server');
-            }
+        if (!pwd || pwd.length < 6) {
+            alert('Mật khẩu cần ít nhất 6 ký tự');
+            return;
         }
-    });
+
+        if (pwd !== pwd2) {
+            alert('Mật khẩu nhập lại không khớp');
+            return;
+        }
+
+        // Build payload an toàn (KHÔNG gửi email rỗng)
+        const payload = {
+            phone: phoneInput.value.trim(),
+            password: pwd,
+        };
+
+        if (email) {
+            payload.email = email;
+        }
+
+        try {
+            const res = await fetch('/ajax/register-inline', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        ?.getAttribute('content'),
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(payload),
+            });
+
+            const json = await res.json();
+
+            if (!json.success) {
+                alert(json.message || 'Không tạo được tài khoản');
+                return;
+            }
+
+            /*
+             * ERP sẽ auto-login và redirect về:
+             * /checkout?registered=1
+             * → storefront nhận diện & hiển thị thông báo
+             */
+            window.location.href = '/checkout?registered=1';
+
+        } catch (e) {
+            console.error('register-inline error:', e);
+            alert('Lỗi kết nối server');
+        }
+    }
+});
+
 
     document.getElementById('lx-member-skip')?.addEventListener('click', () => {
         memberActionInput.value = 'skip';
