@@ -513,13 +513,26 @@ public function placeOrder(Request $request)
 }
 
 
-    /* =====================================================
-     * 👤 ACCOUNT (placeholder)
-     * ===================================================== */
-    public function account()
-    {
-        return view("storefront.{$this->theme}.pages.account");
+    /**
+ * =====================================================
+ * 👤 ACCOUNT DASHBOARD
+ * =====================================================
+ */
+public function account()
+{
+    $customer = session('customer');
+
+    if (!$customer) {
+        return redirect()
+            ->route('linxen.checkout')
+            ->with('warning', 'Vui lòng đăng nhập để tiếp tục.');
     }
+
+    return view('storefront.luxe.pages.account.index', [
+        'customer' => (object) $customer,
+    ]);
+}
+
 
     public function orders()
     {
