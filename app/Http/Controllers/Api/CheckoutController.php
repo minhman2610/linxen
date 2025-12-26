@@ -33,13 +33,16 @@ class CheckoutController extends Controller
 
         try {
             $response = Http::withOptions([
-                    'verify' => false,
-                ])
-                ->timeout(8)
-                ->get(
-                    "{$this->erpBaseUrl}/api/storefront/customers/check-phone",
-                    ['phone' => $phone]
-                );
+        'verify' => false,
+    ])
+    ->timeout(8)
+    ->withHeaders([
+        'X-Storefront-Code' => 'linxen',
+    ])
+    ->get(
+        "{$this->erpBaseUrl}/api/storefront/customers/check-phone",
+        ['phone' => $phone]
+    );
 
             if (!$response->ok()) {
                 Log::warning('⚠️ [CHECK PHONE ERP HTTP ERROR]', [
@@ -95,13 +98,17 @@ class CheckoutController extends Controller
 
         try {
             $response = Http::withOptions([
-                    'verify' => false,
-                ])
-                ->timeout(10)
-                ->post(
-                    "{$this->erpBaseUrl}/api/storefront/auth/register",
-                    $data
-                );
+        'verify' => false,
+    ])
+    ->timeout(10)
+    ->withHeaders([
+        'X-Storefront-Code' => 'linxen',
+    ])
+    ->post(
+        "{$this->erpBaseUrl}/api/storefront/auth/register",
+        $data
+    );
+
 
             if ($response->failed()) {
                 Log::error('❌ [REGISTER INLINE ERP FAILED]', [
