@@ -811,3 +811,76 @@
     color: #6b7280;
     text-decoration: underline;
 }
+.lx-checkout-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.lx-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.lx-address-config-link {
+    font-size: 12px;
+    color: #6b7280;
+    text-decoration: underline;
+}
+
+.lx-address-list {
+    display: grid;
+    gap: 10px;
+}
+
+.lx-address-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #fff;
+}
+
+.lx-address-card:has(input:checked) {
+    border-color: #111;
+    background: #fafafa;
+}
+
+.lx-address-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.lx-address-name {
+    font-weight: 500;
+}
+
+.lx-address-phone {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.lx-badge-default {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #111;
+    color: #fff;
+}
+
+.lx-address-text {
+    font-size: 13px;
+    color: #374151;
+    margin-top: 4px;
+}
+
+.lx-address-empty {
+    font-size: 14px;
+    color: #6b7280;
+}

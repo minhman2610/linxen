@@ -80,69 +80,77 @@
         ========================== --}}
         <div class="lx-checkout-left">
 
-            <h3>Thông tin giao hàng</h3>
+    <h3 class="lx-checkout-title">Thông tin giao hàng</h3>
 
-{{-- LOGIN BADGE --}}
-@if($customer)
-    <div class="lx-login-badge">
-        👋 Xin chào <strong>{{ $customer->name ?? $customer->phone }}</strong>
-        <span class="lx-login-note">Bạn đang mua hàng với tài khoản thành viên</span>
-    </div>
-@endif
-
-{{-- =========================
-    SHIPPING ADDRESSES (ERP)
-========================== --}}
-<div class="lx-checkout-section">
-
-    <div class="lx-section-head">
-        <strong>Địa chỉ nhận hàng</strong>
-
-        <a href="{{ route('linxen.account') }}"
-   class="lx-address-config-link">
-    ⚙️ Quản lý địa chỉ
-</a>
-
-    </div>
-
-    @if(!empty($addresses))
-        <div class="lx-address-list">
-
-            @foreach($addresses as $addr)
-                <label class="lx-address-card">
-                    <input type="radio"
-                           name="shipping_address_id"
-                           value="{{ $addr['id'] }}"
-                           {{ $addr['is_default'] ? 'checked' : '' }}
-                           required>
-
-                    <div class="lx-address-info">
-                        <div class="lx-address-head">
-                            <strong>{{ $addr['name'] }}</strong>
-                            <span>{{ $addr['phone'] }}</span>
-
-                            @if($addr['is_default'])
-                                <span class="lx-badge-default">Mặc định</span>
-                            @endif
-                        </div>
-
-                        <div class="lx-address-text">
-                            {{ $addr['address'] }}
-                        </div>
-                    </div>
-                </label>
-            @endforeach
-
-        </div>
-    @else
-        <div class="lx-muted">
-            Bạn chưa có địa chỉ nhận hàng.
-            <a href="{{ route('linxen.account') }}">
-                Thêm địa chỉ ngay
-            </a>
+    {{-- LOGIN BADGE (NHẸ – KHÔNG LẤN FLOW) --}}
+    @if($customer)
+        <div class="lx-login-badge">
+            👋 <strong>{{ $customer->name ?? $customer->phone }}</strong>
+            <span class="lx-login-note">Đang mua với tài khoản thành viên</span>
         </div>
     @endif
+
+    {{-- =========================
+        SHIPPING ADDRESSES
+    ========================== --}}
+    <div class="lx-checkout-section">
+
+        <div class="lx-section-head">
+            <strong>Địa chỉ nhận hàng</strong>
+
+            {{-- Secondary action – giảm phân tâm --}}
+            <a href="{{ route('linxen.account') }}"
+               class="lx-address-config-link"
+               title="Quản lý địa chỉ nhận hàng">
+                ⚙️ Quản lý
+            </a>
+        </div>
+
+        @if(!empty($addresses))
+            <div class="lx-address-list">
+
+                @foreach($addresses as $addr)
+                    <label class="lx-address-card">
+                        <input type="radio"
+                               name="shipping_address_id"
+                               value="{{ $addr['id'] }}"
+                               {{ $addr['is_default'] ? 'checked' : '' }}
+                               required>
+
+                        <div class="lx-address-info">
+                            <div class="lx-address-head">
+                                <span class="lx-address-name">
+                                    {{ $addr['name'] }}
+                                </span>
+
+                                <span class="lx-address-phone">
+                                    {{ $addr['phone'] }}
+                                </span>
+
+                                @if($addr['is_default'])
+                                    <span class="lx-badge-default">
+                                        Mặc định
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="lx-address-text">
+                                {{ $addr['address'] }}
+                            </div>
+                        </div>
+                    </label>
+                @endforeach
+
+            </div>
+        @else
+            <div class="lx-address-empty">
+                <span>Bạn chưa có địa chỉ nhận hàng.</span>
+                <a href="{{ route('linxen.account') }}">Thêm địa chỉ</a>
+            </div>
+        @endif
+    </div>
 </div>
+
 
 
             {{-- PHONE – PRIMARY IDENTITY --}}
