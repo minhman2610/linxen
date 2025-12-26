@@ -114,13 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const json = await res.json();
         phoneChecked = true;
 
-        // Nếu user đã skip modal trước đó → không làm phiền lại
-        if (memberActionInput?.value === 'skip') {
-            phoneStatus.className = 'lx-phone-status neutral';
-            phoneStatus.innerText =
-                'Bạn có thể tiếp tục đặt hàng nhanh.';
-            return;
-        }
+        // // Nếu user đã skip modal trước đó → không làm phiền lại
+        // if (memberActionInput?.value === 'skip') {
+        //     phoneStatus.className = 'lx-phone-status neutral';
+        //     phoneStatus.innerText =
+        //         'Bạn có thể tiếp tục đặt hàng nhanh.';
+        //     return;
+        // }
 
         /* =========================
            CASE 1: KHÁCH CŨ + CÓ ACCOUNT
