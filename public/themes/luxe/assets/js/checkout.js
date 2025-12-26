@@ -1,14 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     /* =====================================================
-     * ELEMENTS (DYNAMIC GET – KHÔNG CACHE MODAL)
+     * ELEMENTS
      * ===================================================== */
     const form        = document.getElementById('lx-checkout-form');
     const errBox      = document.getElementById('lx-checkout-error');
     const phoneInput  = document.getElementById('lx-phone');
     const phoneStatus = document.getElementById('lx-phone-status');
+    const pwdWrap     = document.getElementById('lx-login-password');
     const nameInput   = document.getElementById('lx-name');
 
+    // Hidden member fields
     const memberActionInput   = document.getElementById('member_action');
     const memberEmailInput    = document.getElementById('member_email');
     const memberPasswordInput = document.getElementById('member_password');
@@ -16,11 +18,51 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!form || !phoneInput) return;
 
     let phoneChecked = false;
-    let phoneState   = null;        // existing | new
-    let promptShown  = false;       // popup chỉ hiện 1 lần
+    let phoneState   = null; // existing | new
+    let promptShown  = false;
 
     /* =====================================================
-     * HELPER: GET MODAL (FIX CỐT LÕI)
+     * LOCATION → WARD (GIỮ NGUYÊN BẢN CŨ)
+     * ===================================================== */
+    const locSel  = document.getElementById('lx-location');
+    const wardSel = document.getElementById('lx-ward');
+
+    if (locSel && wardSel) {
+        fetch('/api/storefront/locations?mode=raw')
+            .then(r => r.json())
+            .then(res => {
+                if (!res.success) return;
+                res.data.forEach(l => {
+                    locSel.insertAdjacentHTML(
+                        'beforeend',
+                        `<option value="${l.id}">${l.name}</option>`
+                    );
+                });
+            });
+
+        locSel.addEventListener('change', e => {
+            const id = e.target.value;
+            wardSel.innerHTML = '<option value="">-- Chọn phường / xã --</option>';
+            wardSel.disabled = true;
+            if (!id) return;
+
+            fetch(`/api/storefront/locations/${id}/wards?mode=raw`)
+                .then(r => r.json())
+                .then(res => {
+                    if (!res.success) return;
+                    wardSel.disabled = false;
+                    res.data.forEach(w => {
+                        wardSel.insertAdjacentHTML(
+                            'beforeend',
+                            `<option value="${w.id}">${w.name}</option>`
+                        );
+                    });
+                });
+        });
+    }
+
+    /* =====================================================
+     * HELPER – MODAL (FIX DOM TIMING)
      * ===================================================== */
     function getModal() {
         return document.getElementById('lx-member-modal');
@@ -42,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(phoneTimer);
 
         phoneStatus.style.display = 'none';
+        pwdWrap && (pwdWrap.style.display = 'none');
         closeMemberModal();
 
         const phone = phoneInput.value.trim();
@@ -77,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const hasHistory = !!json.has_erp_history;
             const hasAccount = !!json.has_account;
 
-            // Không hiện popup lần 2
             if (promptShown) {
                 phoneStatus.className = 'lx-phone-status neutral';
                 phoneStatus.innerText = 'Bạn có thể tiếp tục đặt hàng.';
@@ -92,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 phoneStatus.className = 'lx-phone-status success';
                 phoneStatus.innerText =
-                    'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm.';
+                    'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm thành viên.';
 
                 showMemberModal('existing');
                 return;
@@ -105,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             phoneStatus.className = 'lx-phone-status neutral';
             phoneStatus.innerText =
-                'Bạn có thể tạo tài khoản để nhận ưu đãi, hoặc mua nhanh.';
+                'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh không đăng nhập.';
 
             if (json.name && !nameInput.value) {
                 nameInput.value = json.name;
@@ -126,14 +168,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function showMemberModal(type) {
         const modal = getModal();
         if (!modal) {
-            console.warn('⚠️ Member modal not found in DOM');
+            console.warn('⚠️ Member modal not found');
             return;
         }
 
-        const loginBox    = document.getElementById('lx-member-login');
-        const registerBox = document.getElementById('lx-member-register');
         const modalTitle  = document.getElementById('lx-member-title');
         const modalDesc   = document.getElementById('lx-member-desc');
+        const loginBox    = document.getElementById('lx-member-login');
+        const registerBox = document.getElementById('lx-member-register');
 
         loginBox.style.display    = 'none';
         registerBox.style.display = 'none';
@@ -230,12 +272,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 name:   fd.get('name'),
                 phone:  fd.get('phone'),
                 street: fd.get('street'),
-                location_id: fd.get('location_id'),
-                ward_id:     fd.get('ward_id'),
-                location_name:
-                    document.querySelector('#lx-location option:checked')?.text || '',
-                ward_name:
-                    document.querySelector('#lx-ward option:checked')?.text || '',
+                location_id: locSel?.value || null,
+                ward_id:     wardSel?.value || null,
+                location_name: locSel?.selectedOptions[0]?.text || '',
+                ward_name:     wardSel?.selectedOptions[0]?.text || '',
                 note: fd.get('note') || null,
             },
 
