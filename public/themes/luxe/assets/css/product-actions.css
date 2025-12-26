@@ -417,3 +417,14 @@
     color: #111;
     border: none;
 }
+.lx-toast-btn-primary {
+    background: linear-gradient(135deg, #f3e7d3, #e7d3a3);
+    color: #3b2f1e;
+    border: 1px solid #e0cfa0;
+    font-weight: 500;
+}
+
+.lx-toast-btn-primary:hover {
+    background: linear-gradient(135deg, #ecd9b8, #d8bf8a);
+    color: #2a2015;
+}
