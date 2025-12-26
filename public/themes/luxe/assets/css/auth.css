@@ -142,3 +142,56 @@
     font-size: 13px;
     color: #6b7280;
 }
+/* ======================================
+   AUTH CTA BUTTON – HIGH CONVERSION
+====================================== */
+
+.lx-btn-auth--highlight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
+    padding: 16px 18px;
+    border-radius: 14px;
+
+    background: linear-gradient(
+        135deg,
+        #1c1c1c,
+        #000000
+    );
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition: all .18s ease;
+}
+
+/* TEXT */
+.lx-btn-auth--highlight .lx-btn-main {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .4px;
+}
+
+.lx-btn-auth--highlight .lx-btn-sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255,255,255,.75);
+}
+
+/* HOVER */
+.lx-btn-auth--highlight:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.25),
+        inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+/* ACTIVE (CLICK) */
+.lx-btn-auth--highlight:active {
+    transform: translateY(0);
+    box-shadow:
+        0 10px 20px rgba(0,0,0,.18);
+}
