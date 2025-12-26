@@ -137,7 +137,7 @@
     @else
         <div class="lx-muted">
             Bạn chưa có địa chỉ nhận hàng.
-            <a href="{{ route('linxen.account.addresses') }}">
+            <a href="{{ route('linxen.account') }}">
                 Thêm địa chỉ ngay
             </a>
         </div>
