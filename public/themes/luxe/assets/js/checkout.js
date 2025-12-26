@@ -6,18 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const form        = document.getElementById('lx-checkout-form');
     const errBox      = document.getElementById('lx-checkout-error');
     const phoneInput  = document.getElementById('lx-phone');
-    // =====================================================
-// AUTO MARK PHONE AS VALID IF CUSTOMER LOGGED IN
-// =====================================================
-if (phoneInput && phoneInput.hasAttribute('readonly') && phoneInput.value) {
-    phoneChecked = true;
-    phoneState   = 'logged';
-
-    if (phoneStatus) {
-        phoneStatus.style.display = 'none';
-    }
-}
-
     const phoneStatus = document.getElementById('lx-phone-status');
     const nameInput   = document.getElementById('lx-name');
 
@@ -27,9 +15,24 @@ if (phoneInput && phoneInput.hasAttribute('readonly') && phoneInput.value) {
 
     if (!form || !phoneInput) return;
 
+    /* =====================================================
+     * STATE (PHẢI KHAI BÁO TRƯỚC KHI DÙNG)
+     * ===================================================== */
     let phoneChecked = false;
-    let phoneState   = null; // existing | new
+    let phoneState   = null; // existing | new | logged
     let phoneTimer   = null;
+
+    /* =====================================================
+     * AUTO MARK PHONE AS VALID IF CUSTOMER LOGGED IN
+     * ===================================================== */
+    if (phoneInput.hasAttribute('readonly') && phoneInput.value) {
+        phoneChecked = true;
+        phoneState   = 'logged';
+
+        if (phoneStatus) {
+            phoneStatus.style.display = 'none';
+        }
+    }
 
     /* =====================================================
      * LOCATION → WARD (GIỮ NGUYÊN LOGIC CŨ)
