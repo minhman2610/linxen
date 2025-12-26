@@ -34,33 +34,32 @@
                 <span class="lx-account-arrow">›</span>
             </a>
 
-            {{-- ADDRESSES (DEMO / FUTURE) --}}
-            <a href="#"
-               class="lx-account-card"
-               title="Sẽ triển khai">
-                <div class="lx-account-card-left">
-                    <span class="lx-account-icon">📍</span>
-                    <div>
-                        <strong>Địa chỉ nhận hàng</strong>
-                        <span>Quản lý địa chỉ giao hàng</span>
-                    </div>
-                </div>
-                <span class="lx-account-arrow">›</span>
-            </a>
+            {{-- ADDRESSES --}}
+<a href="{{ route('linxen.account.addresses') }}"
+   class="lx-account-card">
+    <div class="lx-account-card-left">
+        <span class="lx-account-icon">📍</span>
+        <div>
+            <strong>Địa chỉ nhận hàng</strong>
+            <span>Quản lý địa chỉ giao hàng</span>
+        </div>
+    </div>
+    <span class="lx-account-arrow">›</span>
+</a>
 
-            {{-- PROFILE (DEMO / FUTURE) --}}
-            <a href="#"
-               class="lx-account-card"
-               title="Sẽ triển khai">
-                <div class="lx-account-card-left">
-                    <span class="lx-account-icon">👤</span>
-                    <div>
-                        <strong>Thông tin cá nhân</strong>
-                        <span>Tên, email, thông tin liên hệ</span>
-                    </div>
-                </div>
-                <span class="lx-account-arrow">›</span>
-            </a>
+{{-- PROFILE --}}
+<a href="{{ route('linxen.account.profile') }}"
+   class="lx-account-card">
+    <div class="lx-account-card-left">
+        <span class="lx-account-icon">👤</span>
+        <div>
+            <strong>Thông tin cá nhân</strong>
+            <span>Tên, email, thông tin liên hệ</span>
+        </div>
+    </div>
+    <span class="lx-account-arrow">›</span>
+</a>
+
 
             {{-- SECURITY --}}
 <div class="lx-account-card lx-account-card--danger"
