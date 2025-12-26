@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -16,7 +17,7 @@ class RegisterController extends Controller
      */
     public function show()
     {
-        // Nếu đã login → không cho vào lại trang đăng ký
+        // Đã login → không vào register
         if (session()->has('customer')) {
             return redirect()->route('linxen.account.index');
         }
@@ -27,29 +28,69 @@ class RegisterController extends Controller
     /**
      * =====================================================
      * 📝 REGISTER (STOREFRONT → ERP AUTH)
-     * - Tạo tài khoản
-     * - Auto login
+     * - Validate chặt phone + password
+     * - Chuẩn hoá phone
+     * - Auto login sau khi tạo
      * =====================================================
      */
     public function register(Request $request)
     {
-        $data = $request->validate([
-            'phone'    => 'required|string|max:20',
-            'email'    => 'nullable|email|max:255',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        /**
+         * -------------------------------------------------
+         * 1️⃣ VALIDATE INPUT (STOREFRONT LEVEL)
+         * -------------------------------------------------
+         */
+        $data = $request->validate(
+            [
+                'phone'    => [
+                    'required',
+                    'string',
+                    'max:20',
+                    // VN phone: 0xxx hoặc +84xxx
+                    'regex:/^(0|\+84)[0-9]{9}$/',
+                ],
+                'email'    => 'nullable|email|max:255',
+                'password' => 'required|string|min:6|confirmed',
+            ],
+            [
+                'phone.required' => 'Vui lòng nhập số điện thoại.',
+                'phone.regex'    => 'Số điện thoại không hợp lệ.',
+                'password.min'   => 'Mật khẩu tối thiểu 6 ký tự.',
+                'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+            ]
+        );
+
+        /**
+         * -------------------------------------------------
+         * 2️⃣ NORMALIZE PHONE → +84
+         * -------------------------------------------------
+         */
+        $phone = $data['phone'];
+
+        if (Str::startsWith($phone, '0')) {
+            $phone = '+84' . substr($phone, 1);
+        }
 
         try {
+            /**
+             * -------------------------------------------------
+             * 3️⃣ BUILD PAYLOAD GỬI ERP
+             * -------------------------------------------------
+             */
             $payload = [
-                'phone'    => $data['phone'],
+                'phone'    => $phone,
                 'password' => $data['password'],
             ];
 
-            // Chỉ gửi email nếu có
             if (!empty($data['email'])) {
                 $payload['email'] = $data['email'];
             }
 
+            /**
+             * -------------------------------------------------
+             * 4️⃣ CALL ERP REGISTER API
+             * -------------------------------------------------
+             */
             $response = Http::withOptions([
                     'verify' => false,
                 ])
@@ -64,7 +105,9 @@ class RegisterController extends Controller
                 );
 
             /**
+             * -------------------------------------------------
              * ❌ ERP REGISTER FAIL
+             * -------------------------------------------------
              */
             if ($response->failed()) {
                 $json = $response->json();
@@ -85,7 +128,9 @@ class RegisterController extends Controller
             $json = $response->json();
 
             /**
+             * -------------------------------------------------
              * ❌ RESPONSE KHÔNG HỢP LỆ
+             * -------------------------------------------------
              */
             if (empty($json['success']) || empty($json['customer'])) {
                 return back()
@@ -96,14 +141,18 @@ class RegisterController extends Controller
             }
 
             /**
-             * ✅ SET SESSION CUSTOMER (AUTO LOGIN)
+             * -------------------------------------------------
+             * ✅ AUTO LOGIN → SET SESSION
+             * -------------------------------------------------
              */
             session([
                 'customer' => $json['customer'],
             ]);
 
             /**
-             * 🔁 REDIRECT SAU REGISTER
+             * -------------------------------------------------
+             * 🔁 REDIRECT
+             * -------------------------------------------------
              */
             return redirect()
                 ->route('linxen.account.index')
