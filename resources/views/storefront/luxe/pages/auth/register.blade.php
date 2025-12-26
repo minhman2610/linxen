@@ -76,7 +76,7 @@
 
             {{-- SUBMIT --}}
 <button type="submit"
-        class="lx-btn-primary lx-btn-full lx-btn-auth lx-btn-auth--highlight">
+        class="lx-btn-primary lx-btn-full lx-btn-auth lx-btn-auth--register">
     <span class="lx-btn-main">Tạo tài khoản</span>
     <span class="lx-btn-sub">Miễn phí • Chỉ 30 giây</span>
 </button>

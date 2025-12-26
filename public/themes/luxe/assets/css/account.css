@@ -241,3 +241,51 @@
     border: none;
     font-weight: 600;
 }
+/* ======================================
+   AUTH BUTTON – REGISTER (PREMIUM CLEAN)
+====================================== */
+
+.lx-btn-auth--register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    padding: 14px 16px;
+
+    border-radius: 12px;
+    border: none;
+
+    background: #111; /* charcoal, không pure black */
+    color: #fff;
+
+    text-align: center;
+    cursor: pointer;
+
+    transition: background .15s ease, transform .12s ease;
+}
+
+/* TEXT */
+.lx-btn-auth--register .lx-btn-main {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.lx-btn-auth--register .lx-btn-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255,255,255,.7);
+}
+
+/* HOVER – RẤT NHẸ */
+.lx-btn-auth--register:hover {
+    background: #000;
+}
+
+/* ACTIVE */
+.lx-btn-auth--register:active {
+    transform: translateY(1px);
+}
