@@ -48,19 +48,19 @@ class CheckoutController extends Controller
                 ]);
 
                 return response()->json([
-                    'has_account'      => false,
-                    'has_profile'      => false,
-                    'has_erp_history'  => false,
+                    'has_account'     => false,
+                    'has_profile'     => false,
+                    'has_erp_history' => false,
                 ]);
             }
 
             $json = $response->json();
 
             return response()->json([
-                'has_account'      => (bool) ($json['has_account'] ?? false),
-                'has_profile'      => false,
-                'has_erp_history'  => (bool) ($json['has_erp_history'] ?? false),
-                'name'             => $json['name'] ?? null,
+                'has_account'     => (bool) ($json['has_account'] ?? false),
+                'has_profile'     => false,
+                'has_erp_history' => (bool) ($json['has_erp_history'] ?? false),
+                'name'            => $json['name'] ?? null,
             ]);
 
         } catch (Throwable $e) {
@@ -71,10 +71,79 @@ class CheckoutController extends Controller
             ]);
 
             return response()->json([
-                'has_account'      => false,
-                'has_profile'      => false,
-                'has_erp_history'  => false,
+                'has_account'     => false,
+                'has_profile'     => false,
+                'has_erp_history' => false,
             ]);
+        }
+    }
+
+    /**
+     * =====================================================
+     * 🔐 REGISTER INLINE (CREATE ACCOUNT + AUTO LOGIN)
+     * STOREFRONT → ERP AUTH
+     * =====================================================
+     */
+    public function registerInline(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'phone'    => 'required|string|max:20',
+            'email'    => 'required|email|max:255',
+            'password' => 'required|string|min:6',
+        ]);
+
+        try {
+            $response = Http::withOptions([
+                    'verify' => false,
+                ])
+                ->timeout(10)
+                ->post(
+                    "{$this->erpBaseUrl}/api/storefront/auth/register",
+                    $data
+                );
+
+            if ($response->failed()) {
+                Log::error('❌ [REGISTER INLINE ERP FAILED]', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không thể tạo tài khoản.',
+                ], 400);
+            }
+
+            $json = $response->json();
+
+            if (!($json['success'] ?? false)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $json['message'] ?? 'Đăng ký thất bại.',
+                ], 400);
+            }
+
+            /**
+             * ⚠️ LƯU Ý QUAN TRỌNG
+             * - ERP đã login customer
+             * - Session cookie đã được set tại ERP
+             * - Storefront KHÔNG login lại
+             */
+
+            return response()->json([
+                'success' => true,
+            ]);
+
+        } catch (Throwable $e) {
+
+            Log::error('🔥 [REGISTER INLINE EXCEPTION]', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi hệ thống khi tạo tài khoản.',
+            ], 500);
         }
     }
 
@@ -92,7 +161,7 @@ class CheckoutController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | 1️⃣ Validate dữ liệu
+        | 1️⃣ VALIDATE
         |--------------------------------------------------------------------------
         */
         $data = $request->validate([
@@ -121,12 +190,7 @@ class CheckoutController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | 2️⃣ BUILD PAYLOAD GỬI ERP
-        |--------------------------------------------------------------------------
-        | ERP sẽ xử lý:
-        | - login
-        | - register
-        | - skip
+        | 2️⃣ BUILD PAYLOAD → ERP
         |--------------------------------------------------------------------------
         */
         $payload = [
@@ -143,7 +207,7 @@ class CheckoutController extends Controller
                 'note'          => $data['customer']['note'] ?? null,
             ],
 
-            // 👇 MEMBER INTENT (RẤT QUAN TRỌNG)
+            // 🔑 MEMBER INTENT
             'member' => [
                 'action'   => $data['member']['action'] ?? 'skip',
                 'email'    => $data['member']['email'] ?? null,

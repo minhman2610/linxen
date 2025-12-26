@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Storefront\PageController;
 use App\Http\Controllers\Storefront\ReelsController;
-use App\Http\Controllers\Storefront\Api\LocationProxyController;
 use App\Http\Controllers\Api\CheckoutController;
 
 /*
@@ -75,7 +74,7 @@ Route::domain('linxen.vn')
 
         /*
         |--------------------------------------------------------------------------
-        | 💳 CHECKOUT
+        | 💳 CHECKOUT PAGE
         |--------------------------------------------------------------------------
         */
         Route::get('/checkout', [PageController::class, 'checkout'])
@@ -93,6 +92,10 @@ Route::domain('linxen.vn')
         // 🔍 Check phone (ERP – source of truth)
         Route::post('/ajax/check-phone', [CheckoutController::class, 'checkPhone'])
             ->name('checkout.check_phone');
+
+        // 🔐 Register + auto login (INLINE REGISTER)
+        Route::post('/ajax/register-inline', [CheckoutController::class, 'registerInline'])
+            ->name('checkout.register_inline');
 
         // 📦 Create order (submit checkout)
         Route::post('/api/storefront/orders', [CheckoutController::class, 'create'])
