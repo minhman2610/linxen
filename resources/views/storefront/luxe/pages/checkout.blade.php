@@ -23,7 +23,9 @@
         ];
     }
 
-    $customer = auth('customer')->user();
+    
+    $customer = session('customer') ?? null;
+
 @endphp
 
 <section class="lx-checkout-page">
