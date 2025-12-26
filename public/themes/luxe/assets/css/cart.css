@@ -438,3 +438,14 @@
 .lx-btn-danger:hover {
     filter: brightness(1.05);
 }
+.lx-btn-primary {
+    background: linear-gradient(135deg, #e7d3a3, #d8bf8a);
+    color: #3b2f1e;
+    border: 1px solid #d2b77d;
+    font-weight: 500;
+}
+
+.lx-btn-primary:hover {
+    background: linear-gradient(135deg, #d8bf8a, #c7a86b);
+    color: #2a2015;
+}
