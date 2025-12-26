@@ -17,17 +17,35 @@ class AccountController extends Controller
 
     /**
      * =====================================================
+     * 🔐 CHECK LOGIN (STORE FRONT)
+     * =====================================================
+     */
+    protected function requireLogin()
+    {
+        $customer = session('customer');
+
+        if (!$customer) {
+            return redirect()
+                ->route('linxen.login')
+                ->with('warning', 'Vui lòng đăng nhập để tiếp tục.');
+        }
+
+        return null;
+    }
+
+    /**
+     * =====================================================
      * 👤 PROFILE (ERP)
      * =====================================================
      */
     public function profile()
     {
-        if (!auth()->check()) {
-            return redirect()->route('linxen.login');
+        if ($redirect = $this->requireLogin()) {
+            return $redirect;
         }
 
-        // Lấy customer từ ERP (qua token / session)
-        $customer = $this->erp->get('/api/storefront/customer/profile');
+        // Lấy profile từ ERP (dựa trên login_token / session)
+        $customer = $this->erp->customerProfile();
 
         return view('storefront.luxe.pages.account.profile', [
             'user' => $customer,
@@ -36,8 +54,8 @@ class AccountController extends Controller
 
     public function updateProfile(Request $request)
     {
-        if (!auth()->check()) {
-            return redirect()->route('linxen.login');
+        if ($redirect = $this->requireLogin()) {
+            return $redirect;
         }
 
         $data = $request->validate([
@@ -45,8 +63,7 @@ class AccountController extends Controller
             'email' => 'nullable|email|max:255',
         ]);
 
-        // Update profile ERP
-        $this->erp->post('/api/storefront/customer/update-profile', $data);
+        $this->erp->updateCustomerProfile($data);
 
         return back()->with('success', 'Cập nhật thông tin thành công');
     }
@@ -58,21 +75,21 @@ class AccountController extends Controller
      */
     public function addresses()
     {
-        // if (!auth()->check()) {
-        //     return redirect()->route('linxen.login');
-        // }
+        if ($redirect = $this->requireLogin()) {
+            return $redirect;
+        }
 
-        $addresses = $this->erp->get('/api/storefront/customer/addresses');
+        $addresses = $this->erp->customerAddresses();
 
         return view('storefront.luxe.pages.account.addresses', [
-            'addresses' => $addresses['addresses'] ?? [],
+            'addresses' => $addresses,
         ]);
     }
 
     public function storeAddress(Request $request)
     {
-        if (!auth()->check()) {
-            return redirect()->route('linxen.login');
+        if ($redirect = $this->requireLogin()) {
+            return $redirect;
         }
 
         $data = $request->validate([
@@ -81,7 +98,7 @@ class AccountController extends Controller
             'address' => 'required|string|max:1000',
         ]);
 
-        $this->erp->post('/api/storefront/customer/addresses', $data);
+        $this->erp->createCustomerAddress($data);
 
         return back()->with('success', 'Đã thêm địa chỉ nhận hàng');
     }

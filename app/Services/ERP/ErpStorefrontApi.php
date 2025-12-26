@@ -25,7 +25,6 @@ class ErpStorefrontApi
     {
         $data = $this->get("/api/storefront/{$brand}/home");
 
-        // Normalize để frontend dùng ổn định
         return [
             'hero'     => $data['hero'] ?? null,
             'products' => $data['products'] ?? [],
@@ -40,10 +39,8 @@ class ErpStorefrontApi
      */
     public function product(string $brand, string $slug): ?array
     {
-        // Brand chỉ là context hiển thị, không dùng để filter
         $data = $this->get("/api/storefront/{$brand}/product/{$slug}");
 
-        // Không có dữ liệu → coi như không tồn tại
         if (empty($data) || !is_array($data)) {
             return null;
         }
@@ -68,9 +65,47 @@ class ErpStorefrontApi
 
     /**
      * =====================================================
-     * 🔌 CORE REQUEST
-     *  - Internal ERP
-     *  - SSL verify OFF
+     * 👤 CUSTOMER – PROFILE
+     * =====================================================
+     */
+    public function customerProfile(): array
+    {
+        return $this->fetch('/api/storefront/customer/profile');
+    }
+
+    public function updateCustomerProfile(array $payload): array
+    {
+        return $this->post('/api/storefront/customer/update-profile', $payload);
+    }
+
+    /**
+     * =====================================================
+     * 📍 CUSTOMER – ADDRESSES
+     * =====================================================
+     */
+    public function customerAddresses(): array
+    {
+        return $this->fetch('/api/storefront/customer/addresses');
+    }
+
+    public function createCustomerAddress(array $payload): array
+    {
+        return $this->post('/api/storefront/customer/addresses', $payload);
+    }
+
+    /**
+     * =====================================================
+     * 🔓 PUBLIC FETCH (GET)
+     * =====================================================
+     */
+    public function fetch(string $uri): array
+    {
+        return $this->get($uri);
+    }
+
+    /**
+     * =====================================================
+     * 🔐 CORE GET REQUEST
      * =====================================================
      */
     protected function get(string $uri): array
@@ -80,19 +115,18 @@ class ErpStorefrontApi
         try {
             $res = Http::withToken($this->token)
                 ->withOptions([
-                    'verify'  => false, // 🔥 internal ERP – bỏ SSL verify
+                    'verify'  => false, // 🔥 internal ERP
                     'timeout' => 8,
                 ])
                 ->acceptJson()
                 ->get($url);
 
             if ($res->failed()) {
-                Log::error('[LINXEN][ERP_API_FAIL]', [
+                Log::error('[LINXEN][ERP_API_GET_FAIL]', [
                     'url'    => $url,
                     'status' => $res->status(),
                     'body'   => $res->body(),
                 ]);
-
                 return [];
             }
 
@@ -109,54 +143,49 @@ class ErpStorefrontApi
             return $json;
 
         } catch (\Throwable $e) {
-
-            Log::error('[LINXEN][ERP_API_EXCEPTION]', [
+            Log::error('[LINXEN][ERP_API_GET_EXCEPTION]', [
                 'url'     => $url,
                 'message' => $e->getMessage(),
             ]);
-
             return [];
         }
     }
 
-    // thêm vào class ErpStorefrontApi
+    /**
+     * =====================================================
+     * 🔐 CORE POST REQUEST
+     * =====================================================
+     */
+    protected function post(string $uri, array $payload = []): array
+    {
+        $url = $this->baseUrl . $uri;
 
-public function fetch(string $uri): array
-{
-    return $this->get($uri);
-}
+        try {
+            $res = Http::withToken($this->token)
+                ->withOptions([
+                    'verify'  => false,
+                    'timeout' => 8,
+                ])
+                ->acceptJson()
+                ->post($url, $payload);
 
-public function post(string $uri, array $payload = []): array
-{
-    $url = $this->baseUrl . $uri;
+            if ($res->failed()) {
+                Log::error('[LINXEN][ERP_API_POST_FAIL]', [
+                    'url'    => $url,
+                    'status' => $res->status(),
+                    'body'   => $res->body(),
+                ]);
+                return [];
+            }
 
-    try {
-        $res = Http::withToken($this->token)
-            ->withOptions([
-                'verify'  => false,
-                'timeout' => 8,
-            ])
-            ->acceptJson()
-            ->post($url, $payload);
+            return $res->json() ?? [];
 
-        if ($res->failed()) {
-            Log::error('[LINXEN][ERP_API_POST_FAIL]', [
-                'url'    => $url,
-                'status' => $res->status(),
-                'body'   => $res->body(),
+        } catch (\Throwable $e) {
+            Log::error('[LINXEN][ERP_API_POST_EXCEPTION]', [
+                'url'     => $url,
+                'message' => $e->getMessage(),
             ]);
             return [];
         }
-
-        return $res->json() ?? [];
-
-    } catch (\Throwable $e) {
-        Log::error('[LINXEN][ERP_API_POST_EXCEPTION]', [
-            'url'     => $url,
-            'message' => $e->getMessage(),
-        ]);
-        return [];
     }
-}
-
 }
