@@ -770,3 +770,44 @@
     color: #047857;
     margin-top: 2px;
 }
+.lx-address-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.lx-address-card {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.lx-address-card:has(input:checked) {
+    border-color: #111;
+    background: #fafafa;
+}
+
+.lx-address-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.lx-badge-default {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #111;
+    color: #fff;
+}
+
+.lx-address-config-link {
+    font-size: 13px;
+    color: #6b7280;
+    text-decoration: underline;
+}
