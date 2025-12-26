@@ -67,9 +67,9 @@ class RegisterController extends Controller
          */
         $phone = $data['phone'];
 
-        if (Str::startsWith($phone, '0')) {
-            $phone = '+84' . substr($phone, 1);
-        }
+        // if (Str::startsWith($phone, '0')) {
+        //     $phone = '+84' . substr($phone, 1);
+        // }
 
         try {
             /**
