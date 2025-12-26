@@ -88,9 +88,16 @@
           href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
 @endif
 
-
+    
     <link rel="stylesheet"
       href="/themes/luxe/assets/css/auth.css?v={{ filemtime(public_path('themes/luxe/assets/css/auth.css')) }}">
+      {{-- ============================
+    ACCOUNT – ADDRESSES ONLY CSS
+============================= --}}
+@if(Route::is('linxen.account.addresses'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/account-addresses.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-addresses.css')) }}">
+@endif
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"

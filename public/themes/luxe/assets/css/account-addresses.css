@@ -1,0 +1,103 @@
+/* =====================================================
+   ACCOUNT – ADDRESSES (LIN XÉN)
+===================================================== */
+
+.lx-address-page {
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+/* SECTION */
+.lx-address-section {
+    margin-top: 24px;
+}
+
+/* LIST */
+.lx-address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* CARD */
+.lx-address-card {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 16px 18px;
+    background: #fff;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.lx-address-card.is-default {
+    border-color: #111;
+    background: #fafafa;
+}
+
+/* MAIN */
+.lx-address-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.lx-address-phone {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* BADGE */
+.lx-address-badge {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #111;
+    color: #fff;
+}
+
+/* TEXT */
+.lx-address-text {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* ACTIONS */
+.lx-address-actions {
+    display: flex;
+    align-items: center;
+}
+
+.lx-address-hint {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* EMPTY */
+.lx-address-empty {
+    padding: 24px;
+    border: 1px dashed #ddd;
+    border-radius: 12px;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* DIVIDER */
+.lx-divider {
+    margin: 32px 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+/* FORM */
+.lx-address-form-wrap {
+    max-width: 520px;
+}
+
+.lx-btn-wide {
+    width: 100%;
+}
