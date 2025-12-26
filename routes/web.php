@@ -16,27 +16,51 @@ Route::domain('linxen.vn')
     ->middleware(['web'])
     ->group(function () {
 
-        // 🏠 HOME
+        /*
+        |--------------------------------------------------------------------------
+        | 🏠 HOME
+        |--------------------------------------------------------------------------
+        */
         Route::get('/', [PageController::class, 'home'])
             ->name('linxen.home');
 
-        // 🔍 SEARCH
+        /*
+        |--------------------------------------------------------------------------
+        | 🔍 SEARCH
+        |--------------------------------------------------------------------------
+        */
         Route::get('/search', [PageController::class, 'search'])
             ->name('linxen.search');
 
-        // 🎞️ REELS
+        /*
+        |--------------------------------------------------------------------------
+        | 🎞️ REELS
+        |--------------------------------------------------------------------------
+        */
         Route::get('/reels', [ReelsController::class, 'index'])
             ->name('linxen.reels');
 
-        // 👗 PRODUCT DETAIL
+        /*
+        |--------------------------------------------------------------------------
+        | 👗 PRODUCT
+        |--------------------------------------------------------------------------
+        */
         Route::get('/p/{slug}', [PageController::class, 'product'])
             ->name('linxen.product');
 
-        // 📦 COLLECTION
+        /*
+        |--------------------------------------------------------------------------
+        | 📦 COLLECTION
+        |--------------------------------------------------------------------------
+        */
         Route::get('/c/{slug}', [PageController::class, 'collection'])
             ->name('linxen.collection');
 
-        // 🛒 CART
+        /*
+        |--------------------------------------------------------------------------
+        | 🛒 CART
+        |--------------------------------------------------------------------------
+        */
         Route::get('/cart', [PageController::class, 'cart'])
             ->name('linxen.cart');
 
@@ -49,7 +73,11 @@ Route::domain('linxen.vn')
         Route::post('/cart/remove', [PageController::class, 'removeFromCart'])
             ->name('linxen.cart.remove');
 
-        // 💳 CHECKOUT PAGE
+        /*
+        |--------------------------------------------------------------------------
+        | 💳 CHECKOUT
+        |--------------------------------------------------------------------------
+        */
         Route::get('/checkout', [PageController::class, 'checkout'])
             ->name('linxen.checkout');
 
@@ -62,11 +90,11 @@ Route::domain('linxen.vn')
         |--------------------------------------------------------------------------
         */
 
-        // 🔍 Check phone (identity-first)
+        // 🔍 Check phone (ERP – source of truth)
         Route::post('/ajax/check-phone', [CheckoutController::class, 'checkPhone'])
             ->name('checkout.check_phone');
 
-        // 📦 Create order (checkout submit)
+        // 📦 Create order (submit checkout)
         Route::post('/api/storefront/orders', [CheckoutController::class, 'create'])
             ->name('checkout.create');
 

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
 use Throwable;
 
 class CheckoutController extends Controller
@@ -19,86 +18,65 @@ class CheckoutController extends Controller
         $this->erpBaseUrl = rtrim(config('services.erp.base_url'), '/');
     }
 
-public function checkPhone(Request $request): JsonResponse
-{
-    $request->validate([
-        'phone' => 'required|string|max:20',
-    ]);
+    /**
+     * =====================================================
+     * 🔍 CHECK PHONE (ERP – SOURCE OF TRUTH)
+     * =====================================================
+     */
+    public function checkPhone(Request $request): JsonResponse
+    {
+        $request->validate([
+            'phone' => 'required|string|max:20',
+        ]);
 
-    $phone = trim($request->input('phone'));
+        $phone = trim($request->input('phone'));
 
-    /*
-    |--------------------------------------------------------------------------
-    | 🔍 CHECK PHONE VIA ERP (SINGLE SOURCE OF TRUTH)
-    |--------------------------------------------------------------------------
-    | ERP chịu trách nhiệm:
-    | - Phone có account website không?
-    | - Phone có lịch sử mua hàng không?
-    | - Có tên khách hàng không?
-    |--------------------------------------------------------------------------
-    */
-    try {
-        $response = Http::withOptions([
-                'verify' => false,
-            ])
-            ->timeout(8)
-            ->get(
-                "{$this->erpBaseUrl}/api/storefront/customers/check-phone",
-                ['phone' => $phone]
-            );
+        try {
+            $response = Http::withOptions([
+                    'verify' => false,
+                ])
+                ->timeout(8)
+                ->get(
+                    "{$this->erpBaseUrl}/api/storefront/customers/check-phone",
+                    ['phone' => $phone]
+                );
 
-        if (!$response->ok()) {
-            Log::warning('⚠️ [CHECK PHONE ERP HTTP ERROR]', [
-                'phone'  => $phone,
-                'status' => $response->status(),
+            if (!$response->ok()) {
+                Log::warning('⚠️ [CHECK PHONE ERP HTTP ERROR]', [
+                    'phone'  => $phone,
+                    'status' => $response->status(),
+                ]);
+
+                return response()->json([
+                    'has_account'      => false,
+                    'has_profile'      => false,
+                    'has_erp_history'  => false,
+                ]);
+            }
+
+            $json = $response->json();
+
+            return response()->json([
+                'has_account'      => (bool) ($json['has_account'] ?? false),
+                'has_profile'      => false,
+                'has_erp_history'  => (bool) ($json['has_erp_history'] ?? false),
+                'name'             => $json['name'] ?? null,
             ]);
 
-            // Fail soft – coi như khách mới
+        } catch (Throwable $e) {
+
+            Log::error('🔥 [CHECK PHONE ERP EXCEPTION]', [
+                'phone' => $phone,
+                'error' => $e->getMessage(),
+            ]);
+
             return response()->json([
                 'has_account'      => false,
                 'has_profile'      => false,
                 'has_erp_history'  => false,
             ]);
         }
-
-        $json = $response->json();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ERP RESPONSE CONTRACT (EXPECTED)
-        |--------------------------------------------------------------------------
-        | {
-        |   "found": true,
-        |   "has_account": true|false,
-        |   "has_erp_history": true|false,
-        |   "name": "Nguyen Van A"
-        | }
-        |--------------------------------------------------------------------------
-        */
-
-        return response()->json([
-            'has_account'      => (bool) ($json['has_account'] ?? false),
-            'has_profile'      => false, // storefront KHÔNG quyết profile
-            'has_erp_history'  => (bool) ($json['has_erp_history'] ?? false),
-            'name'             => $json['name'] ?? null,
-        ]);
-
-    } catch (\Throwable $e) {
-
-        Log::error('🔥 [CHECK PHONE ERP EXCEPTION]', [
-            'phone' => $phone,
-            'error' => $e->getMessage(),
-        ]);
-
-        // Fail soft – không chặn checkout
-        return response()->json([
-            'has_account'      => false,
-            'has_profile'      => false,
-            'has_erp_history'  => false,
-        ]);
     }
-}
-
 
     /**
      * =====================================================
@@ -108,42 +86,47 @@ public function checkPhone(Request $request): JsonResponse
      */
     public function create(Request $request): JsonResponse
     {
-        /*
-        |--------------------------------------------------------------------------
-        | 0️⃣ LOG RAW REQUEST (RẤT QUAN TRỌNG ĐỂ DEBUG)
-        |--------------------------------------------------------------------------
-        */
         Log::info('🟡 [LINXEN CHECKOUT RAW REQUEST]', [
             'json' => $request->json()->all(),
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | 1️⃣ Validate dữ liệu từ checkout.js
+        | 1️⃣ Validate dữ liệu
         |--------------------------------------------------------------------------
         */
         $data = $request->validate([
-            'storefront'            => 'required|string',
+            'storefront'              => 'required|string',
 
-            'customer.name'         => 'required|string|max:255',
-            'customer.phone'        => 'required|string|max:50',
-            'customer.street'       => 'required|string|max:255',
-            'customer.location_id'  => 'required|integer',
-            'customer.ward_id'      => 'required|integer',
-            'customer.location_name'=> 'required|string|max:255',
-            'customer.ward_name'    => 'required|string|max:255',
-            'customer.note'         => 'nullable|string|max:255',
+            'customer.name'           => 'required|string|max:255',
+            'customer.phone'          => 'required|string|max:50',
+            'customer.street'         => 'required|string|max:255',
+            'customer.location_id'    => 'required|integer',
+            'customer.ward_id'        => 'required|integer',
+            'customer.location_name'  => 'required|string|max:255',
+            'customer.ward_name'      => 'required|string|max:255',
+            'customer.note'           => 'nullable|string|max:255',
 
-            'items'                 => 'required|array|min:1',
-            'items.*.product_id'    => 'required|integer',
-            'items.*.qty'           => 'required|integer|min:1',
-            'items.*.price'         => 'required|numeric|min:0',
-            'items.*.note'          => 'nullable|string',
+            // MEMBER FLOW
+            'member.action'           => 'nullable|in:login,register,skip',
+            'member.email'            => 'nullable|email|max:255',
+            'member.password'         => 'nullable|string|max:255',
+
+            'items'                   => 'required|array|min:1',
+            'items.*.product_id'      => 'required|integer',
+            'items.*.qty'             => 'required|integer|min:1',
+            'items.*.price'           => 'required|numeric|min:0',
+            'items.*.note'            => 'nullable|string',
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | 2️⃣ Build payload gửi ERP (ĐÚNG ROUTE ERP)
+        | 2️⃣ BUILD PAYLOAD GỬI ERP
+        |--------------------------------------------------------------------------
+        | ERP sẽ xử lý:
+        | - login
+        | - register
+        | - skip
         |--------------------------------------------------------------------------
         */
         $payload = [
@@ -160,6 +143,13 @@ public function checkPhone(Request $request): JsonResponse
                 'note'          => $data['customer']['note'] ?? null,
             ],
 
+            // 👇 MEMBER INTENT (RẤT QUAN TRỌNG)
+            'member' => [
+                'action'   => $data['member']['action'] ?? 'skip',
+                'email'    => $data['member']['email'] ?? null,
+                'password' => $data['member']['password'] ?? null,
+            ],
+
             'items' => collect($data['items'])->map(fn ($i) => [
                 'product_id' => (int) $i['product_id'],
                 'qty'        => (int) $i['qty'],
@@ -172,22 +162,18 @@ public function checkPhone(Request $request): JsonResponse
 
         /*
         |--------------------------------------------------------------------------
-        | 3️⃣ Gọi ERP tạo đơn
-        |--------------------------------------------------------------------------
-        | ERP ROUTE:
-        | POST {ERP_BASE_URL}/api/storefront/orders
+        | 3️⃣ CALL ERP CREATE ORDER
         |--------------------------------------------------------------------------
         */
         try {
             $response = Http::withOptions([
-        'verify' => false, // 🔥 FIX SSL ERROR 60
-    ])
-    ->timeout(15)
-    ->post(
-        "{$this->erpBaseUrl}/api/storefront/orders",
-        $payload
-    );
-
+                    'verify' => false,
+                ])
+                ->timeout(15)
+                ->post(
+                    "{$this->erpBaseUrl}/api/storefront/orders",
+                    $payload
+                );
 
             if ($response->failed()) {
                 Log::error('❌ [LINXEN → ERP CREATE ORDER FAILED]', [
@@ -212,7 +198,7 @@ public function checkPhone(Request $request): JsonResponse
 
             /*
             |--------------------------------------------------------------------------
-            | 4️⃣ Clear cart storefront sau khi ERP tạo đơn OK
+            | 4️⃣ CLEAR CART
             |--------------------------------------------------------------------------
             */
             session()->forget('cart');

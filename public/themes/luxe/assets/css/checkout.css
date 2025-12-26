@@ -526,3 +526,116 @@
         font-size: 14px;
     }
 }
+/* ============================
+   PHONE CHECK STATUS
+============================= */
+
+.lx-phone-status {
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Đang kiểm tra */
+.lx-phone-status.info {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* Khách cũ */
+.lx-phone-status.success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+/* Khách mới */
+.lx-phone-status.neutral {
+    background: #f9fafb;
+    color: #374151;
+    border: 1px dashed #d1d5db;
+}
+
+/* Lỗi */
+.lx-phone-status.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+/* ============================
+   MEMBER MODAL
+============================= */
+
+.lx-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
+.lx-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    backdrop-filter: blur(2px);
+}
+
+.lx-modal-content {
+    position: relative;
+    max-width: 420px;
+    width: calc(100% - 32px);
+    margin: 12vh auto 0;
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px 22px;
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.18),
+        0 4px 12px rgba(0,0,0,.08);
+    animation: lxModalFadeUp .35s ease;
+}
+
+.lx-modal-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.lx-modal-content p {
+    font-size: 14px;
+    color: #4b5563;
+    margin-bottom: 16px;
+}
+
+/* INPUTS */
+.lx-modal-content input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+/* ACTIONS */
+.lx-modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.lx-modal-actions .lx-btn-primary,
+.lx-modal-actions .lx-btn-secondary {
+    flex: 1;
+    justify-content: center;
+}
+@keyframes lxModalFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

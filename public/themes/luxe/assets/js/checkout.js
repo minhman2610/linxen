@@ -10,10 +10,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const pwdWrap     = document.getElementById('lx-login-password');
     const nameInput   = document.getElementById('lx-name');
 
+    // Member modal
+    const modal        = document.getElementById('lx-member-modal');
+    const modalTitle   = document.getElementById('lx-member-title');
+    const modalDesc    = document.getElementById('lx-member-desc');
+    const loginBox     = document.getElementById('lx-member-login');
+    const registerBox  = document.getElementById('lx-member-register');
+    const btnConfirm   = document.getElementById('lx-member-confirm');
+    const btnSkip      = document.getElementById('lx-member-skip');
+
+    // Hidden fields
+    const memberActionInput   = document.getElementById('member_action');
+    const memberEmailInput    = document.getElementById('member_email');
+    const memberPasswordInput = document.getElementById('member_password');
+
     if (!form || !phoneInput) return;
 
     let phoneChecked = false;
-    let phoneState   = null; // has_account | has_profile | new
+    let phoneState   = null; // existing | new
+    let memberAction = 'skip';
 
     /* =====================================================
      * LOCATION → WARD
@@ -56,19 +71,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-     * CHECK PHONE (AJAX – MODEL 2)
+     * CHECK PHONE (ERP)
      * ===================================================== */
     let phoneTimer = null;
 
     phoneInput.addEventListener('input', () => {
         phoneChecked = false;
         phoneState   = null;
+        memberAction = 'skip';
+
         phoneStatus.style.display = 'none';
-        pwdWrap.style.display = 'none';
+        pwdWrap.style.display     = 'none';
+        closeMemberModal();
+
         clearTimeout(phoneTimer);
 
         const phone = phoneInput.value.trim();
-
         if (phone.length < 9) return;
 
         phoneTimer = setTimeout(() => checkPhone(phone), 500);
@@ -94,47 +112,36 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const json = await res.json();
-
             phoneChecked = true;
 
-            /* -------------------------------
-             * CASE 1: ĐÃ CÓ ACCOUNT
-             * ----------------------------- */
-            if (json.has_account) {
-                phoneState = 'has_account';
+            // -------------------------
+            // KHÁCH CŨ (ERP + ACCOUNT)
+            // -------------------------
+            if (json.has_erp_history && json.has_account) {
+                phoneState = 'existing';
 
                 phoneStatus.className = 'lx-phone-status success';
                 phoneStatus.innerText =
-                    'Số điện thoại này đã có tài khoản. Vui lòng nhập mật khẩu để đăng nhập.';
+                    'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm thành viên.';
 
-                pwdWrap.style.display = 'block';
+                showMemberModal('existing');
                 return;
             }
 
-            /* -------------------------------
-             * CASE 2: CÓ DỮ LIỆU CŨ (ERP)
-             * ----------------------------- */
-            if (json.has_profile || json.has_erp_history) {
-                phoneState = 'has_profile';
-
-                phoneStatus.className = 'lx-phone-status hint';
-                phoneStatus.innerText =
-                    'Chúng tôi đã tìm thấy thông tin mua hàng trước đây của bạn.';
-
-                if (json.name && !nameInput.value) {
-                    nameInput.value = json.name;
-                }
-
-                return;
-            }
-
-            /* -------------------------------
-             * CASE 3: KHÁCH MỚI
-             * ----------------------------- */
+            // -------------------------
+            // KHÁCH MỚI
+            // -------------------------
             phoneState = 'new';
+
             phoneStatus.className = 'lx-phone-status neutral';
             phoneStatus.innerText =
-                'Bạn có thể tiếp tục đặt hàng nhanh, hoặc tạo tài khoản sau.';
+                'Bạn có thể tạo tài khoản để nhận ưu đãi, hoặc mua nhanh không đăng nhập.';
+
+            if (json.name && !nameInput.value) {
+                nameInput.value = json.name;
+            }
+
+            showMemberModal('new');
 
         } catch (e) {
             console.error('❌ check-phone error:', e);
@@ -144,7 +151,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =====================================================
-     * SUBMIT CHECKOUT (AJAX → /api/storefront/orders)
+     * MEMBER MODAL
+     * ===================================================== */
+    function showMemberModal(type) {
+        if (!modal) return;
+
+        loginBox.style.display    = 'none';
+        registerBox.style.display = 'none';
+
+        if (type === 'existing') {
+            modalTitle.innerText = 'Chào mừng bạn quay lại';
+            modalDesc.innerText =
+                'Đăng nhập để tích lũy điểm thành viên và nhận ưu đãi riêng.';
+            loginBox.style.display = 'block';
+        }
+
+        if (type === 'new') {
+            modalTitle.innerText = 'Trở thành thành viên LIN XÉN';
+            modalDesc.innerText =
+                'Chỉ cần thêm email và mật khẩu để nhận ưu đãi cho các đơn hàng sau.';
+            registerBox.style.display = 'block';
+        }
+
+        modal.style.display = 'block';
+    }
+
+    function closeMemberModal() {
+        if (modal) modal.style.display = 'none';
+    }
+
+    btnConfirm?.addEventListener('click', () => {
+
+        if (phoneState === 'existing') {
+            const pwd = document.getElementById('lx-member-password').value;
+            memberActionInput.value   = 'login';
+            memberPasswordInput.value = pwd;
+        }
+
+        if (phoneState === 'new') {
+            const email = document.getElementById('lx-member-email').value;
+            const pwd   = document.getElementById('lx-member-new-password').value;
+
+            memberActionInput.value   = 'register';
+            memberEmailInput.value    = email;
+            memberPasswordInput.value = pwd;
+        }
+
+        closeMemberModal();
+    });
+
+    btnSkip?.addEventListener('click', () => {
+        memberActionInput.value = 'skip';
+        closeMemberModal();
+    });
+
+    /* =====================================================
+     * SUBMIT CHECKOUT
      * ===================================================== */
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -163,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : [];
 
         if (!items.length) {
-            errBox.innerText = 'Giỏ hàng không hợp lệ. Vui lòng quay lại giỏ hàng.';
+            errBox.innerText = 'Giỏ hàng không hợp lệ.';
             errBox.style.display = 'block';
             return;
         }
@@ -184,9 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 note: fd.get('note') || null,
             },
 
-            auth: phoneState === 'has_account'
-                ? { password: fd.get('password') }
-                : null,
+            member: {
+                action:   fd.get('member_action') || 'skip',
+                email:    fd.get('member_email') || null,
+                password: fd.get('member_password') || null,
+            },
 
             items: items.map(i => ({
                 product_id: i.product_id,
@@ -222,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // ✅ Redirect success
             window.location.href =
                 `/checkout/place-order?order_code=${json.order_code}`;
 

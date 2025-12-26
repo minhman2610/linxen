@@ -69,7 +69,7 @@
                      style="display:none"></div>
             </div>
 
-            {{-- LOGIN PASSWORD (HIDDEN BY DEFAULT) --}}
+            {{-- LOGIN PASSWORD (INLINE – CHỈ DÙNG KHI KHÁCH BỎ QUA POPUP) --}}
             <div class="lx-form-group"
                  id="lx-login-password"
                  style="display:none">
@@ -123,6 +123,11 @@
                           rows="2"
                           placeholder="Ghi chú cho đơn hàng (nếu có)"></textarea>
             </div>
+
+            {{-- MEMBER HIDDEN FIELDS (JS APPEND) --}}
+            <input type="hidden" name="member_action" id="member_action">
+            <input type="hidden" name="member_email" id="member_email">
+            <input type="hidden" name="member_password" id="member_password">
 
         </div>
 
@@ -225,5 +230,44 @@
 
     </form>
     @endif
+
+    {{-- =========================
+        MEMBER PROMPT MODAL
+    ========================== --}}
+    <div id="lx-member-modal" class="lx-modal" style="display:none">
+        <div class="lx-modal-overlay"></div>
+
+        <div class="lx-modal-content">
+            <h3 id="lx-member-title"></h3>
+            <p id="lx-member-desc"></p>
+
+            {{-- LOGIN --}}
+            <div id="lx-member-login" style="display:none">
+                <input type="password"
+                       id="lx-member-password"
+                       placeholder="Nhập mật khẩu để đăng nhập">
+            </div>
+
+            {{-- REGISTER --}}
+            <div id="lx-member-register" style="display:none">
+                <input type="email"
+                       id="lx-member-email"
+                       placeholder="Email (nhận ưu đãi & thông báo)">
+                <input type="password"
+                       id="lx-member-new-password"
+                       placeholder="Tạo mật khẩu">
+            </div>
+
+            <div class="lx-modal-actions">
+                <button id="lx-member-confirm" class="lx-btn-primary">
+                    Tiếp tục
+                </button>
+                <button id="lx-member-skip" class="lx-btn-secondary">
+                    Mua nhanh không đăng nhập
+                </button>
+            </div>
+        </div>
+    </div>
+
 </section>
 @endsection
