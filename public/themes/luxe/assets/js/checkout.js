@@ -6,6 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const form        = document.getElementById('lx-checkout-form');
     const errBox      = document.getElementById('lx-checkout-error');
     const phoneInput  = document.getElementById('lx-phone');
+    // =====================================================
+// AUTO MARK PHONE AS VALID IF CUSTOMER LOGGED IN
+// =====================================================
+if (phoneInput && phoneInput.hasAttribute('readonly') && phoneInput.value) {
+    phoneChecked = true;
+    phoneState   = 'logged';
+
+    if (phoneStatus) {
+        phoneStatus.style.display = 'none';
+    }
+}
+
     const phoneStatus = document.getElementById('lx-phone-status');
     const nameInput   = document.getElementById('lx-name');
 
@@ -292,11 +304,12 @@ document.getElementById('lx-member-confirm')?.addEventListener('click', async ()
         e.preventDefault();
         errBox.style.display = 'none';
 
-        if (!phoneChecked) {
-            errBox.innerText = 'Vui lòng nhập số điện thoại hợp lệ.';
-            errBox.style.display = 'block';
-            return;
-        }
+        if (!phoneChecked && !phoneInput.hasAttribute('readonly')) {
+    errBox.innerText = 'Vui lòng nhập số điện thoại hợp lệ.';
+    errBox.style.display = 'block';
+    return;
+}
+
 
         const fd = new FormData(form);
         const items = Array.isArray(window.__CHECKOUT_CART__)
