@@ -117,4 +117,63 @@
 .lx-field input,
 .lx-field textarea {
     border: 1px solid #ddd;
-    border-radius:
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.lx-field input:focus,
+.lx-field textarea:focus {
+    outline: none;
+    border-color: #111;
+}
+
+/* BUTTON */
+.lx-btn-block {
+    width: 100%;
+    margin-top: 8px;
+}
+/* =====================================================
+   BUTTON – ADDRESS FORM (LIN XÉN STYLE)
+===================================================== */
+
+.lx-address-page-v2 .lx-btn-primary.lx-btn-block {
+    appearance: none;
+    border: none;
+    border-radius: 14px;
+
+    height: 46px;
+    padding: 0 20px;
+
+    background: #111;
+    color: #fff;
+
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: .3px;
+
+    cursor: pointer;
+    transition: all .25s ease;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover – desktop */
+.lx-address-page-v2 .lx-btn-primary.lx-btn-block:hover {
+    background: #000;
+    transform: translateY(-1px);
+}
+
+/* Active */
+.lx-address-page-v2 .lx-btn-primary.lx-btn-block:active {
+    transform: translateY(0);
+    opacity: .92;
+}
+
+/* Disabled (future-proof) */
+.lx-address-page-v2 .lx-btn-primary.lx-btn-block:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
