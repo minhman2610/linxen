@@ -274,6 +274,11 @@
                 <h3 id="lx-member-title"></h3>
                 <p id="lx-member-desc"></p>
             </div>
+            {{-- ERROR INLINE --}}
+<div id="lx-member-error"
+     class="lx-member-error"
+     style="display:none">
+</div>
 
             {{-- LOGIN (KHÁCH CŨ) --}}
             <div id="lx-member-login" class="lx-member-section" style="display:none">

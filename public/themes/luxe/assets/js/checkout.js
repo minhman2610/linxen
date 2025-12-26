@@ -182,11 +182,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modal.classList.add('is-active');
     }
+function showMemberError(msg) {
+    const box = document.getElementById('lx-member-error');
+    if (!box) return;
+
+    box.innerText = msg;
+    box.style.display = 'block';
+}
+
+function clearMemberError() {
+    const box = document.getElementById('lx-member-error');
+    if (!box) return;
+
+    box.innerText = '';
+    box.style.display = 'none';
+}
 
     /* =====================================================
  * MODAL ACTIONS
  * ===================================================== */
 document.getElementById('lx-member-confirm')?.addEventListener('click', async () => {
+
+    clearMemberError();
 
     // =========================
     // KHÁCH CŨ → LOGIN
@@ -195,7 +212,7 @@ document.getElementById('lx-member-confirm')?.addEventListener('click', async ()
         const pwd = document.getElementById('lx-member-password')?.value;
 
         if (!pwd) {
-            alert('Vui lòng nhập mật khẩu');
+            showMemberError('⚠️ Vui lòng nhập mật khẩu để đăng nhập');
             return;
         }
 
@@ -214,24 +231,21 @@ document.getElementById('lx-member-confirm')?.addEventListener('click', async ()
         const pwd2  = document.getElementById('lx-member-new-password-confirm')?.value;
 
         if (!pwd || pwd.length < 6) {
-            alert('Mật khẩu cần ít nhất 6 ký tự');
+            showMemberError('⚠️ Mật khẩu cần ít nhất 6 ký tự');
             return;
         }
 
         if (pwd !== pwd2) {
-            alert('Mật khẩu nhập lại không khớp');
+            showMemberError('⚠️ Mật khẩu nhập lại không khớp');
             return;
         }
 
-        // Build payload an toàn (KHÔNG gửi email rỗng)
         const payload = {
             phone: phoneInput.value.trim(),
             password: pwd,
         };
 
-        if (email) {
-            payload.email = email;
-        }
+        if (email) payload.email = email;
 
         try {
             const res = await fetch('/ajax/register-inline', {
@@ -250,23 +264,20 @@ document.getElementById('lx-member-confirm')?.addEventListener('click', async ()
             const json = await res.json();
 
             if (!json.success) {
-                alert(json.message || 'Không tạo được tài khoản');
+                showMemberError(json.message || '⚠️ Không tạo được tài khoản');
                 return;
             }
 
-            /*
-             * ERP sẽ auto-login và redirect về:
-             * /checkout?registered=1
-             * → storefront nhận diện & hiển thị thông báo
-             */
+            // ✅ Auto login thành công → reload checkout
             window.location.href = '/checkout?registered=1';
 
         } catch (e) {
             console.error('register-inline error:', e);
-            alert('Lỗi kết nối server');
+            showMemberError('⚠️ Lỗi kết nối server, vui lòng thử lại');
         }
     }
 });
+
 
 
     document.getElementById('lx-member-skip')?.addEventListener('click', () => {
