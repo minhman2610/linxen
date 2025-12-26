@@ -76,3 +76,69 @@
     font-size: 13px;
     color: #6b7280;
 }
+/* =========================
+   AUTH – PREMIUM LOOK
+========================= */
+
+.lx-auth-box--premium {
+    border-radius: 18px;
+    border: 1px solid #eee;
+    box-shadow: 0 12px 32px rgba(0,0,0,.06);
+}
+
+/* BRAND */
+.lx-auth-brand {
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.lx-auth-logo {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: .12em;
+}
+
+.lx-auth-tagline {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* HEADER */
+.lx-auth-header h2 {
+    margin-top: 12px;
+    font-size: 22px;
+}
+
+.lx-auth-header p {
+    margin-top: 4px;
+}
+
+/* BUTTON */
+.lx-btn-auth {
+    margin-top: 10px;
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 999px;
+}
+
+/* FOOTER */
+.lx-auth-footer {
+    margin-top: 22px;
+    text-align: center;
+}
+
+.lx-auth-register {
+    font-size: 14px;
+}
+
+.lx-auth-register a {
+    font-weight: 500;
+}
+
+.lx-auth-back {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6b7280;
+}
