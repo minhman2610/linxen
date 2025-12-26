@@ -56,10 +56,12 @@
         {{-- ACTIONS --}}
         <div class="lx-success-actions">
 
-            <a href="{{ route('linxen.account.orders') }}" class="lx-btn-primary">
-                <span class="lx-btn-icon">📋</span>
-                <span>Theo dõi đơn hàng</span>
-            </a>
+            <a href="{{ route('linxen.account.orders') }}"
+   class="lx-btn-secondary lx-btn-orders">
+    <span class="lx-btn-icon">📋</span>
+    <span>Theo dõi đơn hàng</span>
+</a>
+
 
             <a href="{{ route('linxen.home') }}" class="lx-btn-secondary">
                 <span class="lx-btn-icon">🛍️</span>
