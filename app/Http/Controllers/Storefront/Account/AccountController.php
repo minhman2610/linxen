@@ -93,62 +93,93 @@ class AccountController extends Controller
         return $redirect;
     }
 
-    // ✅ Validate dữ liệu form (theo checkout)
+    /**
+     * =====================================================
+     * 1️⃣ VALIDATE INPUT (ĐÚNG FIELD ERP)
+     * =====================================================
+     */
     $data = $request->validate([
-        'name'           => 'required|string|max:255',
-        'phone'          => 'required|string|max:20',
-        'location_id'    => 'required|integer',
-        'ward_id'        => 'required|integer',
-        'street'         => 'required|string|max:255',
+        'receiver_name'   => 'required|string|max:255',
+        'receiver_phone'  => 'required|string|max:20',
 
-        // optional nhưng nên có để ERP hiển thị
-        'location_name'  => 'nullable|string|max:255',
-        'ward_name'      => 'nullable|string|max:255',
+        'location_id'     => 'required|integer',
+        'ward_id'         => 'required|integer',
+        'street'          => 'required|string|max:255',
+
+        'location_name'   => 'nullable|string|max:255',
+        'ward_name'       => 'nullable|string|max:255',
     ]);
 
     try {
-        // 🚀 Push sang ERP
+        /**
+         * =====================================================
+         * 2️⃣ PUSH SANG ERP
+         * =====================================================
+         */
         $res = $this->erp->createCustomerAddress([
-            'name'          => $data['name'],
-            'phone'         => $data['phone'],
-            'location_id'   => $data['location_id'],
-            'ward_id'       => $data['ward_id'],
-            'street'        => $data['street'],
-            'location_name' => $data['location_name'] ?? null,
-            'ward_name'     => $data['ward_name'] ?? null,
+            'phone'           => session('customer.phone'),
+
+            'receiver_name'   => $data['receiver_name'],
+            'receiver_phone'  => $data['receiver_phone'],
+
+            'location_id'     => $data['location_id'],
+            'ward_id'         => $data['ward_id'],
+            'street'          => $data['street'],
+
+            'location_name'   => $data['location_name'] ?? null,
+            'ward_name'       => $data['ward_name'] ?? null,
         ]);
 
         /**
-         * Kỳ vọng ERP trả về dạng:
-         * {
-         *   success: true|false,
-         *   message: "...",
-         * }
+         * =====================================================
+         * 3️⃣ HANDLE ERP RESPONSE
+         * =====================================================
          */
-        if (empty($res) || !($res['success'] ?? false)) {
-            $msg = $res['message'] ?? 'Không thể lưu địa chỉ. Vui lòng thử lại.';
+        if (!is_array($res)) {
             return back()
                 ->withInput()
                 ->withErrors([
-                    'address' => $msg,
+                    'system' => 'Hệ thống ERP không phản hồi đúng định dạng.',
                 ]);
         }
 
-        // ✅ Thành công
-        return back()->with('success', 'Đã thêm địa chỉ nhận hàng');
+        if (!($res['success'] ?? false)) {
+            // ERP business error
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'erp' => $res['message'] ?? 'Không thể lưu địa chỉ.',
+                ]);
+        }
+
+        /**
+         * =====================================================
+         * 4️⃣ SUCCESS
+         * =====================================================
+         */
+        return redirect()
+            ->route('linxen.account.addresses')
+            ->with('success', 'Đã thêm địa chỉ nhận hàng');
 
     } catch (\Throwable $e) {
-        // ❌ Lỗi kết nối / exception
-        \Log::error('[ACCOUNT][STORE_ADDRESS_FAIL]', [
-            'error' => $e->getMessage(),
+
+        /**
+         * =====================================================
+         * 5️⃣ SYSTEM / NETWORK ERROR
+         * =====================================================
+         */
+        \Log::error('[ACCOUNT][STORE_ADDRESS_EXCEPTION]', [
+            'message' => $e->getMessage(),
+            'trace'   => $e->getTraceAsString(),
         ]);
 
         return back()
             ->withInput()
             ->withErrors([
-                'address' => 'Không kết nối được hệ thống. Vui lòng thử lại sau.',
+                'system' => 'Không kết nối được hệ thống. Vui lòng thử lại sau.',
             ]);
     }
 }
+
 
 }
