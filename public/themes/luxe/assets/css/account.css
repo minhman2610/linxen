@@ -179,3 +179,15 @@
     font-size: 20px;
     color: #9ca3af;
 }
+.lx-account-card--danger {
+    border: 1px solid #fee2e2;
+    background: #fff;
+}
+
+.lx-account-logout-btn {
+    background: none;
+    border: none;
+    color: #b91c1c;
+    font-weight: 500;
+    cursor: pointer;
+}

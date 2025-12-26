@@ -34,9 +34,10 @@
                 <span class="lx-account-arrow">›</span>
             </a>
 
-            {{-- ADDRESSES --}}
-            <a href="{{ route('linxen.account.index') }}#addresses"
-               class="lx-account-card">
+            {{-- ADDRESSES (DEMO / FUTURE) --}}
+            <a href="#"
+               class="lx-account-card"
+               title="Sẽ triển khai">
                 <div class="lx-account-card-left">
                     <span class="lx-account-icon">📍</span>
                     <div>
@@ -47,9 +48,10 @@
                 <span class="lx-account-arrow">›</span>
             </a>
 
-            {{-- PROFILE --}}
-            <a href="{{ route('linxen.account.index') }}#profile"
-               class="lx-account-card">
+            {{-- PROFILE (DEMO / FUTURE) --}}
+            <a href="#"
+               class="lx-account-card"
+               title="Sẽ triển khai">
                 <div class="lx-account-card-left">
                     <span class="lx-account-icon">👤</span>
                     <div>
@@ -61,17 +63,27 @@
             </a>
 
             {{-- SECURITY --}}
-            <a href="{{ route('linxen.account.index') }}#security"
-               class="lx-account-card">
+            <div class="lx-account-card lx-account-card--danger">
+
                 <div class="lx-account-card-left">
-                    <span class="lx-account-icon">🔒</span>
+                    <span class="lx-account-icon">🚪</span>
                     <div>
-                        <strong>Bảo mật</strong>
-                        <span>Đổi mật khẩu, đăng xuất</span>
+                        <strong>Đăng xuất</strong>
+                        <span>Thoát khỏi tài khoản hiện tại</span>
                     </div>
                 </div>
-                <span class="lx-account-arrow">›</span>
-            </a>
+
+                <form method="POST"
+                      action="{{ route('linxen.logout') }}"
+                      onsubmit="return confirm('Bạn chắc chắn muốn đăng xuất?')">
+                    @csrf
+                    <button type="submit"
+                            class="lx-account-logout-btn">
+                        Đăng xuất
+                    </button>
+                </form>
+
+            </div>
 
             {{-- SUPPORT --}}
             <a href="https://zalo.me/your-zalo-id"
@@ -91,7 +103,7 @@
 
     @else
         {{-- =========================
-            CHƯA ĐĂNG NHẬP / CHƯA CÓ TÀI KHOẢN
+            CHƯA ĐĂNG NHẬP
         ========================== --}}
 
         <div class="lx-empty-state">
@@ -108,14 +120,21 @@
 
             <div class="lx-account-cta">
 
-                <a href="{{ route('linxen.checkout') }}"
+                {{-- LOGIN --}}
+                <a href="{{ route('linxen.login') }}"
                    class="lx-btn-primary lx-btn-full">
-                    Đăng nhập / Đăng ký
+                    Đăng nhập
+                </a>
+
+                {{-- REGISTER --}}
+                <a href="{{ route('linxen.register') }}"
+                   class="lx-btn-secondary lx-btn-full">
+                    Đăng ký
                 </a>
 
                 <a href="{{ route('linxen.home') }}"
-                   class="lx-btn-secondary lx-btn-full">
-                    Tiếp tục mua sắm
+                   class="lx-btn-link">
+                    Tiếp tục mua sắm →
                 </a>
 
             </div>
