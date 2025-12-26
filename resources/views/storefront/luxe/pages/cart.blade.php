@@ -4,9 +4,7 @@
 
 @php
     $cartItems = $cart ?? [];
-    $subtotal = collect($cartItems)->sum(fn($i) => ($i['price'] ?? 0) * ($i['qty'] ?? 0));
-    $shippingFee = $subtotal >= 500000 ? 0 : 30000;
-    $total = $subtotal + $shippingFee;
+    $subtotal  = collect($cartItems)->sum(fn($i) => ($i['price'] ?? 0) * ($i['qty'] ?? 0));
 @endphp
 
 <section class="lx-cart">
@@ -91,13 +89,11 @@
                         </div>
 
                         <button
-    class="lx-cart-remove"
-    data-sku="{{ $sku }}"
-    aria-label="Xóa sản phẩm">
-    ✕
-</button>
-
-
+                            class="lx-cart-remove"
+                            data-sku="{{ $sku }}"
+                            aria-label="Xóa sản phẩm">
+                            ✕
+                        </button>
 
                     </article>
                 @endforeach
@@ -116,24 +112,26 @@
                     <strong>{{ number_format($subtotal) }}₫</strong>
                 </div>
 
+                {{-- ❗ Không tính phí vận chuyển tại giỏ hàng --}}
                 <div class="lx-summary-row">
                     <span>Vận chuyển</span>
-                    <strong>
-                        {{ $shippingFee > 0 ? number_format($shippingFee).'₫' : 'Miễn phí' }}
+                    <strong class="lx-summary-muted">
+                        Tính tại bước thanh toán
                     </strong>
                 </div>
 
                 <div class="lx-summary-total">
-                    <span>Tổng cộng</span>
-                    <strong>{{ number_format($total) }}₫</strong>
+                    <span>Tạm tính</span>
+                    <strong>{{ number_format($subtotal) }}₫</strong>
                 </div>
 
                 <a href="{{ route('linxen.checkout') }}"
                    class="lx-btn-primary lx-btn-full">
-                    Thanh toán
+                    Tiến hành thanh toán
                 </a>
 
                 <ul class="lx-summary-note">
+                    <li>Phí vận chuyển sẽ được tính sau khi chọn địa chỉ</li>
                     <li>Miễn phí đổi trả trong 7 ngày</li>
                     <li>Giao hàng toàn quốc</li>
                 </ul>
@@ -142,20 +140,25 @@
 
         </div>
     @endif
-    <div class="lx-confirm-overlay" id="lxConfirmOverlay">
-    <div class="lx-confirm-box">
-        <div class="lx-confirm-title">Xóa sản phẩm?</div>
-        <div class="lx-confirm-desc">
-            Sản phẩm này sẽ bị xóa khỏi giỏ hàng.<br>
-            Hành động này không thể hoàn tác.
-        </div>
 
-        <div class="lx-confirm-actions">
-            <button class="lx-btn-cancel" id="lxConfirmCancel">Hủy</button>
-            <button class="lx-btn-danger" id="lxConfirmOk">Xóa</button>
+    {{-- =====================
+       CONFIRM REMOVE MODAL
+    ====================== --}}
+    <div class="lx-confirm-overlay" id="lxConfirmOverlay">
+        <div class="lx-confirm-box">
+            <div class="lx-confirm-title">Xóa sản phẩm?</div>
+            <div class="lx-confirm-desc">
+                Sản phẩm này sẽ bị xóa khỏi giỏ hàng.<br>
+                Hành động này không thể hoàn tác.
+            </div>
+
+            <div class="lx-confirm-actions">
+                <button class="lx-btn-cancel" id="lxConfirmCancel">Hủy</button>
+                <button class="lx-btn-danger" id="lxConfirmOk">Xóa</button>
+            </div>
         </div>
     </div>
-</div>
-</section
+
+</section>
 
 @endsection
