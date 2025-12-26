@@ -93,112 +93,151 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function checkPhone(phone) {
-        phoneStatus.style.display = 'block';
-        phoneStatus.className = 'lx-phone-status info';
-        phoneStatus.innerText = 'Đang kiểm tra số điện thoại…';
+    phoneStatus.style.display = 'block';
+    phoneStatus.className = 'lx-phone-status info';
+    phoneStatus.innerText = 'Đang kiểm tra số điện thoại…';
 
-        try {
-            const res = await fetch('/ajax/check-phone', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute('content'),
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify({ phone }),
-            });
+    try {
+        const res = await fetch('/ajax/check-phone', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content'),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ phone }),
+        });
 
-            const json = await res.json();
-            phoneChecked = true;
+        const json = await res.json();
+        phoneChecked = true;
 
-            // -------------------------
-            // KHÁCH CŨ (ERP + ACCOUNT)
-            // -------------------------
-            if (json.has_erp_history && json.has_account) {
-                phoneState = 'existing';
+        // Nếu user đã skip modal trước đó → không làm phiền lại
+        if (memberActionInput?.value === 'skip') {
+            phoneStatus.className = 'lx-phone-status neutral';
+            phoneStatus.innerText =
+                'Bạn có thể tiếp tục đặt hàng nhanh.';
+            return;
+        }
 
-                phoneStatus.className = 'lx-phone-status success';
-                phoneStatus.innerText =
-                    'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm thành viên.';
+        /* =========================
+           CASE 1: KHÁCH CŨ + CÓ ACCOUNT
+        ========================== */
+        if (json.has_erp_history && json.has_account) {
+            phoneState = 'existing';
 
-                showMemberModal('existing');
-                return;
-            }
+            phoneStatus.className = 'lx-phone-status success';
+            phoneStatus.innerText =
+                'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm thành viên.';
 
-            // -------------------------
-            // KHÁCH MỚI
-            // -------------------------
+            showMemberModal('existing');
+            return;
+        }
+
+        /* =========================
+           CASE 2: KHÁCH CŨ – CHƯA CÓ ACCOUNT
+        ========================== */
+        if (json.has_erp_history && !json.has_account) {
             phoneState = 'new';
 
             phoneStatus.className = 'lx-phone-status neutral';
             phoneStatus.innerText =
-                'Bạn có thể tạo tài khoản để nhận ưu đãi, hoặc mua nhanh không đăng nhập.';
+                'Chúng tôi nhận ra bạn đã từng mua hàng. Tạo tài khoản để tích lũy quyền lợi.';
 
             if (json.name && !nameInput.value) {
                 nameInput.value = json.name;
             }
 
             showMemberModal('new');
-
-        } catch (e) {
-            console.error('❌ check-phone error:', e);
-            phoneStatus.className = 'lx-phone-status error';
-            phoneStatus.innerText = 'Không kiểm tra được số điện thoại.';
+            return;
         }
+
+        /* =========================
+           CASE 3: KHÁCH HOÀN TOÀN MỚI
+        ========================== */
+        phoneState = 'new';
+
+        phoneStatus.className = 'lx-phone-status neutral';
+        phoneStatus.innerText =
+            'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh không đăng nhập.';
+
+        showMemberModal('new');
+
+    } catch (e) {
+        console.error('❌ check-phone error:', e);
+        phoneStatus.className = 'lx-phone-status error';
+        phoneStatus.innerText = 'Không kiểm tra được số điện thoại.';
+    }
+}
+
+/* =====================================================
+ * MEMBER MODAL
+ * ===================================================== */
+function showMemberModal(type) {
+    if (!modal) return;
+
+    // Reset
+    loginBox.style.display = 'none';
+    registerBox.style.display = 'none';
+
+    if (type === 'existing') {
+        modalTitle.innerText = 'Chào mừng bạn quay lại';
+        modalDesc.innerText =
+            'Đăng nhập để tích lũy điểm thành viên và nhận ưu đãi riêng.';
+        loginBox.style.display = 'block';
     }
 
-    /* =====================================================
-     * MEMBER MODAL
-     * ===================================================== */
-    function showMemberModal(type) {
-        if (!modal) return;
-
-        loginBox.style.display    = 'none';
-        registerBox.style.display = 'none';
-
-        if (type === 'existing') {
-            modalTitle.innerText = 'Chào mừng bạn quay lại';
-            modalDesc.innerText =
-                'Đăng nhập để tích lũy điểm thành viên và nhận ưu đãi riêng.';
-            loginBox.style.display = 'block';
-        }
-
-        if (type === 'new') {
-            modalTitle.innerText = 'Trở thành thành viên LIN XÉN';
-            modalDesc.innerText =
-                'Chỉ cần thêm email và mật khẩu để nhận ưu đãi cho các đơn hàng sau.';
-            registerBox.style.display = 'block';
-        }
-
-        modal.style.display = 'block';
+    if (type === 'new') {
+        modalTitle.innerText = 'Trở thành thành viên LIN XÉN';
+        modalDesc.innerText =
+            'Chỉ cần thêm email và mật khẩu để nhận ưu đãi và tích lũy quyền lợi.';
+        registerBox.style.display = 'block';
     }
 
-    function closeMemberModal() {
-        if (modal) modal.style.display = 'none';
+    modal.style.display = 'block';
+}
+
+function closeMemberModal() {
+    if (modal) modal.style.display = 'none';
+}
+btnConfirm?.addEventListener('click', () => {
+
+    if (phoneState === 'new') {
+        const pwd  = document.getElementById('lx-member-new-password').value;
+        const pwd2 = document.getElementById('lx-member-new-password-confirm').value;
+
+        if (!pwd || pwd.length < 6) {
+            alert('Mật khẩu cần ít nhất 6 ký tự');
+            return;
+        }
+
+        if (pwd !== pwd2) {
+            alert('Mật khẩu nhập lại không khớp');
+            return;
+        }
+
+        memberActionInput.value   = 'register';
+        memberEmailInput.value    =
+            document.getElementById('lx-member-email').value;
+        memberPasswordInput.value = pwd;
     }
 
-    btnConfirm?.addEventListener('click', () => {
+    if (phoneState === 'existing') {
+        const pwd = document.getElementById('lx-member-password').value;
 
-        if (phoneState === 'existing') {
-            const pwd = document.getElementById('lx-member-password').value;
-            memberActionInput.value   = 'login';
-            memberPasswordInput.value = pwd;
+        if (!pwd) {
+            alert('Vui lòng nhập mật khẩu để đăng nhập');
+            return;
         }
 
-        if (phoneState === 'new') {
-            const email = document.getElementById('lx-member-email').value;
-            const pwd   = document.getElementById('lx-member-new-password').value;
+        memberActionInput.value   = 'login';
+        memberPasswordInput.value = pwd;
+    }
 
-            memberActionInput.value   = 'register';
-            memberEmailInput.value    = email;
-            memberPasswordInput.value = pwd;
-        }
-
-        closeMemberModal();
-    });
+    closeMemberModal();
+});
 
     btnSkip?.addEventListener('click', () => {
         memberActionInput.value = 'skip';
