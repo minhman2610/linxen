@@ -106,9 +106,3 @@
 </div>
 
 @endsection
-
-    <style>
-button.lx-btn-auth--register {
-    background: red !important;
-}
-</style>
