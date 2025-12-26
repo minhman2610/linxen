@@ -5,6 +5,9 @@ use App\Http\Controllers\Storefront\PageController;
 use App\Http\Controllers\Storefront\ReelsController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Storefront\Account\OrderController;
+use App\Http\Controllers\Storefront\Auth\LoginController;
+use App\Http\Controllers\Storefront\Auth\RegisterController;
+use App\Http\Controllers\Storefront\Auth\LogoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +18,27 @@ use App\Http\Controllers\Storefront\Account\OrderController;
 Route::domain('linxen.vn')
     ->middleware(['web'])
     ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | 🔐 AUTH (LOGIN / REGISTER / LOGOUT)
+        |--------------------------------------------------------------------------
+        | ❗ KHÔNG middleware storefront.auth
+        */
+        Route::get('/login', [LoginController::class, 'show'])
+            ->name('linxen.login');
+
+        Route::post('/login', [LoginController::class, 'login'])
+            ->name('linxen.login.submit');
+
+        Route::get('/register', [RegisterController::class, 'show'])
+            ->name('linxen.register');
+
+        Route::post('/register', [RegisterController::class, 'register'])
+            ->name('linxen.register.submit');
+
+        Route::post('/logout', [LogoutController::class, 'logout'])
+            ->name('linxen.logout');
 
         /*
         |--------------------------------------------------------------------------
@@ -75,7 +99,7 @@ Route::domain('linxen.vn')
 
         /*
         |--------------------------------------------------------------------------
-        | 💳 CHECKOUT (PAGE)
+        | 💳 CHECKOUT
         |--------------------------------------------------------------------------
         */
         Route::get('/checkout', [PageController::class, 'checkout'])
@@ -89,40 +113,31 @@ Route::domain('linxen.vn')
         | 🔑 CHECKOUT – AJAX / API
         |--------------------------------------------------------------------------
         */
-
-        // 🔍 Check phone (ERP – source of truth)
         Route::post('/ajax/check-phone', [CheckoutController::class, 'checkPhone'])
             ->name('checkout.check_phone');
 
-        // 🔐 Register + auto login
         Route::post('/ajax/register-inline', [CheckoutController::class, 'registerInline'])
             ->name('checkout.register_inline');
 
-        // 📦 Create order
         Route::post('/api/storefront/orders', [CheckoutController::class, 'create'])
             ->name('checkout.create');
 
         /*
-|--------------------------------------------------------------------------
-| 👤 ACCOUNT
-|--------------------------------------------------------------------------
-*/
-Route::prefix('account')
-    ->middleware(['storefront.auth'])
-    ->name('linxen.account.')
-    ->group(function () {
+        |--------------------------------------------------------------------------
+        | 👤 ACCOUNT (CHECK LOGIN TRONG CONTROLLER)
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('account')
+            ->name('linxen.account.')
+            ->group(function () {
 
-        // Dashboard tài khoản
-        Route::get('/', [PageController::class, 'account'])
-            ->name('index');
+                Route::get('/', [PageController::class, 'account'])
+                    ->name('index');
 
-        // 🧾 Danh sách đơn hàng
-        Route::get('/orders', [OrderController::class, 'index'])
-            ->name('orders');
+                Route::get('/orders', [OrderController::class, 'index'])
+                    ->name('orders');
 
-        // 📦 Chi tiết đơn hàng
-        Route::get('/orders/{code}', [OrderController::class, 'show'])
-            ->name('orders.show');
-    });
-
+                Route::get('/orders/{code}', [OrderController::class, 'show'])
+                    ->name('orders.show');
+            });
     });

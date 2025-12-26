@@ -1,0 +1,78 @@
+/* ================================
+   AUTH – LOGIN / REGISTER
+================================ */
+
+.lx-auth-container {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.lx-auth-box {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.lx-auth-header h2 {
+    margin-bottom: 6px;
+}
+
+.lx-auth-header p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.lx-auth-form {
+    margin-top: 20px;
+}
+
+.lx-input-group {
+    margin-bottom: 14px;
+}
+
+.lx-input-group label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.lx-input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.lx-auth-error {
+    margin: 10px 0;
+    color: #b91c1c;
+    font-size: 13px;
+}
+
+.lx-btn-auth {
+    margin-top: 10px;
+}
+
+.lx-auth-footer {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.lx-auth-footer a {
+    color: #111;
+    text-decoration: underline;
+}
+
+.lx-auth-back {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #6b7280;
+}

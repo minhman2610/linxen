@@ -89,6 +89,8 @@
 @endif
 
 
+    <link rel="stylesheet"
+      href="/themes/luxe/assets/css/auth.css?v={{ filemtime(public_path('themes/luxe/assets/css/auth.css')) }}">
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"
