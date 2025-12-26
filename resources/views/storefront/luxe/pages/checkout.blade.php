@@ -23,10 +23,19 @@
         ];
     }
 
-    
-    $customer = session('customer') ?? null;
+    /*
+    |--------------------------------------------------------------------------
+    | 👤 CUSTOMER SESSION (NORMALIZE)
+    |--------------------------------------------------------------------------
+    | - session có thể là array (từ ERP auto-login)
+    | - ép về object để Blade dùng thống nhất
+    |--------------------------------------------------------------------------
+    */
+    $customerSession = session('customer');
+    $customer = $customerSession ? (object) $customerSession : null;
 
 @endphp
+
 
 <section class="lx-checkout-page">
 
