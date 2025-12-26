@@ -74,19 +74,52 @@ class ErpStorefrontApi
     }
 
     /**
-     * =====================================================
-     * 📍 CUSTOMER – ADDRESSES
-     * =====================================================
+ * =====================================================
+ * 📍 CUSTOMER – ADDRESSES
+ * =====================================================
+ */
+public function customerAddresses(): array
+{
+    $res = $this->fetch('/api/storefront/customer/addresses');
+
+    /**
+     * ERP luôn trả:
+     * {
+     *   success: true|false,
+     *   data?: []
+     *   message?: string
+     * }
+     *
+     * 👉 Storefront CHỈ cần data[]
      */
-    public function customerAddresses(): array
-    {
-        return $this->fetch('/api/storefront/customer/addresses');
+    if (!is_array($res) || !($res['success'] ?? false)) {
+        return [];
     }
 
-    public function createCustomerAddress(array $payload): array
-    {
-        return $this->post('/api/storefront/customer/addresses', $payload);
+    return $res['data'] ?? [];
+}
+
+public function createCustomerAddress(array $payload): array
+{
+    $res = $this->post('/api/storefront/customer/addresses', $payload);
+
+    /**
+     * Chuẩn hoá response để controller xử lý thống nhất
+     */
+    if (!is_array($res)) {
+        return [
+            'success' => false,
+            'message' => 'Hệ thống ERP không phản hồi hợp lệ.',
+        ];
     }
+
+    return [
+        'success' => (bool) ($res['success'] ?? false),
+        'message' => $res['message'] ?? null,
+        'data'    => $res['data'] ?? null,
+    ];
+}
+
 
     /**
      * =====================================================
