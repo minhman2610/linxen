@@ -534,10 +534,17 @@ public function account()
 }
 
 
-    public function orders()
-    {
-        return view("storefront.{$this->theme}.pages.orders");
-    }
+    /**
+ * =====================================================
+ * 🧾 ACCOUNT → ORDERS (REDIRECT)
+ * =====================================================
+ * Giữ hàm này chỉ để tương thích cũ (nếu còn gọi)
+ */
+public function orders()
+{
+    return redirect()->route('linxen.account.orders');
+}
+
 
     public function orderDetail(string $code)
     {
