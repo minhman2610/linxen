@@ -79,19 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let phoneTimer = null;
 
     phoneInput.addEventListener('input', () => {
-        phoneChecked = false;
-        phoneState   = null;
-        clearTimeout(phoneTimer);
+    phoneChecked = false;
+    phoneState   = null;
+    promptShown  = false;        // 🔥 RESET KHI SĐT ĐỔI
+    memberActionInput.value = ''; // 🔥 CLEAR SKIP CŨ
 
-        phoneStatus.style.display = 'none';
-        pwdWrap && (pwdWrap.style.display = 'none');
-        closeMemberModal();
+    clearTimeout(phoneTimer);
 
-        const phone = phoneInput.value.trim();
-        if (phone.length < 9) return;
+    phoneStatus.style.display = 'none';
+    closeMemberModal();
 
-        phoneTimer = setTimeout(() => checkPhone(phone), 500);
-    });
+    const phone = phoneInput.value.trim();
+    if (phone.length < 9) return;
+
+    phoneTimer = setTimeout(() => checkPhone(phone), 500);
+});
 
     async function checkPhone(phone) {
         phoneStatus.style.display = 'block';
