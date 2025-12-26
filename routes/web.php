@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Storefront\PageController;
 use App\Http\Controllers\Storefront\ReelsController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Storefront\Account\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,7 +75,7 @@ Route::domain('linxen.vn')
 
         /*
         |--------------------------------------------------------------------------
-        | 💳 CHECKOUT PAGE
+        | 💳 CHECKOUT (PAGE)
         |--------------------------------------------------------------------------
         */
         Route::get('/checkout', [PageController::class, 'checkout'])
@@ -85,7 +86,7 @@ Route::domain('linxen.vn')
 
         /*
         |--------------------------------------------------------------------------
-        | 🔑 CHECKOUT – AJAX & API
+        | 🔑 CHECKOUT – AJAX / API
         |--------------------------------------------------------------------------
         */
 
@@ -93,11 +94,11 @@ Route::domain('linxen.vn')
         Route::post('/ajax/check-phone', [CheckoutController::class, 'checkPhone'])
             ->name('checkout.check_phone');
 
-        // 🔐 Register + auto login (INLINE REGISTER)
+        // 🔐 Register + auto login
         Route::post('/ajax/register-inline', [CheckoutController::class, 'registerInline'])
             ->name('checkout.register_inline');
 
-        // 📦 Create order (submit checkout)
+        // 📦 Create order
         Route::post('/api/storefront/orders', [CheckoutController::class, 'create'])
             ->name('checkout.create');
 
@@ -106,12 +107,20 @@ Route::domain('linxen.vn')
         | 👤 ACCOUNT
         |--------------------------------------------------------------------------
         */
-        Route::get('/account', [PageController::class, 'account'])
-            ->name('linxen.account');
+        Route::prefix('account')
+            ->middleware(['storefront.auth'])
+            ->name('linxen.account.')
+            ->group(function () {
 
-        Route::get('/account/orders', [PageController::class, 'orders'])
-            ->name('linxen.account.orders');
+                // Dashboard (để trống hoặc redirect orders)
+                Route::get('/', [PageController::class, 'account'])
+                    ->name('index');
 
-        Route::get('/account/orders/{code}', [PageController::class, 'orderDetail'])
-            ->name('linxen.account.order_detail');
+                // 🧾 Orders
+                Route::get('/orders', [OrderController::class, 'index'])
+                    ->name('orders');
+
+                Route::get('/orders/{code}', [OrderController::class, 'show'])
+                    ->name('orders.show');
+            });
     });

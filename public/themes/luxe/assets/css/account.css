@@ -1,0 +1,181 @@
+/* =====================================================
+   ACCOUNT – ORDERS (LIN XÉN)
+===================================================== */
+
+.lx-account-container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+/* HEADER */
+.lx-account-header {
+    margin-bottom: 20px;
+}
+
+.lx-account-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.lx-account-header p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* EMPTY */
+.lx-empty-state {
+    text-align: center;
+    padding: 40px 16px;
+    color: #6b7280;
+}
+
+/* ORDER LIST */
+.lx-order-list {
+    display: grid;
+    gap: 12px;
+}
+
+.lx-order-card {
+    display: block;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid #eee;
+    background: #fff;
+    text-decoration: none;
+    color: inherit;
+}
+
+.lx-order-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.lx-order-code {
+    font-weight: 500;
+}
+
+.lx-order-status {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.lx-order-bottom {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.lx-order-total {
+    font-weight: 500;
+    color: #111;
+}
+
+/* STATUS COLORS */
+.status-processing { background: #fef3c7; color: #92400e; }
+.status-shipping   { background: #e0f2fe; color: #075985; }
+.status-completed  { background: #dcfce7; color: #166534; }
+.status-cancelled  { background: #fee2e2; color: #991b1b; }
+
+/* DETAIL */
+.lx-back-link {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.lx-order-section {
+    margin-top: 24px;
+}
+
+.lx-order-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.lx-order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.lx-item-meta {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.lx-order-shipping {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.lx-order-total-box {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+}
+
+/* BUTTON */
+.lx-btn-light {
+    background: linear-gradient(135deg, #f3e7d3, #e7d3a3);
+    color: #3b2f1e;
+    border: 1px solid #e0cfa0;
+}
+/* =====================================================
+   ACCOUNT DASHBOARD
+===================================================== */
+
+.lx-account-menu {
+    display: grid;
+    gap: 12px;
+}
+
+.lx-account-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid #eee;
+    background: #fff;
+    text-decoration: none;
+    color: inherit;
+}
+
+.lx-account-card-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.lx-account-icon {
+    font-size: 22px;
+}
+
+.lx-account-card strong {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.lx-account-card span {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.lx-account-arrow {
+    font-size: 20px;
+    color: #9ca3af;
+}

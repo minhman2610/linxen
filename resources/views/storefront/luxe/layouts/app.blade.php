@@ -67,6 +67,11 @@
               href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}">
     @endif
 
+    @if(Route::is('linxen.account.*'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/account.css?v={{ filemtime(public_path('themes/luxe/assets/css/account.css')) }}">
+@endif
+
     {{-- ============================
     CHECKOUT FLOW CSS
 ============================ --}}
