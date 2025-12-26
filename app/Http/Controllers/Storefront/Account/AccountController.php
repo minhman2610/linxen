@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Storefront\Account;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\ERP\ErpCustomerService;
+use App\Services\ERP\ErpStorefrontApi;
 
 class AccountController extends Controller
 {
-    protected ErpCustomerService $erp;
+    protected ErpStorefrontApi $erp;
 
-    public function __construct(ErpCustomerService $erp)
+    public function __construct(ErpStorefrontApi $erp)
     {
         $this->erp = $erp;
     }
@@ -26,9 +26,10 @@ class AccountController extends Controller
             return redirect()->route('linxen.login');
         }
 
-        $customer = $this->erp->getCustomerByUser(auth()->user());
+        // Lấy customer từ ERP (qua token / session)
+        $customer = $this->erp->get('/api/storefront/customer/profile');
 
-        return view('storefront.luxe.account.profile', [
+        return view('storefront.luxe.pages.account.profile', [
             'user' => $customer,
         ]);
     }
@@ -44,10 +45,8 @@ class AccountController extends Controller
             'email' => 'nullable|email|max:255',
         ]);
 
-        $this->erp->updateCustomerProfile(
-            auth()->user(),
-            $data
-        );
+        // Update profile ERP
+        $this->erp->post('/api/storefront/customer/update-profile', $data);
 
         return back()->with('success', 'Cập nhật thông tin thành công');
     }
@@ -63,12 +62,10 @@ class AccountController extends Controller
             return redirect()->route('linxen.login');
         }
 
-        $addresses = $this->erp->getCustomerAddresses(
-            auth()->user()
-        );
+        $addresses = $this->erp->get('/api/storefront/customer/addresses');
 
-        return view('storefront.luxe.account.addresses', [
-            'addresses' => $addresses,
+        return view('storefront.luxe.pages.account.addresses', [
+            'addresses' => $addresses['addresses'] ?? [],
         ]);
     }
 
@@ -84,10 +81,7 @@ class AccountController extends Controller
             'address' => 'required|string|max:1000',
         ]);
 
-        $this->erp->createCustomerAddress(
-            auth()->user(),
-            $data
-        );
+        $this->erp->post('/api/storefront/customer/addresses', $data);
 
         return back()->with('success', 'Đã thêm địa chỉ nhận hàng');
     }

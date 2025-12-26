@@ -118,4 +118,45 @@ class ErpStorefrontApi
             return [];
         }
     }
+
+    // thêm vào class ErpStorefrontApi
+
+public function fetch(string $uri): array
+{
+    return $this->get($uri);
+}
+
+public function post(string $uri, array $payload = []): array
+{
+    $url = $this->baseUrl . $uri;
+
+    try {
+        $res = Http::withToken($this->token)
+            ->withOptions([
+                'verify'  => false,
+                'timeout' => 8,
+            ])
+            ->acceptJson()
+            ->post($url, $payload);
+
+        if ($res->failed()) {
+            Log::error('[LINXEN][ERP_API_POST_FAIL]', [
+                'url'    => $url,
+                'status' => $res->status(),
+                'body'   => $res->body(),
+            ]);
+            return [];
+        }
+
+        return $res->json() ?? [];
+
+    } catch (\Throwable $e) {
+        Log::error('[LINXEN][ERP_API_POST_EXCEPTION]', [
+            'url'     => $url,
+            'message' => $e->getMessage(),
+        ]);
+        return [];
+    }
+}
+
 }
