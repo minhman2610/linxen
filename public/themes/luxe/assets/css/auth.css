@@ -15,7 +15,7 @@
     max-width: 380px;
     background: #fff;
     border: 1px solid #eee;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 24px;
 }
 
@@ -49,33 +49,13 @@
     border-radius: 8px;
 }
 
+/* ERROR */
 .lx-auth-error {
     margin: 10px 0;
     color: #b91c1c;
     font-size: 13px;
 }
 
-.lx-btn-auth {
-    margin-top: 10px;
-}
-
-.lx-auth-footer {
-    margin-top: 18px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.lx-auth-footer a {
-    color: #111;
-    text-decoration: underline;
-}
-
-.lx-auth-back {
-    display: block;
-    margin-top: 10px;
-    font-size: 13px;
-    color: #6b7280;
-}
 /* =========================
    AUTH – PREMIUM LOOK
 ========================= */
@@ -114,18 +94,79 @@
     margin-top: 4px;
 }
 
-/* BUTTON */
+/* =========================
+   AUTH BUTTON – BASE
+========================= */
+
 .lx-btn-auth {
     margin-top: 10px;
-    padding: 14px;
+    padding: 14px 16px;
     font-size: 15px;
-    border-radius: 999px;
+    border-radius: 12px; /* ❗ FIX: không dùng 999px */
 }
 
-/* FOOTER */
+/* =========================
+   AUTH CTA BUTTON – REGISTER
+   (FORCE OVERRIDE lx-btn-primary)
+========================= */
+
+button.lx-btn-primary.lx-btn-auth--register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    width: 100%;
+    padding: 14px 16px;
+
+    background: #111; /* charcoal – sang */
+    color: #fff;
+
+    border: none;
+    border-radius: 12px;
+
+    text-align: center;
+    cursor: pointer;
+
+    transition: background .15s ease, transform .12s ease;
+}
+
+/* TEXT */
+button.lx-btn-primary.lx-btn-auth--register .lx-btn-main {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+button.lx-btn-primary.lx-btn-auth--register .lx-btn-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,.7);
+}
+
+/* HOVER */
+button.lx-btn-primary.lx-btn-auth--register:hover {
+    background: #000;
+}
+
+/* ACTIVE */
+button.lx-btn-primary.lx-btn-auth--register:active {
+    transform: translateY(1px);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
 .lx-auth-footer {
     margin-top: 22px;
     text-align: center;
+    font-size: 14px;
+}
+
+.lx-auth-footer a {
+    color: #111;
+    text-decoration: underline;
 }
 
 .lx-auth-register {
@@ -142,48 +183,3 @@
     font-size: 13px;
     color: #6b7280;
 }
-/* ======================================
-   AUTH CTA BUTTON – REGISTER
-====================================== */
-
-.lx-btn-auth--register {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-
-    padding: 14px 16px;
-    border-radius: 12px;
-
-    background: #111;
-    color: #fff;
-
-    text-align: center;
-    cursor: pointer;
-
-    transition: background .15s ease, transform .12s ease;
-}
-
-/* TEXT */
-.lx-btn-auth--register .lx-btn-main {
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.2;
-}
-
-.lx-btn-auth--register .lx-btn-sub {
-    font-size: 12px;
-    color: rgba(255,255,255,.7);
-}
-
-/* HOVER */
-.lx-btn-auth--register:hover {
-    background: #000;
-}
-
-/* ACTIVE */
-.lx-btn-auth--register:active {
-    transform: translateY(1px);
-}
-
