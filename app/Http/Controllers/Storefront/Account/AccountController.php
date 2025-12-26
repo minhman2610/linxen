@@ -87,19 +87,68 @@ class AccountController extends Controller
     }
 
     public function storeAddress(Request $request)
-    {
-        if ($redirect = $this->requireLogin()) {
-            return $redirect;
-        }
+{
+    // 🔐 Check login theo session customer
+    if ($redirect = $this->requireLogin()) {
+        return $redirect;
+    }
 
-        $data = $request->validate([
-            'name'    => 'required|string|max:255',
-            'phone'   => 'required|string|max:20',
-            'address' => 'required|string|max:1000',
+    // ✅ Validate dữ liệu form (theo checkout)
+    $data = $request->validate([
+        'name'           => 'required|string|max:255',
+        'phone'          => 'required|string|max:20',
+        'location_id'    => 'required|integer',
+        'ward_id'        => 'required|integer',
+        'street'         => 'required|string|max:255',
+
+        // optional nhưng nên có để ERP hiển thị
+        'location_name'  => 'nullable|string|max:255',
+        'ward_name'      => 'nullable|string|max:255',
+    ]);
+
+    try {
+        // 🚀 Push sang ERP
+        $res = $this->erp->createCustomerAddress([
+            'name'          => $data['name'],
+            'phone'         => $data['phone'],
+            'location_id'   => $data['location_id'],
+            'ward_id'       => $data['ward_id'],
+            'street'        => $data['street'],
+            'location_name' => $data['location_name'] ?? null,
+            'ward_name'     => $data['ward_name'] ?? null,
         ]);
 
-        $this->erp->createCustomerAddress($data);
+        /**
+         * Kỳ vọng ERP trả về dạng:
+         * {
+         *   success: true|false,
+         *   message: "...",
+         * }
+         */
+        if (empty($res) || !($res['success'] ?? false)) {
+            $msg = $res['message'] ?? 'Không thể lưu địa chỉ. Vui lòng thử lại.';
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'address' => $msg,
+                ]);
+        }
 
+        // ✅ Thành công
         return back()->with('success', 'Đã thêm địa chỉ nhận hàng');
+
+    } catch (\Throwable $e) {
+        // ❌ Lỗi kết nối / exception
+        \Log::error('[ACCOUNT][STORE_ADDRESS_FAIL]', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return back()
+            ->withInput()
+            ->withErrors([
+                'address' => 'Không kết nối được hệ thống. Vui lòng thử lại sau.',
+            ]);
     }
+}
+
 }
