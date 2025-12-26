@@ -87,10 +87,11 @@ class CheckoutController extends Controller
     public function registerInline(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'phone'    => 'required|string|max:20',
-            'email'    => 'required|email|max:255',
-            'password' => 'required|string|min:6',
-        ]);
+    'phone'    => 'required|string|max:20',
+    'email'    => 'nullable|email|max:255',
+    'password' => 'required|string|min:6',
+]);
+
 
         try {
             $response = Http::withOptions([
