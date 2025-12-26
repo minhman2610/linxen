@@ -15,7 +15,6 @@
         @if(!empty($addresses))
             @foreach($addresses as $addr)
                 <div class="lx-address-item {{ !empty($addr['is_default']) ? 'is-default' : '' }}">
-
                     <div class="lx-address-info">
                         <div class="lx-address-line-1">
                             <span class="lx-address-name">{{ $addr['name'] }}</span>
@@ -27,10 +26,11 @@
                         </div>
 
                         <div class="lx-address-line-2">
-                            {{ $addr['address'] }}
+                            {{ $addr['street'] ?? $addr['address'] }}
+                            @if(!empty($addr['ward_name'])), {{ $addr['ward_name'] }}@endif
+                            @if(!empty($addr['location_name'])), {{ $addr['location_name'] }}@endif
                         </div>
                     </div>
-
                 </div>
             @endforeach
         @else
@@ -48,23 +48,46 @@
         <form method="POST" class="lx-address-form">
             @csrf
 
+            {{-- NAME --}}
             <div class="lx-field">
                 <label>Tên người nhận</label>
                 <input name="name" placeholder="Nguyễn Văn A" required>
             </div>
 
+            {{-- PHONE --}}
             <div class="lx-field">
                 <label>Số điện thoại</label>
                 <input name="phone" placeholder="097xxxxxxx" required>
             </div>
 
-            <div class="lx-field">
-                <label>Địa chỉ chi tiết</label>
-                <textarea name="address"
-                          rows="3"
-                          placeholder="Số nhà, đường, phường/xã, quận/huyện"
-                          required></textarea>
+            {{-- LOCATION + WARD (GIỐNG CHECKOUT) --}}
+            <div class="lx-field-row">
+                <div class="lx-field">
+                    <label>Khu vực</label>
+                    <select name="location_id" id="lx-location" required>
+                        <option value="">-- Chọn khu vực --</option>
+                    </select>
+                </div>
+
+                <div class="lx-field">
+                    <label>Phường / Xã</label>
+                    <select name="ward_id" id="lx-ward" required disabled>
+                        <option value="">-- Chọn phường / xã --</option>
+                    </select>
+                </div>
             </div>
+
+            {{-- STREET --}}
+            <div class="lx-field">
+                <label>Số nhà, tên đường</label>
+                <input name="street"
+                       placeholder="Ví dụ: 12 Nguyễn Trãi"
+                       required>
+            </div>
+
+            {{-- HIDDEN NAMES (ERP FRIENDLY) --}}
+            <input type="hidden" name="location_name" id="lx-location-name">
+            <input type="hidden" name="ward_name" id="lx-ward-name">
 
             <button class="lx-btn-primary lx-btn-block">
                 Thêm địa chỉ
@@ -73,4 +96,62 @@
     </div>
 
 </section>
+
+{{-- =========================
+    LOCATION → WARD SCRIPT
+    (COPY TỪ CHECKOUT.JS)
+========================== --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const locSel  = document.getElementById('lx-location');
+    const wardSel = document.getElementById('lx-ward');
+
+    if (!locSel || !wardSel) return;
+
+    fetch('/api/storefront/locations?mode=raw')
+        .then(r => r.json())
+        .then(res => {
+            if (!res.success) return;
+            res.data.forEach(l => {
+                locSel.insertAdjacentHTML(
+                    'beforeend',
+                    `<option value="${l.id}">${l.name}</option>`
+                );
+            });
+        });
+
+    locSel.addEventListener('change', () => {
+        const id = locSel.value;
+
+        document.getElementById('lx-location-name').value =
+            locSel.selectedOptions[0]?.text || '';
+
+        wardSel.innerHTML = '<option value="">-- Chọn phường / xã --</option>';
+        wardSel.disabled = true;
+
+        if (!id) return;
+
+        fetch(`/api/storefront/locations/${id}/wards?mode=raw`)
+            .then(r => r.json())
+            .then(res => {
+                if (!res.success) return;
+                wardSel.disabled = false;
+                res.data.forEach(w => {
+                    wardSel.insertAdjacentHTML(
+                        'beforeend',
+                        `<option value="${w.id}">${w.name}</option>`
+                    );
+                });
+            });
+    });
+
+    wardSel.addEventListener('change', () => {
+        document.getElementById('lx-ward-name').value =
+            wardSel.selectedOptions[0]?.text || '';
+    });
+
+});
+</script>
+
 @endsection
