@@ -10,10 +10,18 @@
     {{-- ============================
         BASE CSS (GLOBAL)
     ============================= --}}
-    <link rel="stylesheet" href="/themes/luxe/assets/css/base.css">
-    <link rel="stylesheet" href="/themes/luxe/assets/css/theme.css">
-    <link rel="stylesheet" href="/themes/luxe/assets/css/icons.css">
-    <link rel="stylesheet" href="/themes/luxe/assets/css/mobile-menu.css">
+    <link rel="stylesheet"
+      href="/themes/luxe/assets/css/base.css?v={{ filemtime(public_path('themes/luxe/assets/css/base.css')) }}">
+
+<link rel="stylesheet"
+      href="/themes/luxe/assets/css/theme.css?v={{ filemtime(public_path('themes/luxe/assets/css/theme.css')) }}">
+
+<link rel="stylesheet"
+      href="/themes/luxe/assets/css/icons.css?v={{ filemtime(public_path('themes/luxe/assets/css/icons.css')) }}">
+
+<link rel="stylesheet"
+      href="/themes/luxe/assets/css/mobile-menu.css?v={{ filemtime(public_path('themes/luxe/assets/css/mobile-menu.css')) }}">
+
 
     {{-- ============================
         HEADER / FOOTER (GLOBAL)
