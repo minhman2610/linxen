@@ -23,9 +23,10 @@
     </div>
 
     {{-- ACCOUNT --}}
-    <a href="{{ route('linxen.account') }}" class="lx-header-btn" aria-label="Account">
-        <img src="{{ asset('themes/luxe/assets/icons/icon-account.svg') }}" alt="Account">
-    </a>
+<a href="{{ route('linxen.account.index') }}" class="lx-header-btn" aria-label="Account">
+    <img src="{{ asset('themes/luxe/assets/icons/icon-account.svg') }}" alt="Account">
+</a>
+
 
     {{-- CART --}}
 <a href="{{ route('linxen.cart') }}"

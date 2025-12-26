@@ -99,11 +99,12 @@
             <strong>Địa chỉ nhận hàng</strong>
 
             {{-- Secondary action – giảm phân tâm --}}
-            <a href="{{ route('linxen.account') }}"
-               class="lx-address-config-link"
-               title="Quản lý địa chỉ nhận hàng">
-                ⚙️ Quản lý
-            </a>
+            <a href="{{ route('linxen.account.index') }}"
+   class="lx-address-config-link"
+   title="Quản lý địa chỉ nhận hàng">
+    ⚙️ Quản lý
+</a>
+
         </div>
 
         @if(!empty($addresses))
