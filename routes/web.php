@@ -123,38 +123,60 @@ Route::domain('linxen.vn')
             ->name('checkout.create');
 
         /*
-        |--------------------------------------------------------------------------
-        | 👤 ACCOUNT
-        |--------------------------------------------------------------------------
-        | ❗ Không dùng middleware auth ở route
-        | 👉 Check login trong controller (đúng style hiện tại của anh)
-        */
-        Route::prefix('account')
-            ->name('linxen.account.')
-            ->group(function () {
+|--------------------------------------------------------------------------
+| 👤 ACCOUNT
+|--------------------------------------------------------------------------
+| ❗ Không dùng middleware auth ở route
+| 👉 Check login trong controller
+*/
+Route::prefix('account')
+    ->name('linxen.account.')
+    ->group(function () {
 
-                Route::get('/', [PageController::class, 'account'])
-                    ->name('index');
+        // =========================
+        // DASHBOARD
+        // =========================
+        Route::get('/', [PageController::class, 'account'])
+            ->name('index');
 
-                // 🧾 Orders
-                Route::get('/orders', [OrderController::class, 'index'])
-                    ->name('orders');
+        // =========================
+        // ORDERS
+        // =========================
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders');
 
-                Route::get('/orders/{code}', [OrderController::class, 'show'])
-                    ->name('orders.show');
+        Route::get('/orders/{code}', [OrderController::class, 'show'])
+            ->name('orders.show');
 
-                // 👤 Profile
-                Route::get('/profile', [AccountController::class, 'profile'])
-                    ->name('profile');
+        // =========================
+        // PROFILE
+        // =========================
+        Route::get('/profile', [AccountController::class, 'profile'])
+            ->name('profile');
 
-                Route::post('/profile', [AccountController::class, 'updateProfile'])
-                    ->name('profile.update');
+        Route::post('/profile', [AccountController::class, 'updateProfile'])
+            ->name('profile.update');
 
-                // 📍 Addresses
-                Route::get('/addresses', [AccountController::class, 'addresses'])
-                    ->name('addresses');
+        // =========================
+        // ADDRESSES
+        // =========================
+        Route::get('/addresses', [AccountController::class, 'addresses'])
+            ->name('addresses');
 
-                Route::post('/addresses', [AccountController::class, 'storeAddress'])
-                    ->name('addresses.store');
-            });
+        Route::post('/addresses', [AccountController::class, 'storeAddress'])
+            ->name('addresses.store');
+
+        // ⭐ Set default address
+        Route::post('/addresses/{id}/default', [AccountController::class, 'setDefaultAddress'])
+            ->name('addresses.setDefault');
+
+        // ✏️ Update address
+        Route::post('/addresses/{id}/update', [AccountController::class, 'updateAddress'])
+            ->name('addresses.update');
+
+        // 🗑 Delete address
+        Route::post('/addresses/{id}/delete', [AccountController::class, 'deleteAddress'])
+            ->name('addresses.delete');
+    });
+
     });

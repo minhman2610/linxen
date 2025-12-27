@@ -82,22 +82,20 @@ public function customerAddresses(): array
 {
     $res = $this->fetch('/api/storefront/customer/addresses');
 
-    /**
-     * ERP luôn trả:
-     * {
-     *   success: true|false,
-     *   data?: []
-     *   message?: string
-     * }
-     *
-     * 👉 Storefront CHỈ cần data[]
-     */
     if (!is_array($res) || !($res['success'] ?? false)) {
         return [];
     }
 
-    return $res['data'] ?? [];
+    $data = $res['data'] ?? [];
+
+    // ERP trả data không phải array → ép về []
+    if (!is_array($data)) {
+        return [];
+    }
+
+    return $data;
 }
+
 
 public function createCustomerAddress(array $payload): array
 {

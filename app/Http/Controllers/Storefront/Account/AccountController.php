@@ -69,22 +69,39 @@ class AccountController extends Controller
     }
 
     /**
-     * =====================================================
-     * 📍 ADDRESSES (ERP)
-     * =====================================================
-     */
-    public function addresses()
-    {
-        if ($redirect = $this->requireLogin()) {
-            return $redirect;
-        }
-
-        $addresses = $this->erp->customerAddresses();
-
-        return view('storefront.luxe.pages.account.addresses', [
-            'addresses' => $addresses,
-        ]);
+ * =====================================================
+ * 📍 ADDRESSES (ERP)
+ * =====================================================
+ */
+public function addresses()
+{
+    if ($redirect = $this->requireLogin()) {
+        return $redirect;
     }
+
+    $rawAddresses = $this->erp->customerAddresses();
+
+    /**
+     * Chuẩn hoá dữ liệu cho blade
+     * 👉 Blade KHÔNG phải check isset
+     */
+    $addresses = collect($rawAddresses)->map(function ($addr) {
+        return [
+            'id'              => $addr['id']              ?? null,
+            'receiver_name'   => $addr['receiver_name']   ?? '',
+            'receiver_phone'  => $addr['receiver_phone']  ?? '',
+            'street'          => $addr['street']          ?? '',
+            'ward_name'       => $addr['ward_name']       ?? '',
+            'location_name'   => $addr['location_name']   ?? '',
+            'is_default'      => (bool) ($addr['is_default'] ?? false),
+        ];
+    })->toArray();
+
+    return view('storefront.luxe.pages.account.addresses', [
+        'addresses' => $addresses,
+    ]);
+}
+
 
     public function storeAddress(Request $request)
 {
