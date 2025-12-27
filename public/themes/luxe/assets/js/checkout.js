@@ -410,3 +410,30 @@ document.getElementById('lx-member-confirm')?.addEventListener('click', async ()
         }
     });
 });
+function openAddressPopup() {
+    document.getElementById('lx-address-modal').style.display = 'block';
+}
+
+function closeAddressPopup() {
+    document.getElementById('lx-address-modal').style.display = 'none';
+}
+
+function confirmAddressPick() {
+    const selected = document.querySelector('input[name="address_pick"]:checked');
+    if (!selected) return;
+
+    // update hidden input
+    document.querySelector('input[name="shipping_address_id"]').value = selected.value;
+
+    // update text display
+    document.querySelector('.lx-address-default .lx-address-head strong').innerText =
+        selected.dataset.name;
+
+    document.querySelector('.lx-address-default .lx-address-head span').innerText =
+        selected.dataset.phone;
+
+    document.querySelector('.lx-address-default .lx-address-text').innerText =
+        selected.dataset.address;
+
+    closeAddressPopup();
+}

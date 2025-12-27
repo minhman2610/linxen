@@ -91,67 +91,58 @@
     @endif
 
     {{-- =========================
-        SHIPPING ADDRESSES
-    ========================== --}}
-    <div class="lx-checkout-section">
+    SHIPPING ADDRESS (DEFAULT)
+========================== --}}
+<div class="lx-checkout-section">
 
-        <div class="lx-section-head">
-            <strong>Địa chỉ nhận hàng</strong>
-
-            {{-- Secondary action – giảm phân tâm --}}
-            <a href="{{ route('linxen.account.index') }}"
-   class="lx-address-config-link"
-   title="Quản lý địa chỉ nhận hàng">
-    ⚙️ Quản lý
-</a>
-
-        </div>
+    <div class="lx-section-head">
+        <strong>Địa chỉ nhận hàng</strong>
 
         @if(!empty($addresses))
-            <div class="lx-address-list">
-
-                @foreach($addresses as $addr)
-                    <label class="lx-address-card">
-                        <input type="radio"
-                               name="shipping_address_id"
-                               value="{{ $addr['id'] }}"
-                               {{ $addr['is_default'] ? 'checked' : '' }}
-                               required>
-
-                        <div class="lx-address-info">
-                            <div class="lx-address-head">
-                                <span class="lx-address-name">
-                                    {{ $addr['name'] }}
-                                </span>
-
-                                <span class="lx-address-phone">
-                                    {{ $addr['phone'] }}
-                                </span>
-
-                                @if($addr['is_default'])
-                                    <span class="lx-badge-default">
-                                        Mặc định
-                                    </span>
-                                @endif
-                            </div>
-
-                            <div class="lx-address-text">
-                                {{ $addr['address'] }}
-                            </div>
-                        </div>
-                    </label>
-                @endforeach
-
-            </div>
+            <button type="button"
+                    class="lx-btn lx-btn-outline lx-btn-sm"
+                    onclick="openAddressPopup()">
+                Thay đổi
+            </button>
         @else
-            <div class="lx-address-empty">
-                <span>Bạn chưa có địa chỉ nhận hàng.</span>
-                <a href="{{ route('linxen.account.index') }}">Thêm địa chỉ</a>
-            </div>
+            <a href="{{ route('linxen.account.index') }}"
+               class="lx-address-config-link">
+                ⚙️ Thêm địa chỉ
+            </a>
         @endif
     </div>
-</div>
 
+    @php
+        $defaultAddress = collect($addresses ?? [])
+            ->firstWhere('is_default', true)
+            ?? ($addresses[0] ?? null);
+    @endphp
+
+    @if($defaultAddress)
+        <div class="lx-address-default">
+            <input type="hidden"
+                   name="shipping_address_id"
+                   value="{{ $defaultAddress['id'] }}">
+
+            <div class="lx-address-info">
+                <div class="lx-address-head">
+                    <strong>{{ $defaultAddress['name'] }}</strong>
+                    <span>{{ $defaultAddress['phone'] }}</span>
+
+                    <span class="lx-badge-default">Mặc định</span>
+                </div>
+
+                <div class="lx-address-text">
+                    {{ $defaultAddress['address'] }}
+                </div>
+            </div>
+        </div>
+    @else
+        <div class="lx-address-empty">
+            <span>Bạn chưa có địa chỉ nhận hàng.</span>
+        </div>
+    @endif
+</div>
 
 
             {{-- PHONE – PRIMARY IDENTITY --}}
@@ -395,6 +386,58 @@
         </div>
     </div>
     @endif
+    {{-- =========================
+    ADDRESS PICKER MODAL
+========================== --}}
+@if(!empty($addresses))
+<div id="lx-address-modal" class="lx-modal" style="display:none">
+    <div class="lx-modal-overlay" onclick="closeAddressPopup()"></div>
+
+    <div class="lx-modal-content lx-address-box">
+
+        <div class="lx-modal-head">
+            <h3>Chọn địa chỉ giao hàng</h3>
+        </div>
+
+        <div class="lx-address-list">
+            @foreach($addresses as $addr)
+                <label class="lx-address-card">
+                    <input type="radio"
+                           name="address_pick"
+                           value="{{ $addr['id'] }}"
+                           data-name="{{ $addr['name'] }}"
+                           data-phone="{{ $addr['phone'] }}"
+                           data-address="{{ $addr['address'] }}"
+                           {{ $addr['is_default'] ? 'checked' : '' }}>
+
+                    <div class="lx-address-info">
+                        <div class="lx-address-head">
+                            <strong>{{ $addr['name'] }}</strong>
+                            <span>{{ $addr['phone'] }}</span>
+
+                            @if($addr['is_default'])
+                                <span class="lx-badge-default">Mặc định</span>
+                            @endif
+                        </div>
+
+                        <div class="lx-address-text">
+                            {{ $addr['address'] }}
+                        </div>
+                    </div>
+                </label>
+            @endforeach
+        </div>
+
+        <div class="lx-modal-actions">
+            <button class="lx-btn-primary"
+                    onclick="confirmAddressPick()">
+                Chọn địa chỉ này
+            </button>
+        </div>
+    </div>
+</div>
+@endif
 
 </section>
+
 @endsection

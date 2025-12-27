@@ -910,3 +910,26 @@
 .lx-btn-checkout:active {
     transform: translateY(1px);
 }
+.lx-address-default {
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.lx-address-box {
+    max-width: 420px;
+}
+
+.lx-address-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.lx-address-card + .lx-address-card {
+    margin-top: 8px;
+}
