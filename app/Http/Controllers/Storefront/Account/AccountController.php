@@ -34,23 +34,67 @@ class AccountController extends Controller
     }
 
     /**
-     * =====================================================
-     * 👤 PROFILE (ERP)
-     * =====================================================
-     */
-    public function profile()
-    {
-        if ($redirect = $this->requireLogin()) {
-            return $redirect;
+ * =====================================================
+ * 👤 PROFILE (ERP)
+ * =====================================================
+ */
+public function profile()
+{
+    // 🔐 Check login theo session customer
+    if ($redirect = $this->requireLogin()) {
+        return $redirect;
+    }
+
+    try {
+        // 🚀 Lấy profile từ ERP
+        $res = $this->erp->customerProfile();
+
+        /**
+         * Kỳ vọng ERP trả:
+         * {
+         *   success: true|false
+         *   data?: {...}
+         *   message?: string
+         * }
+         */
+
+        if (!is_array($res) || !($res['success'] ?? false)) {
+
+            // ⚠️ ERP báo unauthenticated → logout
+            if (($res['message'] ?? '') === 'Unauthenticated customer') {
+                session()->forget('customer');
+
+                return redirect()
+                    ->route('linxen.login')
+                    ->with('warning', 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            }
+
+            // ⚠️ ERP lỗi khác → vẫn cho vào page nhưng user rỗng
+            return view('storefront.luxe.pages.account.profile', [
+                'user'    => [],
+                'warning' => $res['message'] ?? 'Không thể tải thông tin tài khoản.',
+            ]);
         }
 
-        // Lấy profile từ ERP (dựa trên login_token / session)
-        $customer = $this->erp->customerProfile();
-
+        // ✅ Thành công
         return view('storefront.luxe.pages.account.profile', [
-            'user' => $customer,
+            'user' => $res['data'] ?? [],
+        ]);
+
+    } catch (\Throwable $e) {
+
+        \Log::error('[ACCOUNT][PROFILE_FETCH_FAIL]', [
+            'error' => $e->getMessage(),
+        ]);
+
+        // ❌ Lỗi hệ thống → không văng exception ra UI
+        return view('storefront.luxe.pages.account.profile', [
+            'user'    => [],
+            'warning' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
         ]);
     }
+}
+
 
     public function updateProfile(Request $request)
     {
