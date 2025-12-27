@@ -49,25 +49,30 @@
 
                         <div class="lx-address-actions">
                             <button type="button"
-                                    class="lx-btn lx-btn-yellow"
-                                    onclick="openEditAddress({{ $addr['id'] }})">
-                                Sửa
-                            </button>
+        class="lx-btn lx-btn-yellow lx-btn-sm"
+        onclick="openEditAddress({{ $addr['id'] }})">
+    Sửa
+</button>
 
-                            @if(empty($addr['is_default']))
-                                <form method="POST"
-                                      action="{{ route('linxen.account.addresses.setDefault', $addr['id']) }}">
-                                    @csrf
-                                    <button class="lx-btn lx-btn-outline">Đặt mặc định</button>
-                                </form>
-                            @endif
+@if(empty($addr['is_default']))
+    <form method="POST"
+          action="{{ route('linxen.account.addresses.setDefault', $addr['id']) }}">
+        @csrf
+        <button class="lx-btn lx-btn-outline lx-btn-sm">
+            Đặt mặc định
+        </button>
+    </form>
+@endif
 
-                            <form method="POST"
-                                  action="{{ route('linxen.account.addresses.delete', $addr['id']) }}"
-                                  onsubmit="return confirm('Bạn chắc chắn muốn xóa địa chỉ này?')">
-                                @csrf
-                                <button class="lx-btn lx-btn-danger">Xóa</button>
-                            </form>
+<form method="POST"
+      action="{{ route('linxen.account.addresses.delete', $addr['id']) }}"
+      onsubmit="return confirm('Bạn chắc chắn muốn xóa địa chỉ này?')">
+    @csrf
+    <button class="lx-btn lx-btn-danger lx-btn-sm">
+        Xóa
+    </button>
+</form>
+
                         </div>
                     </div>
 

@@ -382,3 +382,23 @@
 .lx-btn-group.right {
     justify-content: flex-end;
 }
+/* =====================================================
+   SMALL BUTTON – ADDRESS ACTIONS
+===================================================== */
+
+.lx-btn-sm {
+    height: 32px;
+    padding: 0 12px;
+
+    font-size: 12.5px;
+    font-weight: 500;
+
+    border-radius: 8px;
+    line-height: 1;
+}
+
+/* Nếu muốn icon + text cân */
+.lx-btn-sm svg,
+.lx-btn-sm i {
+    font-size: 13px;
+}
