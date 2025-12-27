@@ -449,10 +449,12 @@ public function checkout()
     | 4️⃣ FETCH SHIPPING ADDRESSES FROM ERP (NẾU LOGIN)
     |--------------------------------------------------------------------------
     */
-    $addresses = [];
+    $addresses        = [];
+    $defaultAddress   = null;
+    $hasAddresses     = false;
 
     $customer   = session('customer');
-    $loginToken = session('login_token'); // nếu anh đã lưu token
+    $loginToken = session('login_token');
 
     if ($customer && $loginToken) {
         try {
@@ -465,10 +467,20 @@ public function checkout()
                     'Authorization'     => 'Bearer ' . $loginToken,
                     'Accept'            => 'application/json',
                 ])
-                ->get("{$this->erpBaseUrl}/api/storefront/customers/addresses");
+                ->get("{$this->erpBaseUrl}/api/storefront/customer/addresses");
 
             if ($res->ok()) {
-                $addresses = $res->json('addresses') ?? [];
+                // ✅ ERP trả key = data
+                $addresses = $res->json('data') ?? [];
+
+                if (!empty($addresses)) {
+                    $hasAddresses = true;
+
+                    // Ưu tiên địa chỉ mặc định
+                    $defaultAddress = collect($addresses)
+                        ->firstWhere('is_default', true)
+                        ?? $addresses[0];
+                }
             }
 
         } catch (\Throwable $e) {
@@ -486,13 +498,18 @@ public function checkout()
     return view(
         "storefront.{$this->theme}.pages.checkout",
         [
-            'cart'           => $cartItems,
-            'brand'          => $this->brand,
-            'justRegistered' => session('just_registered', false),
-            'addresses'      => $addresses, // ✅ NEW
+            'cart'            => $cartItems,
+            'brand'           => $this->brand,
+            'justRegistered'  => session('just_registered', false),
+
+            // 🔹 ADDRESS DATA
+            'addresses'       => $addresses,
+            'hasAddresses'    => $hasAddresses,
+            'defaultAddress'  => $defaultAddress,
         ]
     );
 }
+
 
 /**
  * =====================================================
