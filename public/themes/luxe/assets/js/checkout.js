@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     phoneStatus.innerText = 'Đang kiểm tra số điện thoại…';
 
     try {
-        const res = await fetch('/ajax/check-phone123', {
+        const res = await fetch('/ajax/check-phone', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
