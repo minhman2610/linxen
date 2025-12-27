@@ -258,3 +258,33 @@
         gap: 6px;
     }
 }
+/* =====================================================
+   FIX CONTAINER & HEADER SPACING
+===================================================== */
+
+.lx-address-page-v2 {
+    max-width: 920px;
+    margin: 0 auto;
+
+    /* FIX: không bị cắn mép */
+    padding-left: 24px;
+    padding-right: 24px;
+
+    /* FIX: header không sát top */
+    padding-top: 28px;
+    padding-bottom: 48px;
+}
+
+/* HEADER spacing */
+.lx-address-head {
+    margin-bottom: 32px;
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+    .lx-address-page-v2 {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 20px;
+    }
+}
