@@ -307,9 +307,33 @@
             </a>
         </div>
 
-        <div id="lx-checkout-error"
-             class="lx-checkout-error"
-             style="display:none"></div>
+        {{-- CHECKOUT ERROR (GLOBAL) --}}
+<div id="lx-checkout-error"
+     class="lx-checkout-error"
+     role="alert"
+     aria-live="assertive"
+     style="
+        display:none;
+        margin-top:14px;
+        padding:14px 16px;
+        background:#fff1f1;
+        color:#b71c1c;
+        border:1px solid #f5c2c7;
+        border-radius:8px;
+        font-size:14px;
+        line-height:1.45;
+     ">
+    <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span style="font-size:18px;">⚠️</span>
+        <div>
+            <strong>Không thể đặt hàng</strong>
+            <div id="lx-checkout-error-text" style="margin-top:4px;">
+                Đã xảy ra lỗi. Vui lòng thử lại.
+            </div>
+        </div>
+    </div>
+</div>
+
     </aside>
 
     {{-- SNAPSHOT CART --}}
