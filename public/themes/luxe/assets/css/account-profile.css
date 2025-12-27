@@ -116,3 +116,14 @@
     border-color: #b08c65;
     transform: translateY(-1px);
 }
+/* =====================================================
+   PROFILE HEADER SPACING
+===================================================== */
+
+.lx-profile-page .lx-account-head {
+    margin-bottom: 24px;
+}
+
+.lx-profile-page .lx-account-head h1 {
+    margin-bottom: 6px;
+}
