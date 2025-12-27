@@ -98,6 +98,13 @@
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/account-addresses.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-addresses.css')) }}">
 @endif
+{{-- ============================
+    ACCOUNT PROFILE ONLY CSS
+============================= --}}
+@if(Route::is('linxen.account.profile'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/account-profile.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-profile.css')) }}">
+@endif
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"
