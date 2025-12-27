@@ -23,7 +23,7 @@ class CheckoutController extends Controller
  * 🔍 CHECK PHONE (STORE​FRONT → ERP – SOURCE OF TRUTH)
  * =====================================================
  */
-public function checkPhone123(Request $request): JsonResponse
+public function checkPhone(Request $request): JsonResponse
 {
     $request->validate([
         'phone' => 'required|string|max:20',
