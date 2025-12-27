@@ -18,6 +18,13 @@
             </div>
         @endif
 
+        {{-- WARNING --}}
+        @if(!empty($warning))
+            <div class="lx-alert-error">
+                {{ $warning }}
+            </div>
+        @endif
+
         {{-- ERRORS --}}
         @if ($errors->any())
             <div class="lx-alert-error">
@@ -30,7 +37,9 @@
         {{-- PROFILE CARD --}}
         <div class="lx-profile-card">
 
-            <form method="POST" class="lx-profile-form">
+            <form method="POST"
+                  action="{{ route('linxen.account.profile.update') }}"
+                  class="lx-profile-form">
                 @csrf
 
                 {{-- NAME --}}
@@ -38,7 +47,7 @@
                     <label>Họ và tên</label>
                     <input type="text"
                            name="name"
-                           value="{{ old('name', $user['name'] ?? '') }}"
+                           value="{{ old('name', data_get($user, 'name')) }}"
                            placeholder="Nhập họ và tên"
                            required>
                 </div>
@@ -48,7 +57,7 @@
                     <label>Email</label>
                     <input type="email"
                            name="email"
-                           value="{{ old('email', $user['email'] ?? '') }}"
+                           value="{{ old('email', data_get($user, 'email')) }}"
                            placeholder="email@example.com">
                 </div>
 
@@ -56,7 +65,7 @@
                 <div class="lx-field lx-field-readonly">
                     <label>Số điện thoại</label>
                     <input type="text"
-                           value="{{ $user['phone'] ?? '' }}"
+                           value="{{ data_get($user, 'phone') }}"
                            disabled>
                     <small class="lx-field-hint">
                         Số điện thoại được đồng bộ từ hệ thống và không thể thay đổi
