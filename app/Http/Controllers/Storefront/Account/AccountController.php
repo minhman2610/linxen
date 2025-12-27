@@ -50,14 +50,13 @@ public function profile()
         $res = $this->erp->customerProfile();
 
         /**
-         * Kỳ vọng ERP trả:
+         * ERP trả:
          * {
-         *   success: true|false
-         *   data?: {...}
+         *   success: true|false,
+         *   data?: {...},
          *   message?: string
          * }
          */
-
         if (!is_array($res) || !($res['success'] ?? false)) {
 
             // ⚠️ ERP báo unauthenticated → logout
@@ -69,7 +68,7 @@ public function profile()
                     ->with('warning', 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
             }
 
-            // ⚠️ ERP lỗi khác → vẫn cho vào page nhưng user rỗng
+            // ⚠️ ERP lỗi khác → vẫn render page
             return view('storefront.luxe.pages.account.profile', [
                 'user'    => [],
                 'warning' => $res['message'] ?? 'Không thể tải thông tin tài khoản.',
@@ -94,23 +93,59 @@ public function profile()
         ]);
     }
 }
+/**
+ * =====================================================
+ * ✏️ UPDATE PROFILE (ERP)
+ * =====================================================
+ */
+public function updateProfile(Request $request)
+{
+    // 🔐 Check login
+    if ($redirect = $this->requireLogin()) {
+        return $redirect;
+    }
 
+    // ✅ Validate input
+    $data = $request->validate([
+        'name'  => 'required|string|max:255',
+        'email' => 'nullable|email|max:255',
+    ]);
 
-    public function updateProfile(Request $request)
-    {
-        if ($redirect = $this->requireLogin()) {
-            return $redirect;
+    try {
+        // 🚀 Push update sang ERP
+        $res = $this->erp->updateCustomerProfile($data);
+
+        /**
+         * ERP trả:
+         * {
+         *   success: true|false,
+         *   message?: string
+         * }
+         */
+        if (!is_array($res) || !($res['success'] ?? false)) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'profile' => $res['message'] ?? 'Không thể cập nhật thông tin.',
+                ]);
         }
 
-        $data = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+        return back()->with('success', 'Cập nhật thông tin thành công');
+
+    } catch (\Throwable $e) {
+
+        \Log::error('[ACCOUNT][PROFILE_UPDATE_FAIL]', [
+            'error' => $e->getMessage(),
         ]);
 
-        $this->erp->updateCustomerProfile($data);
-
-        return back()->with('success', 'Cập nhật thông tin thành công');
+        return back()
+            ->withInput()
+            ->withErrors([
+                'profile' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
+            ]);
     }
+}
+
 
     /**
  * =====================================================

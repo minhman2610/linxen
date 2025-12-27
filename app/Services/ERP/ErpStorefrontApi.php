@@ -59,19 +59,102 @@ class ErpStorefrontApi
     }
 
     /**
-     * =====================================================
-     * 👤 CUSTOMER – PROFILE
-     * =====================================================
-     */
-    public function customerProfile(): array
-    {
-        return $this->fetch('/api/storefront/customer/profile');
-    }
+ * =====================================================
+ * 👤 CUSTOMER PROFILE (ERP)
+ * =====================================================
+ * ERP response:
+ * {
+ *   success: true|false,
+ *   data?: array,
+ *   message?: string
+ * }
+ */
+public function customerProfile(): array
+{
+    try {
+        $res = $this->fetch('/api/storefront/customer/profile');
 
-    public function updateCustomerProfile(array $payload): array
-    {
-        return $this->post('/api/storefront/customer/update-profile', $payload);
+        // ❌ ERP fail / format sai
+        if (!is_array($res) || !array_key_exists('success', $res)) {
+            return [
+                'success' => false,
+                'message' => 'Invalid ERP response',
+            ];
+        }
+
+        // ❌ ERP báo lỗi (401, 400, ...)
+        if (!($res['success'] ?? false)) {
+            return [
+                'success' => false,
+                'message' => $res['message'] ?? 'Không thể tải thông tin tài khoản.',
+            ];
+        }
+
+        // ✅ Thành công
+        return [
+            'success' => true,
+            'data'    => is_array($res['data'] ?? null) ? $res['data'] : [],
+        ];
+
+    } catch (\Throwable $e) {
+
+        \Log::error('[LINXEN][CUSTOMER_PROFILE_FAIL]', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return [
+            'success' => false,
+            'message' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
+        ];
     }
+}
+
+
+    /**
+ * =====================================================
+ * ✏️ UPDATE CUSTOMER PROFILE (ERP)
+ * =====================================================
+ * ERP route:
+ * POST /api/storefront/customer/profile
+ *
+ * ERP response:
+ * {
+ *   success: true|false,
+ *   message?: string
+ * }
+ */
+public function updateCustomerProfile(array $payload): array
+{
+    try {
+        $res = $this->post('/api/storefront/customer/profile', $payload);
+
+        // ❌ ERP fail / format sai
+        if (!is_array($res) || !($res['success'] ?? false)) {
+            return [
+                'success' => false,
+                'message' => $res['message'] ?? 'Không thể cập nhật thông tin cá nhân.',
+            ];
+        }
+
+        // ✅ Thành công
+        return [
+            'success' => true,
+            'message' => $res['message'] ?? 'Cập nhật thông tin thành công.',
+        ];
+
+    } catch (\Throwable $e) {
+
+        \Log::error('[LINXEN][UPDATE_PROFILE_FAIL]', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return [
+            'success' => false,
+            'message' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
+        ];
+    }
+}
+
 
     /**
  * =====================================================
