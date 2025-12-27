@@ -222,7 +222,7 @@
 /**
  * Load danh sách Tỉnh / Thành
  */
-function loadLocations(selectEl, callback, selectedValue = null) {
+function loadLocations(selectEl, callback) {
     fetch('/api/storefront/locations?mode=raw')
         .then(r => r.json())
         .then(res => {
@@ -231,26 +231,21 @@ function loadLocations(selectEl, callback, selectedValue = null) {
             selectEl.innerHTML = '<option value="">-- Chọn khu vực --</option>';
 
             res.data.forEach(l => {
-                const selected =
-                    selectedValue && String(selectedValue) === String(l.id)
-                        ? 'selected'
-                        : '';
-
                 selectEl.insertAdjacentHTML(
                     'beforeend',
-                    `<option value="${l.id}" ${selected}>${l.name}</option>`
+                    `<option value="${l.id}">${l.name}</option>`
                 );
             });
 
-            if (callback) callback();
-        });
+            if (typeof callback === 'function') callback();
+        })
+        .catch(() => {});
 }
-
 
 /**
  * Load danh sách Phường / Xã theo location
  */
-function loadWards(locationId, selectEl, callback, selectedValue = null) {
+function loadWards(locationId, selectEl, callback) {
     if (!locationId) return;
 
     selectEl.innerHTML = '<option value="">-- Chọn phường / xã --</option>';
@@ -264,21 +259,16 @@ function loadWards(locationId, selectEl, callback, selectedValue = null) {
             selectEl.disabled = false;
 
             res.data.forEach(w => {
-                const selected =
-                    selectedValue && String(selectedValue) === String(w.id)
-                        ? 'selected'
-                        : '';
-
                 selectEl.insertAdjacentHTML(
                     'beforeend',
-                    `<option value="${w.id}" ${selected}>${w.name}</option>`
+                    `<option value="${w.id}">${w.name}</option>`
                 );
             });
 
-            if (callback) callback();
-        });
+            if (typeof callback === 'function') callback();
+        })
+        .catch(() => {});
 }
-
 
 /* =====================================================
    INLINE EDIT ADDRESS
@@ -313,62 +303,46 @@ function initEditLocationWard(card) {
 
     if (!locationSelect || !wardSelect) return;
 
-    const selectedLocation = locationSelect.dataset.selected || null;
-    const selectedWard     = wardSelect.dataset.selected || null;
+    const selectedLocation = locationSelect.dataset.selected || '';
+    const selectedWard     = wardSelect.dataset.selected || '';
 
-    // 🔒 TẠM THỜI KHÓA CHANGE EVENT
-    locationSelect.onchange = null;
-    wardSelect.onchange = null;
-
-    // 1️⃣ Load locations + set selected
     loadLocations(locationSelect, () => {
 
-        if (!selectedLocation) return;
+        if (selectedLocation) {
+            locationSelect.value = selectedLocation;
 
-        locationSelect.value = String(selectedLocation);
+            if (hiddenLocName) {
+                hiddenLocName.value =
+                    locationSelect.selectedOptions[0]?.text || '';
+            }
 
-        if (hiddenLocName) {
-            hiddenLocName.value =
-                locationSelect.selectedOptions[0]?.text || '';
-        }
-
-        // 2️⃣ Load wards theo location đã set
-        loadWards(
-            selectedLocation,
-            wardSelect,
-            () => {
-
+            loadWards(selectedLocation, wardSelect, () => {
                 if (selectedWard) {
-                    wardSelect.value = String(selectedWard);
-
+                    wardSelect.value = selectedWard;
                     if (hiddenWardName) {
                         hiddenWardName.value =
                             wardSelect.selectedOptions[0]?.text || '';
                     }
                 }
+            });
+        }
+    });
 
-                // ✅ SAU KHI INIT XONG → MỚI GẮN EVENT
-                locationSelect.onchange = () => {
-                    if (hiddenLocName) {
-                        hiddenLocName.value =
-                            locationSelect.selectedOptions[0]?.text || '';
-                    }
-                    loadWards(locationSelect.value, wardSelect);
-                };
+    locationSelect.onchange = () => {
+        if (hiddenLocName) {
+            hiddenLocName.value =
+                locationSelect.selectedOptions[0]?.text || '';
+        }
+        loadWards(locationSelect.value, wardSelect);
+    };
 
-                wardSelect.onchange = () => {
-                    if (hiddenWardName) {
-                        hiddenWardName.value =
-                            wardSelect.selectedOptions[0]?.text || '';
-                    }
-                };
-            },
-            selectedWard
-        );
-    }, selectedLocation);
+    wardSelect.onchange = () => {
+        if (hiddenWardName) {
+            hiddenWardName.value =
+                wardSelect.selectedOptions[0]?.text || '';
+        }
+    };
 }
-
-
 
 /* =====================================================
    ADD NEW ADDRESS FORM
