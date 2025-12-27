@@ -402,3 +402,29 @@
 .lx-btn-sm i {
     font-size: 13px;
 }
+/* =====================================================
+   BUTTON – OUTLINE BLUE (EASY ON EYES)
+===================================================== */
+
+.lx-btn-outline {
+    background: transparent;
+    border: 1px solid #3B82F6;
+    color: #3B82F6;
+
+    transition: all 0.2s ease;
+}
+
+.lx-btn-outline:hover {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: #2563EB;
+    color: #2563EB;
+}
+
+.lx-btn-outline:active {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.lx-btn-outline:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
