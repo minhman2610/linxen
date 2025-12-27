@@ -97,6 +97,7 @@
 
     <div class="lx-section-head">
         <strong>Địa chỉ nhận hàng</strong>
+        <pre>{{ print_r($addresses, true) }}</pre>
 
         @if(!empty($addresses))
             <button type="button"
@@ -111,7 +112,7 @@
             </a>
         @endif
     </div>
-
+    
     @php
         $defaultAddress = collect($addresses ?? [])
             ->firstWhere('is_default', true)
