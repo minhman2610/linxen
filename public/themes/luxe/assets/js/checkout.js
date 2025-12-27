@@ -286,92 +286,127 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* =====================================================
-     * SUBMIT CHECKOUT
-     * ===================================================== */
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        errBox.style.display = 'none';
+ * SUBMIT CHECKOUT
+ * ===================================================== */
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errBox.style.display = 'none';
 
-        const fd = new FormData(form);
-        const shippingAddressId = fd.get('shipping_address_id');
+    const fd = new FormData(form);
+    const shippingAddressId = fd.get('shipping_address_id');
 
-        // PHONE VALIDATION – CHỈ KHI KHÔNG CÓ ADDRESS
-        if (!shippingAddressId && !phoneChecked) {
-            errBox.innerText = 'Vui lòng nhập số điện thoại hợp lệ.';
-            errBox.style.display = 'block';
-            return;
-        }
+    // =========================
+    // PHONE VALIDATION – CHỈ KHI KHÔNG CÓ ADDRESS
+    // =========================
+    if (!shippingAddressId && !phoneChecked) {
+        errBox.innerText = 'Vui lòng nhập số điện thoại hợp lệ.';
+        errBox.style.display = 'block';
+        return;
+    }
 
-        const items = Array.isArray(window.__CHECKOUT_CART__)
-            ? window.__CHECKOUT_CART__
-            : [];
+    // =========================
+    // CART CHECK
+    // =========================
+    const items = Array.isArray(window.__CHECKOUT_CART__)
+        ? window.__CHECKOUT_CART__
+        : [];
 
-        if (!items.length) {
-            errBox.innerText = 'Giỏ hàng không hợp lệ.';
-            errBox.style.display = 'block';
-            return;
-        }
+    if (!items.length) {
+        errBox.innerText = 'Giỏ hàng không hợp lệ.';
+        errBox.style.display = 'block';
+        return;
+    }
 
-        const payload = {
-            storefront: 'linxen',
-            customer: shippingAddressId
-                ? {
-                    shipping_address_id: shippingAddressId,
-                    note: fd.get('note') || null,
-                }
-                : {
-                    name: fd.get('name'),
-                    phone: fd.get('phone'),
-                    street: fd.get('street'),
-                    location_id: locSel?.value || null,
-                    ward_id: wardSel?.value || null,
-                    location_name: locSel?.selectedOptions[0]?.text || '',
-                    ward_name: wardSel?.selectedOptions[0]?.text || '',
-                    note: fd.get('note') || null,
-                },
-            member: {
-                action: fd.get('member_action') || 'skip',
-                email: fd.get('member_email') || null,
-                password: fd.get('member_password') || null,
-            },
-            items,
-        };
-
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn?.setAttribute('disabled', 'disabled');
-
-        try {
-            const res = await fetch('/api/storefront/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute('content'),
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify(payload),
-            });
-
-            const json = await res.json();
-
-            if (!res.ok || !json.success) {
-                errBox.innerText = json.message || 'Lỗi xử lý đơn hàng.';
-                errBox.style.display = 'block';
-                submitBtn?.removeAttribute('disabled');
-                return;
+    // =========================
+    // BUILD PAYLOAD
+    // =========================
+    const payload = {
+        storefront: 'linxen',
+        customer: shippingAddressId
+            ? {
+                shipping_address_id: shippingAddressId,
+                note: fd.get('note') || null,
             }
+            : {
+                name: fd.get('name'),
+                phone: fd.get('phone'),
+                street: fd.get('street'),
+                location_id: locSel?.value || null,
+                ward_id: wardSel?.value || null,
+                location_name: locSel?.selectedOptions[0]?.text || '',
+                ward_name: wardSel?.selectedOptions[0]?.text || '',
+                note: fd.get('note') || null,
+            },
+        member: {
+            action: fd.get('member_action') || 'skip',
+            email: fd.get('member_email') || null,
+            password: fd.get('member_password') || null,
+        },
+        items,
+    };
 
-            window.location.href =
-                `/checkout/place-order?order_code=${json.order_code}`;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn?.setAttribute('disabled', 'disabled');
 
-        } catch (err) {
-            errBox.innerText = 'Không kết nối được server.';
-            errBox.style.display = 'block';
-            submitBtn?.removeAttribute('disabled');
+    // =========================
+    // SAFE FETCH (HANDLE 500 / NON-JSON)
+    // =========================
+    try {
+        const res = await fetch('/api/storefront/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content'),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload),
+        });
+
+        const text = await res.text();
+
+        let json = null;
+        try {
+            json = text ? JSON.parse(text) : null;
+        } catch {
+            json = null;
         }
-    });
+
+        // ❗ BẮT MỌI LỖI HTTP (500, 502, 403...)
+        if (!res.ok) {
+            throw new Error(
+                json?.message ||
+                `Hệ thống đang bận (HTTP ${res.status}). Vui lòng thử lại.`
+            );
+        }
+
+        if (!json || !json.success) {
+            throw new Error(
+                json?.message || 'Tạo đơn hàng thất bại.'
+            );
+        }
+
+        // =========================
+        // SUCCESS
+        // =========================
+        window.location.href =
+            `/checkout/place-order?order_code=${json.order_code}`;
+
+    } catch (err) {
+
+        console.error('🔥 CHECKOUT ERROR:', err);
+
+        errBox.innerText =
+            err?.message ||
+            'Không thể kết nối server. Vui lòng thử lại sau.';
+
+        errBox.style.display = 'block';
+        submitBtn?.removeAttribute('disabled');
+    }
+});
+
 });
 
 /* =====================================================
