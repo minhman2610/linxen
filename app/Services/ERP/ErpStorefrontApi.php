@@ -95,6 +95,27 @@ public function customerAddresses(): array
 
     return $data;
 }
+/**
+ * =====================================================
+ * 🗑 CUSTOMER – DELETE ADDRESS
+ * =====================================================
+ */
+public function deleteCustomerAddress(int $addressId): array
+{
+    $res = $this->post("/api/storefront/customer/addresses/{$addressId}/delete");
+
+    if (!is_array($res)) {
+        return [
+            'success' => false,
+            'message' => 'ERP không phản hồi hợp lệ.',
+        ];
+    }
+
+    return [
+        'success' => (bool) ($res['success'] ?? false),
+        'message' => $res['message'] ?? null,
+    ];
+}
 
 
 public function createCustomerAddress(array $payload): array

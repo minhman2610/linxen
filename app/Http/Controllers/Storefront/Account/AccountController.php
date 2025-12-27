@@ -101,6 +101,51 @@ public function addresses()
         'addresses' => $addresses,
     ]);
 }
+/**
+ * =====================================================
+ * 🗑 DELETE ADDRESS
+ * =====================================================
+ */
+public function deleteAddress(int $id)
+{
+    // 🔐 Check login theo session customer
+    if ($redirect = $this->requireLogin()) {
+        return $redirect;
+    }
+
+    try {
+        // 🚀 Gọi ERP xoá địa chỉ
+        $res = $this->erp->deleteCustomerAddress($id);
+
+        /**
+         * ERP kỳ vọng trả:
+         * {
+         *   success: true|false,
+         *   message?: string
+         * }
+         */
+        if (empty($res) || !($res['success'] ?? false)) {
+            $msg = $res['message'] ?? 'Không thể xóa địa chỉ. Vui lòng thử lại.';
+            return back()->withErrors([
+                'address' => $msg,
+            ]);
+        }
+
+        // ✅ Thành công
+        return back()->with('success', 'Đã xóa địa chỉ nhận hàng');
+
+    } catch (\Throwable $e) {
+
+        \Log::error('[ACCOUNT][DELETE_ADDRESS_FAIL]', [
+            'address_id' => $id,
+            'error'      => $e->getMessage(),
+        ]);
+
+        return back()->withErrors([
+            'address' => 'Không thể kết nối hệ thống. Vui lòng thử lại sau.',
+        ]);
+    }
+}
 
 
     public function storeAddress(Request $request)
