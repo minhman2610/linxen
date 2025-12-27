@@ -85,3 +85,34 @@
     margin-bottom: 16px;
     font-size: 14px;
 }
+/* =====================================================
+   FIX HEADER OVERLAP
+===================================================== */
+
+.lx-profile-page {
+    padding-top: 32px;     /* tạo khoảng thở với header */
+}
+/* =====================================================
+   PROFILE BUTTON – PREMIUM
+===================================================== */
+
+.lx-profile-page .lx-btn-primary {
+    background: #c7a17a;          /* nude gold */
+    border: 1px solid #c7a17a;
+    color: #fff;
+
+    height: 44px;
+    padding: 0 28px;
+
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 12px;
+
+    transition: all .25s ease;
+}
+
+.lx-profile-page .lx-btn-primary:hover {
+    background: #b08c65;
+    border-color: #b08c65;
+    transform: translateY(-1px);
+}
