@@ -213,99 +213,189 @@
     </div>
 
 </section>
-
-{{-- ======================
-    JS – INLINE EDIT + ADD
-====================== --}}
 <script>
+/* =====================================================
+   GLOBAL: LOCATION / WARD HELPERS
+   → dùng chung cho ADD + EDIT
+===================================================== */
+
+/**
+ * Load danh sách Tỉnh / Thành
+ */
+function loadLocations(selectEl, callback) {
+    fetch('/api/storefront/locations?mode=raw')
+        .then(r => r.json())
+        .then(res => {
+            if (!res.success || !Array.isArray(res.data)) return;
+
+            selectEl.innerHTML = '<option value="">-- Chọn khu vực --</option>';
+
+            res.data.forEach(l => {
+                selectEl.insertAdjacentHTML(
+                    'beforeend',
+                    `<option value="${l.id}">${l.name}</option>`
+                );
+            });
+
+            if (typeof callback === 'function') callback();
+        })
+        .catch(() => {});
+}
+
+/**
+ * Load danh sách Phường / Xã theo location
+ */
+function loadWards(locationId, selectEl, callback) {
+    if (!locationId) return;
+
+    selectEl.innerHTML = '<option value="">-- Chọn phường / xã --</option>';
+    selectEl.disabled = true;
+
+    fetch(`/api/storefront/locations/${locationId}/wards?mode=raw`)
+        .then(r => r.json())
+        .then(res => {
+            if (!res.success || !Array.isArray(res.data)) return;
+
+            selectEl.disabled = false;
+
+            res.data.forEach(w => {
+                selectEl.insertAdjacentHTML(
+                    'beforeend',
+                    `<option value="${w.id}">${w.name}</option>`
+                );
+            });
+
+            if (typeof callback === 'function') callback();
+        })
+        .catch(() => {});
+}
+
+/* =====================================================
+   INLINE EDIT ADDRESS
+===================================================== */
+
 function openEditAddress(id) {
     const card = document.getElementById(`address-card-${id}`);
+    if (!card) return;
+
     card.querySelector('.lx-address-view').style.display = 'none';
     card.querySelector('.lx-address-edit').style.display = 'block';
-    initLocationWard(card);
+
+    initEditLocationWard(card);
 }
 
 function closeEditAddress(id) {
     const card = document.getElementById(`address-card-${id}`);
+    if (!card) return;
+
     card.querySelector('.lx-address-edit').style.display = 'none';
     card.querySelector('.lx-address-view').style.display = 'block';
 }
 
 /**
- * Reuse checkout location / ward logic
+ * Init location / ward cho EDIT MODE
  */
-function initLocationWard(card) {
+function initEditLocationWard(card) {
     const locationSelect = card.querySelector('.lx-location-select');
     const wardSelect     = card.querySelector('.lx-ward-select');
+    const hiddenLocName  = card.querySelector('input[name="location_name"]');
+    const hiddenWardName = card.querySelector('input[name="ward_name"]');
+
+    if (!locationSelect || !wardSelect) return;
+
+    const selectedLocation = locationSelect.dataset.selected || '';
+    const selectedWard     = wardSelect.dataset.selected || '';
 
     loadLocations(locationSelect, () => {
-        const selectedLocation = locationSelect.dataset.selected;
+
         if (selectedLocation) {
             locationSelect.value = selectedLocation;
+
+            if (hiddenLocName) {
+                hiddenLocName.value =
+                    locationSelect.selectedOptions[0]?.text || '';
+            }
+
             loadWards(selectedLocation, wardSelect, () => {
-                wardSelect.value = wardSelect.dataset.selected;
+                if (selectedWard) {
+                    wardSelect.value = selectedWard;
+                    if (hiddenWardName) {
+                        hiddenWardName.value =
+                            wardSelect.selectedOptions[0]?.text || '';
+                    }
+                }
             });
         }
     });
 
-    locationSelect.addEventListener('change', () => {
+    locationSelect.onchange = () => {
+        if (hiddenLocName) {
+            hiddenLocName.value =
+                locationSelect.selectedOptions[0]?.text || '';
+        }
         loadWards(locationSelect.value, wardSelect);
-    });
+    };
+
+    wardSelect.onchange = () => {
+        if (hiddenWardName) {
+            hiddenWardName.value =
+                wardSelect.selectedOptions[0]?.text || '';
+        }
+    };
 }
+
+/* =====================================================
+   ADD NEW ADDRESS FORM
+===================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
 
     const locSel  = document.getElementById('lx-location');
     const wardSel = document.getElementById('lx-ward');
+    const hiddenLocName  = document.getElementById('lx-location-name');
+    const hiddenWardName = document.getElementById('lx-ward-name');
+
     if (!locSel || !wardSel) return;
 
     const oldLocation = "{{ old('location_id') }}";
     const oldWard     = "{{ old('ward_id') }}";
 
-    fetch('/api/storefront/locations?mode=raw')
-        .then(r => r.json())
-        .then(res => {
-            if (!res.success) return;
+    loadLocations(locSel, () => {
+        if (oldLocation) {
+            locSel.value = oldLocation;
 
-            res.data.forEach(l => {
-                locSel.insertAdjacentHTML(
-                    'beforeend',
-                    `<option value="${l.id}" ${oldLocation == l.id ? 'selected' : ''}>${l.name}</option>`
-                );
+            if (hiddenLocName) {
+                hiddenLocName.value =
+                    locSel.selectedOptions[0]?.text || '';
+            }
+
+            loadWards(oldLocation, wardSel, () => {
+                if (oldWard) {
+                    wardSel.value = oldWard;
+                    if (hiddenWardName) {
+                        hiddenWardName.value =
+                            wardSel.selectedOptions[0]?.text || '';
+                    }
+                }
             });
-
-            if (oldLocation) loadWards(oldLocation);
-        });
-
-    function loadWards(locationId) {
-        wardSel.innerHTML = '<option value="">-- Chọn phường / xã --</option>';
-        wardSel.disabled = true;
-
-        fetch(`/api/storefront/locations/${locationId}/wards?mode=raw`)
-            .then(r => r.json())
-            .then(res => {
-                if (!res.success) return;
-                wardSel.disabled = false;
-                res.data.forEach(w => {
-                    wardSel.insertAdjacentHTML(
-                        'beforeend',
-                        `<option value="${w.id}" ${oldWard == w.id ? 'selected' : ''}>${w.name}</option>`
-                    );
-                });
-            });
-    }
+        }
+    });
 
     locSel.addEventListener('change', () => {
-        document.getElementById('lx-location-name').value =
-            locSel.selectedOptions[0]?.text || '';
-        if (locSel.value) loadWards(locSel.value);
+        if (hiddenLocName) {
+            hiddenLocName.value =
+                locSel.selectedOptions[0]?.text || '';
+        }
+        loadWards(locSel.value, wardSel);
     });
 
     wardSel.addEventListener('change', () => {
-        document.getElementById('lx-ward-name').value =
-            wardSel.selectedOptions[0]?.text || '';
+        if (hiddenWardName) {
+            hiddenWardName.value =
+                wardSel.selectedOptions[0]?.text || '';
+        }
     });
-
 });
 </script>
+
 @endsection
