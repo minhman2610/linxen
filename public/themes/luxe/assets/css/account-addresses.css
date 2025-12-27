@@ -237,3 +237,21 @@
         grid-template-columns: 1fr;
     }
 }
+.lx-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+}
+
+.lx-btn-green { background: #16a34a; color:#fff; }
+.lx-btn-yellow { background:#facc15; color:#111; }
+.lx-btn-red { background:#ef4444; color:#fff; }
+.lx-btn-gray { background:#e5e7eb; color:#111; }
+
+.lx-address-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
