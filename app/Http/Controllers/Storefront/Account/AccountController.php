@@ -191,6 +191,30 @@ public function setDefaultAddress(int $id)
         ]);
     }
 }
+public function updateAddress(Request $request, int $id)
+{
+    if ($redirect = $this->requireLogin()) {
+        return $redirect;
+    }
+
+    $data = $request->validate([
+        'receiver_name'  => 'required|string|max:255',
+        'receiver_phone' => 'required|string|max:20',
+        'location_id'    => 'required|integer',
+        'ward_id'        => 'required|integer',
+        'street'         => 'required|string|max:255',
+    ]);
+
+    $res = $this->erp->updateCustomerAddress($id, $data);
+
+    if (!($res['success'] ?? false)) {
+        return back()->withErrors([
+            'address' => $res['message'] ?? 'Không thể cập nhật địa chỉ',
+        ]);
+    }
+
+    return back()->with('success', 'Đã cập nhật địa chỉ');
+}
 
 
     public function storeAddress(Request $request)

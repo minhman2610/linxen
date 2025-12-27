@@ -137,6 +137,10 @@ public function setDefaultCustomerAddress(int $addressId): array
         'message' => $res['message'] ?? null,
     ];
 }
+public function updateCustomerAddress(int $id, array $payload): array
+{
+    return $this->post("/api/storefront/customer/addresses/{$id}/update", $payload);
+}
 
 
 public function createCustomerAddress(array $payload): array
