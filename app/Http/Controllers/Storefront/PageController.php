@@ -470,18 +470,33 @@ public function checkout()
                 ->get("{$this->erpBaseUrl}/api/storefront/customer/addresses");
 
             if ($res->ok()) {
-                // ✅ ERP trả key = data
-                $addresses = $res->json('data') ?? [];
+    $rawAddresses = $res->json('data') ?? [];
 
-                if (!empty($addresses)) {
-                    $hasAddresses = true;
+    if (!empty($rawAddresses)) {
+        $hasAddresses = true;
 
-                    // Ưu tiên địa chỉ mặc định
-                    $defaultAddress = collect($addresses)
-                        ->firstWhere('is_default', true)
-                        ?? $addresses[0];
-                }
-            }
+        // map ERP address → UI address
+        $addresses = collect($rawAddresses)->map(function ($addr) {
+            return [
+                'id'         => $addr['id'],
+                'name'       => $addr['receiver_name'],
+                'phone'      => $addr['receiver_phone'],
+                'address'    => trim(
+                    ($addr['street'] ?? '') . ', ' .
+                    ($addr['ward_name'] ?? '') . ', ' .
+                    ($addr['location_name'] ?? '')
+                ),
+                'is_default' => (bool) ($addr['is_default'] ?? false),
+            ];
+        })->toArray();
+
+        // ưu tiên địa chỉ mặc định
+        $defaultAddress = collect($addresses)
+            ->firstWhere('is_default', true)
+            ?? $addresses[0];
+    }
+}
+
 
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning('[CHECKOUT FETCH ADDRESSES FAILED]', [
