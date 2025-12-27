@@ -93,14 +93,14 @@
     {{-- =========================
     SHIPPING ADDRESS (DEFAULT)
 ========================== --}}
-<div class="lx-checkout-section">
+<div class="lx-checkout-section lx-checkout-address">
 
     <div class="lx-section-head">
         <strong>Địa chỉ nhận hàng</strong>
-        
+
         @if(!empty($addresses))
             <button type="button"
-                    class="lx-btn lx-btn-outline lx-btn-sm"
+                    class="lx-btn lx-btn-outline lx-btn-sm lx-btn-change-address"
                     onclick="openAddressPopup()">
                 Thay đổi
             </button>
@@ -111,7 +111,7 @@
             </a>
         @endif
     </div>
-    
+
     @php
         $defaultAddress = collect($addresses ?? [])
             ->firstWhere('is_default', true)
@@ -127,8 +127,7 @@
             <div class="lx-address-info">
                 <div class="lx-address-head">
                     <strong>{{ $defaultAddress['name'] }}</strong>
-                    <span>{{ $defaultAddress['phone'] }}</span>
-
+                    <span class="lx-address-phone">{{ $defaultAddress['phone'] }}</span>
                     <span class="lx-badge-default">Mặc định</span>
                 </div>
 
@@ -142,7 +141,9 @@
             <span>Bạn chưa có địa chỉ nhận hàng.</span>
         </div>
     @endif
+
 </div>
+
 
 
             {{-- PHONE – PRIMARY IDENTITY --}}

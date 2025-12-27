@@ -933,3 +933,109 @@
 .lx-address-card + .lx-address-card {
     margin-top: 8px;
 }
+/* =====================================================
+   CHECKOUT – SHIPPING ADDRESS
+===================================================== */
+
+.lx-checkout-address {
+    margin-bottom: 40px; /* ✅ TĂNG KHOẢNG CÁCH VỚI PHẦN DƯỚI */
+    padding-bottom: 24px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Header */
+.lx-checkout-address .lx-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.lx-checkout-address .lx-section-head strong {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+/* Button change */
+.lx-btn-change-address {
+    border-color: #d1d5db;
+    color: #374151;
+    background: #fff;
+}
+
+.lx-btn-change-address:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+    background: #f0f6ff;
+}
+
+/* Address card */
+.lx-address-default {
+    background: linear-gradient(180deg, #ffffff, #fafafa);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 18px;
+}
+
+/* Info */
+.lx-address-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Head line */
+.lx-address-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.lx-address-head strong {
+    font-weight: 600;
+    color: #111;
+}
+
+.lx-address-phone {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* Badge */
+.lx-badge-default {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #ecfdf3;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+/* Address text */
+.lx-address-text {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* Empty state */
+.lx-address-empty {
+    padding: 14px 16px;
+    border: 1px dashed #d1d5db;
+    border-radius: 10px;
+    background: #fafafa;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* Mobile tuning */
+@media (max-width: 640px) {
+    .lx-badge-default {
+        margin-left: 0;
+    }
+}
