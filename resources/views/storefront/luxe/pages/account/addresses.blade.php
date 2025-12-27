@@ -316,43 +316,58 @@ function initEditLocationWard(card) {
     const selectedLocation = locationSelect.dataset.selected || null;
     const selectedWard     = wardSelect.dataset.selected || null;
 
+    // 🔒 TẠM THỜI KHÓA CHANGE EVENT
+    locationSelect.onchange = null;
+    wardSelect.onchange = null;
+
+    // 1️⃣ Load locations + set selected
     loadLocations(locationSelect, () => {
 
-        if (selectedLocation) {
-            if (hiddenLocName) {
-                hiddenLocName.value =
-                    locationSelect.selectedOptions[0]?.text || '';
-            }
+        if (!selectedLocation) return;
 
-            loadWards(
-                selectedLocation,
-                wardSelect,
-                () => {
-                    if (hiddenWardName) {
-                        hiddenWardName.value =
-                            wardSelect.selectedOptions[0]?.text || '';
-                    }
-                },
-                selectedWard
-            );
-        }
-    }, selectedLocation);
+        locationSelect.value = String(selectedLocation);
 
-    locationSelect.onchange = () => {
         if (hiddenLocName) {
             hiddenLocName.value =
                 locationSelect.selectedOptions[0]?.text || '';
         }
-        loadWards(locationSelect.value, wardSelect);
-    };
 
-    wardSelect.onchange = () => {
-        if (hiddenWardName) {
-            hiddenWardName.value =
-                wardSelect.selectedOptions[0]?.text || '';
-        }
-    };
+        // 2️⃣ Load wards theo location đã set
+        loadWards(
+            selectedLocation,
+            wardSelect,
+            () => {
+
+                if (selectedWard) {
+                    wardSelect.value = String(selectedWard);
+
+                    if (hiddenWardName) {
+                        hiddenWardName.value =
+                            wardSelect.selectedOptions[0]?.text || '';
+                    }
+                }
+
+                // ✅ SAU KHI INIT XONG → MỚI GẮN EVENT
+                locationSelect.onchange = () => {
+                    if (hiddenLocName) {
+                        hiddenLocName.value =
+                            locationSelect.selectedOptions[0]?.text || '';
+                    }
+                    loadWards(locationSelect.value, wardSelect);
+                };
+
+                wardSelect.onchange = () => {
+                    if (hiddenWardName) {
+                        hiddenWardName.value =
+                            wardSelect.selectedOptions[0]?.text || '';
+                    }
+                };
+            },
+            selectedWard
+        );
+    }, selectedLocation);
 }
+
 
 
 /* =====================================================
