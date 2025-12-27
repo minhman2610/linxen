@@ -326,34 +326,55 @@ document.getElementById('lx-member-confirm')?.addEventListener('click', async ()
     });
 
     /* =====================================================
-     * SUBMIT CHECKOUT
-     * ===================================================== */
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        errBox.style.display = 'none';
+ * SUBMIT CHECKOUT
+ * ===================================================== */
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errBox.style.display = 'none';
 
-        if (!phoneChecked && !phoneInput.hasAttribute('readonly')) {
-    errBox.innerText = 'Vui lòng nhập số điện thoại hợp lệ.';
-    errBox.style.display = 'block';
-    return;
-}
+    // =========================
+    // PHONE VALIDATION
+    // =========================
+    if (!phoneChecked && !phoneInput.hasAttribute('readonly')) {
+        errBox.innerText = 'Vui lòng nhập số điện thoại hợp lệ.';
+        errBox.style.display = 'block';
+        return;
+    }
 
+    const fd = new FormData(form);
 
-        const fd = new FormData(form);
-        const items = Array.isArray(window.__CHECKOUT_CART__)
-            ? window.__CHECKOUT_CART__
-            : [];
+    // =========================
+    // CART SNAPSHOT
+    // =========================
+    const items = Array.isArray(window.__CHECKOUT_CART__)
+        ? window.__CHECKOUT_CART__
+        : [];
 
-        if (!items.length) {
-            errBox.innerText = 'Giỏ hàng không hợp lệ.';
-            errBox.style.display = 'block';
-            return;
-        }
+    if (!items.length) {
+        errBox.innerText = 'Giỏ hàng không hợp lệ.';
+        errBox.style.display = 'block';
+        return;
+    }
 
-        const payload = {
-            storefront: 'linxen',
+    // =========================
+    // ADDRESS MODE DETECT
+    // =========================
+    const shippingAddressId = fd.get('shipping_address_id');
 
-            customer: {
+    // =========================
+    // BUILD PAYLOAD
+    // =========================
+    const payload = {
+        storefront: 'linxen',
+
+        customer: shippingAddressId
+            ? {
+                // ✅ CASE: ĐÃ CÓ ĐỊA CHỈ
+                shipping_address_id: shippingAddressId,
+                note: fd.get('note') || null,
+            }
+            : {
+                // ✅ CASE: CHƯA CÓ ĐỊA CHỈ
                 name:   fd.get('name'),
                 phone:  fd.get('phone'),
                 street: fd.get('street'),
@@ -364,51 +385,58 @@ document.getElementById('lx-member-confirm')?.addEventListener('click', async ()
                 note: fd.get('note') || null,
             },
 
-            member: {
-                action:   fd.get('member_action') || 'skip',
-                email:    fd.get('member_email') || null,
-                password: fd.get('member_password') || null,
+        member: {
+            action:   fd.get('member_action') || 'skip',
+            email:    fd.get('member_email') || null,
+            password: fd.get('member_password') || null,
+        },
+
+        items: items,
+    };
+
+    // =========================
+    // SUBMIT
+    // =========================
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn?.setAttribute('disabled', 'disabled');
+
+    try {
+        const res = await fetch('/api/storefront/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content'),
             },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload),
+        });
 
-            items: items,
-        };
+        const json = await res.json();
 
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn?.setAttribute('disabled', 'disabled');
-
-        try {
-            const res = await fetch('/api/storefront/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute('content'),
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify(payload),
-            });
-
-            const json = await res.json();
-
-            if (!res.ok || !json.success) {
-                errBox.innerText = json.message || 'Lỗi xử lý đơn hàng.';
-                errBox.style.display = 'block';
-                submitBtn?.removeAttribute('disabled');
-                return;
-            }
-
-            window.location.href =
-                `/checkout/place-order?order_code=${json.order_code}`;
-
-        } catch (err) {
-            console.error('🔥 Checkout error:', err);
-            errBox.innerText = 'Không kết nối được server.';
+        if (!res.ok || !json.success) {
+            errBox.innerText = json.message || 'Lỗi xử lý đơn hàng.';
             errBox.style.display = 'block';
             submitBtn?.removeAttribute('disabled');
+            return;
         }
-    });
+
+        // =========================
+        // SUCCESS
+        // =========================
+        window.location.href =
+            `/checkout/place-order?order_code=${json.order_code}`;
+
+    } catch (err) {
+        console.error('🔥 Checkout error:', err);
+        errBox.innerText = 'Không kết nối được server.';
+        errBox.style.display = 'block';
+        submitBtn?.removeAttribute('disabled');
+    }
+});
+
 });
 function openAddressPopup() {
     document.getElementById('lx-address-modal').style.display = 'block';
