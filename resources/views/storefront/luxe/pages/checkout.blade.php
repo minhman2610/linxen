@@ -391,16 +391,18 @@
     ADDRESS PICKER MODAL
 ========================== --}}
 @if(!empty($addresses))
-<div id="lx-address-modal" class="lx-modal" style="display:none">
-    <div class="lx-modal-overlay" onclick="closeAddressPopup()"></div>
+<div id="lx-address-modal" class="lx-modal-overlay" style="display:none">
 
-    <div class="lx-modal-content lx-address-box">
+    <div class="lx-modal lx-address-modal">
 
         <div class="lx-modal-head">
-            <h3>Chọn địa chỉ giao hàng</h3>
+            <strong>Chọn địa chỉ giao hàng</strong>
+            <button type="button"
+                    class="lx-modal-close"
+                    onclick="closeAddressPopup()">✕</button>
         </div>
 
-        <div class="lx-address-list">
+        <div class="lx-modal-body lx-address-list">
             @foreach($addresses as $addr)
                 <label class="lx-address-card">
                     <input type="radio"
@@ -414,7 +416,7 @@
                     <div class="lx-address-info">
                         <div class="lx-address-head">
                             <strong>{{ $addr['name'] }}</strong>
-                            <span>{{ $addr['phone'] }}</span>
+                            <span class="lx-address-phone">{{ $addr['phone'] }}</span>
 
                             @if($addr['is_default'])
                                 <span class="lx-badge-default">Mặc định</span>
@@ -430,14 +432,17 @@
         </div>
 
         <div class="lx-modal-actions">
-            <button class="lx-btn-primary"
+            <button type="button"
+                    class="lx-btn-primary lx-btn-full"
                     onclick="confirmAddressPick()">
                 Chọn địa chỉ này
             </button>
         </div>
+
     </div>
 </div>
 @endif
+
 
 </section>
 
