@@ -116,6 +116,27 @@ public function deleteCustomerAddress(int $addressId): array
         'message' => $res['message'] ?? null,
     ];
 }
+/**
+ * =====================================================
+ * ⭐ CUSTOMER – SET DEFAULT ADDRESS
+ * =====================================================
+ */
+public function setDefaultCustomerAddress(int $addressId): array
+{
+    $res = $this->post("/api/storefront/customer/addresses/{$addressId}/default");
+
+    if (!is_array($res)) {
+        return [
+            'success' => false,
+            'message' => 'ERP không phản hồi hợp lệ.',
+        ];
+    }
+
+    return [
+        'success' => (bool) ($res['success'] ?? false),
+        'message' => $res['message'] ?? null,
+    ];
+}
 
 
 public function createCustomerAddress(array $payload): array

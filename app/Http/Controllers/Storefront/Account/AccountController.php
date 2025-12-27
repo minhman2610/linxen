@@ -146,6 +146,51 @@ public function deleteAddress(int $id)
         ]);
     }
 }
+/**
+ * =====================================================
+ * ⭐ SET DEFAULT ADDRESS (LINXEN)
+ * =====================================================
+ */
+public function setDefaultAddress(int $id)
+{
+    // 🔐 Check login theo session customer
+    if ($redirect = $this->requireLogin()) {
+        return $redirect;
+    }
+
+    try {
+        // 🚀 Gọi ERP set default
+        $res = $this->erp->setDefaultCustomerAddress($id);
+
+        /**
+         * ERP trả về:
+         * {
+         *   success: true|false,
+         *   message?: string
+         * }
+         */
+        if (empty($res) || !($res['success'] ?? false)) {
+            $msg = $res['message'] ?? 'Không thể đặt địa chỉ mặc định.';
+            return back()->withErrors([
+                'address' => $msg,
+            ]);
+        }
+
+        // ✅ Thành công
+        return back()->with('success', 'Đã đặt địa chỉ làm mặc định');
+
+    } catch (\Throwable $e) {
+
+        \Log::error('[LINXEN][SET_DEFAULT_ADDRESS_FAIL]', [
+            'address_id' => $id,
+            'error'      => $e->getMessage(),
+        ]);
+
+        return back()->withErrors([
+            'address' => 'Không thể kết nối hệ thống. Vui lòng thử lại sau.',
+        ]);
+    }
+}
 
 
     public function storeAddress(Request $request)
