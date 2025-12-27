@@ -3,7 +3,9 @@
 @section('content')
 <section class="lx-address-page-v2">
 
-    {{-- HEADER --}}
+    {{-- ======================
+        HEADER
+    ======================= --}}
     <header class="lx-address-head">
         <h1>Địa chỉ nhận hàng</h1>
         <p>Quản lý và sử dụng địa chỉ cho giao hàng</p>
@@ -53,19 +55,20 @@
                                 </form>
                             @endif
 
-                            <button class="lx-btn lx-btn-yellow"
+                            <button type="button"
+                                    class="lx-btn lx-btn-yellow"
                                     onclick="editAddress({{ $addr['id'] }})">
                                 Sửa
                             </button>
 
-                            <button class="lx-btn lx-btn-red"
+                            <button type="button"
+                                    class="lx-btn lx-btn-red"
                                     onclick="confirmDelete({{ $addr['id'] }})">
                                 Xóa
                             </button>
                         </div>
 
                     </div>
-
                 </div>
             @endforeach
         @else
@@ -96,7 +99,6 @@
               class="lx-address-form">
             @csrf
 
-            {{-- RECEIVER NAME --}}
             <div class="lx-field">
                 <label>Tên người nhận</label>
                 <input name="receiver_name"
@@ -104,7 +106,6 @@
                        required>
             </div>
 
-            {{-- RECEIVER PHONE --}}
             <div class="lx-field">
                 <label>Số điện thoại</label>
                 <input name="receiver_phone"
@@ -112,7 +113,6 @@
                        required>
             </div>
 
-            {{-- LOCATION + WARD --}}
             <div class="lx-field-row">
                 <div class="lx-field">
                     <label>Khu vực</label>
@@ -134,7 +134,6 @@
                 </div>
             </div>
 
-            {{-- STREET --}}
             <div class="lx-field">
                 <label>Số nhà, tên đường</label>
                 <input name="street"
@@ -152,36 +151,30 @@
         </form>
     </div>
 
-{{-- ======================
-    CONFIRM DELETE POPUP
-====================== --}}
-<div id="lx-confirm-overlay" style="display:none">
-    <div class="lx-confirm-box">
-        <p>Bạn có chắc muốn xóa địa chỉ này?</p>
-        <div class="lx-confirm-actions">
-            <form id="deleteForm" method="POST">
-                @csrf
-                <button class="lx-btn lx-btn-red">Xóa</button>
-            </form>
-            <button class="lx-btn lx-btn-gray" onclick="closeConfirm()">Hủy</button>
+    {{-- ======================
+        CONFIRM DELETE POPUP
+    ======================= --}}
+    <div id="lx-confirm-overlay" style="display:none">
+        <div class="lx-confirm-box">
+            <p>Bạn có chắc muốn xóa địa chỉ này?</p>
+            <div class="lx-confirm-actions">
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    <button class="lx-btn lx-btn-red">Xóa</button>
+                </form>
+                <button class="lx-btn lx-btn-gray" onclick="closeConfirm()">Hủy</button>
+            </div>
         </div>
     </div>
-</div>
+
 </section>
 
-@endsection
-
-
 {{-- ======================
-    JS
+    JS (INLINE – SAFE)
 ====================== --}}
 <script>
 function editAddress(id) {
-    document.getElementById('edit-' + id).style.display = 'block';
-}
-
-function cancelEdit(id) {
-    document.getElementById('edit-' + id).style.display = 'none';
+    // future inline edit
 }
 
 function confirmDelete(id) {
@@ -198,13 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const locSel  = document.getElementById('lx-location');
     const wardSel = document.getElementById('lx-ward');
-
     if (!locSel || !wardSel) return;
 
     const oldLocation = "{{ old('location_id') }}";
     const oldWard     = "{{ old('ward_id') }}";
 
-    // Load locations
     fetch('/api/storefront/locations?mode=raw')
         .then(r => r.json())
         .then(res => {
@@ -235,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!res.success) return;
 
                 wardSel.disabled = false;
-
                 res.data.forEach(w => {
                     const selected = oldWard == w.id ? 'selected' : '';
                     wardSel.insertAdjacentHTML(
@@ -252,12 +242,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     locSel.addEventListener('change', () => {
-        const id = locSel.value;
-
         document.getElementById('lx-location-name').value =
             locSel.selectedOptions[0]?.text || '';
-
-        if (id) loadWards(id);
+        if (locSel.value) loadWards(locSel.value);
     });
 
     wardSel.addEventListener('change', () => {
@@ -267,4 +254,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 </script>
-
+@endsection
