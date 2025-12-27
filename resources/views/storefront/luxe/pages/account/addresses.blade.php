@@ -222,7 +222,7 @@
 /**
  * Load danh sách Tỉnh / Thành
  */
-function loadLocations(selectEl, callback) {
+function loadLocations(selectEl, callback, selectedValue = null) {
     fetch('/api/storefront/locations?mode=raw')
         .then(r => r.json())
         .then(res => {
@@ -231,21 +231,26 @@ function loadLocations(selectEl, callback) {
             selectEl.innerHTML = '<option value="">-- Chọn khu vực --</option>';
 
             res.data.forEach(l => {
+                const selected =
+                    selectedValue && String(selectedValue) === String(l.id)
+                        ? 'selected'
+                        : '';
+
                 selectEl.insertAdjacentHTML(
                     'beforeend',
-                    `<option value="${l.id}">${l.name}</option>`
+                    `<option value="${l.id}" ${selected}>${l.name}</option>`
                 );
             });
 
-            if (typeof callback === 'function') callback();
-        })
-        .catch(() => {});
+            if (callback) callback();
+        });
 }
+
 
 /**
  * Load danh sách Phường / Xã theo location
  */
-function loadWards(locationId, selectEl, callback) {
+function loadWards(locationId, selectEl, callback, selectedValue = null) {
     if (!locationId) return;
 
     selectEl.innerHTML = '<option value="">-- Chọn phường / xã --</option>';
@@ -259,16 +264,21 @@ function loadWards(locationId, selectEl, callback) {
             selectEl.disabled = false;
 
             res.data.forEach(w => {
+                const selected =
+                    selectedValue && String(selectedValue) === String(w.id)
+                        ? 'selected'
+                        : '';
+
                 selectEl.insertAdjacentHTML(
                     'beforeend',
-                    `<option value="${w.id}">${w.name}</option>`
+                    `<option value="${w.id}" ${selected}>${w.name}</option>`
                 );
             });
 
-            if (typeof callback === 'function') callback();
-        })
-        .catch(() => {});
+            if (callback) callback();
+        });
 }
+
 
 /* =====================================================
    INLINE EDIT ADDRESS
