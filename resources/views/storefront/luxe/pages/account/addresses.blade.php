@@ -313,30 +313,30 @@ function initEditLocationWard(card) {
 
     if (!locationSelect || !wardSelect) return;
 
-    const selectedLocation = locationSelect.dataset.selected || '';
-    const selectedWard     = wardSelect.dataset.selected || '';
+    const selectedLocation = locationSelect.dataset.selected || null;
+    const selectedWard     = wardSelect.dataset.selected || null;
 
     loadLocations(locationSelect, () => {
 
         if (selectedLocation) {
-            locationSelect.value = selectedLocation;
-
             if (hiddenLocName) {
                 hiddenLocName.value =
                     locationSelect.selectedOptions[0]?.text || '';
             }
 
-            loadWards(selectedLocation, wardSelect, () => {
-                if (selectedWard) {
-                    wardSelect.value = selectedWard;
+            loadWards(
+                selectedLocation,
+                wardSelect,
+                () => {
                     if (hiddenWardName) {
                         hiddenWardName.value =
                             wardSelect.selectedOptions[0]?.text || '';
                     }
-                }
-            });
+                },
+                selectedWard
+            );
         }
-    });
+    }, selectedLocation);
 
     locationSelect.onchange = () => {
         if (hiddenLocName) {
@@ -353,6 +353,7 @@ function initEditLocationWard(card) {
         }
     };
 }
+
 
 /* =====================================================
    ADD NEW ADDRESS FORM
