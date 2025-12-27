@@ -150,7 +150,7 @@
     </div>
 
 </section>
-
+@endsection
 {{-- ======================
     CONFIRM DELETE POPUP
 ====================== --}}
@@ -188,14 +188,7 @@ function confirmDelete(id) {
 function closeConfirm() {
     document.getElementById('lx-confirm-overlay').style.display = 'none';
 }
-</script>
-@endsection
 
-
-{{-- =================================================
-    LOCATION → WARD SCRIPT (SYNC CHECKOUT)
-================================================= --}}
-<script>
 document.addEventListener('DOMContentLoaded', () => {
 
     const locSel  = document.getElementById('lx-location');
@@ -269,4 +262,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 </script>
-@endsection
+
