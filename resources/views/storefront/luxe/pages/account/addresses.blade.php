@@ -125,14 +125,18 @@
                             <input type="hidden" name="location_name">
                             <input type="hidden" name="ward_name">
 
-                            <div class="lx-edit-actions">
-                                <button class="lx-btn lx-btn-primary">Cập nhật</button>
-                                <button type="button"
-                                        class="lx-btn lx-btn-ghost"
-                                        onclick="closeEditAddress({{ $addr['id'] }})">
-                                    Hủy
-                                </button>
-                            </div>
+                            <div class="lx-btn-group right">
+    <button type="submit" class="lx-btn lx-btn-secondary">
+        Cập nhật
+    </button>
+
+    <button type="button"
+            class="lx-btn lx-btn-outline"
+            onclick="closeEditAddress({{ $addr['id'] }})">
+        Hủy
+    </button>
+</div>
+
 
                         </form>
                     </div>
@@ -206,9 +210,10 @@
             <input type="hidden" name="location_name" id="lx-location-name">
             <input type="hidden" name="ward_name" id="lx-ward-name">
 
-            <button class="lx-btn-primary lx-btn-block">
-                Thêm địa chỉ
-            </button>
+            <button class="lx-btn lx-btn-primary lx-btn-block">
+    Thêm địa chỉ
+</button>
+
         </form>
     </div>
 

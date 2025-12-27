@@ -288,3 +288,97 @@
         padding-top: 20px;
     }
 }
+/* =====================================================
+   BUTTON SYSTEM – ACCOUNT / ADDRESS
+===================================================== */
+
+.lx-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 18px;
+
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: 1px solid transparent;
+
+    cursor: pointer;
+    transition: all .2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* FULL WIDTH */
+.lx-btn-block {
+    width: 100%;
+}
+
+/* =========================
+   PRIMARY – ADD ADDRESS
+========================= */
+.lx-btn-primary {
+    background: #c7a17a;          /* nude gold */
+    border-color: #c7a17a;
+    color: #fff;
+}
+
+.lx-btn-primary:hover {
+    background: #b08c65;
+    border-color: #b08c65;
+}
+
+/* =========================
+   SECONDARY – UPDATE
+========================= */
+.lx-btn-secondary {
+    background: #4b5563;          /* slate */
+    border-color: #4b5563;
+    color: #fff;
+}
+
+.lx-btn-secondary:hover {
+    background: #374151;
+    border-color: #374151;
+}
+
+/* =========================
+   OUTLINE – CANCEL
+========================= */
+.lx-btn-outline {
+    background: #fff;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.lx-btn-outline:hover {
+    background: #f9fafb;
+}
+
+/* =========================
+   DANGER – DELETE
+========================= */
+.lx-btn-danger {
+    background: #dc6b6b;          /* muted red */
+    border-color: #dc6b6b;
+    color: #fff;
+}
+
+.lx-btn-danger:hover {
+    background: #c05656;
+    border-color: #c05656;
+}
+
+/* =========================
+   BUTTON GROUP
+========================= */
+.lx-btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.lx-btn-group.right {
+    justify-content: flex-end;
+}
