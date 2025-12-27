@@ -214,141 +214,169 @@ public function registerInline(Request $request): JsonResponse
 
 
     /**
-     * =====================================================
-     * 🧾 CREATE ORDER
-     * STOREFRONT (LIN XÉN) → ERP
-     * =====================================================
-     */
-    public function create(Request $request): JsonResponse
-    {
-        Log::info('🟡 [LINXEN CHECKOUT RAW REQUEST]', [
-            'json' => $request->json()->all(),
+ * =====================================================
+ * 🧾 CREATE ORDER
+ * STOREFRONT (LIN XÉN) → ERP
+ * =====================================================
+ */
+public function create(Request $request): JsonResponse
+{
+    Log::info('🟡 [LINXEN CHECKOUT RAW REQUEST]', [
+        'json' => $request->json()->all(),
+    ]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ BASE VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    $baseRules = [
+        'storefront' => 'required|string',
+
+        // ADDRESS MODE
+        'customer.shipping_address_id' => 'nullable|integer',
+
+        // MEMBER FLOW
+        'member.action'   => 'nullable|in:login,register,skip',
+        'member.email'    => 'nullable|email|max:255',
+        'member.password' => 'nullable|string|max:255',
+
+        // ITEMS
+        'items'              => 'required|array|min:1',
+        'items.*.product_id' => 'required|integer',
+        'items.*.qty'        => 'required|integer|min:1',
+        'items.*.price'      => 'required|numeric|min:0',
+        'items.*.note'       => 'nullable|string',
+    ];
+
+    $data = $request->validate($baseRules);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ ADDRESS MODE DETECT
+    |--------------------------------------------------------------------------
+    */
+    $hasAddressId = !empty($data['customer']['shipping_address_id'] ?? null);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 3️⃣ CONDITIONAL VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    if (!$hasAddressId) {
+        $request->validate([
+            'customer.name'          => 'required|string|max:255',
+            'customer.phone'         => 'required|string|max:50',
+            'customer.street'        => 'required|string|max:255',
+            'customer.location_id'   => 'required|integer',
+            'customer.ward_id'       => 'required|integer',
+            'customer.location_name' => 'required|string|max:255',
+            'customer.ward_name'     => 'required|string|max:255',
+            'customer.note'          => 'nullable|string|max:255',
         ]);
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | 1️⃣ VALIDATE
-        |--------------------------------------------------------------------------
-        */
-        $data = $request->validate([
-            'storefront'              => 'required|string',
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ BUILD PAYLOAD → ERP
+    |--------------------------------------------------------------------------
+    */
+    $payload = [
+        'storefront' => $data['storefront'],
 
-            'customer.name'           => 'required|string|max:255',
-            'customer.phone'          => 'required|string|max:50',
-            'customer.street'         => 'required|string|max:255',
-            'customer.location_id'    => 'required|integer',
-            'customer.ward_id'        => 'required|integer',
-            'customer.location_name'  => 'required|string|max:255',
-            'customer.ward_name'      => 'required|string|max:255',
-            'customer.note'           => 'nullable|string|max:255',
-
-            // MEMBER FLOW
-            'member.action'           => 'nullable|in:login,register,skip',
-            'member.email'            => 'nullable|email|max:255',
-            'member.password'         => 'nullable|string|max:255',
-
-            'items'                   => 'required|array|min:1',
-            'items.*.product_id'      => 'required|integer',
-            'items.*.qty'             => 'required|integer|min:1',
-            'items.*.price'           => 'required|numeric|min:0',
-            'items.*.note'            => 'nullable|string',
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2️⃣ BUILD PAYLOAD → ERP
-        |--------------------------------------------------------------------------
-        */
-        $payload = [
-            'storefront' => $data['storefront'],
-
-            'customer' => [
-                'name'          => $data['customer']['name'],
-                'phone'         => $data['customer']['phone'],
-                'street'        => $data['customer']['street'],
-                'location_id'   => $data['customer']['location_id'],
-                'ward_id'       => $data['customer']['ward_id'],
-                'location_name' => $data['customer']['location_name'],
-                'ward_name'     => $data['customer']['ward_name'],
-                'note'          => $data['customer']['note'] ?? null,
+        'customer' => $hasAddressId
+            ? [
+                // ✅ CASE: DÙNG ĐỊA CHỈ ĐÃ LƯU
+                'shipping_address_id' => (int) $data['customer']['shipping_address_id'],
+                'note'                => $data['customer']['note'] ?? null,
+            ]
+            : [
+                // ✅ CASE: NHẬP ĐỊA CHỈ MỚI
+                'name'          => $request->input('customer.name'),
+                'phone'         => $request->input('customer.phone'),
+                'street'        => $request->input('customer.street'),
+                'location_id'   => $request->input('customer.location_id'),
+                'ward_id'       => $request->input('customer.ward_id'),
+                'location_name' => $request->input('customer.location_name'),
+                'ward_name'     => $request->input('customer.ward_name'),
+                'note'          => $request->input('customer.note'),
             ],
 
-            // 🔑 MEMBER INTENT
-            'member' => [
-                'action'   => $data['member']['action'] ?? 'skip',
-                'email'    => $data['member']['email'] ?? null,
-                'password' => $data['member']['password'] ?? null,
-            ],
+        // 🔑 MEMBER INTENT
+        'member' => [
+            'action'   => $data['member']['action'] ?? 'skip',
+            'email'    => $data['member']['email'] ?? null,
+            'password' => $data['member']['password'] ?? null,
+        ],
 
-            'items' => collect($data['items'])->map(fn ($i) => [
-                'product_id' => (int) $i['product_id'],
-                'qty'        => (int) $i['qty'],
-                'price'      => (float) $i['price'],
-                'note'       => $i['note'] ?? null,
-            ])->values()->all(),
-        ];
+        'items' => collect($data['items'])->map(fn ($i) => [
+            'product_id' => (int) $i['product_id'],
+            'qty'        => (int) $i['qty'],
+            'price'      => (float) $i['price'],
+            'note'       => $i['note'] ?? null,
+        ])->values()->all(),
+    ];
 
-        Log::info('📦 [LINXEN → ERP PAYLOAD]', $payload);
+    Log::info('📦 [LINXEN → ERP PAYLOAD]', $payload);
 
-        /*
-        |--------------------------------------------------------------------------
-        | 3️⃣ CALL ERP CREATE ORDER
-        |--------------------------------------------------------------------------
-        */
-        try {
-            $response = Http::withOptions([
-                    'verify' => false,
-                ])
-                ->timeout(15)
-                ->post(
-                    "{$this->erpBaseUrl}/api/storefront/orders",
-                    $payload
-                );
+    /*
+    |--------------------------------------------------------------------------
+    | 5️⃣ CALL ERP CREATE ORDER
+    |--------------------------------------------------------------------------
+    */
+    try {
+        $response = Http::withOptions(['verify' => false])
+            ->timeout(15)
+            ->post(
+                "{$this->erpBaseUrl}/api/storefront/orders",
+                $payload
+            );
 
-            if ($response->failed()) {
-                Log::error('❌ [LINXEN → ERP CREATE ORDER FAILED]', [
-                    'status' => $response->status(),
-                    'body'   => $response->body(),
-                ]);
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'ERP không tạo được đơn hàng.',
-                ], 500);
-            }
-
-            $json = $response->json();
-
-            if (!($json['success'] ?? false)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $json['message'] ?? 'Tạo đơn hàng thất bại.',
-                ], 400);
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | 4️⃣ CLEAR CART
-            |--------------------------------------------------------------------------
-            */
-            session()->forget('cart');
-
-            return response()->json([
-                'success'    => true,
-                'order_code' => $json['order_code'] ?? null,
-                'erp_order'  => $json,
-            ]);
-
-        } catch (Throwable $e) {
-
-            Log::error('🔥 [LINXEN CHECKOUT EXCEPTION]', [
-                'error' => $e->getMessage(),
+        if ($response->failed()) {
+            Log::error('❌ [LINXEN → ERP CREATE ORDER FAILED]', [
+                'status' => $response->status(),
+                'body'   => $response->body(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Lỗi hệ thống khi tạo đơn hàng.',
+                'message' => 'ERP không tạo được đơn hàng.',
             ], 500);
         }
+
+        $json = $response->json();
+
+        if (!($json['success'] ?? false)) {
+            return response()->json([
+                'success' => false,
+                'message' => $json['message'] ?? 'Tạo đơn hàng thất bại.',
+            ], 400);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 6️⃣ CLEAR CART
+        |--------------------------------------------------------------------------
+        */
+        session()->forget('cart');
+
+        return response()->json([
+            'success'    => true,
+            'order_code' => $json['order_code'] ?? null,
+            'erp_order'  => $json,
+        ]);
+
+    } catch (Throwable $e) {
+
+        Log::error('🔥 [LINXEN CHECKOUT EXCEPTION]', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Lỗi hệ thống khi tạo đơn hàng.',
+        ], 500);
     }
+}
+
 }
