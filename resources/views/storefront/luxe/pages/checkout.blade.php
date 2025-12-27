@@ -73,80 +73,86 @@
     @else
 
     <form id="lx-checkout-form" class="lx-checkout-content">
-        @csrf
-
-        {{-- =========================
-            LEFT – SHIPPING INFO
-        ========================== --}}
-        <div class="lx-checkout-left">
-
-    <h3 class="lx-checkout-title">Thông tin giao hàng</h3>
-
-    {{-- LOGIN BADGE (NHẸ – KHÔNG LẤN FLOW) --}}
-    @if($customer)
-        <div class="lx-login-badge">
-            👋 <strong>{{ $customer->name ?? $customer->phone }}</strong>
-            <span class="lx-login-note">Đang mua với tài khoản thành viên</span>
-        </div>
-    @endif
+    @csrf
 
     {{-- =========================
-    SHIPPING ADDRESS (DEFAULT)
-========================== --}}
-<div class="lx-checkout-section lx-checkout-address">
+        LEFT – SHIPPING INFO
+    ========================== --}}
+    <div class="lx-checkout-left">
 
-    <div class="lx-section-head">
-        <strong>Địa chỉ nhận hàng</strong>
+        @php
+            $defaultAddress = collect($addresses ?? [])
+                ->firstWhere('is_default', true)
+                ?? ($addresses[0] ?? null);
 
-        @if(!empty($addresses))
-            <button type="button"
-                    class="lx-btn lx-btn-outline lx-btn-sm lx-btn-change-address"
-                    onclick="openAddressPopup()">
-                Thay đổi
-            </button>
-        @else
-            <a href="{{ route('linxen.account.index') }}"
-               class="lx-address-config-link">
-                ⚙️ Thêm địa chỉ
-            </a>
-        @endif
-    </div>
+            $hasAddress = !empty($defaultAddress);
+        @endphp
 
-    @php
-        $defaultAddress = collect($addresses ?? [])
-            ->firstWhere('is_default', true)
-            ?? ($addresses[0] ?? null);
-    @endphp
+        <h3 class="lx-checkout-title">Thông tin giao hàng</h3>
 
-    @if($defaultAddress)
-        <div class="lx-address-default">
-            <input type="hidden"
-                   name="shipping_address_id"
-                   value="{{ $defaultAddress['id'] }}">
-
-            <div class="lx-address-info">
-                <div class="lx-address-head">
-                    <strong>{{ $defaultAddress['name'] }}</strong>
-                    <span class="lx-address-phone">{{ $defaultAddress['phone'] }}</span>
-                    <span class="lx-badge-default">Mặc định</span>
-                </div>
-
-                <div class="lx-address-text">
-                    {{ $defaultAddress['address'] }}
-                </div>
+        {{-- LOGIN BADGE --}}
+        @if($customer)
+            <div class="lx-login-badge">
+                👋 <strong>{{ $customer->name ?? $customer->phone }}</strong>
+                <span class="lx-login-note">Đang mua với tài khoản thành viên</span>
             </div>
+        @endif
+
+        {{-- =========================
+           ADDRESS DISPLAY
+        ========================== --}}
+        <div class="lx-checkout-section lx-checkout-address">
+
+            <div class="lx-section-head">
+                <strong>Địa chỉ nhận hàng</strong>
+
+                @if($hasAddress)
+                    <button type="button"
+                            class="lx-btn lx-btn-outline lx-btn-sm lx-btn-change-address"
+                            onclick="openAddressPopup()">
+                        Thay đổi
+                    </button>
+                @else
+                    <a href="{{ route('linxen.account.index') }}"
+                       class="lx-address-config-link">
+                        ⚙️ Thêm địa chỉ
+                    </a>
+                @endif
+            </div>
+
+            @if($hasAddress)
+                <div class="lx-address-default">
+                    <input type="hidden"
+                           name="shipping_address_id"
+                           id="lx-shipping-address-id"
+                           value="{{ $defaultAddress['id'] }}">
+
+                    <div class="lx-address-info">
+                        <div class="lx-address-head">
+                            <strong>{{ $defaultAddress['name'] }}</strong>
+                            <span class="lx-address-phone">{{ $defaultAddress['phone'] }}</span>
+                            <span class="lx-badge-default">Mặc định</span>
+                        </div>
+
+                        <div class="lx-address-text">
+                            {{ $defaultAddress['address'] }}
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="lx-address-empty">
+                    Bạn chưa có địa chỉ nhận hàng.
+                </div>
+            @endif
         </div>
-    @else
-        <div class="lx-address-empty">
-            <span>Bạn chưa có địa chỉ nhận hàng.</span>
-        </div>
-    @endif
 
-</div>
+        {{-- =========================
+           MANUAL ADDRESS FORM
+           (CHỈ HIỆN KHI CHƯA CÓ ĐỊA CHỈ)
+        ========================== --}}
+        @if(!$hasAddress)
 
-
-
-            {{-- PHONE – PRIMARY IDENTITY --}}
+            {{-- PHONE --}}
             <div class="lx-form-group lx-form-phone">
                 <label>Số điện thoại</label>
                 <input type="tel"
@@ -158,7 +164,6 @@
                        @if($customer) readonly @endif
                        required>
 
-                {{-- STATUS MESSAGE (AJAX) --}}
                 <div id="lx-phone-status"
                      class="lx-phone-status"
                      style="display:none"></div>
@@ -192,7 +197,7 @@
                 </div>
             </div>
 
-            {{-- ADDRESS --}}
+            {{-- STREET --}}
             <div class="lx-form-group">
                 <label>Số nhà, tên đường</label>
                 <input type="text"
@@ -201,119 +206,119 @@
                        required>
             </div>
 
-            {{-- NOTE --}}
-            <div class="lx-form-group">
-                <label>Ghi chú</label>
-                <textarea name="note"
-                          rows="2"
-                          placeholder="Ghi chú cho đơn hàng (nếu có)"></textarea>
-            </div>
+        @endif
 
-            {{-- MEMBER HIDDEN FIELDS (JS CONTROL) --}}
-            <input type="hidden" name="member_action" id="member_action">
-            <input type="hidden" name="member_email" id="member_email">
-            <input type="hidden" name="member_password" id="member_password">
-
+        {{-- NOTE (LUÔN HIỆN) --}}
+        <div class="lx-form-group">
+            <label>Ghi chú</label>
+            <textarea name="note"
+                      rows="2"
+                      placeholder="Ghi chú cho đơn hàng (nếu có)"></textarea>
         </div>
 
-        {{-- =========================
-            RIGHT – ORDER SUMMARY
-        ========================== --}}
-        <aside class="lx-checkout-right">
+        {{-- MEMBER HIDDEN FIELDS --}}
+        <input type="hidden" name="member_action" id="member_action">
+        <input type="hidden" name="member_email" id="member_email">
+        <input type="hidden" name="member_password" id="member_password">
 
-            <h3 class="lx-checkout-title">Đơn hàng của bạn</h3>
+    </div>
 
-            <div class="lx-checkout-items">
-                @foreach($cartItems as $item)
-                    <div class="lx-checkout-item">
-                        <div class="lx-checkout-thumb">
-                            <img
-                                src="{{ $item['image'] ?? asset('images/no-image.png') }}"
-                                alt="{{ $item['name'] }}"
-                                loading="lazy"
-                            >
-                        </div>
+    {{-- =========================
+        RIGHT – ORDER SUMMARY
+    ========================== --}}
+    <aside class="lx-checkout-right">
 
-                        <div class="lx-checkout-item-info">
-                            <div class="lx-checkout-item-name">
-                                {{ $item['name'] }}
-                            </div>
+        <h3 class="lx-checkout-title">Đơn hàng của bạn</h3>
 
-                            @if(!empty($item['attrs']))
-                                <div class="lx-checkout-item-variant">
-                                    {{ implode(' · ', $item['attrs']) }}
-                                </div>
-                            @endif
-
-                            <div class="lx-checkout-item-meta">
-                                <span>SL: {{ $item['qty'] }}</span>
-                                <strong>
-                                    {{ number_format(($item['price'] ?? 0) * $item['qty']) }}₫
-                                </strong>
-                            </div>
-                        </div>
+        <div class="lx-checkout-items">
+            @foreach($cartItems as $item)
+                <div class="lx-checkout-item">
+                    <div class="lx-checkout-thumb">
+                        <img
+                            src="{{ $item['image'] ?? asset('images/no-image.png') }}"
+                            alt="{{ $item['name'] }}"
+                            loading="lazy">
                     </div>
-                @endforeach
-            </div>
 
-            <hr class="lx-checkout-divider">
+                    <div class="lx-checkout-item-info">
+                        <div class="lx-checkout-item-name">
+                            {{ $item['name'] }}
+                        </div>
 
-            <div class="lx-checkout-summary">
-                <div class="lx-checkout-summary-row">
-                    <span>Tạm tính</span>
-                    <span>{{ number_format($subtotal) }}₫</span>
-                </div>
+                        @if(!empty($item['attrs']))
+                            <div class="lx-checkout-item-variant">
+                                {{ implode(' · ', $item['attrs']) }}
+                            </div>
+                        @endif
 
-                <div class="lx-checkout-summary-row">
-                    <span>Vận chuyển</span>
-                    <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
-                </div>
-
-                <div class="lx-checkout-summary-total">
-                    <span>Tổng cộng</span>
-                    <span>{{ number_format($total) }}₫</span>
-                </div>
-            </div>
-
-            {{-- PAYMENT METHOD --}}
-            <div class="lx-checkout-payment">
-                <div class="lx-payment-badge">
-                    <span class="lx-payment-icon">💵</span>
-                    <div>
-                        <strong>Thanh toán khi nhận hàng (COD)</strong>
-                        <div class="lx-payment-hint">
-                            Thanh toán cho nhân viên giao hàng
+                        <div class="lx-checkout-item-meta">
+                            <span>SL: {{ $item['qty'] }}</span>
+                            <strong>
+                                {{ number_format(($item['price'] ?? 0) * $item['qty']) }}₫
+                            </strong>
                         </div>
                     </div>
                 </div>
+            @endforeach
+        </div>
+
+        <hr class="lx-checkout-divider">
+
+        <div class="lx-checkout-summary">
+            <div class="lx-checkout-summary-row">
+                <span>Tạm tính</span>
+                <span>{{ number_format($subtotal) }}₫</span>
             </div>
 
-            {{-- ACTIONS --}}
-            <div class="lx-checkout-actions">
-                <button type="submit"
-                        class="lx-btn-primary lx-btn-full lx-btn-checkout">
-                    <span class="lx-btn-main">ĐẶT HÀNG</span>
-                    <span class="lx-btn-sub">Xác nhận đơn • Thanh toán COD</span>
-                </button>
-
-                <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
-                    ← Tiếp tục mua sắm
-                </a>
+            <div class="lx-checkout-summary-row">
+                <span>Vận chuyển</span>
+                <span>{{ $shippingFee ? number_format($shippingFee).'₫' : 'Miễn phí' }}</span>
             </div>
 
-            <div id="lx-checkout-error"
-                 class="lx-checkout-error"
-                 style="display:none"></div>
-        </aside>
+            <div class="lx-checkout-summary-total">
+                <span>Tổng cộng</span>
+                <span>{{ number_format($total) }}₫</span>
+            </div>
+        </div>
 
-        {{-- =========================
-            SNAPSHOT CART → CHECKOUT.JS
-        ========================== --}}
-        <script>
-            window.__CHECKOUT_CART__ = {!! json_encode($checkoutCart, JSON_UNESCAPED_UNICODE) !!};
-        </script>
+        {{-- PAYMENT --}}
+        <div class="lx-checkout-payment">
+            <div class="lx-payment-badge">
+                <span class="lx-payment-icon">💵</span>
+                <div>
+                    <strong>Thanh toán khi nhận hàng (COD)</strong>
+                    <div class="lx-payment-hint">
+                        Thanh toán cho nhân viên giao hàng
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    </form>
+        {{-- ACTIONS --}}
+        <div class="lx-checkout-actions">
+            <button type="submit"
+                    class="lx-btn-primary lx-btn-full lx-btn-checkout">
+                <span class="lx-btn-main">ĐẶT HÀNG</span>
+                <span class="lx-btn-sub">Xác nhận đơn • Thanh toán COD</span>
+            </button>
+
+            <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
+                ← Tiếp tục mua sắm
+            </a>
+        </div>
+
+        <div id="lx-checkout-error"
+             class="lx-checkout-error"
+             style="display:none"></div>
+    </aside>
+
+    {{-- SNAPSHOT CART --}}
+    <script>
+        window.__CHECKOUT_CART__ = {!! json_encode($checkoutCart, JSON_UNESCAPED_UNICODE) !!};
+    </script>
+
+</form>
+
     @endif
 
     {{-- =========================
