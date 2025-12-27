@@ -380,11 +380,10 @@ public function removeFromCart(Request $request)
     ]);
 }
 
-
-    /* =====================================================
- * 💳 CHECKOUT (DEBUG)
+/* =====================================================
+ * 💳 CHECKOUT
  * ===================================================== */
-public function checkout()
+public function checkout(ErpStorefrontApi $erp)
 {
     $cart = session('cart', []);
 
@@ -440,66 +439,24 @@ public function checkout()
 
     /*
     |--------------------------------------------------------------------------
-    | 3️⃣ DEBUG SESSION
+    | 3️⃣ RESOLVE PHONE (SOURCE OF TRUTH)
     |--------------------------------------------------------------------------
     */
-    \Log::info('[CHECKOUT DEBUG] session', [
-        'customer'    => session('customer'),
-        'login_token' => session('login_token'),
-    ]);
+    $phone = session('customer.phone');
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4️⃣ RESOLVE PHONE (SOURCE OF TRUTH)
-    |--------------------------------------------------------------------------
-    */
-    $phone = null;
-
-    // ưu tiên lấy từ session
-    if (is_array(session('customer')) && !empty(session('customer.phone'))) {
-        $phone = session('customer.phone');
-        \Log::info('[CHECKOUT DEBUG] phone from session', ['phone' => $phone]);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 5️⃣ FALLBACK: LẤY PHONE TỪ ERP PROFILE
-    |--------------------------------------------------------------------------
-    */
+    // fallback: lấy từ ERP profile bằng login_token
     if (!$phone && session('login_token')) {
-        try {
-            $profileRes = \Illuminate\Support\Facades\Http::withOptions([
-                    'verify' => false,
-                ])
-                ->timeout(5)
-                ->withHeaders([
-                    'X-Storefront-Code' => 'linxen',
-                    'Authorization'     => 'Bearer ' . session('login_token'),
-                    'Accept'            => 'application/json',
-                ])
-                ->get("{$this->erpBaseUrl}/api/storefront/customer/profile");
+        $profile = $erp->customerProfile(
+            $this->brand,
+            session('login_token')
+        );
 
-            \Log::info('[CHECKOUT DEBUG] ERP profile response', [
-                'status' => $profileRes->status(),
-                'body'   => $profileRes->json(),
-            ]);
-
-            if ($profileRes->ok()) {
-                $phone = $profileRes->json('phone');
-            }
-
-        } catch (\Throwable $e) {
-            \Log::error('[CHECKOUT DEBUG] ERP profile error', [
-                'error' => $e->getMessage(),
-            ]);
-        }
+        $phone = $profile['phone'] ?? null;
     }
-
-    \Log::info('[CHECKOUT DEBUG] resolved phone', ['phone' => $phone]);
 
     /*
     |--------------------------------------------------------------------------
-    | 6️⃣ FETCH ADDRESSES FROM ERP
+    | 4️⃣ FETCH ADDRESSES FROM ERP
     |--------------------------------------------------------------------------
     */
     $addresses      = [];
@@ -507,62 +464,38 @@ public function checkout()
     $hasAddresses   = false;
 
     if ($phone) {
-        try {
-            $res = \Illuminate\Support\Facades\Http::withOptions([
-                    'verify' => false,
-                ])
-                ->timeout(5)
-                ->withHeaders([
-                    'X-Storefront-Code' => 'linxen',
-                    'X-Customer-Phone'  => $phone,
-                    'Accept'            => 'application/json',
-                ])
-                ->get("{$this->erpBaseUrl}/api/storefront/customer/addresses");
+        $rawAddresses = $erp->customerAddresses(
+            $this->brand,
+            $phone
+        );
 
-            \Log::info('[CHECKOUT DEBUG] ERP addresses raw response', [
-                'status' => $res->status(),
-                'body'   => $res->json(),
-            ]);
+        if (!empty($rawAddresses)) {
+            $hasAddresses = true;
 
-            if ($res->ok()) {
-                $rawAddresses = $res->json('data') ?? [];
+            // map ERP → UI
+            $addresses = collect($rawAddresses)->map(function ($addr) {
+                return [
+                    'id'         => $addr['id'],
+                    'name'       => $addr['receiver_name'],
+                    'phone'      => $addr['receiver_phone'],
+                    'address'    => trim(
+                        ($addr['street'] ?? '') . ', ' .
+                        ($addr['ward_name'] ?? '') . ', ' .
+                        ($addr['location_name'] ?? '')
+                    ),
+                    'is_default' => (bool) ($addr['is_default'] ?? false),
+                ];
+            })->toArray();
 
-                if (!empty($rawAddresses)) {
-                    $hasAddresses = true;
-
-                    // map ERP → UI
-                    $addresses = collect($rawAddresses)->map(function ($addr) {
-                        return [
-                            'id'         => $addr['id'],
-                            'name'       => $addr['receiver_name'],
-                            'phone'      => $addr['receiver_phone'],
-                            'address'    => trim(
-                                ($addr['street'] ?? '') . ', ' .
-                                ($addr['ward_name'] ?? '') . ', ' .
-                                ($addr['location_name'] ?? '')
-                            ),
-                            'is_default' => (bool) ($addr['is_default'] ?? false),
-                        ];
-                    })->toArray();
-
-                    $defaultAddress = collect($addresses)
-                        ->firstWhere('is_default', true)
-                        ?? $addresses[0];
-                }
-            }
-
-        } catch (\Throwable $e) {
-            \Log::error('[CHECKOUT DEBUG] ERP addresses error', [
-                'error' => $e->getMessage(),
-            ]);
+            $defaultAddress = collect($addresses)
+                ->firstWhere('is_default', true)
+                ?? $addresses[0];
         }
-    } else {
-        \Log::warning('[CHECKOUT DEBUG] NO PHONE → SKIP ADDRESS FETCH');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | 7️⃣ RETURN VIEW
+    | 5️⃣ RETURN VIEW
     |--------------------------------------------------------------------------
     */
     return view(
@@ -572,15 +505,12 @@ public function checkout()
             'brand'          => $this->brand,
             'justRegistered' => session('just_registered', false),
 
-            // DEBUG DATA
             'addresses'      => $addresses,
             'hasAddresses'   => $hasAddresses,
             'defaultAddress' => $defaultAddress,
         ]
     );
 }
-
-
 
 /**
  * =====================================================
