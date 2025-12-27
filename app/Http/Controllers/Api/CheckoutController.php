@@ -19,58 +19,46 @@ class CheckoutController extends Controller
     }
 
     /**
-     * =====================================================
-     * 🔍 CHECK PHONE (ERP – SOURCE OF TRUTH)
-     * =====================================================
-     */
-    public function checkPhone(Request $request): JsonResponse
-    {
-        $request->validate([
-            'phone' => 'required|string|max:20',
-        ]);
+ * =====================================================
+ * 🔍 CHECK PHONE (STORE​FRONT → ERP – SOURCE OF TRUTH)
+ * =====================================================
+ */
+public function checkPhone(Request $request): JsonResponse
+{
+    $request->validate([
+        'phone' => 'required|string|max:20',
+    ]);
 
-        $phone = trim($request->input('phone'));
+    // =====================================================
+    // 1️⃣ NORMALIZE PHONE (RẤT QUAN TRỌNG)
+    // =====================================================
+    $phone = $this->normalizePhone($request->input('phone'));
 
-        try {
-            $response = Http::withOptions([
-        'verify' => false,
-    ])
-    ->timeout(8)
-    ->withHeaders([
-        'X-Storefront-Code' => 'linxen',
-    ])
-    ->get(
-        "{$this->erpBaseUrl}/api/storefront/customers/check-phone",
-        ['phone' => $phone]
-    );
+    if (!$phone) {
+        return response()->json([
+            'has_account'     => false,
+            'has_profile'     => false,
+            'has_erp_history' => false,
+        ], 422);
+    }
 
-            if (!$response->ok()) {
-                Log::warning('⚠️ [CHECK PHONE ERP HTTP ERROR]', [
-                    'phone'  => $phone,
-                    'status' => $response->status(),
-                ]);
+    try {
+        $response = Http::withOptions([
+                'verify' => false,
+            ])
+            ->timeout(8)
+            ->withHeaders([
+                'X-Storefront-Code' => 'linxen',
+            ])
+            ->get(
+                "{$this->erpBaseUrl}/api/storefront/customers/check-phone",
+                ['phone' => $phone]
+            );
 
-                return response()->json([
-                    'has_account'     => false,
-                    'has_profile'     => false,
-                    'has_erp_history' => false,
-                ]);
-            }
-
-            $json = $response->json();
-
-            return response()->json([
-                'has_account'     => (bool) ($json['has_account'] ?? false),
-                'has_profile'     => false,
-                'has_erp_history' => (bool) ($json['has_erp_history'] ?? false),
-                'name'            => $json['name'] ?? null,
-            ]);
-
-        } catch (Throwable $e) {
-
-            Log::error('🔥 [CHECK PHONE ERP EXCEPTION]', [
-                'phone' => $phone,
-                'error' => $e->getMessage(),
+        if (!$response->ok()) {
+            Log::warning('⚠️ [CHECK PHONE ERP HTTP ERROR]', [
+                'phone'  => $phone,
+                'status' => $response->status(),
             ]);
 
             return response()->json([
@@ -79,7 +67,57 @@ class CheckoutController extends Controller
                 'has_erp_history' => false,
             ]);
         }
+
+        $json = $response->json();
+
+        // =====================================================
+        // 2️⃣ MAP ĐÚNG NGHĨA TỪ ERP
+        // =====================================================
+        return response()->json([
+            // có identity trong CRM hay chưa
+            'has_profile'     => (bool) ($json['has_identity'] ?? false),
+
+            // có account đăng nhập (member) hay chưa
+            'has_account'     => (bool) ($json['has_account'] ?? false),
+
+            // đã từng mua / có lịch sử ERP
+            'has_erp_history' => (bool) ($json['has_erp_history'] ?? false),
+
+            // thông tin hiển thị
+            'name'            => $json['name'] ?? null,
+            'phone'           => $phone,
+            'customer_type'   => $json['customer_type'] ?? 'guest',
+        ]);
+
+    } catch (Throwable $e) {
+
+        Log::error('🔥 [CHECK PHONE ERP EXCEPTION]', [
+            'phone' => $phone,
+            'error' => $e->getMessage(),
+        ]);
+
+        return response()->json([
+            'has_account'     => false,
+            'has_profile'     => false,
+            'has_erp_history' => false,
+        ]);
     }
+}
+protected function normalizePhone(string $phone): ?string
+{
+    $phone = preg_replace('/\D+/', '', $phone);
+
+    if (str_starts_with($phone, '84')) {
+        $phone = '0' . substr($phone, 2);
+    }
+
+    if (strlen($phone) < 9 || strlen($phone) > 11) {
+        return null;
+    }
+
+    return $phone;
+}
+
 
     /**
  * =====================================================
