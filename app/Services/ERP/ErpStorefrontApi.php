@@ -264,18 +264,21 @@ public function createCustomerAddress(array $payload): array
     }
 
     /**
-     * =====================================================
-     * 🧠 BUILD COMMON HEADERS
-     * =====================================================
-     */
-    protected function buildHeaders(): array
-    {
-        return array_filter([
-            // Identity customer (source of truth: storefront session)
-            'X-Customer-Phone' => session('customer.phone'),
+ * =====================================================
+ * 🧠 BUILD COMMON HEADERS
+ * =====================================================
+ */
+protected function buildHeaders(): array
+{
+    $customer = session('customer');
 
-            // Optional – để ERP log context
-            'X-Storefront-Code' => 'LINXEN',
-        ]);
-    }
+    return array_filter([
+        // ✅ ĐÚNG: lấy từ session array
+        'X-Customer-Phone'   => $customer['phone'] ?? null,
+
+        // Context storefront
+        'X-Storefront-Code' => 'LINXEN',
+    ]);
+}
+
 }
