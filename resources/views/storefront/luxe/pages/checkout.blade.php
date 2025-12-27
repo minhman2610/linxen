@@ -97,8 +97,7 @@
 
     <div class="lx-section-head">
         <strong>Địa chỉ nhận hàng</strong>
-        <pre>{{ print_r($addresses, true) }}</pre>
-
+        
         @if(!empty($addresses))
             <button type="button"
                     class="lx-btn lx-btn-outline lx-btn-sm"
