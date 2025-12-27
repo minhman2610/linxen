@@ -108,63 +108,88 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function checkPhone(phone) {
-        phoneStatus.style.display = 'block';
-        phoneStatus.className = 'lx-phone-status info';
-        phoneStatus.innerText = 'Đang kiểm tra số điện thoại…';
+    phoneStatus.style.display = 'block';
+    phoneStatus.className = 'lx-phone-status info';
+    phoneStatus.innerText = 'Đang kiểm tra số điện thoại…';
 
-        try {
-            const res = await fetch('/ajax/check-phone', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute('content'),
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify({ phone }),
-            });
+    try {
+        const res = await fetch('/ajax/check-phone', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content'),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ phone }),
+        });
 
-            const json = await res.json();
-            console.log('[check-phone]', json);
+        const json = await res.json();
+        console.log('[check-phone]', json);
 
-            phoneChecked = true;
+        phoneChecked = true;
 
-            const hasHistory = !!json.has_erp_history;
-            const hasAccount = !!json.has_account;
+        // =====================================================
+        // 🔍 FLAGS TỪ ERP
+        // =====================================================
+        const hasProfile = !!json.has_profile;        // tồn tại customer_users
+        const hasAccount = !!json.has_account;        // member hay chưa
+        const hasHistory = !!json.has_erp_history;    // đã từng mua
 
-            // KHÁCH CŨ + CÓ ACCOUNT
-            if (hasHistory && hasAccount) {
-                phoneState = 'existing';
+        // =====================================================
+        // 1️⃣ MEMBER – ĐÃ CÓ ACCOUNT
+        // =====================================================
+        if (hasProfile && hasAccount) {
+            phoneState = 'member';
 
-                phoneStatus.className = 'lx-phone-status success';
-                phoneStatus.innerText =
-                    'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm.';
-
-                showMemberModal('existing');
-                return;
-            }
-
-            // KHÁCH MỚI
-            phoneState = 'new';
-
-            phoneStatus.className = 'lx-phone-status neutral';
+            phoneStatus.className = 'lx-phone-status success';
             phoneStatus.innerText =
-                'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh không đăng nhập.';
+                'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm và nhận ưu đãi.';
 
+            showMemberModal('existing');
+            return;
+        }
+
+        // =====================================================
+        // 2️⃣ GUEST CŨ – ĐÃ MUA, CHƯA CÓ ACCOUNT
+        // =====================================================
+        if (hasProfile && !hasAccount) {
+            phoneState = 'guest_existing';
+
+            phoneStatus.className = 'lx-phone-status info';
+            phoneStatus.innerText =
+                'Bạn đã từng mua hàng. Tạo tài khoản để tích lũy điểm hoặc mua nhanh.';
+
+            // auto fill tên nếu FE chưa có
             if (json.name && !nameInput.value) {
                 nameInput.value = json.name;
             }
 
-            showMemberModal('new');
-
-        } catch (e) {
-            console.error('❌ check-phone error:', e);
-            phoneStatus.className = 'lx-phone-status error';
-            phoneStatus.innerText = 'Không kiểm tra được số điện thoại.';
+            showMemberModal('guest');
+            return;
         }
+
+        // =====================================================
+        // 3️⃣ KHÁCH MỚI HOÀN TOÀN
+        // =====================================================
+        phoneState = 'new';
+
+        phoneStatus.className = 'lx-phone-status neutral';
+        phoneStatus.innerText =
+            'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh không đăng nhập.';
+
+        showMemberModal('new');
+
+    } catch (e) {
+        console.error('❌ check-phone error:', e);
+
+        phoneStatus.className = 'lx-phone-status error';
+        phoneStatus.innerText = 'Không kiểm tra được số điện thoại. Vui lòng thử lại.';
     }
+}
+
 
     /* =====================================================
      * MEMBER MODAL
