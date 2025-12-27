@@ -1,23 +1,70 @@
 /* =====================================================
-   PROFILE PAGE – LIN XÉN
+   ACCOUNT PAGE – BASE LAYOUT (GLOBAL FIX)
 ===================================================== */
 
-.lx-profile-page {
-    max-width: 640px;
-    margin: 0 auto;
+.lx-account-page {
+    width: 100%;
+    box-sizing: border-box;
+
+    /* Tránh cắn header + mép */
+    padding: 32px 16px 48px;
+
+    display: flex;
+    justify-content: center;
 }
 
-/* CARD */
+@media (min-width: 768px) {
+    .lx-account-page {
+        padding: 40px 24px 64px;
+    }
+}
+
+/* =====================================================
+   ACCOUNT CONTAINER (CENTER CONTENT)
+===================================================== */
+
+.lx-account-container {
+    width: 100%;
+    max-width: 680px;
+}
+
+/* =====================================================
+   ACCOUNT HEADER
+===================================================== */
+
+.lx-account-head {
+    margin-bottom: 28px;
+}
+
+.lx-account-head h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #111;
+}
+
+.lx-account-head p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* =====================================================
+   PROFILE CARD
+===================================================== */
+
 .lx-profile-card {
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #eee;
-    border-radius: 14px;
-    padding: 28px 26px;
+    border-radius: 16px;
+    padding: 28px 24px;
 }
 
-/* FIELD */
+/* =====================================================
+   FORM – PROFILE
+===================================================== */
+
 .lx-profile-form .lx-field {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .lx-profile-form label {
@@ -33,19 +80,22 @@
     height: 44px;
     padding: 0 14px;
 
+    border-radius: 12px;
     border: 1px solid #ddd;
-    border-radius: 10px;
 
     font-size: 14px;
-    transition: border-color .2s ease;
+    color: #111;
+
+    transition: border-color .2s ease, box-shadow .2s ease;
 }
 
 .lx-profile-form input:focus {
     border-color: #c7a17a;
     outline: none;
+    box-shadow: 0 0 0 3px rgba(199,161,122,.15);
 }
 
-/* READ ONLY */
+/* READ ONLY FIELD */
 .lx-field-readonly input {
     background: #f9fafb;
     color: #6b7280;
@@ -59,55 +109,32 @@
     color: #9ca3af;
 }
 
-/* ACTION */
+/* =====================================================
+   FORM ACTIONS
+===================================================== */
+
 .lx-form-actions {
-    margin-top: 26px;
+    margin-top: 28px;
     text-align: right;
 }
 
-/* ALERT */
-.lx-alert-success {
-    background: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    color: #065f46;
-    padding: 12px 14px;
-    border-radius: 10px;
-    margin-bottom: 16px;
-    font-size: 14px;
-}
-
-.lx-alert-error {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #991b1b;
-    padding: 12px 14px;
-    border-radius: 10px;
-    margin-bottom: 16px;
-    font-size: 14px;
-}
 /* =====================================================
-   FIX HEADER OVERLAP
-===================================================== */
-
-.lx-profile-page {
-    padding-top: 32px;     /* tạo khoảng thở với header */
-}
-/* =====================================================
-   PROFILE BUTTON – PREMIUM
+   BUTTON – PRIMARY (LIN XÉN STYLE)
 ===================================================== */
 
 .lx-profile-page .lx-btn-primary {
-    background: #c7a17a;          /* nude gold */
+    background: #c7a17a;              /* Nude gold */
     border: 1px solid #c7a17a;
     color: #fff;
 
     height: 44px;
     padding: 0 28px;
 
+    border-radius: 999px;             /* Mềm, nữ tính */
     font-size: 14px;
     font-weight: 500;
-    border-radius: 12px;
 
+    cursor: pointer;
     transition: all .25s ease;
 }
 
@@ -116,14 +143,45 @@
     border-color: #b08c65;
     transform: translateY(-1px);
 }
+
 /* =====================================================
-   PROFILE HEADER SPACING
+   ALERTS
 ===================================================== */
 
-.lx-profile-page .lx-account-head {
-    margin-bottom: 24px;
+.lx-alert-success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+
+    font-size: 14px;
 }
 
-.lx-profile-page .lx-account-head h1 {
-    margin-bottom: 6px;
+.lx-alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+
+    font-size: 14px;
+}
+
+/* =====================================================
+   RESPONSIVE TWEAKS
+===================================================== */
+
+@media (max-width: 480px) {
+    .lx-profile-card {
+        padding: 22px 18px;
+    }
+
+    .lx-account-head h1 {
+        font-size: 20px;
+    }
 }
