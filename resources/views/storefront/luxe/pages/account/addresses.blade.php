@@ -16,8 +16,7 @@
 
         @if(!empty($addresses))
             @foreach($addresses as $addr)
-                <div class="lx-address-item {{ !empty($addr['is_default']) ? 'is-default' : '' }}"
-                     data-address-id="{{ $addr['id'] }}">
+                <div class="lx-address-item {{ !empty($addr['is_default']) ? 'is-default' : '' }}">
 
                     <div class="lx-address-info">
 
@@ -36,9 +35,9 @@
                         </div>
 
                         <div class="lx-address-line-2">
-                            {{ $addr['street'] }},
-                            {{ $addr['ward_name'] ?? '' }},
-                            {{ $addr['location_name'] ?? '' }}
+                            {{ $addr['street'] }}
+                            @if(!empty($addr['ward_name'])), {{ $addr['ward_name'] }}@endif
+                            @if(!empty($addr['location_name'])), {{ $addr['location_name'] }}@endif
                         </div>
 
                         {{-- ACTIONS --}}
@@ -48,55 +47,23 @@
                                 <form method="POST"
                                       action="{{ route('linxen.account.addresses.setDefault', $addr['id']) }}">
                                     @csrf
-                                    <button type="submit" class="lx-btn lx-btn-green">
+                                    <button class="lx-btn lx-btn-green">
                                         Đặt mặc định
                                     </button>
                                 </form>
                             @endif
 
-                            <button type="button"
-                                    class="lx-btn lx-btn-yellow"
+                            <button class="lx-btn lx-btn-yellow"
                                     onclick="editAddress({{ $addr['id'] }})">
                                 Sửa
                             </button>
 
-                            <button type="button"
-                                    class="lx-btn lx-btn-red"
+                            <button class="lx-btn lx-btn-red"
                                     onclick="confirmDelete({{ $addr['id'] }})">
                                 Xóa
                             </button>
                         </div>
 
-                    </div>
-
-                    {{-- EDIT FORM (HIDDEN) --}}
-                    <div class="lx-address-edit" id="edit-{{ $addr['id'] }}" style="display:none">
-                        <form method="POST"
-                              action="{{ route('linxen.account.addresses.update', $addr['id']) }}"
-                              class="lx-address-form-inline">
-                            @csrf
-
-                            <input name="receiver_name"
-                                   value="{{ $addr['receiver_name'] }}"
-                                   required>
-
-                            <input name="receiver_phone"
-                                   value="{{ $addr['receiver_phone'] }}"
-                                   required>
-
-                            <input name="street"
-                                   value="{{ $addr['street'] }}"
-                                   required>
-
-                            <div class="lx-inline-actions">
-                                <button class="lx-btn lx-btn-green">Cập nhật</button>
-                                <button type="button"
-                                        class="lx-btn lx-btn-gray"
-                                        onclick="cancelEdit({{ $addr['id'] }})">
-                                    Hủy
-                                </button>
-                            </div>
-                        </form>
                     </div>
 
                 </div>
@@ -115,6 +82,7 @@
     <div class="lx-address-form-box">
         <h2>Thêm địa chỉ mới</h2>
 
+        {{-- ERRORS --}}
         @if ($errors->any())
             <div class="lx-form-error-box">
                 @foreach ($errors->all() as $error)
@@ -128,29 +96,62 @@
               class="lx-address-form">
             @csrf
 
+            {{-- RECEIVER NAME --}}
             <div class="lx-field">
                 <label>Tên người nhận</label>
-                <input name="receiver_name" required>
+                <input name="receiver_name"
+                       value="{{ old('receiver_name') }}"
+                       required>
             </div>
 
+            {{-- RECEIVER PHONE --}}
             <div class="lx-field">
                 <label>Số điện thoại</label>
-                <input name="receiver_phone" required>
+                <input name="receiver_phone"
+                       value="{{ old('receiver_phone') }}"
+                       required>
             </div>
 
+            {{-- LOCATION + WARD --}}
+            <div class="lx-field-row">
+                <div class="lx-field">
+                    <label>Khu vực</label>
+                    <select name="location_id"
+                            id="lx-location"
+                            required>
+                        <option value="">-- Chọn khu vực --</option>
+                    </select>
+                </div>
+
+                <div class="lx-field">
+                    <label>Phường / Xã</label>
+                    <select name="ward_id"
+                            id="lx-ward"
+                            required
+                            disabled>
+                        <option value="">-- Chọn phường / xã --</option>
+                    </select>
+                </div>
+            </div>
+
+            {{-- STREET --}}
             <div class="lx-field">
                 <label>Số nhà, tên đường</label>
-                <input name="street" required>
+                <input name="street"
+                       value="{{ old('street') }}"
+                       required>
             </div>
 
-            <button class="lx-btn lx-btn-green lx-btn-block">
+            {{-- HIDDEN ERP --}}
+            <input type="hidden" name="location_name" id="lx-location-name">
+            <input type="hidden" name="ward_name" id="lx-ward-name">
+
+            <button class="lx-btn-primary lx-btn-block">
                 Thêm địa chỉ
             </button>
         </form>
     </div>
 
-</section>
-@endsection
 {{-- ======================
     CONFIRM DELETE POPUP
 ====================== --}}
@@ -166,6 +167,10 @@
         </div>
     </div>
 </div>
+</section>
+
+@endsection
+
 
 {{-- ======================
     JS
