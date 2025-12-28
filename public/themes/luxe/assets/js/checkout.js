@@ -272,26 +272,76 @@ console.log('hasAccount:', hasAccount);
 
         if (memberErrorBox) memberErrorBox.style.display = 'none';
 
-        /* ===== MEMBER LOGIN ===== */
-        if (phoneState === 'member') {
+        /* ===============================
+   MEMBER LOGIN (AJAX → BE LINXEN)
+=============================== */
+if (phoneState === 'member') {
 
-            const pwd = memberPasswordModalInput?.value?.trim();
+    const pwd   = memberPasswordModalInput?.value?.trim();
+    const phone = phoneInput?.value?.trim();
 
-            if (!pwd) {
-                if (memberErrorBox) {
-                    memberErrorBox.innerText = 'Vui lòng nhập mật khẩu để đăng nhập.';
-                    memberErrorBox.style.display = 'block';
-                }
-                return;
-            }
+    if (!pwd) {
+        showMemberError('Vui lòng nhập mật khẩu để đăng nhập.');
+        return;
+    }
 
-            // ghi vào hidden input để submit checkout
-            memberActionInput.value   = 'login';
-            memberPasswordInput.value = pwd;
+    memberConfirmBtn.disabled = true;
+    memberConfirmBtn.innerText = 'Đang đăng nhập…';
 
-            closeMemberModal();
+    try {
+        const res = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content'),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                phone,
+                password: pwd,
+            }),
+        });
+
+        const json = await res.json().catch(() => null);
+
+        /* ❌ FAIL → HIỂN THỊ NGUYÊN MESSAGE TỪ BE */
+        if (!res.ok || !json || json.success === false) {
+
+            showMemberError(
+                json?.message
+                || 'Đăng nhập không thành công. Vui lòng thử lại.'
+            );
+
+            memberConfirmBtn.disabled = false;
+            memberConfirmBtn.innerText = 'Tiếp tục';
             return;
         }
+
+        /* ✅ SUCCESS */
+        closeMemberModal();
+
+        phoneState   = 'logged';
+        phoneChecked = true;
+
+        phoneInput.setAttribute('readonly', 'readonly');
+        if (phoneStatus) phoneStatus.style.display = 'none';
+
+        if (memberPasswordModalInput) {
+            memberPasswordModalInput.value = '';
+        }
+
+    } catch (e) {
+        showMemberError('Không kết nối được hệ thống.');
+        memberConfirmBtn.disabled = false;
+        memberConfirmBtn.innerText = 'Tiếp tục';
+    }
+
+    return;
+}
+
 
         /* ===== REGISTER (NEW / GUEST_EXISTING) ===== */
         const email = memberEmailInput?.value?.trim();
