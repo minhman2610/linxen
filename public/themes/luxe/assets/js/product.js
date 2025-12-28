@@ -142,11 +142,12 @@ document.addEventListener('click', function (e) {
 
 
 /* =====================================================
-   SYNC VARIANTS → ADD TO CART DATA
+   SYNC VARIANTS → ADD TO CART DATA (FIX SKU)
 ===================================================== */
 function syncSelectedVariants() {
 
     const attrs = {};
+    let resolvedProductId = null;
 
     document.querySelectorAll('.lx-variant-row').forEach(row => {
         const key = row.dataset.attrKey;
@@ -155,13 +156,27 @@ function syncSelectedVariants() {
         if (key && val) {
             attrs[key] = val;
         }
+
+        // 🔥 FIX CỐT LÕI:
+        // lấy product_id từ option đang active (SKU CON)
+        const activeOption = row.querySelector('.variant-option.active');
+        if (activeOption && activeOption.dataset.productId) {
+            resolvedProductId = activeOption.dataset.productId;
+        }
     });
 
     const btn = document.getElementById('lxAddToCartBtn');
     if (btn) {
+        // attrs chỉ để hiển thị
         btn.dataset.attrs = JSON.stringify(attrs);
+
+        // 🔑 QUAN TRỌNG NHẤT: update product_id theo size đã chọn
+        if (resolvedProductId) {
+            btn.dataset.productId = resolvedProductId;
+        }
     }
 }
+
 /**
  * =====================================================
  * 🛒 CART – LIN XÉN (FINAL NO-LOCK)
