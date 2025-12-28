@@ -283,45 +283,53 @@ public function create(Request $request): JsonResponse
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | 4️⃣ BUILD PAYLOAD → ERP
-    |--------------------------------------------------------------------------
-    */
-    $payload = [
-        'storefront' => $data['storefront'],
+|--------------------------------------------------------------------------
+| 4️⃣ BUILD PAYLOAD → ERP
+|--------------------------------------------------------------------------
+*/
 
-        'customer' => $hasAddressId
-            ? [
-                // ✅ CASE: DÙNG ĐỊA CHỈ ĐÃ LƯU
-                'shipping_address_id' => (int) $data['customer']['shipping_address_id'],
-                'note'                => $data['customer']['note'] ?? null,
-            ]
-            : [
-                // ✅ CASE: NHẬP ĐỊA CHỈ MỚI
-                'name'          => $request->input('customer.name'),
-                'phone'         => $request->input('customer.phone'),
-                'street'        => $request->input('customer.street'),
-                'location_id'   => $request->input('customer.location_id'),
-                'ward_id'       => $request->input('customer.ward_id'),
-                'location_name' => $request->input('customer.location_name'),
-                'ward_name'     => $request->input('customer.ward_name'),
-                'note'          => $request->input('customer.note'),
-            ],
+// 🚚 SHIPPING FEE (DEFAULT)
+$shippingFee = 30000;
 
-        // 🔑 MEMBER INTENT
-        'member' => [
-            'action'   => $data['member']['action'] ?? 'skip',
-            'email'    => $data['member']['email'] ?? null,
-            'password' => $data['member']['password'] ?? null,
+$payload = [
+    'storefront' => $data['storefront'],
+
+    // 🚚 PHÍ VẬN CHUYỂN (BE TỰ TÍNH)
+    'shipping_fee' => $shippingFee,
+
+    'customer' => $hasAddressId
+        ? [
+            // ✅ CASE: DÙNG ĐỊA CHỈ ĐÃ LƯU
+            'shipping_address_id' => (int) $data['customer']['shipping_address_id'],
+            'note'                => $data['customer']['note'] ?? null,
+        ]
+        : [
+            // ✅ CASE: NHẬP ĐỊA CHỈ MỚI
+            'name'          => $request->input('customer.name'),
+            'phone'         => $request->input('customer.phone'),
+            'street'        => $request->input('customer.street'),
+            'location_id'   => $request->input('customer.location_id'),
+            'ward_id'       => $request->input('customer.ward_id'),
+            'location_name' => $request->input('customer.location_name'),
+            'ward_name'     => $request->input('customer.ward_name'),
+            'note'          => $request->input('customer.note'),
         ],
 
-        'items' => collect($data['items'])->map(fn ($i) => [
-            'product_id' => (int) $i['product_id'],
-            'qty'        => (int) $i['qty'],
-            'price'      => (float) $i['price'],
-            'note'       => $i['note'] ?? null,
-        ])->values()->all(),
-    ];
+    // 🔑 MEMBER INTENT
+    'member' => [
+        'action'   => $data['member']['action'] ?? 'skip',
+        'email'    => $data['member']['email'] ?? null,
+        'password' => $data['member']['password'] ?? null,
+    ],
+
+    'items' => collect($data['items'])->map(fn ($i) => [
+        'product_id' => (int) $i['product_id'],
+        'qty'        => (int) $i['qty'],
+        'price'      => (float) $i['price'],
+        'note'       => $i['note'] ?? null,
+    ])->values()->all(),
+];
+
 
     Log::info('📦 [LINXEN → ERP PAYLOAD]', $payload);
 
