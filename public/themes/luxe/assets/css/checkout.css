@@ -1065,3 +1065,27 @@
         padding: 24px 20px;
     }
 }
+/* CHECKOUT BUTTON – NUDE PREMIUM */
+.lx-btn-checkout {
+    background: linear-gradient(
+        135deg,
+        #f3d9c8,
+        #e6bfa6
+    );
+    color: #5a3e2b;
+    font-weight: 600;
+    letter-spacing: .5px;
+}
+
+.lx-btn-checkout:hover {
+    background: linear-gradient(
+        135deg,
+        #e6bfa6,
+        #d9aa8c
+    );
+}
+
+.lx-btn-checkout:disabled {
+    opacity: .75;
+    cursor: not-allowed;
+}
