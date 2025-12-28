@@ -134,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({ phone }),
         });
 
-        // ❗ defensive: backend có thể trả lỗi
         if (!res.ok) {
             throw new Error(`HTTP ${res.status}`);
         }
@@ -146,26 +145,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasErpHistory = !!json.has_erp_history;
         const customerType  = json.customer_type || (hasAccount ? 'member' : 'guest');
 
-        // =====================================================
-        // CASE 1️⃣: MEMBER – CÓ ACCOUNT (LOGIN)
-        // =====================================================
+        /* =====================================================
+         * CASE 1️⃣: MEMBER – BẬT NHANH MODAL LOGIN
+         * ===================================================== */
         if (customerType === 'member' && hasAccount) {
             phoneState = 'member';
+
             phoneStatus.className = 'lx-phone-status success';
             phoneStatus.innerText =
-                'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm.';
+                'Chào mừng bạn quay lại! Đăng nhập để tận hưởng đầy đủ quyền lợi thành viên.';
+
+            // cấu hình modal
+            document.getElementById('lx-member-title').innerText =
+                '👋 Chào mừng bạn quay lại!';
+            document.getElementById('lx-member-desc').innerText =
+                'Đăng nhập để tích lũy điểm, theo dõi đơn hàng và hưởng ưu đãi dành riêng cho thành viên LIN XÉN.';
+
+            // hiển thị login
             showMemberModal('existing');
+
+            // ⚡ cho phép mua nhanh không login
+            document.getElementById('lx-member-skip').style.display = 'inline-flex';
+            document.getElementById('lx-member-skip').innerText =
+                '⚡ Mua nhanh không cần đăng nhập';
+
             return;
         }
 
-        // =====================================================
-        // CASE 2️⃣: KHÁCH CŨ – CÓ LỊCH SỬ NHƯNG CHƯA CÓ ACCOUNT
-        // =====================================================
+        /* =====================================================
+         * CASE 2️⃣: KHÁCH CŨ – CHƯA CÓ ACCOUNT
+         * ===================================================== */
         if (!hasAccount && hasErpHistory) {
             phoneState = 'guest_existing';
+
             phoneStatus.className = 'lx-phone-status info';
             phoneStatus.innerText =
-                'Bạn đã từng mua hàng. Có thể tạo tài khoản hoặc mua nhanh.';
+                'Bạn đã từng mua hàng. Có thể tạo tài khoản để hưởng thêm quyền lợi.';
 
             if (json.name && nameInput && !nameInput.value) {
                 nameInput.value = json.name;
@@ -175,13 +190,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // =====================================================
-        // CASE 3️⃣: KHÁCH MỚI HOÀN TOÀN
-        // =====================================================
+        /* =====================================================
+         * CASE 3️⃣: KHÁCH MỚI
+         * ===================================================== */
         phoneState = 'new';
+
         phoneStatus.className = 'lx-phone-status neutral';
         phoneStatus.innerText =
-            'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh.';
+            'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh không cần đăng nhập.';
+
         showMemberModal('new');
 
     } catch (e) {
@@ -189,7 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         phoneChecked = false;
         phoneState = null;
         phoneStatus.className = 'lx-phone-status error';
-        phoneStatus.innerText = 'Không kiểm tra được số điện thoại. Vui lòng thử lại.';
+        phoneStatus.innerText =
+            'Không kiểm tra được số điện thoại. Vui lòng thử lại.';
     }
 }
 
