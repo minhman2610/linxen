@@ -456,7 +456,7 @@
                     onclick="closeAddressPopup()">✕</button>
         </div>
 
-        {{-- ADDRESS LIST (THỰC CHẤT LÀ CONFIRM CARD) --}}
+        {{-- ADDRESS LIST --}}
         <div class="lx-address-sheet-body">
             @foreach($addresses as $addr)
                 <label class="lx-address-sheet-card">
@@ -488,8 +488,16 @@
             @endforeach
         </div>
 
-        {{-- ACTION --}}
+        {{-- ACTIONS --}}
         <div class="lx-address-sheet-action">
+
+            {{-- ADD NEW ADDRESS --}}
+            <a href="{{ route('linxen.account.addresses') }}"
+               class="lx-btn-outline lx-btn-full">
+                + Thêm địa chỉ mới
+            </a>
+
+            {{-- CONFIRM --}}
             <button type="button"
                     class="lx-btn-checkout"
                     onclick="confirmAddressPick()">
@@ -500,6 +508,7 @@
     </div>
 </div>
 @endif
+
 
 
 

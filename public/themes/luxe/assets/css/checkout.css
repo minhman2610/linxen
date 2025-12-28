@@ -1554,3 +1554,22 @@
         opacity: 1;
     }
 }
+.lx-btn-outline {
+    display: block;
+    text-align: center;
+    padding: 12px 14px;
+    border-radius: 10px;
+
+    border: 1px dashed #c7d2fe;
+    background: #f8fafc;
+    color: #1d4ed8;
+
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.lx-btn-outline:hover {
+    background: #eef2ff;
+    border-color: #6366f1;
+}
