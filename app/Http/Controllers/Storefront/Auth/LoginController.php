@@ -23,89 +23,120 @@ class LoginController extends Controller
         return view('storefront.luxe.pages.auth.login');
     }
 
-    /**
-     * =====================================================
-     * 🔐 LOGIN (STOREFRONT → ERP AUTH)
-     * =====================================================
-     */
     public function login(Request $request)
-    {
-        $data = $request->validate([
-            'phone'    => 'required|string|max:20',
-            'password' => 'required|string|min:6',
-        ]);
+{
+    $data = $request->validate([
+        'phone'    => 'required|string|max:20',
+        'password' => 'required|string|min:6',
+    ]);
 
-        try {
-            $response = Http::withOptions([
-                    'verify' => false,
-                ])
-                ->timeout(10)
-                ->withHeaders([
-                    'Accept'            => 'application/json',
-                    'X-Storefront-Code' => 'linxen',
-                ])
-                ->post(
-                    config('services.erp.base_url') . '/api/storefront/auth/login',
-                    $data
-                );
-
-            /**
-             * ❌ ERP LOGIN FAIL (401 / 422 / 500)
-             */
-            if ($response->failed()) {
-                $json = $response->json();
-
-                Log::warning('❌ [STOREFRONT LOGIN FAILED]', [
-                    'status' => $response->status(),
-                    'body'   => $json,
-                ]);
-
-                return back()
-                    ->withInput($request->only('phone'))
-                    ->withErrors([
-                        'login' => $json['message']
-                            ?? 'Số điện thoại hoặc mật khẩu không đúng.',
-                    ]);
-            }
-
-            $json = $response->json();
-
-            /**
-             * ❌ ERP RESPONSE KHÔNG HỢP LỆ
-             */
-            if (empty($json['success']) || empty($json['customer'])) {
-                return back()
-                    ->withInput($request->only('phone'))
-                    ->withErrors([
-                        'login' => 'Không thể đăng nhập. Vui lòng thử lại.',
-                    ]);
-            }
-
-            /**
-             * ✅ SET SESSION CUSTOMER
-             */
-            session([
-                'customer' => $json['customer'],
-            ]);
-
-            /**
-             * 🔁 REDIRECT SAU LOGIN
-             */
-            return redirect()->intended(
-                route('linxen.account.index')
+    try {
+        $response = Http::withOptions([
+                'verify' => false,
+            ])
+            ->timeout(10)
+            ->withHeaders([
+                'Accept'            => 'application/json',
+                'X-Storefront-Code' => 'linxen',
+            ])
+            ->post(
+                config('services.erp.base_url') . '/api/storefront/auth/login',
+                $data
             );
 
-        } catch (\Throwable $e) {
+        $json = $response->json();
 
-            Log::error('🔥 [STOREFRONT LOGIN EXCEPTION]', [
-                'error' => $e->getMessage(),
+        /* =====================================================
+         * ❌ ERP LOGIN FAIL
+         * ===================================================== */
+        if ($response->failed() || empty($json['success'])) {
+
+            $message = $json['message']
+                ?? 'Số điện thoại hoặc mật khẩu không đúng.';
+
+            Log::warning('❌ [STOREFRONT LOGIN FAILED]', [
+                'status' => $response->status(),
+                'body'   => $json,
             ]);
+
+            // 👉 AJAX REQUEST (checkout modal)
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+
+            // 👉 WEB LOGIN (blade)
+            return back()
+                ->withInput($request->only('phone'))
+                ->withErrors([
+                    'login' => $message,
+                ]);
+        }
+
+        /* =====================================================
+         * ❌ ERP RESPONSE INVALID
+         * ===================================================== */
+        if (empty($json['customer'])) {
+
+            $message = 'Không thể đăng nhập. Vui lòng thử lại.';
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
 
             return back()
                 ->withInput($request->only('phone'))
                 ->withErrors([
-                    'login' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
+                    'login' => $message,
                 ]);
         }
+
+        /* =====================================================
+         * ✅ LOGIN SUCCESS
+         * ===================================================== */
+        session([
+            'customer' => $json['customer'],
+        ]);
+
+        // 👉 AJAX (checkout)
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success'  => true,
+                'customer' => $json['customer'],
+            ]);
+        }
+
+        // 👉 WEB LOGIN
+        return redirect()->intended(
+            route('linxen.account.index')
+        );
+
+    } catch (\Throwable $e) {
+
+        Log::error('🔥 [STOREFRONT LOGIN EXCEPTION]', [
+            'error' => $e->getMessage(),
+        ]);
+
+        $message = 'Hệ thống đang bận. Vui lòng thử lại sau.';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+            ], 500);
+        }
+
+        return back()
+            ->withInput($request->only('phone'))
+            ->withErrors([
+                'login' => $message,
+            ]);
     }
+}
+
 }
