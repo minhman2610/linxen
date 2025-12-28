@@ -516,17 +516,54 @@ function confirmAddressPick() {
     const selected = document.querySelector('input[name="address_pick"]:checked');
     if (!selected) return;
 
-    document.querySelector('input[name="shipping_address_id"]').value = selected.value;
+    const addressId = selected.value;
 
-    document.querySelector('.lx-address-default .lx-address-head strong').innerText =
-        selected.dataset.name;
+    // disable nút để tránh click nhiều lần
+    const actionBtn = document.querySelector('.lx-address-sheet-action button');
+    if (actionBtn) {
+        actionBtn.disabled = true;
+        actionBtn.innerText = 'Đang xử lý…';
+    }
 
-    document.querySelector('.lx-address-default .lx-address-head span').innerText =
-        selected.dataset.phone;
+    fetch(`/account/addresses/${addressId}/default`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute('content'),
+        },
+        credentials: 'same-origin',
+    })
+    .then(async res => {
+        const json = await res.json().catch(() => null);
 
-    document.querySelector('.lx-address-default .lx-address-text').innerText =
-        selected.dataset.address;
+        /* ❌ SET DEFAULT FAIL */
+        if (!res.ok || !json || json.success === false) {
+            const msg =
+                json?.message
+                || 'Không thể đặt địa chỉ làm mặc định.';
 
-    closeAddressPopup();
+            alert(msg);
+
+            if (actionBtn) {
+                actionBtn.disabled = false;
+                actionBtn.innerText = 'Dùng địa chỉ này';
+            }
+            return;
+        }
+
+        /* ✅ SUCCESS → RELOAD CHECKOUT */
+        window.location.reload();
+    })
+    .catch(() => {
+        alert('Không kết nối được hệ thống. Vui lòng thử lại.');
+
+        if (actionBtn) {
+            actionBtn.disabled = false;
+            actionBtn.innerText = 'Dùng địa chỉ này';
+        }
+    });
 }
+
 
