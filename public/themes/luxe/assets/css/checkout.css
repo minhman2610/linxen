@@ -1087,3 +1087,217 @@
 .lx-btn-checkout:disabled {
     opacity: .7;
 }
+/* =====================================================
+   ADDRESS PICKER MODAL – LIN XÉN
+===================================================== */
+
+/* OVERLAY */
+#lx-address-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+/* SHOW */
+#lx-address-modal.is-active {
+    display: flex;
+}
+
+/* MODAL BOX */
+.lx-address-modal {
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+
+    background: #ffffff;
+    border-radius: 16px;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 30px 70px rgba(0,0,0,.25);
+    animation: lxFadeUp .25s ease-out;
+}
+
+/* HEADER */
+.lx-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.lx-modal-head strong {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+.lx-modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.lx-modal-close:hover {
+    color: #111;
+}
+
+/* BODY */
+.lx-modal-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+}
+
+/* LIST */
+.lx-address-list {
+    display: grid;
+    gap: 12px;
+}
+
+/* CARD */
+.lx-address-card {
+    display: block;
+    padding: 14px 16px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+/* HOVER */
+.lx-address-card:hover {
+    border-color: #d1d5db;
+    background: #fafafa;
+}
+
+/* RADIO HIDE */
+.lx-address-card input {
+    display: none;
+}
+
+/* SELECTED */
+.lx-address-card:has(input:checked) {
+    border-color: #e6bfa6;
+    background: #fff7f2;
+    box-shadow: 0 6px 18px rgba(230,191,166,.35);
+}
+
+/* INFO */
+.lx-address-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* HEAD */
+.lx-address-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.lx-address-head strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+}
+
+.lx-address-phone {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* TEXT */
+.lx-address-text {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* BADGE DEFAULT */
+.lx-badge-default {
+    margin-left: auto;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    padding: 4px 10px;
+    border-radius: 999px;
+
+    background: #fdf2e9;
+    color: #92400e;
+    border: 1px solid #f3d9c8;
+}
+
+/* ACTIONS */
+.lx-modal-actions {
+    padding: 16px 20px;
+    border-top: 1px solid #eee;
+}
+
+/* BUTTON */
+.lx-modal-actions .lx-btn-primary {
+    width: 100%;
+    height: 48px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    border-radius: 999px;
+}
+
+/* EMPTY */
+.lx-address-empty {
+    padding: 16px;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+
+    background: #fafafa;
+    font-size: 14px;
+    color: #6b7280;
+    text-align: center;
+}
+
+/* ANIMATION */
+@keyframes lxFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+    .lx-address-modal {
+        max-width: 100%;
+        max-height: 90vh;
+        margin: 0 12px;
+    }
+
+    .lx-modal-head,
+    .lx-modal-body,
+    .lx-modal-actions {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
