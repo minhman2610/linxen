@@ -307,7 +307,7 @@ if (phoneState === 'member') {
 
         const json = await res.json().catch(() => null);
 
-        /* ❌ FAIL → HIỂN THỊ NGUYÊN MESSAGE TỪ BE */
+        /* ❌ LOGIN FAIL → HIỂN THỊ MESSAGE TỪ BE */
         if (!res.ok || !json || json.success === false) {
 
             showMemberError(
@@ -320,18 +320,13 @@ if (phoneState === 'member') {
             return;
         }
 
-        /* ✅ SUCCESS */
+        /* ✅ LOGIN SUCCESS */
         closeMemberModal();
 
-        phoneState   = 'logged';
-        phoneChecked = true;
-
-        phoneInput.setAttribute('readonly', 'readonly');
-        if (phoneStatus) phoneStatus.style.display = 'none';
-
-        if (memberPasswordModalInput) {
-            memberPasswordModalInput.value = '';
-        }
+        // reload lại checkout để áp session customer
+        setTimeout(() => {
+            window.location.reload();
+        }, 200);
 
     } catch (e) {
         showMemberError('Không kết nối được hệ thống.');
@@ -341,6 +336,7 @@ if (phoneState === 'member') {
 
     return;
 }
+
 
 
         /* ===== REGISTER (NEW / GUEST_EXISTING) ===== */
