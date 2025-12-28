@@ -449,4 +449,34 @@ console.log('hasAccount:', hasAccount);
         }
     });
 
+    /* =====================================================
+ * ADDRESS PICKER MODAL
+ * ===================================================== */
+function openAddressPopup() {
+    document.getElementById('lx-address-modal').style.display = 'block';
+}
+
+function closeAddressPopup() {
+    document.getElementById('lx-address-modal').style.display = 'none';
+}
+
+function confirmAddressPick() {
+    const selected = document.querySelector('input[name="address_pick"]:checked');
+    if (!selected) return;
+
+    document.querySelector('input[name="shipping_address_id"]').value = selected.value;
+
+    document.querySelector('.lx-address-default .lx-address-head strong').innerText =
+        selected.dataset.name;
+
+    document.querySelector('.lx-address-default .lx-address-head span').innerText =
+        selected.dataset.phone;
+
+    document.querySelector('.lx-address-default .lx-address-text').innerText =
+        selected.dataset.address;
+
+    closeAddressPopup();
+}
+
+
 });
