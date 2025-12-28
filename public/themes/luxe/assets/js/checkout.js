@@ -267,22 +267,25 @@ memberConfirmBtn?.addEventListener('click', async () => {
     const pwd2  = memberConfirmInput?.value?.trim();
 
     /* ===============================
-       MEMBER LOGIN
-    =============================== */
-    if (phoneState === 'member') {
+   MEMBER LOGIN
+=============================== */
+if (phoneState === 'member') {
 
-        if (!pwd) {
-            showMemberError('Vui lòng nhập mật khẩu để đăng nhập.');
-            return;
-        }
+    const pwd = memberPasswordModalInput?.value?.trim();
 
-        // chỉ đánh dấu action, KHÔNG validate guest
-        memberActionInput.value   = 'login';
-        memberPasswordInput.value = pwd;
-
-        closeMemberModal();
+    if (!pwd) {
+        showMemberError('Vui lòng nhập mật khẩu để đăng nhập.');
         return;
     }
+
+    // GHI vào hidden input để submit checkout
+    memberActionInput.value   = 'login';
+    memberPasswordInput.value = pwd;
+
+    closeMemberModal();
+    return;
+}
+
 
     /* ===============================
        REGISTER (NEW / GUEST_EXISTING)
