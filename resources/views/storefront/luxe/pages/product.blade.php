@@ -69,8 +69,10 @@
 
                 {{-- VARIANTS --}}
                 @include('storefront.luxe.components.product.variants', [
-                    'attributes' => $attributes
-                ])
+    'attributes' => $attributes,
+    'variants'   => $variants
+])
+
 
                 {{-- PDP BOTTOM GROUP --}}
 <div class="lx-pdp-bottom">
