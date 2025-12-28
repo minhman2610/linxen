@@ -14,10 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const locSel  = document.getElementById('lx-location');
     const wardSel = document.getElementById('lx-ward');
 
+    /* ===== MEMBER (HIDDEN INPUTS – SUBMIT) ===== */
     const memberActionInput   = document.getElementById('member_action');
     const memberEmailInput    = document.getElementById('member_email');
     const memberPasswordInput = document.getElementById('member_password');
     const memberConfirmInput  = document.getElementById('member_password_confirm');
+
+    /* ===== MEMBER MODAL (VISIBLE INPUTS) ===== */
+    const memberPasswordModalInput =
+        document.getElementById('lx-member-password');
 
     const memberConfirmBtn = document.getElementById('lx-member-confirm');
     const memberSkipBtn    = document.getElementById('lx-member-skip');
@@ -90,6 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
     }
+
+    
+
+
 
     /* =====================================================
      * MEMBER MODAL HELPERS
@@ -257,89 +266,69 @@ console.log('hasAccount:', hasAccount);
     }
 
     /* =====================================================
- * MEMBER CONFIRM (LOGIN / REGISTER INLINE)
- * ===================================================== */
-memberConfirmBtn?.addEventListener('click', async () => {
-    clearMemberError();
+     * MEMBER CONFIRM (LOGIN / REGISTER)
+     * ===================================================== */
+    memberConfirmBtn?.addEventListener('click', async () => {
 
-    const email = memberEmailInput.value.trim();
-    const pwd   = memberPasswordInput.value.trim();
-    const pwd2  = memberConfirmInput?.value?.trim();
+        if (memberErrorBox) memberErrorBox.style.display = 'none';
 
-    /* ===============================
-   MEMBER LOGIN
-=============================== */
-if (phoneState === 'member') {
+        /* ===== MEMBER LOGIN ===== */
+        if (phoneState === 'member') {
 
-    const pwd = memberPasswordModalInput?.value?.trim();
+            const pwd = memberPasswordModalInput?.value?.trim();
 
-    if (!pwd) {
-        showMemberError('Vui lòng nhập mật khẩu để đăng nhập.');
-        return;
-    }
+            if (!pwd) {
+                if (memberErrorBox) {
+                    memberErrorBox.innerText = 'Vui lòng nhập mật khẩu để đăng nhập.';
+                    memberErrorBox.style.display = 'block';
+                }
+                return;
+            }
 
-    // GHI vào hidden input để submit checkout
-    memberActionInput.value   = 'login';
-    memberPasswordInput.value = pwd;
+            // ghi vào hidden input để submit checkout
+            memberActionInput.value   = 'login';
+            memberPasswordInput.value = pwd;
 
-    closeMemberModal();
-    return;
-}
-
-
-    /* ===============================
-       REGISTER (NEW / GUEST_EXISTING)
-    =============================== */
-    if (!email || !pwd) {
-        showMemberError('Vui lòng nhập đầy đủ thông tin.');
-        return;
-    }
-
-    if (pwd.length < 6) {
-        showMemberError('Mật khẩu phải từ 6 ký tự.');
-        return;
-    }
-
-    if (memberConfirmInput && pwd !== pwd2) {
-        showMemberError('Mật khẩu xác nhận không khớp.');
-        return;
-    }
-
-    try {
-        const res = await fetch('/ajax/register-inline', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': document
-                    .querySelector('meta[name="csrf-token"]')
-                    ?.getAttribute('content'),
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify({
-                phone: phoneInput.value.trim(),
-                email,
-                password: pwd,
-            }),
-        });
-
-        const json = await res.json();
-
-        if (!res.ok || !json.success) {
-            showMemberError(json.message || 'Không thể đăng ký.');
+            closeMemberModal();
             return;
         }
 
+        /* ===== REGISTER (NEW / GUEST_EXISTING) ===== */
+        const email = memberEmailInput?.value?.trim();
+        const pwd   = memberPasswordModalInput?.value?.trim();
+        const pwd2  = memberConfirmInput?.value?.trim();
+
+        if (!email || !pwd) {
+            if (memberErrorBox) {
+                memberErrorBox.innerText = 'Vui lòng nhập đầy đủ thông tin.';
+                memberErrorBox.style.display = 'block';
+            }
+            return;
+        }
+
+        if (pwd.length < 6) {
+            if (memberErrorBox) {
+                memberErrorBox.innerText = 'Mật khẩu phải từ 6 ký tự.';
+                memberErrorBox.style.display = 'block';
+            }
+            return;
+        }
+
+        if (pwd !== pwd2) {
+            if (memberErrorBox) {
+                memberErrorBox.innerText = 'Mật khẩu xác nhận không khớp.';
+                memberErrorBox.style.display = 'block';
+            }
+            return;
+        }
+
+        // ghi vào hidden input để submit checkout
         memberActionInput.value   = 'register';
         memberEmailInput.value    = email;
         memberPasswordInput.value = pwd;
 
         closeMemberModal();
-
-    } catch (e) {
-        showMemberError('Không kết nối được server.');
-    }
-});
+    });
 
 
     memberSkipBtn?.addEventListener('click', () => {
