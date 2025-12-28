@@ -141,9 +141,6 @@ document.addEventListener('click', function (e) {
 });
 
 
-/* =====================================================
-   SYNC VARIANTS → ADD TO CART DATA (FIX SKU)
-===================================================== */
 function syncSelectedVariants() {
 
     const attrs = {};
@@ -157,25 +154,30 @@ function syncSelectedVariants() {
             attrs[key] = val;
         }
 
-        // 🔥 FIX CỐT LÕI:
-        // lấy product_id từ option đang active (SKU CON)
-        const activeOption = row.querySelector('.variant-option.active');
-        if (activeOption && activeOption.dataset.productId) {
-            resolvedProductId = activeOption.dataset.productId;
+        // 🔥 CHỈ ROW SIZE MỚI QUYẾT ĐỊNH SKU
+        if (key && key.toLowerCase() === 'size') {
+            const activeOption = row.querySelector('.variant-option.active');
+            if (activeOption && activeOption.dataset.productId) {
+                resolvedProductId = activeOption.dataset.productId;
+            }
         }
     });
 
     const btn = document.getElementById('lxAddToCartBtn');
-    if (btn) {
-        // attrs chỉ để hiển thị
-        btn.dataset.attrs = JSON.stringify(attrs);
+    if (!btn) return;
 
-        // 🔑 QUAN TRỌNG NHẤT: update product_id theo size đã chọn
-        if (resolvedProductId) {
-            btn.dataset.productId = resolvedProductId;
-        }
+    // attrs chỉ để hiển thị
+    btn.dataset.attrs = JSON.stringify(attrs);
+
+    // 🔑 SKU CON (SIZE)
+    if (resolvedProductId) {
+        btn.dataset.productId = resolvedProductId;
+    } else {
+        // 🚨 không có size → xoá product_id để BE chặn
+        delete btn.dataset.productId;
     }
 }
+
 
 /**
  * =====================================================
@@ -379,7 +381,7 @@ function showAddToCartToast(product) {
 }
 
 
-    /* ================= ADD TO CART ================= */
+    /* ================= ADD TO CART (FIX SKU) ================= */
 document.addEventListener('click', function (e) {
 
     const btn = e.target.closest('[data-add-to-cart]');
@@ -387,24 +389,37 @@ document.addEventListener('click', function (e) {
 
     e.preventDefault();
 
-    // Validate biến thể
+    // Validate biến thể (size, màu...)
     if (!validateVariants()) {
         btn.disabled = false;
         btn.classList.remove('is-loading');
         return;
     }
 
-    // 🔴 BẮT BUỘC PHẢI CÓ PRODUCT_ID
-    const productId = btn.dataset.productId;
+    // 🔥 FIX CỐT LÕI:
+    // LẤY product_id TỪ VARIANT SIZE ĐANG ACTIVE
+    let productId = null;
 
+    document.querySelectorAll('.lx-variant-row').forEach(row => {
+        const key = row.dataset.attrKey;
+
+        if (key && key.toLowerCase() === 'size') {
+            const active = row.querySelector('.variant-option.active');
+            if (active && active.dataset.productId) {
+                productId = active.dataset.productId;
+            }
+        }
+    });
+
+    // 🔴 BẮT BUỘC PHẢI CÓ SKU CON (SIZE)
     if (!productId || isNaN(productId)) {
-        showErrorToast('Sản phẩm chưa sẵn sàng bán');
+        showErrorToast('Vui lòng chọn size trước khi thêm vào giỏ');
         return;
     }
 
     const payload = {
         sku:        btn.dataset.sku,
-        product_id: Number(productId),              // 🔥 FIX CỐT LÕI
+        product_id: Number(productId),               // ✅ SKU CON – CHUẨN
         name:       btn.dataset.name,
         price:      Number(btn.dataset.price || 0),
         image:      btn.dataset.image || null,
@@ -454,6 +469,7 @@ document.addEventListener('click', function (e) {
         btn.disabled = false;
     });
 });
+
 
 
 })();

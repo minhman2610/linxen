@@ -36,8 +36,8 @@
         type="button"
         data-add-to-cart
 
-        {{-- 🔑 ID ERP / KiotViet (BẮT BUỘC) --}}
-        data-product-id="{{ $product['product_id'] ?? $product['id'] }}"
+        {{-- ❌ KHÔNG set product_id ở Blade (tránh SKU cha) --}}
+        {{-- product_id sẽ được JS resolve từ variant size --}}
 
         {{-- SKU hiển thị / tracking --}}
         data-sku="{{ $product['sku'] ?? $product['code'] }}"
