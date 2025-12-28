@@ -1301,3 +1301,64 @@
         padding-right: 16px;
     }
 }
+/* =====================================================
+   CHECKOUT – ADDRESS ACTION BUTTONS
+===================================================== */
+
+/* CHANGE ADDRESS */
+.lx-btn-change-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 14px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    border-radius: 999px;
+
+    background: #ffffff;
+    color: #92400e;
+
+    border: 1px solid #f3d9c8;
+
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.lx-btn-change-address:hover {
+    background: #fdf2e9;
+    border-color: #e6bfa6;
+}
+
+/* ADD ADDRESS */
+.lx-btn-add-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 14px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    border-radius: 999px;
+
+    background: linear-gradient(
+        135deg,
+        #f3d9c8,
+        #e6bfa6
+    );
+    color: #5a3e2b;
+
+    text-decoration: none;
+
+    box-shadow: 0 4px 12px rgba(230,191,166,.4);
+    transition: all .25s ease;
+}
+
+.lx-btn-add-address:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(230,191,166,.45);
+}
