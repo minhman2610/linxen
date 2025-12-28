@@ -355,76 +355,87 @@
     @endif
 
     {{-- =========================
-        MEMBER PROMPT MODAL
-    ========================== --}}
-    @if(!$customer)
-    <div id="lx-member-modal" class="lx-modal" style="display:none">
-        <div class="lx-modal-overlay"></div>
+     MEMBER PROMPT MODAL
+========================== --}}
+@if(!$customer)
+<div id="lx-member-modal" class="lx-modal">
+    <div class="lx-modal-overlay" onclick="document.body.style.overflow=''; this.closest('#lx-member-modal').classList.remove('is-active')"></div>
 
-        <div class="lx-modal-content lx-member-box">
+    <div class="lx-modal-content lx-member-box">
 
-            <div class="lx-member-head">
-                <div class="lx-member-icon">✨</div>
-                <h3 id="lx-member-title"></h3>
-                <p id="lx-member-desc"></p>
-            </div>
-            {{-- ERROR INLINE --}}
-<div id="lx-member-error"
-     class="lx-member-error"
-     style="display:none">
-</div>
+        {{-- HEADER --}}
+        <div class="lx-member-head">
+            <div class="lx-member-icon">✨</div>
+            <h3 id="lx-member-title"></h3>
+            <p id="lx-member-desc"></p>
+        </div>
 
-            {{-- LOGIN (KHÁCH CŨ) --}}
-            <div id="lx-member-login" class="lx-member-section" style="display:none">
-                <div class="lx-input-group">
-                    <input type="password"
-                           id="lx-member-password"
-                           placeholder="Mật khẩu đăng nhập">
-                </div>
-            </div>
+        {{-- ERROR INLINE --}}
+        <div id="lx-member-error"
+             class="lx-member-error"
+             style="display:none">
+        </div>
 
-            {{-- REGISTER (KHÁCH MỚI) --}}
-            <div id="lx-member-register" class="lx-member-section" style="display:none">
-                <div class="lx-input-group">
-                    <input type="email"
-                           id="lx-member-email"
-                           placeholder="Email (nhận ưu đãi & thông báo)">
-                </div>
+        {{-- LOGIN (KHÁCH CŨ / MEMBER) --}}
+        <div id="lx-member-login"
+             class="lx-member-section"
+             style="display:none">
 
-                <div class="lx-input-group">
-                    <input type="password"
-                           id="lx-member-new-password"
-                           placeholder="Tạo mật khẩu">
-                </div>
-
-                <div class="lx-input-group">
-                    <input type="password"
-                           id="lx-member-new-password-confirm"
-                           placeholder="Nhập lại mật khẩu">
-                </div>
-
-                <div class="lx-member-hint">
-                    🔒 Mật khẩu dùng để đăng nhập và tích lũy quyền lợi thành viên
-                </div>
-            </div>
-
-            {{-- ACTIONS --}}
-            <div class="lx-modal-actions lx-member-actions">
-                <button id="lx-member-confirm"
-                        class="lx-btn-primary lx-btn-icon">
-                    <span class="lx-btn-icon-left">✔</span>
-                    <span>Tiếp tục</span>
-                </button>
-
-                <button id="lx-member-skip"
-                        class="lx-btn-secondary lx-btn-icon">
-                    <span class="lx-btn-icon-left">⚡</span>
-                    <span>Mua nhanh không đăng nhập</span>
-                </button>
+            <div class="lx-input-group">
+                <input type="password"
+                       id="lx-member-password"
+                       placeholder="Mật khẩu đăng nhập">
             </div>
         </div>
+
+        {{-- REGISTER (KHÁCH MỚI / KHÁCH CŨ CHƯA CÓ ACCOUNT) --}}
+        <div id="lx-member-register"
+             class="lx-member-section"
+             style="display:none">
+
+            <div class="lx-input-group">
+                <input type="email"
+                       id="lx-member-email"
+                       placeholder="Email (nhận ưu đãi & thông báo)">
+            </div>
+
+            <div class="lx-input-group">
+                <input type="password"
+                       id="lx-member-new-password"
+                       placeholder="Tạo mật khẩu">
+            </div>
+
+            <div class="lx-input-group">
+                <input type="password"
+                       id="lx-member-new-password-confirm"
+                       placeholder="Nhập lại mật khẩu">
+            </div>
+
+            <div class="lx-member-hint">
+                🔒 Mật khẩu dùng để đăng nhập và tích lũy quyền lợi thành viên
+            </div>
+        </div>
+
+        {{-- ACTIONS --}}
+        <div class="lx-modal-actions lx-member-actions">
+            <button type="button"
+                    id="lx-member-confirm"
+                    class="lx-btn-primary lx-btn-icon">
+                <span class="lx-btn-icon-left">✔</span>
+                <span>Tiếp tục</span>
+            </button>
+
+            <button type="button"
+                    id="lx-member-skip"
+                    class="lx-btn-secondary lx-btn-icon">
+                <span class="lx-btn-icon-left">⚡</span>
+                <span>Mua nhanh không đăng nhập</span>
+            </button>
+        </div>
     </div>
-    @endif
+</div>
+@endif
+
     {{-- =========================
     ADDRESS PICKER MODAL
 ========================== --}}

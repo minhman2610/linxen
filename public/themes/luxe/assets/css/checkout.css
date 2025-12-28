@@ -564,135 +564,7 @@
     color: #991b1b;
     border: 1px solid #fecaca;
 }
-/* =====================================================
-   MEMBER PROMPT MODAL – LIN XÉN
-===================================================== */
 
-/* WRAPPER */
-.lx-member-box {
-    padding: 26px 22px 22px;
-    border-radius: 22px;
-}
-
-/* HEADER */
-.lx-member-head {
-    text-align: center;
-    margin-bottom: 18px;
-}
-
-.lx-member-icon {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 8px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #111827, #374151);
-    color: #fff;
-    font-size: 22px;
-    line-height: 48px;
-}
-
-.lx-member-head h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-.lx-member-head p {
-    font-size: 14px;
-    color: #6b7280;
-    line-height: 1.45;
-}
-
-/* SECTIONS */
-.lx-member-section {
-    margin-bottom: 14px;
-}
-
-/* INPUT GROUP */
-.lx-input-group {
-    margin-bottom: 12px;
-}
-
-.lx-input-group input {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 14px;
-    border: 1px solid #d1d5db;
-    font-size: 14px;
-    transition: all .2s ease;
-    background: #fff;
-}
-
-.lx-input-group input::placeholder {
-    color: #9ca3af;
-}
-
-.lx-input-group input:focus {
-    outline: none;
-    border-color: #111827;
-    box-shadow: 0 0 0 2px rgba(17,24,39,.08);
-}
-
-/* REGISTER HINT */
-.lx-member-hint {
-    font-size: 12.5px;
-    color: #4b5563;
-    background: #f9fafb;
-    border-radius: 10px;
-    padding: 8px 10px;
-    line-height: 1.4;
-}
-
-/* ACTIONS */
-.lx-member-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* BUTTON ICON */
-.lx-btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-weight: 500;
-}
-
-.lx-btn-icon-left {
-    font-size: 14px;
-}
-
-/* PRIMARY BUTTON */
-.lx-member-actions .lx-btn-primary {
-    background: linear-gradient(135deg, #111827, #1f2937);
-    color: #fff;
-    border-radius: 14px;
-    padding: 12px 16px;
-    font-size: 14.5px;
-    box-shadow: 0 6px 16px rgba(0,0,0,.18);
-}
-
-.lx-member-actions .lx-btn-primary:hover {
-    opacity: .95;
-}
-
-/* SECONDARY BUTTON */
-.lx-member-actions .lx-btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border-radius: 14px;
-    padding: 12px 16px;
-    font-size: 14px;
-}
-
-/* MOBILE ADJUST */
-@media (min-width: 480px) {
-    .lx-member-actions {
-        flex-direction: row;
-    }
-}
 /* =====================================================
    MODAL – BASE
 ===================================================== */
@@ -994,3 +866,202 @@
     to   { transform: rotate(360deg); }
 }
 #lx-member-modal.is-active { display:flex; }
+/* =====================================================
+   MEMBER PROMPT MODAL – LIN XÉN
+===================================================== */
+
+/* MODAL WRAPPER */
+.lx-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    align-items: center;
+    justify-content: center;
+}
+
+/* ACTIVE STATE */
+.lx-modal.is-active {
+    display: flex;
+}
+
+/* OVERLAY */
+.lx-modal-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}
+
+/* CONTENT BOX */
+.lx-modal-content {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    max-width: 420px;
+
+    background: #ffffff;
+    border-radius: 16px;
+
+    padding: 28px 24px;
+
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.25);
+
+    animation: lxModalFadeIn 0.25s ease-out;
+}
+
+/* MEMBER BOX */
+.lx-member-box {
+    text-align: center;
+}
+
+/* HEADER */
+.lx-member-head {
+    margin-bottom: 20px;
+}
+
+.lx-member-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+#lx-member-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 6px;
+}
+
+#lx-member-desc {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* INPUT GROUP */
+.lx-input-group {
+    margin-bottom: 14px;
+}
+
+.lx-input-group input {
+    width: 100%;
+    height: 44px;
+
+    padding: 0 14px;
+
+    font-size: 14px;
+    color: #111;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.lx-input-group input:focus {
+    border-color: #111;
+}
+
+/* MEMBER SECTION */
+.lx-member-section {
+    margin-top: 12px;
+}
+
+/* HINT */
+.lx-member-hint {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ERROR INLINE */
+.lx-member-error {
+    margin: 12px 0;
+    padding: 10px 12px;
+
+    background: #fee2e2;
+    color: #991b1b;
+
+    font-size: 13px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+/* ACTIONS */
+.lx-member-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+/* BUTTONS */
+.lx-btn-primary,
+.lx-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    height: 44px;
+    padding: 0 16px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    border-radius: 999px;
+    cursor: pointer;
+
+    border: none;
+}
+
+/* PRIMARY */
+.lx-btn-primary {
+    background: #111;
+    color: #fff;
+}
+
+.lx-btn-primary:hover {
+    background: #000;
+}
+
+/* SECONDARY */
+.lx-btn-secondary {
+    background: #f3f4f6;
+    color: #111;
+}
+
+.lx-btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* ICON */
+.lx-btn-icon-left {
+    font-size: 14px;
+}
+
+/* ANIMATION */
+@keyframes lxModalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+    .lx-modal-content {
+        margin: 0 16px;
+        padding: 24px 20px;
+    }
+}
