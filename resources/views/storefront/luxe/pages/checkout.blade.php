@@ -297,10 +297,19 @@
         {{-- ACTIONS --}}
         <div class="lx-checkout-actions">
             <button type="submit"
-                    class="lx-btn-primary lx-btn-full lx-btn-checkout">
-                <span class="lx-btn-main">ĐẶT HÀNG</span>
-                <span class="lx-btn-sub">Xác nhận đơn • Thanh toán COD</span>
-            </button>
+        id="lx-checkout-submit"
+        class="lx-btn-primary lx-btn-full lx-btn-checkout"
+        data-text-default="ĐẶT HÀNG"
+        data-text-loading="Đang xử lý đơn hàng…">
+    <span class="lx-btn-spinner"
+          style="display:none;margin-right:8px;">
+        ⏳
+    </span>
+    <span class="lx-btn-text">
+        ĐẶT HÀNG
+    </span>
+</button>
+
 
             <a href="{{ route('linxen.home') }}" class="lx-checkout-continue">
                 ← Tiếp tục mua sắm

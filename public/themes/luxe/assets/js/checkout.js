@@ -352,6 +352,7 @@ form.addEventListener('submit', async (e) => {
     // SAFE FETCH (HANDLE 500 / NON-JSON)
     // =========================
     try {
+        setCheckoutLoading(true);
         const res = await fetch('/api/storefront/orders', {
             method: 'POST',
             headers: {
@@ -395,7 +396,7 @@ form.addEventListener('submit', async (e) => {
             `/checkout/place-order?order_code=${json.order_code}`;
 
     } catch (err) {
-
+        setCheckoutLoading(false);
         console.error('🔥 CHECKOUT ERROR:', err);
 
         errBox.innerText =
@@ -406,6 +407,23 @@ form.addEventListener('submit', async (e) => {
         submitBtn?.removeAttribute('disabled');
     }
 });
+function setCheckoutLoading(isLoading) {
+    const btn = document.getElementById('lx-checkout-submit');
+    if (!btn) return;
+
+    const spinner = btn.querySelector('.lx-btn-spinner');
+    const text    = btn.querySelector('.lx-btn-text');
+
+    if (isLoading) {
+        btn.setAttribute('disabled', 'disabled');
+        spinner.style.display = 'inline-block';
+        text.innerText = btn.dataset.textLoading || 'Đang xử lý…';
+    } else {
+        btn.removeAttribute('disabled');
+        spinner.style.display = 'none';
+        text.innerText = btn.dataset.textDefault || 'ĐẶT HÀNG';
+    }
+}
 
 });
 
