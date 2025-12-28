@@ -437,23 +437,29 @@
 @endif
 
     {{-- =========================
-    ADDRESS PICKER MODAL
+     ADDRESS CONFIRM SHEET
 ========================== --}}
 @if(!empty($addresses))
-<div id="lx-address-modal" class="lx-modal-overlay" style="display:none">
+<div id="lx-address-modal" class="lx-address-sheet" style="display:none">
 
-    <div class="lx-modal lx-address-modal">
+    <div class="lx-address-sheet-backdrop"
+         onclick="closeAddressPopup()"></div>
 
-        <div class="lx-modal-head">
-            <strong>Chọn địa chỉ giao hàng</strong>
+    <div class="lx-address-sheet-box">
+
+        {{-- HEADER --}}
+        <div class="lx-address-sheet-head">
+            <span>Địa chỉ giao hàng</span>
+
             <button type="button"
-                    class="lx-modal-close"
+                    class="lx-address-sheet-close"
                     onclick="closeAddressPopup()">✕</button>
         </div>
 
-        <div class="lx-modal-body lx-address-list">
+        {{-- ADDRESS LIST (THỰC CHẤT LÀ CONFIRM CARD) --}}
+        <div class="lx-address-sheet-body">
             @foreach($addresses as $addr)
-                <label class="lx-address-card">
+                <label class="lx-address-sheet-card">
                     <input type="radio"
                            name="address_pick"
                            value="{{ $addr['id'] }}"
@@ -462,17 +468,19 @@
                            data-address="{{ $addr['address'] }}"
                            {{ $addr['is_default'] ? 'checked' : '' }}>
 
-                    <div class="lx-address-info">
-                        <div class="lx-address-head">
+                    <div class="lx-address-sheet-info">
+                        <div class="lx-address-sheet-headline">
                             <strong>{{ $addr['name'] }}</strong>
-                            <span class="lx-address-phone">{{ $addr['phone'] }}</span>
+                            <span class="lx-address-sheet-phone">
+                                {{ $addr['phone'] }}
+                            </span>
 
                             @if($addr['is_default'])
                                 <span class="lx-badge-default">Mặc định</span>
                             @endif
                         </div>
 
-                        <div class="lx-address-text">
+                        <div class="lx-address-sheet-text">
                             {{ $addr['address'] }}
                         </div>
                     </div>
@@ -480,17 +488,19 @@
             @endforeach
         </div>
 
-        <div class="lx-modal-actions">
+        {{-- ACTION --}}
+        <div class="lx-address-sheet-action">
             <button type="button"
-                    class="lx-btn-primary lx-btn-full"
+                    class="lx-btn-checkout"
                     onclick="confirmAddressPick()">
-                Chọn địa chỉ này
+                Dùng địa chỉ này
             </button>
         </div>
 
     </div>
 </div>
 @endif
+
 
 
 </section>
