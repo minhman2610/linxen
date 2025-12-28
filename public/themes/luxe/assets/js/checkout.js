@@ -106,7 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             clearTimeout(phoneTimer);
             if (phoneStatus) phoneStatus.style.display = 'none';
-            closeMemberModal();
+            if (phoneState !== 'member') {
+    closeMemberModal();
+}
 
             const phone = phoneInput.value.trim();
             if (phone.length < 9) return;
