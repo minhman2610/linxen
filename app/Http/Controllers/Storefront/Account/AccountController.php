@@ -225,15 +225,18 @@ public function deleteAddress(int $id)
         ]);
     }
 }
-/**
- * =====================================================
- * ⭐ SET DEFAULT ADDRESS (LINXEN)
- * =====================================================
- */
-public function setDefaultAddress(int $id)
+public function setDefaultAddress(Request $request, int $id)
 {
     // 🔐 Check login theo session customer
     if ($redirect = $this->requireLogin()) {
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập để tiếp tục.',
+            ], 401);
+        }
+
         return $redirect;
     }
 
@@ -241,21 +244,30 @@ public function setDefaultAddress(int $id)
         // 🚀 Gọi ERP set default
         $res = $this->erp->setDefaultCustomerAddress($id);
 
-        /**
-         * ERP trả về:
-         * {
-         *   success: true|false,
-         *   message?: string
-         * }
-         */
         if (empty($res) || !($res['success'] ?? false)) {
+
             $msg = $res['message'] ?? 'Không thể đặt địa chỉ mặc định.';
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $msg,
+                ], 422);
+            }
+
             return back()->withErrors([
                 'address' => $msg,
             ]);
         }
 
         // ✅ Thành công
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã đặt địa chỉ làm mặc định',
+            ]);
+        }
+
         return back()->with('success', 'Đã đặt địa chỉ làm mặc định');
 
     } catch (\Throwable $e) {
@@ -265,11 +277,19 @@ public function setDefaultAddress(int $id)
             'error'      => $e->getMessage(),
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể kết nối hệ thống. Vui lòng thử lại sau.',
+            ], 500);
+        }
+
         return back()->withErrors([
             'address' => 'Không thể kết nối hệ thống. Vui lòng thử lại sau.',
         ]);
     }
 }
+
 public function updateAddress(Request $request, int $id)
 {
     if ($redirect = $this->requireLogin()) {
