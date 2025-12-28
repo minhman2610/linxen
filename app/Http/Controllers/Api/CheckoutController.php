@@ -71,14 +71,16 @@ public function checkPhone(Request $request): JsonResponse
         $json = $response->json();
 
         // =====================================================
-        // 2️⃣ MAP ĐÚNG NGHĨA TỪ ERP
+        // 2️⃣ MAP ĐÚNG NGHĨA TỪ ERP (KHÔNG HẠ CẤP MEMBER)
         // =====================================================
-        return response()->json([
-            // có identity trong CRM hay chưa
-            'has_profile'     => (bool) ($json['has_identity'] ?? false),
+        $hasAccount = (bool) ($json['has_account'] ?? false);
 
-            // có account đăng nhập (member) hay chưa
-            'has_account'     => (bool) ($json['has_account'] ?? false),
+        return response()->json([
+            // có identity / profile hay chưa
+            'has_profile'     => (bool) ($json['has_identity'] ?? $hasAccount),
+
+            // có account đăng nhập hay chưa
+            'has_account'     => $hasAccount,
 
             // đã từng mua / có lịch sử ERP
             'has_erp_history' => (bool) ($json['has_erp_history'] ?? false),
@@ -86,7 +88,10 @@ public function checkPhone(Request $request): JsonResponse
             // thông tin hiển thị
             'name'            => $json['name'] ?? null,
             'phone'           => $phone,
-            'customer_type'   => $json['customer_type'] ?? 'guest',
+
+            // 🔥 CUSTOMER TYPE – ƯU TIÊN ERP, FALLBACK AN TOÀN
+            'customer_type'   => $json['customer_type']
+                ?? ($hasAccount ? 'member' : 'guest'),
         ]);
 
     } catch (Throwable $e) {
@@ -103,6 +108,7 @@ public function checkPhone(Request $request): JsonResponse
         ]);
     }
 }
+
 protected function normalizePhone(string $phone): ?string
 {
     $phone = preg_replace('/\D+/', '', $phone);

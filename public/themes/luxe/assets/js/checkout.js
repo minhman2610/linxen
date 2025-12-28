@@ -116,62 +116,83 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function checkPhone(phone) {
-        phoneStatus.style.display = 'block';
-        phoneStatus.className = 'lx-phone-status info';
-        phoneStatus.innerText = 'Đang kiểm tra số điện thoại…';
+    phoneStatus.style.display = 'block';
+    phoneStatus.className = 'lx-phone-status info';
+    phoneStatus.innerText = 'Đang kiểm tra số điện thoại…';
 
-        try {
-            const res = await fetch('/ajax/check-phone', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute('content'),
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify({ phone }),
-            });
+    try {
+        const res = await fetch('/ajax/check-phone', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content'),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ phone }),
+        });
 
-            const json = await res.json();
-            phoneChecked = true;
-
-            const hasProfile = !!json.has_profile;
-            const hasAccount = !!json.has_account;
-
-            if (hasProfile && hasAccount) {
-                phoneState = 'member';
-                phoneStatus.className = 'lx-phone-status success';
-                phoneStatus.innerText =
-                    'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm.';
-                showMemberModal('existing');
-                return;
-            }
-
-            if (hasProfile && !hasAccount) {
-                phoneState = 'guest_existing';
-                phoneStatus.className = 'lx-phone-status info';
-                phoneStatus.innerText =
-                    'Bạn đã từng mua hàng. Có thể tạo tài khoản hoặc mua nhanh.';
-                if (json.name && nameInput && !nameInput.value) {
-                    nameInput.value = json.name;
-                }
-                showMemberModal('guest');
-                return;
-            }
-
-            phoneState = 'new';
-            phoneStatus.className = 'lx-phone-status neutral';
-            phoneStatus.innerText =
-                'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh.';
-            showMemberModal('new');
-
-        } catch (e) {
-            phoneStatus.className = 'lx-phone-status error';
-            phoneStatus.innerText = 'Không kiểm tra được số điện thoại.';
+        // ❗ defensive: backend có thể trả lỗi
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
         }
+
+        const json = await res.json();
+        phoneChecked = true;
+
+        const hasAccount    = !!json.has_account;
+        const hasErpHistory = !!json.has_erp_history;
+        const customerType  = json.customer_type || (hasAccount ? 'member' : 'guest');
+
+        // =====================================================
+        // CASE 1️⃣: MEMBER – CÓ ACCOUNT (LOGIN)
+        // =====================================================
+        if (customerType === 'member' && hasAccount) {
+            phoneState = 'member';
+            phoneStatus.className = 'lx-phone-status success';
+            phoneStatus.innerText =
+                'Chào mừng bạn quay lại! Đăng nhập để tích lũy điểm.';
+            showMemberModal('existing');
+            return;
+        }
+
+        // =====================================================
+        // CASE 2️⃣: KHÁCH CŨ – CÓ LỊCH SỬ NHƯNG CHƯA CÓ ACCOUNT
+        // =====================================================
+        if (!hasAccount && hasErpHistory) {
+            phoneState = 'guest_existing';
+            phoneStatus.className = 'lx-phone-status info';
+            phoneStatus.innerText =
+                'Bạn đã từng mua hàng. Có thể tạo tài khoản hoặc mua nhanh.';
+
+            if (json.name && nameInput && !nameInput.value) {
+                nameInput.value = json.name;
+            }
+
+            showMemberModal('guest');
+            return;
+        }
+
+        // =====================================================
+        // CASE 3️⃣: KHÁCH MỚI HOÀN TOÀN
+        // =====================================================
+        phoneState = 'new';
+        phoneStatus.className = 'lx-phone-status neutral';
+        phoneStatus.innerText =
+            'Tạo tài khoản để nhận ưu đãi, hoặc mua nhanh.';
+        showMemberModal('new');
+
+    } catch (e) {
+        console.error('🔥 CHECK PHONE ERROR:', e);
+        phoneChecked = false;
+        phoneState = null;
+        phoneStatus.className = 'lx-phone-status error';
+        phoneStatus.innerText = 'Không kiểm tra được số điện thoại. Vui lòng thử lại.';
     }
+}
+
 
     /* =====================================================
      * MEMBER MODAL
