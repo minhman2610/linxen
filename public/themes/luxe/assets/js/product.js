@@ -381,7 +381,7 @@ function showAddToCartToast(product) {
 }
 
 
-    /* ================= ADD TO CART (FIX SKU) ================= */
+    /* ================= ADD TO CART (FIX SKU – FINAL) ================= */
 document.addEventListener('click', function (e) {
 
     const btn = e.target.closest('[data-add-to-cart]');
@@ -389,29 +389,23 @@ document.addEventListener('click', function (e) {
 
     e.preventDefault();
 
-    // Validate biến thể (size, màu...)
+    // Validate biến thể (UI)
     if (!validateVariants()) {
         btn.disabled = false;
         btn.classList.remove('is-loading');
         return;
     }
 
-    // 🔥 FIX CỐT LÕI:
-    // LẤY product_id TỪ VARIANT SIZE ĐANG ACTIVE
+    // 🔥 FIX ĐÚNG: LẤY SKU CON TỪ OPTION ACTIVE CÓ data-product-id
     let productId = null;
 
-    document.querySelectorAll('.lx-variant-row').forEach(row => {
-        const key = row.dataset.attrKey;
-
-        if (key && key.toLowerCase() === 'size') {
-            const active = row.querySelector('.variant-option.active');
-            if (active && active.dataset.productId) {
-                productId = active.dataset.productId;
-            }
+    document.querySelectorAll('.variant-option.active').forEach(option => {
+        if (option.dataset.productId) {
+            productId = option.dataset.productId;
         }
     });
 
-    // 🔴 BẮT BUỘC PHẢI CÓ SKU CON (SIZE)
+    // 🔴 BẮT BUỘC PHẢI CÓ SKU CON
     if (!productId || isNaN(productId)) {
         showErrorToast('Vui lòng chọn size trước khi thêm vào giỏ');
         return;
@@ -419,7 +413,7 @@ document.addEventListener('click', function (e) {
 
     const payload = {
         sku:        btn.dataset.sku,
-        product_id: Number(productId),               // ✅ SKU CON – CHUẨN
+        product_id: Number(productId),     // ✅ SKU CON
         name:       btn.dataset.name,
         price:      Number(btn.dataset.price || 0),
         image:      btn.dataset.image || null,
