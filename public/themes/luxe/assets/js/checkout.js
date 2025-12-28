@@ -449,7 +449,8 @@ console.log('hasAccount:', hasAccount);
         }
     });
 
-    /* =====================================================
+});
+/* =====================================================
  * ADDRESS PICKER MODAL
  * ===================================================== */
 function openAddressPopup() {
@@ -478,5 +479,3 @@ function confirmAddressPick() {
     closeAddressPopup();
 }
 
-
-});
