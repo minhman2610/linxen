@@ -205,6 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const hasErpHistory = !!json.has_erp_history;
             const customerType  =
                 json.customer_type || (hasAccount ? 'member' : 'guest');
+            console.log('CHECK PHONE RESULT:', json);
+console.log('customerType:', customerType);
+console.log('hasAccount:', hasAccount);
 
             /* ===== MEMBER ===== */
             if (customerType === 'member' && hasAccount) {
