@@ -257,74 +257,87 @@ console.log('hasAccount:', hasAccount);
     }
 
     /* =====================================================
-     * MEMBER CONFIRM (LOGIN / REGISTER INLINE) – GIỮ 100%
-     * ===================================================== */
-    memberConfirmBtn?.addEventListener('click', async () => {
-        clearMemberError();
+ * MEMBER CONFIRM (LOGIN / REGISTER INLINE)
+ * ===================================================== */
+memberConfirmBtn?.addEventListener('click', async () => {
+    clearMemberError();
 
-        const email = memberEmailInput.value.trim();
-        const pwd   = memberPasswordInput.value.trim();
-        const pwd2  = memberConfirmInput?.value?.trim();
+    const email = memberEmailInput.value.trim();
+    const pwd   = memberPasswordInput.value.trim();
+    const pwd2  = memberConfirmInput?.value?.trim();
 
-        if (!email || !pwd) {
-            showMemberError('Vui lòng nhập đầy đủ thông tin.');
+    /* ===============================
+       MEMBER LOGIN
+    =============================== */
+    if (phoneState === 'member') {
+
+        if (!pwd) {
+            showMemberError('Vui lòng nhập mật khẩu để đăng nhập.');
             return;
         }
 
-        // REGISTER
-        if (phoneState === 'new' || phoneState === 'guest_existing') {
+        // chỉ đánh dấu action, KHÔNG validate guest
+        memberActionInput.value   = 'login';
+        memberPasswordInput.value = pwd;
 
-            if (pwd.length < 6) {
-                showMemberError('Mật khẩu phải từ 6 ký tự.');
-                return;
-            }
+        closeMemberModal();
+        return;
+    }
 
-            if (memberConfirmInput && pwd !== pwd2) {
-                showMemberError('Mật khẩu xác nhận không khớp.');
-                return;
-            }
+    /* ===============================
+       REGISTER (NEW / GUEST_EXISTING)
+    =============================== */
+    if (!email || !pwd) {
+        showMemberError('Vui lòng nhập đầy đủ thông tin.');
+        return;
+    }
 
-            try {
-                const res = await fetch('/ajax/register-inline', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute('content'),
-                    },
-                    credentials: 'same-origin',
-                    body: JSON.stringify({
-                        phone: phoneInput.value.trim(),
-                        email,
-                        password: pwd,
-                    }),
-                });
+    if (pwd.length < 6) {
+        showMemberError('Mật khẩu phải từ 6 ký tự.');
+        return;
+    }
 
-                const json = await res.json();
+    if (memberConfirmInput && pwd !== pwd2) {
+        showMemberError('Mật khẩu xác nhận không khớp.');
+        return;
+    }
 
-                if (!res.ok || !json.success) {
-                    showMemberError(json.message || 'Không thể đăng ký.');
-                    return;
-                }
+    try {
+        const res = await fetch('/ajax/register-inline', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content'),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                phone: phoneInput.value.trim(),
+                email,
+                password: pwd,
+            }),
+        });
 
-                memberActionInput.value = 'register';
-                closeMemberModal();
+        const json = await res.json();
 
-            } catch (e) {
-                showMemberError('Không kết nối được server.');
-            }
-
+        if (!res.ok || !json.success) {
+            showMemberError(json.message || 'Không thể đăng ký.');
             return;
         }
 
-        // LOGIN
-        if (phoneState === 'member') {
-            memberActionInput.value   = 'login';
-            closeMemberModal();
-        }
-    });
+        memberActionInput.value   = 'register';
+        memberEmailInput.value    = email;
+        memberPasswordInput.value = pwd;
+
+        closeMemberModal();
+
+    } catch (e) {
+        showMemberError('Không kết nối được server.');
+    }
+});
+
 
     memberSkipBtn?.addEventListener('click', () => {
         memberActionInput.value = 'skip';
