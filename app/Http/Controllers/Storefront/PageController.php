@@ -541,8 +541,6 @@ public function account()
         'customer' => (object) $customer,
     ]);
 }
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Str;
 
 /* =====================================================
  * 📦 COLLECTION – LIN XÉN (STABLE)
