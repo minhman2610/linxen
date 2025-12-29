@@ -11,23 +11,41 @@ class OrderController extends Controller
 {
     /**
      * =====================================================
+     * 🔗 Resolve ERP base URL (SAFE)
+     * =====================================================
+     */
+    protected function erpBaseUrl(): ?string
+    {
+        $erpUrl = rtrim(config('services.erp.url'), '/');
+
+        if (!$erpUrl || !str_starts_with($erpUrl, 'http')) {
+            Log::critical('[ERP URL MISCONFIGURED]', [
+                'erp_url' => $erpUrl,
+            ]);
+
+            return null;
+        }
+
+        return $erpUrl;
+    }
+
+    /**
+     * =====================================================
      * 🔗 Resolve ERP order link (internal / debug)
      * =====================================================
      */
     protected function resolveErpOrderLink(string $code): ?string
     {
-        // Cho phép bật / tắt qua env nếu cần
         if (!config('app.show_erp_link', true)) {
             return null;
         }
 
-        $erpUrl = rtrim(config('services.erp.url'), '/');
-
-        if (!$erpUrl || !str_starts_with($erpUrl, 'http')) {
+        $erpUrl = $this->erpBaseUrl();
+        if (!$erpUrl) {
             return null;
         }
 
-        // 👉 TUỲ ERP: chỉnh path nếu khác
+        // 👉 Tuỳ ERP, chỉnh path nếu cần
         return "{$erpUrl}/orders/{$code}";
     }
 
@@ -46,6 +64,15 @@ class OrderController extends Controller
             return redirect()->route('linxen.home');
         }
 
+        $erpUrl = $this->erpBaseUrl();
+        if (!$erpUrl) {
+            return view('storefront.luxe.pages.account.orders.index', [
+                'orders'   => [],
+                'customer' => (object) $customer,
+                'error'    => 'Hệ thống đang cấu hình sai kết nối ERP.',
+            ]);
+        }
+
         try {
             $res = Http::withOptions(['verify' => false])
                 ->timeout(6)
@@ -54,12 +81,9 @@ class OrderController extends Controller
                     'Authorization'     => 'Bearer ' . session('login_token'),
                     'Accept'            => 'application/json',
                 ])
-                ->get(
-                    config('services.erp.url') . '/api/storefront/orders',
-                    [
-                        'phone' => $customer['phone'],
-                    ]
-                );
+                ->get("{$erpUrl}/api/storefront/orders", [
+                    'phone' => $customer['phone'],
+                ]);
 
             if (!$res->ok()) {
                 Log::warning('[ACCOUNT ORDERS FETCH FAILED]', [
@@ -71,7 +95,10 @@ class OrderController extends Controller
             } else {
                 $orders = collect($res->json('orders') ?? [])
                     ->map(function ($order) {
-                        $order['erp_link'] = $this->resolveErpOrderLink($order['code'] ?? '');
+                        $order['erp_link'] = !empty($order['code'])
+                            ? $this->resolveErpOrderLink($order['code'])
+                            : null;
+
                         return $order;
                     })
                     ->toArray();
@@ -102,15 +129,21 @@ class OrderController extends Controller
         $order = null;
         $error = null;
 
+        $erpUrl = $this->erpBaseUrl();
+        if (!$erpUrl) {
+            return view('storefront.luxe.pages.account.orders.show-error', [
+                'orderCode' => $code,
+                'message'   => 'Hệ thống đang cấu hình sai kết nối ERP. Vui lòng liên hệ bộ phận kỹ thuật.',
+            ]);
+        }
+
         try {
             $res = Http::withOptions(['verify' => false])
                 ->timeout(6)
                 ->withHeaders([
                     'X-Storefront-Code' => 'linxen',
                 ])
-                ->get(
-                    config('services.erp.url') . "/api/storefront/orders/{$code}"
-                );
+                ->get("{$erpUrl}/api/storefront/orders/{$code}");
 
             // ❌ Lỗi HTTP / ERP chết
             if (!$res->ok()) {
@@ -141,8 +174,10 @@ class OrderController extends Controller
                 else {
                     $order = (object) $payload['order'];
 
-                    // 🔗 ERP LINK
-                    $order->erp_link = $this->resolveErpOrderLink($order->code ?? $code);
+                    // 🔗 ERP LINK (internal)
+                    $order->erp_link = $this->resolveErpOrderLink(
+                        $order->code ?? $code
+                    );
                 }
             }
 
