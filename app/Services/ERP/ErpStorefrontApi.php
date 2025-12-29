@@ -440,18 +440,17 @@ public function collection(
     $limit = min(max((int) $limit, 1), 48);
 
     // -------------------------------------------------
-    // 1️⃣ Cache key (PHẢI có page + limit)
+    // 1️⃣ Cache key (BẮT BUỘC có page + limit)
     // -------------------------------------------------
     $cacheKey = "storefront:collection:{$brand}:{$slug}:{$page}:{$limit}";
 
-    // 🔍 DEBUG – page + cache key
-    \Log::info('🔎 COLLECTION DEBUG – PARAMS', [
+    // 🔥 DEBUG – params + cache key (PROD SAFE)
+    \Log::error('🧠 ERP COLLECTION PARAMS', [
         'brand'    => $brand,
         'slug'     => $slug,
         'page'     => $page,
         'limit'    => $limit,
         'cacheKey' => $cacheKey,
-        'url'      => request()->fullUrl(),
     ]);
 
     return \Cache::remember($cacheKey, now()->addMinutes(5), function () use (
@@ -471,8 +470,8 @@ public function collection(
             'limit' => $limit,
         ];
 
-        // 🔍 DEBUG – ERP request
-        \Log::info('📡 ERP COLLECTION REQUEST', [
+        // 🔥 DEBUG – ERP request
+        \Log::error('📡 ERP COLLECTION REQUEST', [
             'endpoint' => $endpoint,
             'params'   => $params,
             'cacheKey' => $cacheKey,
@@ -481,7 +480,8 @@ public function collection(
         $data = $this->get($endpoint, $params);
 
         if (empty($data) || empty($data['collection'])) {
-            \Log::warning('⚠️ COLLECTION EMPTY DATA', [
+
+            \Log::error('❌ ERP COLLECTION EMPTY', [
                 'brand' => $brand,
                 'slug'  => $slug,
                 'page'  => $page,
@@ -495,7 +495,7 @@ public function collection(
         }
 
         // -------------------------------------------------
-        // 3️⃣ COLLECTION META
+        // 3️⃣ COLLECTION META (KHÔNG DÙNG meta.page)
         // -------------------------------------------------
         $collection = [
             'name'        => is_string($data['collection']['name'] ?? null)
@@ -514,7 +514,7 @@ public function collection(
         ];
 
         // -------------------------------------------------
-        // 4️⃣ PRODUCTS – NORMALIZE + DEBUG IDS
+        // 4️⃣ PRODUCTS – NORMALIZE
         // -------------------------------------------------
         $products = collect($data['products'] ?? [])
             ->map(function ($p) {
@@ -561,26 +561,21 @@ public function collection(
             ->values()
             ->toArray();
 
-        // 🔍 DEBUG – product ids per page
-        \Log::info('🧾 COLLECTION PRODUCT IDS', [
-            'page'        => $page,
-            'count'       => count($products),
-            'product_ids' => array_slice(
-                array_column($products, 'product_id'),
-                0,
-                10 // log 10 id đầu là đủ
-            ),
+        // 🔥 DEBUG – product ids
+        \Log::error('🧾 ERP COLLECTION PRODUCT IDS', [
+            'page'  => $page,
+            'count' => count($products),
+            'ids'   => array_slice(array_column($products, 'product_id'), 0, 10),
         ]);
 
         // -------------------------------------------------
-        // 5️⃣ META PAGINATION
+        // 5️⃣ META PAGINATION (LOG ĐỂ BẮT LỖI)
         // -------------------------------------------------
         $meta = $data['meta'] ?? null;
 
-        // 🔍 DEBUG – meta
-        \Log::info('📊 COLLECTION META', [
-            'page' => $page,
-            'meta' => $meta,
+        \Log::error('📊 ERP COLLECTION META RAW', [
+            'request_page' => $page,
+            'meta'         => $meta,
         ]);
 
         return [
@@ -590,6 +585,7 @@ public function collection(
         ];
     });
 }
+
 
 
     /**
