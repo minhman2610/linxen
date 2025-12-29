@@ -1,47 +1,137 @@
-/* =====================================
-   CATEGORY – LIN XÉN
-===================================== */
+/* =====================================================
+   COLLECTION PAGE – LIN XÉN
+   Premium • Clean • SEO-safe
+===================================================== */
+
+/* =========================
+   CATEGORY HERO
+========================= */
 
 .lx-category-hero {
     position: relative;
-    height: 48vh;
+    width: 100%;
+    min-height: 360px;
     overflow: hidden;
+
+    display: flex;
+    align-items: flex-end;
+
+    background: #f6f6f6;
 }
 
+/* Khi KHÔNG có hero image */
+.lx-category-hero.no-hero {
+    min-height: 220px;
+    background: linear-gradient(
+        to bottom,
+        #fafafa,
+        #ffffff
+    );
+}
+
+/* Hero image */
 .lx-category-hero img {
+    position: absolute;
+    inset: 0;
+
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.lx-category-hero-text {
+/* Overlay nhẹ cho chữ nổi */
+.lx-category-hero::after {
+    content: "";
     position: absolute;
-    left: 24px;
-    bottom: 32px;
+    inset: 0;
+
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.45),
+        rgba(0,0,0,0.05),
+        rgba(0,0,0,0)
+    );
+}
+
+/* =========================
+   HERO TEXT
+========================= */
+
+.lx-category-hero-text {
+    position: relative;
+    z-index: 2;
+
+    padding: 32px 24px;
+    max-width: 640px;
+
     color: #fff;
+}
+
+.lx-category-hero.no-hero .lx-category-hero-text {
+    color: #111;
 }
 
 .lx-category-hero-text h1 {
     font-size: 32px;
     font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 8px;
 }
 
-.lx-category-toolbar {
-    padding: 20px 24px;
+.lx-category-desc {
     font-size: 14px;
-    color: #666;
+    line-height: 1.6;
+    opacity: 0.95;
 }
 
-.lx-product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 28px;
-    padding: 32px 24px;
+/* Fallback description */
+.lx-category-desc.muted {
+    color: #6b7280;
+    opacity: 1;
 }
 
-.lx-category-trust {
-    text-align: center;
-    padding: 24px;
-    font-size: 14px;
-    color: #666;
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    .lx-category-hero {
+        min-height: 260px;
+    }
+
+    .lx-category-hero.no-hero {
+        min-height: 180px;
+    }
+
+    .lx-category-hero-text {
+        padding: 24px 16px;
+    }
+
+    .lx-category-hero-text h1 {
+        font-size: 24px;
+    }
+
+    .lx-category-desc {
+        font-size: 13px;
+    }
+}
+
+/* =========================
+   OPTIONAL: SMOOTH FADE
+========================= */
+
+.lx-category-hero img {
+    animation: fadeInHero 0.6s ease-out both;
+}
+
+@keyframes fadeInHero {
+    from {
+        opacity: 0;
+        transform: scale(1.02);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
