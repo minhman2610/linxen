@@ -544,7 +544,7 @@ public function account()
  * ===================================================== */
 public function collection(ErpStorefrontApi $erp)
 {
-    $data = $erp->collections($this->brand);
+    $data = $erp->collection($this->brand);
 
     return view(
         "storefront.{$this->theme}.pages.collections",
