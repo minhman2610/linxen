@@ -397,3 +397,22 @@
     pointer-events: none;
     border-color: transparent;
 }
+.lx-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* mobile 2 cột */
+    gap: 12px; /* 🔥 giảm mạnh */
+}
+
+@media (min-width: 768px) {
+    .lx-product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lx-product-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+}
