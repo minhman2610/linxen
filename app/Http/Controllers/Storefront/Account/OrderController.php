@@ -15,19 +15,20 @@ class OrderController extends Controller
      * =====================================================
      */
     protected function erpBaseUrl(): ?string
-    {
-        $erpUrl = rtrim(config('services.erp.url'), '/');
+{
+    $erpUrl = rtrim(config('services.erp.base_url'), '/');
 
-        if (!$erpUrl || !str_starts_with($erpUrl, 'http')) {
-            Log::critical('[ERP URL MISCONFIGURED]', [
-                'erp_url' => $erpUrl,
-            ]);
+    if (!$erpUrl || !str_starts_with($erpUrl, 'http')) {
+        Log::critical('[ERP URL MISCONFIGURED]', [
+            'erp_url' => $erpUrl,
+        ]);
 
-            return null;
-        }
-
-        return $erpUrl;
+        return null;
     }
+
+    return $erpUrl;
+}
+
 
     /**
      * =====================================================
