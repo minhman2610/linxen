@@ -121,11 +121,12 @@
                         ✔ Còn hàng
                     </span>
 
-                    @if(!empty($product['tag']))
-                        <span class="lx-tag lx-tag-best">
-                            {{ $product['tag'] }}
-                        </span>
-                    @endif
+                    @if(!empty($product['tag']) && is_string($product['tag']))
+    <span class="lx-tag lx-tag-best">
+        {{ $product['tag'] }}
+    </span>
+@endif
+
                 </div>
 
             </div>
