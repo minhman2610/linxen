@@ -540,44 +540,23 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION / CATEGORY – LIN XÉN (DEBUG MODE)
+ * 📦 COLLECTION / CATEGORY – LIN XÉN
+ * Lấy dữ liệu từ ERP Storefront API
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    // =====================================================
-    // 0️⃣ CONFIRM CONTROLLER ĐƯỢC GỌI
-    // =====================================================
-    \Log::error('PAGE CONTROLLER COLLECTION HIT', [
-        'slug' => $slug,
-        'brand' => $this->brand,
-    ]);
-
-    // =====================================================
-    // 1️⃣ CALL ERP STOREFRONT API
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ CALL ERP STOREFRONT API
+    |--------------------------------------------------------------------------
+    */
     $data = $erp->collection($this->brand, $slug);
 
-    \Log::error('ERP STOREFRONT DATA RECEIVED', [
-        'is_array' => is_array($data),
-        'keys' => is_array($data) ? array_keys($data) : null,
-        'collection' => $data['collection'] ?? null,
-        'products_count' => isset($data['products']) ? count($data['products']) : null,
-        'products_sample' => isset($data['products'])
-            ? array_slice($data['products'], 0, 2)
-            : null,
-    ]);
-
-    // ❗ KHÔNG abort để debug được
-    if (empty($data) || !is_array($data)) {
-        return response()->json([
-            'error' => 'ERP returned empty or invalid data',
-            'raw' => $data,
-        ], 200);
-    }
-
-    // =====================================================
-    // 2️⃣ COLLECTION META
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ COLLECTION META (SAFE)
+    |--------------------------------------------------------------------------
+    */
     $collection = [
         'name'        => $data['collection']['name']        ?? 'Bộ sưu tập',
         'description' => $data['collection']['description'] ?? null,
@@ -585,80 +564,66 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         'slug'        => $slug,
     ];
 
-    // =====================================================
-    // 3️⃣ PRODUCTS – DEBUG TỪNG BƯỚC
-    // =====================================================
-    $rawProducts = collect($data['products'] ?? []);
+    /*
+    |--------------------------------------------------------------------------
+    | 3️⃣ PRODUCTS – NORMALIZE + FIX THUMB
+    |--------------------------------------------------------------------------
+    */
+    $products = collect($data['products'] ?? [])
 
-    \Log::error('RAW PRODUCTS STATS', [
-        'raw_count' => $rawProducts->count(),
-        'raw_sample' => $rawProducts->take(2)->toArray(),
-    ]);
-
-    $products = $rawProducts
-
-        // A️⃣ filter hợp lệ
+        // 🔍 Lọc sản phẩm hợp lệ cơ bản
         ->filter(fn ($p) =>
             is_array($p)
             && !empty($p['product_id'])
             && !empty($p['name'])
             && isset($p['price'])
-        );
+        )
 
-    \Log::error('AFTER BASIC FILTER', [
-        'count' => $products->count(),
-        'sample' => $products->take(2)->toArray(),
-    ]);
+        // 🖼 Chuẩn hoá MEDIA → thumb STRING DUY NHẤT
+        ->map(function ($p) {
 
-    // B️⃣ map media
-    $products = $products->map(function ($p) {
+            $thumb = null;
 
-        $thumb = null;
+            /**
+             * ❗ BẮT BUỘC: thumb PHẢI LÀ STRING URL
+             * ❌ KHÔNG ĐƯỢC LÀ ARRAY
+             */
+            if (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
+                $thumb = $p['media']['thumb'];
+            } elseif (!empty($p['media']['images'][0]['mobile'])) {
+                $thumb = $p['media']['images'][0]['mobile'];
+            } elseif (!empty($p['media']['images'][0]['thumb'])) {
+                $thumb = $p['media']['images'][0]['thumb'];
+            }
 
-        if (!empty($p['media']['images'][0])) {
-            $thumb = $p['media']['images'][0];
-        } elseif (!empty($p['media']['thumb'])) {
-            $thumb = $p['media']['thumb'];
-        } elseif (!empty($p['media']['mobile'])) {
-            $thumb = $p['media']['mobile'];
-        }
+            return [
+                ...$p,
+                'thumb' => $thumb, // ✅ STRING
+            ];
+        })
 
-        return [
-            ...$p,
-            '__debug_media' => $p['media'] ?? null,
-            'thumb' => $thumb,
-        ];
-    });
-
-    \Log::error('AFTER MEDIA MAP', [
-        'count' => $products->count(),
-        'sample' => $products->take(2)->toArray(),
-    ]);
-
-    // C️⃣ filter có ảnh
-    $products = $products
+        // ❌ Loại sản phẩm không có ảnh
         ->filter(fn ($p) => !empty($p['thumb']))
+
+        // 🔄 Reset index
         ->values()
         ->toArray();
 
-    \Log::error('FINAL PRODUCTS', [
-        'final_count' => count($products),
-        'final_sample' => array_slice($products, 0, 2),
-    ]);
-
-    // =====================================================
-    // 4️⃣ RENDER VIEW (KHÔNG 404)
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ RENDER VIEW
+    |--------------------------------------------------------------------------
+    */
     return view(
         "storefront.{$this->theme}.pages.collection",
         [
             'collection' => $collection,
             'products'   => $products,
             'brand'      => $this->brand,
-            '__debug'    => true,
         ]
     );
 }
+
 
 
 }
