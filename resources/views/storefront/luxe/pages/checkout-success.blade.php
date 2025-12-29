@@ -53,22 +53,30 @@
             </div>
         </div>
 
-        {{-- ACTIONS --}}
-        <div class="lx-success-actions">
+       {{-- ACTIONS --}}
+<div class="lx-success-actions">
 
-            <a href="{{ route('linxen.account.orders') }}"
-   class="lx-btn-secondary lx-btn-orders">
-    <span class="lx-btn-icon">📋</span>
-    <span>Theo dõi đơn hàng</span>
-</a>
+    @php
+        $orderCode = request('order_code');
+    @endphp
 
+    <a href="{{ $orderCode
+            ? route('linxen.account.orders', ['order_code' => $orderCode])
+            : route('linxen.account.orders')
+        }}"
+       class="lx-btn-secondary lx-btn-orders">
 
-            <a href="{{ route('linxen.home') }}" class="lx-btn-secondary">
-                <span class="lx-btn-icon">🛍️</span>
-                <span>Tiếp tục mua sắm</span>
-            </a>
+        <span class="lx-btn-icon">📋</span>
+        <span>Theo dõi đơn hàng</span>
+    </a>
 
-        </div>
+    <a href="{{ route('linxen.home') }}" class="lx-btn-secondary">
+        <span class="lx-btn-icon">🛍️</span>
+        <span>Tiếp tục mua sắm</span>
+    </a>
+
+</div>
+
 
         {{-- FOOTER NOTE --}}
         <div class="lx-success-footer">
