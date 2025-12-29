@@ -542,19 +542,14 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (DEBUG MODE)
+ * 📦 COLLECTION – LIN XÉN (DEBUG MODE – PROD SAFE)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    dd('COLLECTION CONTROLLER HIT', [
-        'slug' => $slug,
-        'page' => request()->input('page'),
-        'url'  => request()->fullUrl(),
-    ]);
     // --------------------------------------------------
     // 🚨 DEBUG 0: CONTROLLER HIT?
     // --------------------------------------------------
-    Log::info('🚨 CONTROLLER COLLECTION HIT', [
+    \Log::error('🚨 CONTROLLER COLLECTION HIT', [
         'slug' => $slug,
         'url'  => request()->fullUrl(),
     ]);
@@ -568,7 +563,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     $page = max($page, 1);
     $perPage = 24;
 
-    Log::info('🔎 CONTROLLER PAGINATION PARAM', [
+    \Log::error('🔎 CONTROLLER PAGINATION PARAM', [
         'page'     => $page,
         'perPage'  => $perPage,
         'query'    => request()->query(),
@@ -579,7 +574,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     | 1️⃣ Call ERP service
     |--------------------------------------------------------------------------
     */
-    Log::info('📡 BEFORE CALL ERP SERVICE', [
+    \Log::error('📡 BEFORE CALL ERP SERVICE', [
         'brand' => $this->brand,
         'slug'  => $slug,
         'page'  => $page,
@@ -592,14 +587,14 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         $perPage
     );
 
-    Log::info('📦 AFTER CALL ERP SERVICE', [
+    \Log::error('📦 AFTER CALL ERP SERVICE', [
         'has_collection' => !empty($data['collection']),
         'product_count'  => count($data['products'] ?? []),
         'meta'           => $data['meta'] ?? null,
     ]);
 
     if (empty($data) || empty($data['collection'])) {
-        Log::warning('❌ COLLECTION NOT FOUND', [
+        \Log::error('❌ COLLECTION NOT FOUND', [
             'slug' => $slug,
             'page' => $page,
         ]);
@@ -626,10 +621,10 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     $items = collect($data['products'] ?? [])
         ->map(function ($p, $i) {
 
-            // 🔎 DEBUG từng product đầu
+            // 🔎 DEBUG vài product đầu
             if ($i < 3) {
-                Log::info('🧪 RAW PRODUCT SAMPLE', [
-                    'index' => $i,
+                \Log::error('🧪 RAW PRODUCT SAMPLE', [
+                    'index'      => $i,
                     'product_id' => $p['product_id'] ?? null,
                     'thumb_type' => gettype($p['thumb'] ?? null),
                 ]);
@@ -637,12 +632,11 @@ public function collection(string $slug, ErpStorefrontApi $erp)
 
             $thumb = $p['thumb'] ?? null;
 
-            // 🚨 CHỦ ĐÍCH: KHÔNG RETURN NULL ĐỂ DEBUG
             return [
                 'product_id' => (int) ($p['product_id'] ?? 0),
                 'name'       => $p['name'] ?? '',
                 'slug'       => $p['slug']
-                    ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
+                    ?? \Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
                 'price'      => (float) ($p['price'] ?? 0),
                 'thumb'      => is_string($thumb) ? $thumb : null,
 
@@ -661,10 +655,9 @@ public function collection(string $slug, ErpStorefrontApi $erp)
                 'tag'          => '🔥 Bán chạy',
             ];
         })
-        // 🚨 TẠM THỜI KHÔNG FILTER GÌ CẢ
         ->values();
 
-    Log::info('🧾 ITEMS AFTER MAP', [
+    \Log::error('🧾 ITEMS AFTER MAP', [
         'page'  => $page,
         'count' => $items->count(),
         'ids'   => $items->pluck('product_id')->take(10)->all(),
@@ -675,7 +668,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     | 4️⃣ LengthAwarePaginator
     |--------------------------------------------------------------------------
     */
-    $products = new LengthAwarePaginator(
+    $products = new \Illuminate\Pagination\LengthAwarePaginator(
         $items,
         (int) ($data['meta']['total'] ?? $items->count()),
         $perPage,
@@ -686,7 +679,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         ]
     );
 
-    Log::info('📄 PAGINATOR CREATED', [
+    \Log::error('📄 PAGINATOR CREATED', [
         'currentPage' => $products->currentPage(),
         'lastPage'    => $products->lastPage(),
         'total'       => $products->total(),
@@ -697,9 +690,9 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     | 5️⃣ Render view
     |--------------------------------------------------------------------------
     */
-    Log::info('🎬 RENDER COLLECTION VIEW', [
-        'page'         => $page,
-        'item_count'  => $products->count(),
+    \Log::error('🎬 RENDER COLLECTION VIEW', [
+        'page'        => $page,
+        'item_count' => $products->count(),
     ]);
 
     return view(
@@ -707,5 +700,6 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         compact('collection', 'products')
     );
 }
+
 
 }
