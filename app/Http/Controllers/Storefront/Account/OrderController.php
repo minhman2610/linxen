@@ -11,32 +11,33 @@ class OrderController extends Controller
 {
     /**
      * =====================================================
-     * 🔗 Resolve ERP base URL (SAFE)
+     * 🔗 Resolve ERP BASE URL (SAFE – THE SOURCE OF TRUTH)
      * =====================================================
      */
     protected function erpBaseUrl(): ?string
-{
-    $erpUrl = rtrim(config('services.erp.base_url'), '/');
+    {
+        // 👈 ĐÚNG KEY theo config/services.php
+        $erpUrl = rtrim((string) config('services.erp.base_url'), '/');
 
-    if (!$erpUrl || !str_starts_with($erpUrl, 'http')) {
-        Log::critical('[ERP URL MISCONFIGURED]', [
-            'erp_url' => $erpUrl,
-        ]);
+        if (!$erpUrl || !str_starts_with($erpUrl, 'http')) {
+            Log::critical('[ERP URL MISCONFIGURED]', [
+                'erp_base_url' => $erpUrl,
+            ]);
 
-        return null;
+            return null;
+        }
+
+        return $erpUrl;
     }
-
-    return $erpUrl;
-}
-
 
     /**
      * =====================================================
-     * 🔗 Resolve ERP order link (internal / debug)
+     * 🔗 Resolve ERP order link (internal / CS / debug)
      * =====================================================
      */
     protected function resolveErpOrderLink(string $code): ?string
     {
+        // Có thể tắt ở production nếu muốn
         if (!config('app.show_erp_link', true)) {
             return null;
         }
@@ -46,7 +47,7 @@ class OrderController extends Controller
             return null;
         }
 
-        // 👉 Tuỳ ERP, chỉnh path nếu cần
+        // 👉 TUỲ ERP: đổi path nếu backend ERP khác
         return "{$erpUrl}/orders/{$code}";
     }
 
