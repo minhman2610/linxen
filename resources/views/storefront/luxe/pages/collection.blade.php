@@ -39,49 +39,54 @@
 
             <div class="lx-product-card">
 
+                {{-- ================================================= --}}
                 {{-- IMAGE --}}
+                {{-- ================================================= --}}
                 <div class="lx-product-media">
 
-    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}">
-        <img
-            class="lx-img lazy"
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23f3f3f3'/%3E%3C/svg%3E"
-            data-src="{{ $product['thumb'] }}"
-            alt="{{ $product['name'] }}"
-            width="300"
-            height="400">
-    </a>
+                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}">
+                        <img
+                            class="lx-img lazy"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23f3f3f3'/%3E%3C/svg%3E"
+                            data-src="{{ $product['thumb'] }}"
+                            alt="{{ $product['name'] }}"
+                            width="300"
+                            height="400">
+                    </a>
 
-    {{-- SALE --}}
-    @if($product['sale_percent'])
-        <span class="lx-sale-badge">
-            -{{ $product['sale_percent'] }}%
-        </span>
-    @endif
+                    {{-- SALE --}}
+                    @if($product['sale_percent'])
+                        <span class="lx-sale-badge">
+                            -{{ $product['sale_percent'] }}%
+                        </span>
+                    @endif
 
-    {{-- QUICK ORDER --}}
-    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}"
-   class="lx-quick-order-float"
-   aria-label="Chọn sản phẩm">
+                    {{-- QUICK ORDER (FLOAT) --}}
+                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}"
+                       class="lx-quick-order-float"
+                       aria-label="Chọn sản phẩm">
 
-    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-        <path fill="currentColor"
-              d="M11 5h2v14h-2zM5 11h14v2H5z"/>
-    </svg>
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                            <path fill="currentColor"
+                                  d="M11 5h2v14h-2zM5 11h14v2H5z"/>
+                        </svg>
 
-</a>
+                    </a>
 
-
-</div>
-
-
-                {{-- NAME --}}
-                <div class="lx-product-head">
-                    <span class="lx-tag lx-tag-best">{{ $product['tag'] }}</span>
-                    <p class="lx-product-name">{{ $product['name'] }}</p>
                 </div>
 
+                {{-- ================================================= --}}
+                {{-- NAME --}}
+                {{-- ================================================= --}}
+                <div class="lx-product-head">
+                    <p class="lx-product-name">
+                        {{ $product['name'] }}
+                    </p>
+                </div>
+
+                {{-- ================================================= --}}
                 {{-- PRICE --}}
+                {{-- ================================================= --}}
                 @php
                     $salePrice = round(
                         $product['price'] * (100 - $product['sale_percent']) / 100
@@ -97,20 +102,30 @@
                     </span>
                 </div>
 
-                {{-- COLORS + QUICK ORDER --}}
+                {{-- ================================================= --}}
+                {{-- COLORS --}}
+                {{-- ================================================= --}}
                 <div class="lx-product-variants">
                     <div class="lx-product-colors">
                         @foreach($product['colors'] as $i => $color)
                             <span class="lx-color-swatch {{ $color }} {{ $i === 0 ? 'active' : '' }}"></span>
                         @endforeach
                     </div>
-
-                    
                 </div>
 
-                {{-- STATUS --}}
+                {{-- ================================================= --}}
+                {{-- STATUS + BEST SELLER --}}
+                {{-- ================================================= --}}
                 <div class="lx-product-tags">
-                    <span class="lx-tag lx-tag-stock">✔ Còn hàng</span>
+                    <span class="lx-tag lx-tag-stock">
+                        ✔ Còn hàng
+                    </span>
+
+                    @if(!empty($product['tag']))
+                        <span class="lx-tag lx-tag-best">
+                            {{ $product['tag'] }}
+                        </span>
+                    @endif
                 </div>
 
             </div>
@@ -119,12 +134,15 @@
 
     </div>
 
+    {{-- ===================================================== --}}
     {{-- PAGINATION --}}
+    {{-- ===================================================== --}}
     <div class="lx-pagination">
         {{ $products->links('storefront.luxe.partials.pagination') }}
     </div>
 
 </section>
+
 
 {{-- ===================================================== --}}
 {{-- IMAGE LAZY LOAD SCRIPT (NON-BLOCKING) --}}
