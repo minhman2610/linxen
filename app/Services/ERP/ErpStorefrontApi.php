@@ -434,6 +434,81 @@ public function orderDetail(string $code): array
         ];
     }
 }
+/**
+ * =====================================================
+ * 📦 COLLECTION (STORE CATEGORY) – STOREFRONT SAFE
+ * =====================================================
+ */
+public function collection(string $brand, string $slug): array
+{
+    $data = $this->get("/api/storefront/{$brand}/collection/{$slug}");
+
+    if (empty($data) || !is_array($data)) {
+        return [
+            'collection' => null,
+            'products'   => [],
+        ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🧾 COLLECTION META
+    |--------------------------------------------------------------------------
+    */
+    $collection = [
+        'name'        => $data['collection']['name']        ?? 'Bộ sưu tập',
+        'description' => $data['collection']['description'] ?? null,
+        'hero'        => $data['collection']['hero']        ?? null,
+        'slug'        => $slug,
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🛍 PRODUCTS – NORMALIZE LIKE HOME
+    |--------------------------------------------------------------------------
+    */
+    $products = collect($data['products'] ?? [])
+
+        // 1️⃣ Lọc sản phẩm hợp lệ
+        ->filter(fn ($p) =>
+            !empty($p['product_id'])
+            && !empty($p['name'])
+            && isset($p['price'])
+        )
+
+        // 2️⃣ Chuẩn hoá MEDIA → thumb DUY NHẤT
+        ->map(function ($p) {
+
+            $thumb = null;
+
+            if (!empty($p['media']['images'][0])) {
+                $thumb = $p['media']['images'][0];
+            } elseif (!empty($p['media']['thumb'])) {
+                $thumb = $p['media']['thumb'];
+            } elseif (!empty($p['media']['mobile'])) {
+                $thumb = $p['media']['mobile'];
+            }
+
+            return [
+                ...$p,
+
+                // 🔑 KEY DUY NHẤT DÙNG CHO BLADE
+                'thumb' => $thumb,
+            ];
+        })
+
+        // 3️⃣ Chỉ giữ sản phẩm có ảnh
+        ->filter(fn ($p) => !empty($p['thumb']))
+
+        // 4️⃣ Reset index
+        ->values()
+        ->toArray();
+
+    return [
+        'collection' => $collection,
+        'products'   => $products,
+    ];
+}
 
 
     /**

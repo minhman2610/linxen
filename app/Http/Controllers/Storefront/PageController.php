@@ -540,72 +540,21 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION / CATEGORY – LIN XÉN (ERP SAFE)
+ * 📦 COLLECTION INDEX – LIN XÉN
  * ===================================================== */
-public function collection(string $slug, ErpStorefrontApi $erp)
+public function collections(ErpStorefrontApi $erp)
 {
-    $raw = $erp->collection($this->brand, $slug);
-
-    if (empty($raw) || empty($raw['collection'])) {
-        abort(404);
-    }
-
-    // =========================
-    // COLLECTION META
-    // =========================
-    $collection = [
-        'name'        => $raw['collection']['name']        ?? 'Bộ sưu tập',
-        'description' => $raw['collection']['description'] ?? null,
-        'hero'        => $raw['collection']['hero']        ?? null,
-        'slug'        => $slug,
-    ];
-
-    // =========================
-    // PRODUCTS (ERP → STOREFRONT)
-    // =========================
-    $products = collect($raw['products'] ?? [])
-
-        // 1️⃣ Lọc sản phẩm hợp lệ
-        ->filter(fn ($p) =>
-            !empty($p['product_id'])
-            && !empty($p['name'])
-            && !empty($p['price'])
-        )
-
-        // 2️⃣ Chuẩn hoá MEDIA (giống home)
-        ->map(function ($p) {
-
-            $thumb = null;
-
-            if (!empty($p['media']['images'][0])) {
-                $thumb = $p['media']['images'][0];
-            } elseif (!empty($p['media']['thumb'])) {
-                $thumb = $p['media']['thumb'];
-            } elseif (!empty($p['media']['mobile'])) {
-                $thumb = $p['media']['mobile'];
-            }
-
-            return [
-                ...$p,
-                'thumb' => $thumb,
-            ];
-        })
-
-        // 3️⃣ Chỉ giữ sản phẩm có ảnh
-        ->filter(fn ($p) => !empty($p['thumb']))
-
-        ->values()
-        ->toArray();
+    $data = $erp->collections($this->brand);
 
     return view(
-        "storefront.{$this->theme}.pages.collection",
+        "storefront.{$this->theme}.pages.collections",
         [
-            'collection' => $collection,
-            'products'   => $products,
-            'brand'      => $this->brand,
+            'collections' => $data['collections'] ?? [],
+            'brand'       => $this->brand,
         ]
     );
 }
+
 
 
 }
