@@ -608,7 +608,16 @@ public function collection(string $slug, ErpStorefrontApi $erp)
                 'thumb'      => $thumb,
 
                 // UX helpers
-                'colors'       => $p['colors'] ?? [],
+                'colors' => collect($p['colors'] ?? [])
+    ->map(function ($c) {
+        if (is_string($c)) return $c;
+        if (is_array($c)) return $c['code'] ?? null;
+        return null;
+    })
+    ->filter()
+    ->values()
+    ->toArray(),
+
                 'available'    => $p['available'] ?? 0,
                 'sale_percent' => 20, // demo
                 'tag'          => '🔥 Bán chạy',
