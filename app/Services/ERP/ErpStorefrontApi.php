@@ -423,82 +423,108 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – STOREFRONT SAFE
+ * 📦 COLLECTION (STORE CATEGORY) – FAST & SAFE
  * =====================================================
  */
-public function collection(string $brand, string $slug): array
-{
-    $data = $this->get("/api/storefront/{$brand}/collection/{$slug}");
-    \Log::info('ERP STOREFRONT API RAW RESPONSE', [
-        'url' => "/api/storefront/{$brand}/collection/{$slug}",
-        'data' => $data,
-    ]);
-    if (empty($data) || !is_array($data)) {
-        return [
-            'collection' => null,
-            'products'   => [],
-        ];
-    }
+public function collection(
+    string $brand,
+    string $slug,
+    int $page = 1,
+    int $limit = 24
+): array {
+    // 🔒 Giới hạn hợp lý
+    $page  = max($page, 1);
+    $limit = min(max($limit, 1), 48);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 🧾 COLLECTION META
-    |--------------------------------------------------------------------------
-    */
-    $collection = [
-        'name'        => $data['collection']['name']        ?? 'Bộ sưu tập',
-        'description' => $data['collection']['description'] ?? null,
-        'hero'        => $data['collection']['hero']        ?? null,
-        'slug'        => $slug,
-    ];
+    // 🔑 Cache key
+    $cacheKey = "storefront:collection:{$brand}:{$slug}:{$page}:{$limit}";
 
-    /*
-    |--------------------------------------------------------------------------
-    | 🛍 PRODUCTS – NORMALIZE LIKE HOME
-    |--------------------------------------------------------------------------
-    */
-    $products = collect($data['products'] ?? [])
+    return \Cache::remember($cacheKey, now()->addMinutes(5), function () use (
+        $brand,
+        $slug,
+        $page,
+        $limit
+    ) {
 
-        // 1️⃣ Lọc sản phẩm hợp lệ
-        ->filter(fn ($p) =>
-            !empty($p['product_id'])
-            && !empty($p['name'])
-            && isset($p['price'])
-        )
+        // =====================================================
+        // 1️⃣ CALL ERP API (PAGINATED)
+        // =====================================================
+        $data = $this->get(
+            "/api/storefront/{$brand}/collection/{$slug}",
+            [
+                'page'  => $page,
+                'limit'=> $limit,
+            ]
+        );
 
-        // 2️⃣ Chuẩn hoá MEDIA → thumb DUY NHẤT
-        ->map(function ($p) {
-
-            $thumb = null;
-
-            if (!empty($p['media']['images'][0])) {
-                $thumb = $p['media']['images'][0];
-            } elseif (!empty($p['media']['thumb'])) {
-                $thumb = $p['media']['thumb'];
-            } elseif (!empty($p['media']['mobile'])) {
-                $thumb = $p['media']['mobile'];
-            }
-
+        if (
+            empty($data)
+            || !is_array($data)
+            || empty($data['collection'])
+        ) {
             return [
-                ...$p,
-
-                // 🔑 KEY DUY NHẤT DÙNG CHO BLADE
-                'thumb' => $thumb,
+                'collection' => null,
+                'products'   => [],
+                'meta'       => null,
             ];
-        })
+        }
 
-        // 3️⃣ Chỉ giữ sản phẩm có ảnh
-        ->filter(fn ($p) => !empty($p['thumb']))
+        // =====================================================
+        // 2️⃣ COLLECTION META (PASS-THROUGH)
+        // =====================================================
+        $collection = [
+            'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
+            'description' => $data['collection']['description'] ?? null,
+            'hero'        => $data['collection']['hero'] ?? null,
+            'slug'        => $slug,
+        ];
 
-        // 4️⃣ Reset index
-        ->values()
-        ->toArray();
+        // =====================================================
+        // 3️⃣ PRODUCTS – MINIMAL NORMALIZE
+        // ❗ KHÔNG map nặng, KHÔNG filter dư
+        // =====================================================
+        $products = collect($data['products'] ?? [])
+            ->map(function ($p) {
 
-    return [
-        'collection' => $collection,
-        'products'   => $products,
-    ];
+                // Thumb đã được ERP chuẩn hoá
+                $thumb =
+                    $p['media']['thumb']
+                    ?? $p['media']['thumb_mobile']
+                    ?? null;
+
+                return [
+                    'product_id' => $p['product_id'] ?? null,
+                    'name'       => $p['name'] ?? null,
+                    'slug'       => $p['slug'] ?? null,
+                    'price'      => $p['price'] ?? null,
+                    'available'  => $p['available'] ?? null,
+                    'colors'     => $p['colors'] ?? [],
+                    'thumb'      => $thumb,
+                ];
+            })
+            // giữ an toàn tối thiểu
+            ->filter(fn ($p) =>
+                $p['product_id']
+                && $p['name']
+                && $p['price']
+                && $p['thumb']
+            )
+            ->values()
+            ->toArray();
+
+        // =====================================================
+        // 4️⃣ META PAGINATION (PASS-THROUGH)
+        // =====================================================
+        $meta = $data['meta'] ?? null;
+
+        return [
+            'collection' => $collection,
+            'products'   => $products,
+            'meta'       => $meta,
+        ];
+    });
 }
+
 
 
     /**

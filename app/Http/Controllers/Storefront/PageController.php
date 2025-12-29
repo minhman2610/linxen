@@ -541,13 +541,33 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (PAGINATED + HOME-LIKE)
+ * 📦 COLLECTION – LIN XÉN (FAST, PAGINATED, HOME-LIKE)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    // 1️⃣ Call ERP
-    $data = $erp->collection($this->brand, $slug);
+    // =====================================================
+    // 0️⃣ Pagination params
+    // =====================================================
+    $page    = max((int) request('page', 1), 1);
+    $perPage = 24;
 
+    // =====================================================
+    // 1️⃣ Call ERP (ĐÃ PAGINATE + CACHE)
+    // =====================================================
+    $data = $erp->collection(
+        $this->brand,
+        $slug,
+        $page,
+        $perPage
+    );
+
+    if (empty($data) || empty($data['collection'])) {
+        abort(404);
+    }
+
+    // =====================================================
+    // 2️⃣ COLLECTION META (PASS-THROUGH)
+    // =====================================================
     $collection = [
         'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
         'description' => $data['collection']['description'] ?? null,
@@ -555,60 +575,57 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         'slug'        => $slug,
     ];
 
-    // 2️⃣ Normalize products (giống home)
-    $allProducts = collect($data['products'] ?? [])
-        ->filter(fn ($p) =>
-            is_array($p)
-            && !empty($p['product_id'])
-            && !empty($p['name'])
-            && isset($p['price'])
-        )
+    // =====================================================
+    // 3️⃣ PRODUCTS – MINIMAL NORMALIZE (O(n) rất nhỏ)
+    // =====================================================
+    $items = collect($data['products'] ?? [])
         ->map(function ($p) {
 
-            // ---- THUMB (STRING)
-            $thumb = null;
-            if (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
-                $thumb = $p['media']['thumb'];
-            } elseif (!empty($p['media']['images'][0]['mobile'])) {
-                $thumb = $p['media']['images'][0]['mobile'];
+            // Thumb đã được ERP chuẩn hoá
+            $thumb =
+                $p['media']['thumb']
+                ?? $p['media']['thumb_mobile']
+                ?? null;
+
+            if (!$thumb) {
+                return null;
             }
 
-            // ---- SLUG
-            $slug = \Str::slug($p['name']) . '-' . $p['product_id'];
-
-            // ---- COLORS (demo như home – sau map real)
-            $colorPool = ['black','white','beige','brown','red','blue','navy','olive'];
-            shuffle($colorPool);
-
             return [
-                'product_id' => $p['product_id'],
+                'product_id' => (int) $p['product_id'],
                 'name'       => $p['name'],
+                'slug'       => $p['slug']
+                    ?? Str::slug($p['name']) . '-' . $p['product_id'],
                 'price'      => (float) $p['price'],
                 'thumb'      => $thumb,
-                'slug'       => $slug,
 
-                // UX giống HOME
-                'sale_percent' => 20,
-                'colors'       => array_slice($colorPool, 0, 3),
+                // UX (đã chuẩn bị sẵn từ ERP)
+                'colors'       => $p['colors'] ?? [],
+                'available'    => $p['available'] ?? 0,
+                'sale_percent' => 20, // demo
                 'tag'          => '🔥 Bán chạy',
-                'in_stock'     => true,
             ];
         })
-        ->filter(fn ($p) => !empty($p['thumb']))
+        ->filter()
         ->values();
 
-    // 3️⃣ Pagination (24 sp / page)
-    $perPage = 24;
-    $page    = request()->get('page', 1);
-
+    // =====================================================
+    // 4️⃣ LengthAwarePaginator (KHÔNG slice lại)
+    // =====================================================
     $products = new LengthAwarePaginator(
-        $allProducts->forPage($page, $perPage),
-        $allProducts->count(),
+        $items,
+        $data['meta']['total'] ?? $items->count(),
         $perPage,
         $page,
-        ['path' => request()->url(), 'query' => request()->query()]
+        [
+            'path'  => request()->url(),
+            'query' => request()->query(),
+        ]
     );
 
+    // =====================================================
+    // 5️⃣ Render view
+    // =====================================================
     return view(
         "storefront.{$this->theme}.pages.collection",
         compact('collection', 'products')
