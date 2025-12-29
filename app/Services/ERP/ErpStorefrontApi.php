@@ -43,20 +43,7 @@ class ErpStorefrontApi
         return empty($data) || !is_array($data) ? null : $data;
     }
 
-    /**
-     * =====================================================
-     * 📦 COLLECTION
-     * =====================================================
-     */
-    public function collection(string $brand, string $slug): array
-    {
-        $data = $this->get("/api/storefront/{$brand}/collection/{$slug}");
-
-        return [
-            'collection' => $data['collection'] ?? null,
-            'products'   => $data['products'] ?? [],
-        ];
-    }
+   
 
     /**
  * =====================================================
