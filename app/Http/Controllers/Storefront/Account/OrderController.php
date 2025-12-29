@@ -57,42 +57,27 @@ class OrderController extends Controller
      * =====================================================
      */
     public function show(string $code)
-    {
-        $customer = session('customer');
+{
+    try {
+        $res = Http::withOptions(['verify' => false])
+            ->withHeaders([
+                'X-Storefront-Code' => 'linxen',
+            ])
+            ->get(config('services.erp.url') . "/api/storefront/orders/{$code}");
 
-        if (!$customer) {
-            return redirect()->route('linxen.home');
+        if (!$res->ok()) {
+            return redirect()->route('linxen.account.orders');
         }
 
-        $order = null;
+        $order = $res->json('order');
 
-        try {
-            $res = Http::withOptions(['verify' => false])
-                ->timeout(6)
-                ->withHeaders([
-                    'X-Storefront-Code' => 'linxen',
-                    'Authorization'     => 'Bearer ' . session('login_token'),
-                ])
-                ->get(config('services.erp.url') . "/api/storefront/orders/{$code}");
-
-            if ($res->ok()) {
-                $order = $res->json('order');
-            }
-
-        } catch (\Throwable $e) {
-            Log::warning('[ACCOUNT ORDER DETAIL FAILED]', [
-                'code'  => $code,
-                'error' => $e->getMessage(),
-            ]);
-        }
-
-        if (!$order) {
-            abort(404);
-        }
-
-        return view('storefront.luxe.pages.account.orders.show', [
-            'order'    => $order,
-            'customer' => (object) $customer,
-        ]);
+    } catch (\Throwable) {
+        return redirect()->route('linxen.account.orders');
     }
+
+    return view('storefront.luxe.pages.account.orders.show', [
+        'order' => (object) $order,
+    ]);
+}
+
 }
