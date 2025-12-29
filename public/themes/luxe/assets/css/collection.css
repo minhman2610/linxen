@@ -1,0 +1,47 @@
+/* =====================================
+   CATEGORY – LIN XÉN
+===================================== */
+
+.lx-category-hero {
+    position: relative;
+    height: 48vh;
+    overflow: hidden;
+}
+
+.lx-category-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lx-category-hero-text {
+    position: absolute;
+    left: 24px;
+    bottom: 32px;
+    color: #fff;
+}
+
+.lx-category-hero-text h1 {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.lx-category-toolbar {
+    padding: 20px 24px;
+    font-size: 14px;
+    color: #666;
+}
+
+.lx-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 28px;
+    padding: 32px 24px;
+}
+
+.lx-category-trust {
+    text-align: center;
+    padding: 24px;
+    font-size: 14px;
+    color: #666;
+}

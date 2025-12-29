@@ -111,6 +111,14 @@
 )
     <link rel="stylesheet" href="{{ asset('themes/luxe/assets/css/orders.css') }}">
 @endif
+{{-- ============================= --}}
+{{-- PAGE LEVEL CSS --}}
+{{-- ============================= --}}
+
+@if (request()->routeIs('linxen.collection'))
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/collection.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/collection.css')) }}">
+@endif
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"
