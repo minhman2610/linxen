@@ -540,17 +540,85 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION INDEX – LIN XÉN
+ * 📦 COLLECTION / CATEGORY – LIN XÉN
+ * Lấy dữ liệu từ ERP Storefront API
  * ===================================================== */
-public function collection(ErpStorefrontApi $erp)
+public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    $data = $erp->collection($this->brand);
+    // =====================================================
+    // 1️⃣ CALL ERP STOREFRONT API (BẮT BUỘC ĐỦ THAM SỐ)
+    // =====================================================
+    $data = $erp->collection($this->brand, $slug);
 
+    if (
+        empty($data)
+        || !is_array($data)
+        || empty($data['products'])
+    ) {
+        abort(404);
+    }
+
+    // =====================================================
+    // 2️⃣ COLLECTION META
+    // =====================================================
+    $collection = [
+        'name'        => $data['collection']['name']        ?? 'Bộ sưu tập',
+        'description' => $data['collection']['description'] ?? null,
+        'hero'        => $data['collection']['hero']        ?? null,
+        'slug'        => $slug,
+    ];
+
+    // =====================================================
+    // 3️⃣ PRODUCTS – MEDIA SAFE (GIỐNG HOME)
+    // =====================================================
+    $products = collect($data['products'])
+
+        // 🔍 Lọc sản phẩm hợp lệ cơ bản
+        ->filter(fn ($p) =>
+            is_array($p)
+            && !empty($p['product_id'])
+            && !empty($p['name'])
+            && isset($p['price'])
+        )
+
+        // 🖼 Chuẩn hoá MEDIA → 1 KEY DUY NHẤT
+        ->map(function ($p) {
+
+            $thumb = null;
+
+            // Ưu tiên: images → thumb → mobile
+            if (!empty($p['media']['images'][0])) {
+                $thumb = $p['media']['images'][0];
+            } elseif (!empty($p['media']['thumb'])) {
+                $thumb = $p['media']['thumb'];
+            } elseif (!empty($p['media']['mobile'])) {
+                $thumb = $p['media']['mobile'];
+            }
+
+            return [
+                ...$p,
+
+                // 🔑 KEY DUY NHẤT CHO BLADE
+                'thumb' => $thumb,
+            ];
+        })
+
+        // ❌ Loại sản phẩm không có ảnh
+        ->filter(fn ($p) => !empty($p['thumb']))
+
+        // 🔄 Reset index
+        ->values()
+        ->toArray();
+
+    // =====================================================
+    // 4️⃣ RENDER VIEW
+    // =====================================================
     return view(
-        "storefront.{$this->theme}.pages.collections",
+        "storefront.{$this->theme}.pages.collection",
         [
-            'collections' => $data['collections'] ?? [],
-            'brand'       => $this->brand,
+            'collection' => $collection,
+            'products'   => $products,
+            'brand'      => $this->brand,
         ]
     );
 }
