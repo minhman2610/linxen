@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Services\ERP\ErpStorefrontApi;
 use Illuminate\Http\Request;
-
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 class PageController extends Controller
 {
     protected string $theme;
@@ -540,90 +541,78 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION / CATEGORY – LIN XÉN
- * Lấy dữ liệu từ ERP Storefront API
+ * 📦 COLLECTION – LIN XÉN (PAGINATED + HOME-LIKE)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    /*
-    |--------------------------------------------------------------------------
-    | 1️⃣ CALL ERP STOREFRONT API
-    |--------------------------------------------------------------------------
-    */
+    // 1️⃣ Call ERP
     $data = $erp->collection($this->brand, $slug);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2️⃣ COLLECTION META (SAFE)
-    |--------------------------------------------------------------------------
-    */
     $collection = [
-        'name'        => $data['collection']['name']        ?? 'Bộ sưu tập',
+        'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
         'description' => $data['collection']['description'] ?? null,
-        'hero'        => $data['collection']['hero']        ?? null,
+        'hero'        => $data['collection']['hero'] ?? null,
         'slug'        => $slug,
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3️⃣ PRODUCTS – NORMALIZE + FIX THUMB
-    |--------------------------------------------------------------------------
-    */
-    $products = collect($data['products'] ?? [])
-
-        // 🔍 Lọc sản phẩm hợp lệ cơ bản
+    // 2️⃣ Normalize products (giống home)
+    $allProducts = collect($data['products'] ?? [])
         ->filter(fn ($p) =>
             is_array($p)
             && !empty($p['product_id'])
             && !empty($p['name'])
             && isset($p['price'])
         )
-
-        // 🖼 Chuẩn hoá MEDIA → thumb STRING DUY NHẤT
         ->map(function ($p) {
 
+            // ---- THUMB (STRING)
             $thumb = null;
-
-            /**
-             * ❗ BẮT BUỘC: thumb PHẢI LÀ STRING URL
-             * ❌ KHÔNG ĐƯỢC LÀ ARRAY
-             */
             if (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
                 $thumb = $p['media']['thumb'];
             } elseif (!empty($p['media']['images'][0]['mobile'])) {
                 $thumb = $p['media']['images'][0]['mobile'];
-            } elseif (!empty($p['media']['images'][0]['thumb'])) {
-                $thumb = $p['media']['images'][0]['thumb'];
             }
 
+            // ---- SLUG
+            $slug = \Str::slug($p['name']) . '-' . $p['product_id'];
+
+            // ---- COLORS (demo như home – sau map real)
+            $colorPool = ['black','white','beige','brown','red','blue','navy','olive'];
+            shuffle($colorPool);
+
             return [
-                ...$p,
-                'thumb' => $thumb, // ✅ STRING
+                'product_id' => $p['product_id'],
+                'name'       => $p['name'],
+                'price'      => (float) $p['price'],
+                'thumb'      => $thumb,
+                'slug'       => $slug,
+
+                // UX giống HOME
+                'sale_percent' => 20,
+                'colors'       => array_slice($colorPool, 0, 3),
+                'tag'          => '🔥 Bán chạy',
+                'in_stock'     => true,
             ];
         })
-
-        // ❌ Loại sản phẩm không có ảnh
         ->filter(fn ($p) => !empty($p['thumb']))
+        ->values();
 
-        // 🔄 Reset index
-        ->values()
-        ->toArray();
+    // 3️⃣ Pagination (24 sp / page)
+    $perPage = 24;
+    $page    = request()->get('page', 1);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4️⃣ RENDER VIEW
-    |--------------------------------------------------------------------------
-    */
+    $products = new LengthAwarePaginator(
+        $allProducts->forPage($page, $perPage),
+        $allProducts->count(),
+        $perPage,
+        $page,
+        ['path' => request()->url(), 'query' => request()->query()]
+    );
+
     return view(
         "storefront.{$this->theme}.pages.collection",
-        [
-            'collection' => $collection,
-            'products'   => $products,
-            'brand'      => $this->brand,
-        ]
+        compact('collection', 'products')
     );
 }
-
-
 
 }

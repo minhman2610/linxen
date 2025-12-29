@@ -29,51 +29,86 @@
     </div>
 
 </section>
-
 {{-- ===================================================== --}}
 {{-- COLLECTION PRODUCTS --}}
 {{-- ===================================================== --}}
-<section class="lx-collection-products">
+<section class="lx-product-section">
 
-    @if(empty($products))
-        {{-- EMPTY STATE --}}
-        <div class="lx-empty-state">
-            <p>Hiện chưa có sản phẩm phù hợp trong danh mục này.</p>
-        </div>
-    @else
-        <div class="lx-product-grid">
+    <div class="lx-product-grid">
 
-            @foreach($products as $product)
-                <a
-                    href="/{{ $brand }}/product/{{ $product['slug'] ?? $product['product_id'] }}"
-                    class="lx-product-card"
-                >
+        @foreach($products as $product)
 
-                    {{-- PRODUCT IMAGE --}}
-                    <div class="lx-product-thumb">
-                        <img
-                            src="{{ $product['thumb'] }}"
-                            alt="{{ $product['name'] }}"
-                            loading="lazy">
+            <div class="lx-product-card">
+
+                {{-- IMAGE --}}
+                <div class="lx-product-media">
+                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}">
+                        <img src="{{ $product['thumb'] }}"
+                             alt="{{ $product['name'] }}"
+                             loading="lazy">
+                    </a>
+
+                    @if($product['sale_percent'])
+                        <span class="lx-sale-badge">
+                            -{{ $product['sale_percent'] }}%
+                        </span>
+                    @endif
+                </div>
+
+                {{-- NAME --}}
+                <div class="lx-product-head">
+                    <span class="lx-tag lx-tag-best">{{ $product['tag'] }}</span>
+                    <p class="lx-product-name">{{ $product['name'] }}</p>
+                </div>
+
+                {{-- PRICE --}}
+                @php
+                    $salePrice = round(
+                        $product['price'] * (100 - $product['sale_percent']) / 100
+                    );
+                @endphp
+
+                <div class="lx-product-price-wrap">
+                    <span class="lx-price-sale">
+                        {{ number_format($salePrice) }}₫
+                    </span>
+                    <span class="lx-price-origin">
+                        {{ number_format($product['price']) }}₫
+                    </span>
+                </div>
+
+                {{-- COLORS + QUICK ORDER --}}
+                <div class="lx-product-variants">
+                    <div class="lx-product-colors">
+                        @foreach($product['colors'] as $i => $color)
+                            <span class="lx-color-swatch {{ $color }} {{ $i === 0 ? 'active' : '' }}"></span>
+                        @endforeach
                     </div>
 
-                    {{-- PRODUCT INFO --}}
-                    <div class="lx-product-info">
-                        <h3 class="lx-product-name">
-                            {{ $product['name'] }}
-                        </h3>
+                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}"
+                       class="lx-quick-order-inline"
+                       aria-label="Đặt hàng">
+                        🛒
+                    </a>
+                </div>
 
-                        <div class="lx-product-price">
-                            {{ number_format($product['price']) }}₫
-                        </div>
-                    </div>
+                {{-- STATUS --}}
+                <div class="lx-product-tags">
+                    <span class="lx-tag lx-tag-stock">✔ Còn hàng</span>
+                </div>
 
-                </a>
-            @endforeach
+            </div>
 
-        </div>
-    @endif
+        @endforeach
+
+    </div>
+
+    {{-- PAGINATION --}}
+    <div class="lx-pagination">
+        {{ $products->links('storefront.luxe.partials.pagination') }}
+    </div>
 
 </section>
+
 
 @endsection
