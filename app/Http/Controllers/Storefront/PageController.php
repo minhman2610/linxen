@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ERP\ErpStorefrontApi;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 class PageController extends Controller
 {
@@ -541,25 +542,44 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (FAST, PAGINATED, STABLE)
+ * 📦 COLLECTION – LIN XÉN (DEBUG MODE)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    /*
-    |--------------------------------------------------------------------------
-    | 0️⃣ Pagination params (FIX CHUẨN)
-    |--------------------------------------------------------------------------
-    | ❗ Dùng input(), KHÔNG dùng request()->query()
-    */
-    $page    = (int) request()->input('page', 1);
-    $page    = max($page, 1);
-    $perPage = 24;
+    // --------------------------------------------------
+    // 🚨 DEBUG 0: CONTROLLER HIT?
+    // --------------------------------------------------
+    Log::info('🚨 CONTROLLER COLLECTION HIT', [
+        'slug' => $slug,
+        'url'  => request()->fullUrl(),
+    ]);
 
     /*
     |--------------------------------------------------------------------------
-    | 1️⃣ Call ERP (ĐÃ paginate + cache ở service)
+    | 0️⃣ Pagination params
     |--------------------------------------------------------------------------
     */
+    $page = (int) request()->input('page', 1);
+    $page = max($page, 1);
+    $perPage = 24;
+
+    Log::info('🔎 CONTROLLER PAGINATION PARAM', [
+        'page'     => $page,
+        'perPage'  => $perPage,
+        'query'    => request()->query(),
+    ]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ Call ERP service
+    |--------------------------------------------------------------------------
+    */
+    Log::info('📡 BEFORE CALL ERP SERVICE', [
+        'brand' => $this->brand,
+        'slug'  => $slug,
+        'page'  => $page,
+    ]);
+
     $data = $erp->collection(
         $this->brand,
         $slug,
@@ -567,7 +587,17 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         $perPage
     );
 
+    Log::info('📦 AFTER CALL ERP SERVICE', [
+        'has_collection' => !empty($data['collection']),
+        'product_count'  => count($data['products'] ?? []),
+        'meta'           => $data['meta'] ?? null,
+    ]);
+
     if (empty($data) || empty($data['collection'])) {
+        Log::warning('❌ COLLECTION NOT FOUND', [
+            'slug' => $slug,
+            'page' => $page,
+        ]);
         abort(404);
     }
 
@@ -585,53 +615,60 @@ public function collection(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 3️⃣ PRODUCTS – ROOT KEY `thumb` (QUAN TRỌNG)
+    | 3️⃣ PRODUCTS – DEBUG PIPELINE
     |--------------------------------------------------------------------------
-    | - KHÔNG đọc $p['media']
-    | - DÙNG $p['thumb'] như service đã chuẩn hoá
     */
     $items = collect($data['products'] ?? [])
-        ->map(function ($p) {
+        ->map(function ($p, $i) {
+
+            // 🔎 DEBUG từng product đầu
+            if ($i < 3) {
+                Log::info('🧪 RAW PRODUCT SAMPLE', [
+                    'index' => $i,
+                    'product_id' => $p['product_id'] ?? null,
+                    'thumb_type' => gettype($p['thumb'] ?? null),
+                ]);
+            }
 
             $thumb = $p['thumb'] ?? null;
 
-            if (!$thumb) {
-                return null;
-            }
-
+            // 🚨 CHỦ ĐÍCH: KHÔNG RETURN NULL ĐỂ DEBUG
             return [
                 'product_id' => (int) ($p['product_id'] ?? 0),
                 'name'       => $p['name'] ?? '',
                 'slug'       => $p['slug']
                     ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
                 'price'      => (float) ($p['price'] ?? 0),
-                'thumb'      => $thumb,
+                'thumb'      => is_string($thumb) ? $thumb : null,
 
-                // UX helpers
                 'colors' => collect($p['colors'] ?? [])
-    ->map(function ($c) {
-        if (is_string($c)) return $c;
-        if (is_array($c)) return $c['code'] ?? null;
-        return null;
-    })
-    ->filter()
-    ->values()
-    ->toArray(),
+                    ->map(function ($c) {
+                        if (is_string($c)) return $c;
+                        if (is_array($c)) return $c['code'] ?? null;
+                        return null;
+                    })
+                    ->filter()
+                    ->values()
+                    ->toArray(),
 
-                'available'    => $p['available'] ?? 0,
-                'sale_percent' => 20, // demo
+                'available'    => (int) ($p['available'] ?? 0),
+                'sale_percent' => 20,
                 'tag'          => '🔥 Bán chạy',
             ];
         })
-        ->filter()   // loại null
+        // 🚨 TẠM THỜI KHÔNG FILTER GÌ CẢ
         ->values();
+
+    Log::info('🧾 ITEMS AFTER MAP', [
+        'page'  => $page,
+        'count' => $items->count(),
+        'ids'   => $items->pluck('product_id')->take(10)->all(),
+    ]);
 
     /*
     |--------------------------------------------------------------------------
-    | 4️⃣ LengthAwarePaginator (FIX LỖI PAGE KHÔNG ĐỔI DATA)
+    | 4️⃣ LengthAwarePaginator
     |--------------------------------------------------------------------------
-    | ❌ KHÔNG truyền request()->query()
-    | ✅ CHỈ set path + pageName
     */
     $products = new LengthAwarePaginator(
         $items,
@@ -644,11 +681,22 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         ]
     );
 
+    Log::info('📄 PAGINATOR CREATED', [
+        'currentPage' => $products->currentPage(),
+        'lastPage'    => $products->lastPage(),
+        'total'       => $products->total(),
+    ]);
+
     /*
     |--------------------------------------------------------------------------
     | 5️⃣ Render view
     |--------------------------------------------------------------------------
     */
+    Log::info('🎬 RENDER COLLECTION VIEW', [
+        'page'         => $page,
+        'item_count'  => $products->count(),
+    ]);
+
     return view(
         "storefront.{$this->theme}.pages.collection",
         compact('collection', 'products')
