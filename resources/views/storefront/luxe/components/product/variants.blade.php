@@ -5,22 +5,29 @@
     |--------------------------------------------------------------------------
     | 🔑 MAP SIZE → PRODUCT_ID (SKU CON) TỪ VARIANTS ERP
     |--------------------------------------------------------------------------
-    | ERP trả attributes dạng mảng [{name, value}]
+    | ERP mới trả:
+    | variants = [
+    |   [
+    |     product_id: xxx,
+    |     attributes: [
+    |       'SIZE' => 'L',
+    |       'MÀU SẮC' => 'Nâu'
+    |     ]
+    |   ]
+    | ]
+    |
+    | 👉 attributes là associative array, KHÔNG phải [{name,value}]
     */
     $sizeProductMap = [];
 
     foreach ($variants ?? [] as $variant) {
-        $variantProductId = $variant['product_id']
-            ?? $variant['id']
-            ?? null;
-
-        foreach ($variant['attributes'] ?? [] as $attr) {
-            if (
-                isset($attr['name'], $attr['value'])
-                && mb_strtoupper($attr['name']) === 'SIZE'
-            ) {
-                $sizeProductMap[$attr['value']] = $variantProductId;
-            }
+        if (
+            isset($variant['product_id'], $variant['attributes'])
+            && is_array($variant['attributes'])
+            && isset($variant['attributes']['SIZE'])
+        ) {
+            $size = $variant['attributes']['SIZE'];
+            $sizeProductMap[$size] = $variant['product_id'];
         }
     }
 @endphp
@@ -45,7 +52,9 @@
                 @foreach($values as $val)
 
                     @if($isSizeAttr)
-                        {{-- ✅ SIZE – GẮN SKU CON ĐÚNG --}}
+                        {{-- =====================================================
+                             SIZE VARIANT – SKU CON
+                        ===================================================== --}}
                         <button
                             type="button"
                             class="variant-option"
@@ -57,7 +66,9 @@
                             {{ $val }}
                         </button>
                     @else
-                        {{-- OTHER VARIANTS --}}
+                        {{-- =====================================================
+                             OTHER VARIANTS (COLOR, MATERIAL…)
+                        ===================================================== --}}
                         <button
                             type="button"
                             class="variant-option"
