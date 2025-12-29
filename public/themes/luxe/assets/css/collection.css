@@ -1,7 +1,15 @@
 /* =====================================================
-   COLLECTION PAGE – LIN XÉN
-   Premium • Clean • SEO-safe
+   COLLECTION – LIN XÉN
+   Premium • Minimal • Fashion-forward
 ===================================================== */
+
+:root {
+    --lx-text: #111;
+    --lx-muted: #6b7280;
+    --lx-border: #e5e7eb;
+    --lx-bg-soft: #f8f8f8;
+    --lx-accent: #111;
+}
 
 /* =========================
    CATEGORY HERO
@@ -9,85 +17,263 @@
 
 .lx-category-hero {
     position: relative;
-    width: 100%;
     min-height: 360px;
-    overflow: hidden;
-
+    background: linear-gradient(to bottom, #fafafa, #ffffff);
     display: flex;
     align-items: flex-end;
-
-    background: #f6f6f6;
 }
 
-/* Khi KHÔNG có hero image */
-.lx-category-hero.no-hero {
-    min-height: 220px;
-    background: linear-gradient(
-        to bottom,
-        #fafafa,
-        #ffffff
-    );
-}
-
-/* Hero image */
 .lx-category-hero img {
     position: absolute;
     inset: 0;
-
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-/* Overlay nhẹ cho chữ nổi */
 .lx-category-hero::after {
     content: "";
     position: absolute;
     inset: 0;
-
     background: linear-gradient(
         to top,
-        rgba(0,0,0,0.45),
-        rgba(0,0,0,0.05),
-        rgba(0,0,0,0)
+        rgba(0,0,0,.45),
+        rgba(0,0,0,.1),
+        transparent
     );
 }
 
-/* =========================
-   HERO TEXT
-========================= */
+.lx-category-hero.no-hero::after {
+    display: none;
+}
 
 .lx-category-hero-text {
     position: relative;
     z-index: 2;
-
     padding: 32px 24px;
-    max-width: 640px;
-
+    max-width: 720px;
     color: #fff;
 }
 
 .lx-category-hero.no-hero .lx-category-hero-text {
-    color: #111;
+    color: var(--lx-text);
 }
 
 .lx-category-hero-text h1 {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 600;
-    line-height: 1.25;
+    letter-spacing: -0.02em;
     margin-bottom: 8px;
 }
 
 .lx-category-desc {
     font-size: 14px;
     line-height: 1.6;
-    opacity: 0.95;
+    opacity: .95;
 }
 
-/* Fallback description */
 .lx-category-desc.muted {
-    color: #6b7280;
-    opacity: 1;
+    color: var(--lx-muted);
+}
+
+/* =========================
+   COLLECTION SECTION
+========================= */
+
+.lx-product-section {
+    padding: 56px 24px;
+}
+
+/* =========================
+   PRODUCT GRID
+========================= */
+
+.lx-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 32px 24px;
+}
+
+/* =========================
+   PRODUCT CARD
+========================= */
+
+.lx-product-card {
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.lx-product-media {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    background: var(--lx-bg-soft);
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.lx-product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
+}
+
+.lx-product-card:hover .lx-product-media img {
+    transform: scale(1.04);
+}
+
+/* SALE BADGE */
+
+.lx-sale-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #111;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+}
+
+/* =========================
+   PRODUCT INFO
+========================= */
+
+.lx-product-head {
+    margin-top: 14px;
+}
+
+.lx-product-name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--lx-text);
+    margin-top: 4px;
+}
+
+/* TAG */
+
+.lx-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #f1f1f1;
+    color: #444;
+}
+
+.lx-tag-best {
+    background: #111;
+    color: #fff;
+}
+
+/* =========================
+   PRICE
+========================= */
+
+.lx-product-price-wrap {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lx-price-sale {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+}
+
+.lx-price-origin {
+    font-size: 13px;
+    color: var(--lx-muted);
+    text-decoration: line-through;
+}
+
+/* =========================
+   VARIANTS (COLORS + QUICK)
+========================= */
+
+.lx-product-variants {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* COLORS */
+
+.lx-product-colors {
+    display: flex;
+    gap: 6px;
+}
+
+.lx-color-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+/* COLOR PRESETS (demo) */
+.lx-color-swatch.black { background: #000; }
+.lx-color-swatch.white { background: #fff; }
+.lx-color-swatch.beige { background: #e6d8c3; }
+.lx-color-swatch.brown { background: #6b4f3f; }
+.lx-color-swatch.red { background: #b11226; }
+.lx-color-swatch.blue { background: #1f4fd8; }
+.lx-color-swatch.navy { background: #1b2a4e; }
+.lx-color-swatch.olive { background: #6b7c4a; }
+
+.lx-color-swatch.active {
+    outline: 2px solid #111;
+}
+
+/* QUICK ORDER */
+
+.lx-quick-order-inline {
+    font-size: 18px;
+    text-decoration: none;
+    color: #111;
+}
+
+/* =========================
+   STATUS TAGS
+========================= */
+
+.lx-product-tags {
+    margin-top: 10px;
+    display: flex;
+    gap: 6px;
+}
+
+.lx-tag-stock {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.lx-tag-trend {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+/* =========================
+   PAGINATION
+========================= */
+
+.lx-pagination {
+    margin-top: 56px;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.lx-empty-state {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--lx-muted);
 }
 
 /* =========================
@@ -97,71 +283,18 @@
 @media (max-width: 768px) {
 
     .lx-category-hero {
-        min-height: 260px;
-    }
-
-    .lx-category-hero.no-hero {
-        min-height: 180px;
-    }
-
-    .lx-category-hero-text {
-        padding: 24px 16px;
+        min-height: 240px;
     }
 
     .lx-category-hero-text h1 {
-        font-size: 24px;
+        font-size: 26px;
     }
 
-    .lx-category-desc {
-        font-size: 13px;
+    .lx-product-section {
+        padding: 40px 16px;
     }
-}
 
-/* =========================
-   OPTIONAL: SMOOTH FADE
-========================= */
-
-.lx-category-hero img {
-    animation: fadeInHero 0.6s ease-out both;
-}
-
-@keyframes fadeInHero {
-    from {
-        opacity: 0;
-        transform: scale(1.02);
+    .lx-product-grid {
+        gap: 24px 16px;
     }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-.lx-paging {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 48px;
-}
-
-.lx-page {
-    min-width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    border: 1px solid #e5e5e5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #111;
-    text-decoration: none;
-}
-
-.lx-page.active {
-    background: #111;
-    color: #fff;
-    border-color: #111;
-}
-
-.lx-page.disabled {
-    opacity: .4;
-    pointer-events: none;
 }
