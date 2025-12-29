@@ -261,27 +261,27 @@ public function create(Request $request): JsonResponse
 | 🛑 DEBUG PRODUCT ID – CHECK SIZE / SKU
 |--------------------------------------------------------------------------
 */
-Log::error('🛑 [DEBUG CHECKOUT ITEMS – BEFORE ERP]', [
-    'items_raw' => $data['items'],
-]);
+// Log::error('🛑 [DEBUG CHECKOUT ITEMS – BEFORE ERP]', [
+//     'items_raw' => $data['items'],
+// ]);
 
-foreach ($data['items'] as $index => $item) {
-    Log::error("🧪 ITEM #{$index}", [
-        'product_id' => $item['product_id'] ?? null,
-        'qty'        => $item['qty'] ?? null,
-        'price'      => $item['price'] ?? null,
-        'note'       => $item['note'] ?? null,
-    ]);
-}
+// foreach ($data['items'] as $index => $item) {
+//     Log::error("🧪 ITEM #{$index}", [
+//         'product_id' => $item['product_id'] ?? null,
+//         'qty'        => $item['qty'] ?? null,
+//         'price'      => $item['price'] ?? null,
+//         'note'       => $item['note'] ?? null,
+//     ]);
+// }
 
-// ❌ DỪNG LUỒNG – KHÔNG CHO TẠO ĐƠN
-return response()->json([
-    'success' => false,
-    'message' => 'DEBUG MODE: kiểm tra product_id FE gửi lên',
-    'debug'   => [
-        'items' => $data['items'],
-    ],
-], 422);
+// // ❌ DỪNG LUỒNG – KHÔNG CHO TẠO ĐƠN
+// return response()->json([
+//     'success' => false,
+//     'message' => 'DEBUG MODE: kiểm tra product_id FE gửi lên',
+//     'debug'   => [
+//         'items' => $data['items'],
+//     ],
+// ], 422);
 
     /*
     |--------------------------------------------------------------------------
