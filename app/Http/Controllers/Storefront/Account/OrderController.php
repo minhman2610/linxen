@@ -52,32 +52,74 @@ class OrderController extends Controller
     }
 
     /**
-     * =====================================================
-     * 📦 CHI TIẾT ĐƠN HÀNG
-     * =====================================================
-     */
-    public function show(string $code)
+ * =====================================================
+ * 📦 CHI TIẾT ĐƠN HÀNG
+ * =====================================================
+ */
+public function show(string $code)
 {
+    $order  = null;
+    $error  = null;
+
     try {
         $res = Http::withOptions(['verify' => false])
+            ->timeout(6)
             ->withHeaders([
                 'X-Storefront-Code' => 'linxen',
             ])
             ->get(config('services.erp.url') . "/api/storefront/orders/{$code}");
 
+        // ❌ Lỗi HTTP / ERP chết
         if (!$res->ok()) {
-            return redirect()->route('linxen.account.orders');
+            Log::warning('[STORE ORDER FETCH FAILED]', [
+                'code'   => $code,
+                'status' => $res->status(),
+                'body'   => $res->body(),
+            ]);
+
+            $error = 'Không thể tải thông tin đơn hàng. Vui lòng thử lại sau.';
+        } else {
+            $payload = $res->json();
+
+            // ❌ Lỗi nghiệp vụ
+            if (empty($payload['success'])) {
+                $error = $payload['message'] ?? 'Không thể xác minh đơn hàng.';
+            }
+            // ❌ Không có order
+            elseif (empty($payload['order'])) {
+                Log::warning('[STORE ORDER NOT FOUND]', [
+                    'code'    => $code,
+                    'payload' => $payload,
+                ]);
+
+                $error = 'Không tìm thấy đơn hàng với mã này.';
+            } else {
+                $order = (object) $payload['order'];
+            }
         }
 
-        $order = $res->json('order');
+    } catch (\Throwable $e) {
+        Log::error('[STORE ORDER EXCEPTION]', [
+            'code'  => $code,
+            'error' => $e->getMessage(),
+        ]);
 
-    } catch (\Throwable) {
-        return redirect()->route('linxen.account.orders');
+        $error = 'Có lỗi kỹ thuật xảy ra khi tải đơn hàng.';
     }
 
+    // ❌ Có lỗi → render page thông báo (KHÔNG redirect)
+    if ($error) {
+        return view('storefront.luxe.pages.account.orders.show-error', [
+            'orderCode' => $code,
+            'message'   => $error,
+        ]);
+    }
+
+    // ✅ OK
     return view('storefront.luxe.pages.account.orders.show', [
-        'order' => (object) $order,
+        'order' => $order,
     ]);
 }
+
 
 }
