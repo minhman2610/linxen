@@ -1,22 +1,23 @@
-@if ($paginator->hasPages())
+@if ($paginator instanceof \Illuminate\Pagination\LengthAwarePaginator && $paginator->hasPages())
 <nav class="lx-paging" aria-label="Pagination">
 
     {{-- Prev --}}
     @if ($paginator->onFirstPage())
         <span class="lx-page disabled" aria-hidden="true">‹</span>
     @else
-        <a class="lx-page" href="{{ $paginator->previousPageUrl() }}" rel="prev">‹</a>
+        @php $prev = $paginator->previousPageUrl(); @endphp
+        @if(is_string($prev))
+            <a class="lx-page" href="{{ $prev }}" rel="prev">‹</a>
+        @endif
     @endif
 
     @php
-        $current = $paginator->currentPage();
-        $last    = $paginator->lastPage();
+        $current = (int) $paginator->currentPage();
+        $last    = (int) $paginator->lastPage();
 
-        // Hiển thị tối đa 5 page số
         $start = max(1, $current - 2);
         $end   = min($last, $current + 2);
 
-        // Luôn chừa chỗ cho trang đầu/cuối
         if ($start <= 2) {
             $start = 1;
             $end   = min(5, $last);
@@ -28,7 +29,7 @@
         }
     @endphp
 
-    {{-- First page --}}
+    {{-- First --}}
     @if ($start > 1)
         <a class="lx-page" href="{{ $paginator->url(1) }}">1</a>
         @if ($start > 2)
@@ -36,16 +37,19 @@
         @endif
     @endif
 
-    {{-- Middle pages --}}
+    {{-- Middle --}}
     @for ($page = $start; $page <= $end; $page++)
-        @if ($page == $current)
+        @if ($page === $current)
             <span class="lx-page active">{{ $page }}</span>
         @else
-            <a class="lx-page" href="{{ $paginator->url($page) }}">{{ $page }}</a>
+            @php $url = $paginator->url($page); @endphp
+            @if(is_string($url))
+                <a class="lx-page" href="{{ $url }}">{{ $page }}</a>
+            @endif
         @endif
     @endfor
 
-    {{-- Last page --}}
+    {{-- Last --}}
     @if ($end < $last)
         @if ($end < $last - 1)
             <span class="lx-page dots">…</span>
@@ -55,7 +59,10 @@
 
     {{-- Next --}}
     @if ($paginator->hasMorePages())
-        <a class="lx-page" href="{{ $paginator->nextPageUrl() }}" rel="next">›</a>
+        @php $next = $paginator->nextPageUrl(); @endphp
+        @if(is_string($next))
+            <a class="lx-page" href="{{ $next }}" rel="next">›</a>
+        @endif
     @else
         <span class="lx-page disabled" aria-hidden="true">›</span>
     @endif
