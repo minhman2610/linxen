@@ -99,7 +99,7 @@ public function product(string $slug, ErpStorefrontApi $erp)
     'attributes' => $product['attributes'] ?? null,
 ]);
 
-    
+
     if (empty($product) || !is_array($product)) {
         abort(404);
     }
@@ -241,26 +241,6 @@ public function product(string $slug, ErpStorefrontApi $erp)
 
 
 
-
-
-
-
-    /* =====================================================
-     * 📦 COLLECTION / CATEGORY
-     * ===================================================== */
-    public function collection(string $slug, ErpStorefrontApi $erp)
-    {
-        $data = $erp->collection($this->brand, $slug);
-
-        return view(
-            "storefront.{$this->theme}.pages.collection",
-            [
-                'collection' => $data['collection'] ?? null,
-                'products'   => $data['products'] ?? [],
-                'brand'      => $this->brand,
-            ]
-        );
-    }
 
     /* =====================================================
      * 🛒 CART
