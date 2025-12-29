@@ -423,7 +423,7 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – SAFE & PAGINATED
+ * 📦 COLLECTION (STORE CATEGORY) – SAFE, PAGINATED, DEBUG
  * =====================================================
  */
 public function collection(
@@ -432,6 +432,7 @@ public function collection(
     int $page = 1,
     int $limit = 24
 ): array {
+
     // -------------------------------------------------
     // 0️⃣ Normalize params
     // -------------------------------------------------
@@ -439,29 +440,53 @@ public function collection(
     $limit = min(max((int) $limit, 1), 48);
 
     // -------------------------------------------------
-    // 1️⃣ Cache key (BẮT BUỘC có page + limit)
+    // 1️⃣ Cache key (PHẢI có page + limit)
     // -------------------------------------------------
     $cacheKey = "storefront:collection:{$brand}:{$slug}:{$page}:{$limit}";
+
+    // 🔍 DEBUG – page + cache key
+    \Log::info('🔎 COLLECTION DEBUG – PARAMS', [
+        'brand'    => $brand,
+        'slug'     => $slug,
+        'page'     => $page,
+        'limit'    => $limit,
+        'cacheKey' => $cacheKey,
+        'url'      => request()->fullUrl(),
+    ]);
 
     return \Cache::remember($cacheKey, now()->addMinutes(5), function () use (
         $brand,
         $slug,
         $page,
-        $limit
+        $limit,
+        $cacheKey
     ) {
 
         // -------------------------------------------------
-        // 2️⃣ Call ERP (3mg.ai) – ERP paginate
+        // 2️⃣ Call ERP
         // -------------------------------------------------
-        $data = $this->get(
-            "/api/storefront/{$brand}/collection/{$slug}",
-            [
-                'page'  => $page,
-                'limit'=> $limit,
-            ]
-        );
+        $endpoint = "/api/storefront/{$brand}/collection/{$slug}";
+        $params   = [
+            'page'  => $page,
+            'limit' => $limit,
+        ];
+
+        // 🔍 DEBUG – ERP request
+        \Log::info('📡 ERP COLLECTION REQUEST', [
+            'endpoint' => $endpoint,
+            'params'   => $params,
+            'cacheKey' => $cacheKey,
+        ]);
+
+        $data = $this->get($endpoint, $params);
 
         if (empty($data) || empty($data['collection'])) {
+            \Log::warning('⚠️ COLLECTION EMPTY DATA', [
+                'brand' => $brand,
+                'slug'  => $slug,
+                'page'  => $page,
+            ]);
+
             return [
                 'collection' => null,
                 'products'   => [],
@@ -470,7 +495,7 @@ public function collection(
         }
 
         // -------------------------------------------------
-        // 3️⃣ COLLECTION META (SCALAR ONLY)
+        // 3️⃣ COLLECTION META
         // -------------------------------------------------
         $collection = [
             'name'        => is_string($data['collection']['name'] ?? null)
@@ -489,16 +514,12 @@ public function collection(
         ];
 
         // -------------------------------------------------
-        // 4️⃣ PRODUCTS – NORMALIZE 100% SCALAR
+        // 4️⃣ PRODUCTS – NORMALIZE + DEBUG IDS
         // -------------------------------------------------
         $products = collect($data['products'] ?? [])
             ->map(function ($p) {
 
-                /*
-                |--------------------------------------------------------------------------
-                | 🖼 Resolve THUMB – TUYỆT ĐỐI KHÔNG ARRAY
-                |--------------------------------------------------------------------------
-                */
+                // ---------- THUMB ----------
                 $thumb = null;
 
                 if (!empty($p['thumb'])) {
@@ -510,57 +531,28 @@ public function collection(
                             ?? $p['thumb']['full']
                             ?? null;
                     }
-                } elseif (!empty($p['media']['images'][0]) && is_string($p['media']['images'][0])) {
-                    $thumb = $p['media']['images'][0];
-                } elseif (!empty($p['media']['thumb_mobile']) && is_string($p['media']['thumb_mobile'])) {
-                    $thumb = $p['media']['thumb_mobile'];
-                } elseif (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
-                    $thumb = $p['media']['thumb'];
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | 🎨 COLORS – ARRAY STRING ONLY
-                |--------------------------------------------------------------------------
-                */
+                // ---------- COLORS ----------
                 $colors = collect($p['colors'] ?? [])
-                    ->map(function ($c) {
-                        if (is_string($c)) return $c;
-                        if (is_array($c)) return $c['code'] ?? null;
-                        return null;
-                    })
+                    ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
                     ->filter(fn ($c) => is_string($c))
                     ->values()
                     ->toArray();
 
                 return [
-                    // Identity
                     'product_id' => (int) ($p['product_id'] ?? 0),
-
-                    'name' => is_string($p['name'] ?? null)
+                    'name'       => is_string($p['name'] ?? null)
                         ? $p['name']
                         : ($p['name']['vi'] ?? null),
-
-                    'slug' => is_string($p['slug'] ?? null)
-                        ? $p['slug']
-                        : null,
-
-                    // Data
-                    'price'     => is_numeric($p['price'] ?? null)
-                        ? (float) $p['price']
-                        : null,
-
-                    'available' => (int) ($p['available'] ?? 0),
-                    'colors'    => $colors,
-
-                    // Media (BLADE-SAFE)
-                    'thumb'     => is_string($thumb) ? $thumb : null,
-
-                    // UX helpers
-                    'tag'       => '🔥 Bán chạy',
+                    'slug'       => is_string($p['slug'] ?? null) ? $p['slug'] : null,
+                    'price'      => is_numeric($p['price'] ?? null) ? (float) $p['price'] : null,
+                    'available'  => (int) ($p['available'] ?? 0),
+                    'colors'     => $colors,
+                    'thumb'      => is_string($thumb) ? $thumb : null,
+                    'tag'        => '🔥 Bán chạy',
                 ];
             })
-            // ❗ Chỉ lọc identity + price (KHÔNG lọc thumb)
             ->filter(fn ($p) =>
                 $p['product_id'] > 0
                 && !empty($p['name'])
@@ -569,10 +561,27 @@ public function collection(
             ->values()
             ->toArray();
 
+        // 🔍 DEBUG – product ids per page
+        \Log::info('🧾 COLLECTION PRODUCT IDS', [
+            'page'        => $page,
+            'count'       => count($products),
+            'product_ids' => array_slice(
+                array_column($products, 'product_id'),
+                0,
+                10 // log 10 id đầu là đủ
+            ),
+        ]);
+
         // -------------------------------------------------
-        // 5️⃣ META PAGINATION (PASS-THROUGH ERP)
+        // 5️⃣ META PAGINATION
         // -------------------------------------------------
         $meta = $data['meta'] ?? null;
+
+        // 🔍 DEBUG – meta
+        \Log::info('📊 COLLECTION META', [
+            'page' => $page,
+            'meta' => $meta,
+        ]);
 
         return [
             'collection' => $collection,
