@@ -10,10 +10,10 @@
             ← Quay lại danh sách đơn
         </a>
 
-        <h2>Đơn hàng #{{ $order['code'] }}</h2>
+        <h2>Đơn hàng #{{ $order->code }}</h2>
 
-        <span class="lx-order-status status-{{ $order['status'] }}">
-            {{ $order['status_label'] }}
+        <span class="lx-order-status status-{{ $order->status['code'] ?? '' }}">
+            {{ $order->status['text'] ?? 'Đang xử lý' }}
         </span>
     </div>
 
@@ -22,7 +22,7 @@
         <h3>Sản phẩm</h3>
 
         <div class="lx-order-items">
-            @foreach($order['items'] as $item)
+            @foreach($order->items as $item)
                 <div class="lx-order-item">
                     <div class="lx-item-name">
                         {{ $item['name'] }}
@@ -38,20 +38,22 @@
     </div>
 
     {{-- SHIPPING --}}
-    <div class="lx-order-section">
-        <h3>Thông tin giao hàng</h3>
+    @if(!empty($order->delivery))
+        <div class="lx-order-section">
+            <h3>Thông tin giao hàng</h3>
 
-        <div class="lx-order-shipping">
-            <div><strong>{{ $order['shipping']['name'] }}</strong></div>
-            <div>{{ $order['shipping']['phone'] }}</div>
-            <div>{{ $order['shipping']['address'] }}</div>
+            <div class="lx-order-shipping">
+                <div><strong>{{ $order->delivery['partner'] ?? '' }}</strong></div>
+                <div>Mã vận đơn: {{ $order->delivery['code'] ?? '' }}</div>
+                <div>{{ $order->delivery['address'] ?? '' }}</div>
+            </div>
         </div>
-    </div>
+    @endif
 
     {{-- TOTAL --}}
     <div class="lx-order-total-box">
         <span>Tổng thanh toán</span>
-        <strong>{{ number_format($order['total']) }}đ</strong>
+        <strong>{{ number_format($order->summary['total_payment'] ?? 0) }}đ</strong>
     </div>
 
 </div>
