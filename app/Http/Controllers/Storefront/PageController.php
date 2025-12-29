@@ -541,16 +541,18 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (FAST, PAGINATED, HOME-LIKE)
+ * 📦 COLLECTION – LIN XÉN (FAST, PAGINATED, STABLE)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
     /*
     |--------------------------------------------------------------------------
-    | 0️⃣ Pagination params
+    | 0️⃣ Pagination params (FIX CHUẨN)
     |--------------------------------------------------------------------------
+    | ❗ Dùng input(), KHÔNG dùng request()->query()
     */
-    $page    = max((int) request('page', 1), 1);
+    $page    = (int) request()->input('page', 1);
+    $page    = max($page, 1);
     $perPage = 24;
 
     /*
@@ -583,20 +585,17 @@ public function collection(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 3️⃣ PRODUCTS – MINIMAL NORMALIZE (RẤT NHẸ)
+    | 3️⃣ PRODUCTS – ROOT KEY `thumb` (QUAN TRỌNG)
     |--------------------------------------------------------------------------
-    | ❗ LƯU Ý QUAN TRỌNG:
-    | - KHÔNG dùng $p['media']
-    | - thumb đã được service đưa ra root key
-    |--------------------------------------------------------------------------
+    | - KHÔNG đọc $p['media']
+    | - DÙNG $p['thumb'] như service đã chuẩn hoá
     */
     $items = collect($data['products'] ?? [])
         ->map(function ($p) {
 
-            // ✅ KEY ĐÚNG
             $thumb = $p['thumb'] ?? null;
 
-            if (empty($thumb)) {
+            if (!$thumb) {
                 return null;
             }
 
@@ -620,19 +619,19 @@ public function collection(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 4️⃣ LengthAwarePaginator
+    | 4️⃣ LengthAwarePaginator (FIX LỖI PAGE KHÔNG ĐỔI DATA)
     |--------------------------------------------------------------------------
-    | ❗ total lấy từ ERP meta (chuẩn), KHÔNG từ count()
-    |--------------------------------------------------------------------------
+    | ❌ KHÔNG truyền request()->query()
+    | ✅ CHỈ set path + pageName
     */
     $products = new LengthAwarePaginator(
         $items,
-        $data['meta']['total'] ?? $items->count(),
+        (int) ($data['meta']['total'] ?? $items->count()),
         $perPage,
         $page,
         [
-            'path'  => request()->url(),
-            'query' => request()->query(),
+            'path'     => request()->url(),
+            'pageName' => 'page',
         ]
     );
 
