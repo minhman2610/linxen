@@ -423,7 +423,7 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – FAST & SAFE
+ * 📦 COLLECTION (STORE CATEGORY) – FAST & SAFE (FIXED)
  * =====================================================
  */
 public function collection(
@@ -432,11 +432,11 @@ public function collection(
     int $page = 1,
     int $limit = 24
 ): array {
-    // 🔒 Giới hạn hợp lý
+    // 🔒 Normalize params
     $page  = max($page, 1);
     $limit = min(max($limit, 1), 48);
 
-    // 🔑 Cache key
+    // 🔑 Cache key (PAGE ĐÃ ĐƯỢC TÁCH RIÊNG)
     $cacheKey = "storefront:collection:{$brand}:{$slug}:{$page}:{$limit}";
 
     return \Cache::remember($cacheKey, now()->addMinutes(5), function () use (
@@ -447,7 +447,7 @@ public function collection(
     ) {
 
         // =====================================================
-        // 1️⃣ CALL ERP API (PAGINATED)
+        // 1️⃣ CALL ERP API (3mg.ai – PAGINATED)
         // =====================================================
         $data = $this->get(
             "/api/storefront/{$brand}/collection/{$slug}",
@@ -480,35 +480,29 @@ public function collection(
         ];
 
         // =====================================================
-        // 3️⃣ PRODUCTS – MINIMAL NORMALIZE
-        // ❗ KHÔNG map nặng, KHÔNG filter dư
+        // 3️⃣ PRODUCTS – ROOT KEY `thumb` (QUAN TRỌNG)
         // =====================================================
         $products = collect($data['products'] ?? [])
             ->map(function ($p) {
 
-                // Thumb đã được ERP chuẩn hoá
-                $thumb =
-                    $p['media']['thumb']
-                    ?? $p['media']['thumb_mobile']
-                    ?? null;
+                // ✅ ĐÚNG CẤU TRÚC DATA ĐANG CHẠY
+                $thumb = $p['thumb'] ?? null;
+
+                if (!$thumb) {
+                    return null;
+                }
 
                 return [
                     'product_id' => $p['product_id'] ?? null,
                     'name'       => $p['name'] ?? null,
                     'slug'       => $p['slug'] ?? null,
                     'price'      => $p['price'] ?? null,
-                    'available'  => $p['available'] ?? null,
+                    'available'  => $p['available'] ?? 0,
                     'colors'     => $p['colors'] ?? [],
                     'thumb'      => $thumb,
                 ];
             })
-            // giữ an toàn tối thiểu
-            ->filter(fn ($p) =>
-                $p['product_id']
-                && $p['name']
-                && $p['price']
-                && $p['thumb']
-            )
+            ->filter()
             ->values()
             ->toArray();
 
@@ -524,6 +518,7 @@ public function collection(
         ];
     });
 }
+
 
 
 
