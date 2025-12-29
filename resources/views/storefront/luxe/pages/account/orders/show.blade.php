@@ -3,10 +3,12 @@
 @section('content')
 
 @php
-    $subtotal = $order->summary['total'] ?? 0;
-    $discount = max($order->summary['discount'] ?? 0, 0);
-    $payable  = max($subtotal - $discount, 0);
-    $paid     = $order->summary['total_payment'] ?? 0;
+    $summary    = $order->summary ?? [];
+    $subtotal   = $summary['subtotal']        ?? 0;
+    $discount   = max($summary['discount']    ?? 0, 0);
+    $payable    = $summary['payable_total']   ?? 0;
+    $paid       = $summary['total_payment']   ?? 0;
+    $surcharges = $order->surcharges          ?? [];
 @endphp
 
 <div class="lx-account-container lx-order-detail">
@@ -76,11 +78,14 @@
 
     {{-- SUMMARY --}}
     <div class="lx-order-card lx-order-summary">
+
+        {{-- Subtotal --}}
         <div class="lx-summary-row">
             <span>Tạm tính</span>
             <span>{{ number_format($subtotal) }}đ</span>
         </div>
 
+        {{-- Discount --}}
         @if($discount > 0)
             <div class="lx-summary-row">
                 <span>Giảm giá</span>
@@ -88,13 +93,25 @@
             </div>
         @endif
 
+        {{-- 🔥 SURCHARGES --}}
+        @if(!empty($surcharges))
+            @foreach($surcharges as $fee)
+                <div class="lx-summary-row">
+                    <span>{{ $fee['name'] }}</span>
+                    <span>{{ number_format($fee['price']) }}đ</span>
+                </div>
+            @endforeach
+        @endif
+
+        {{-- Payable --}}
         <div class="lx-summary-row total">
             <span>Tổng cần thanh toán</span>
             <strong>{{ number_format($payable) }}đ</strong>
         </div>
 
+        {{-- Paid --}}
         @if($paid > 0)
-            <div class="lx-summary-row">
+            <div class="lx-summary-row paid">
                 <span>Đã thanh toán</span>
                 <strong class="text-success">
                     {{ number_format($paid) }}đ

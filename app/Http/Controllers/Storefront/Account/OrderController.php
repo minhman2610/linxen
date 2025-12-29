@@ -19,6 +19,7 @@ class OrderController extends Controller
     {
         $customer = session('customer');
 
+        // 🔐 Chưa login / thiếu SĐT
         if (!$customer || empty($customer['phone'])) {
             return redirect()->route('linxen.home');
         }
@@ -40,11 +41,13 @@ class OrderController extends Controller
      * =====================================================
      * - Không redirect mù
      * - Lỗi thì render show-error
+     * - Không tính toán tiền tại đây
      */
     public function show(string $code, ErpStorefrontApi $erp)
     {
         $res = $erp->orderDetail($code);
 
+        // ❌ ERP lỗi / không tìm thấy đơn
         if (!($res['success'] ?? false)) {
             return view('storefront.luxe.pages.account.orders.show-error', [
                 'orderCode' => $code,
@@ -52,6 +55,15 @@ class OrderController extends Controller
             ]);
         }
 
+        // ❌ Payload sai cấu trúc (an toàn)
+        if (empty($res['order'])) {
+            return view('storefront.luxe.pages.account.orders.show-error', [
+                'orderCode' => $code,
+                'message'   => 'Dữ liệu đơn hàng không hợp lệ.',
+            ]);
+        }
+
+        // ✅ OK
         return view('storefront.luxe.pages.account.orders.show', [
             'order' => (object) $res['order'],
         ]);
