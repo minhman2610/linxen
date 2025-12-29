@@ -27,23 +27,26 @@
                 <a href="{{ route('linxen.account.orders.show', $order['code']) }}"
                    class="lx-order-card">
 
+                    {{-- TOP --}}
                     <div class="lx-order-top">
                         <span class="lx-order-code">
                             #{{ $order['code'] }}
                         </span>
 
-                        <span class="lx-order-status status-{{ $order['status'] }}">
-                            {{ $order['status_label'] }}
+                        {{-- ✅ STATUS TEXT --}}
+                        <span class="lx-order-status status-{{ $order['status']['code'] ?? '' }}">
+                            {{ $order['status']['text'] ?? 'Đang xử lý' }}
                         </span>
                     </div>
 
+                    {{-- BOTTOM --}}
                     <div class="lx-order-bottom">
                         <span class="lx-order-date">
-                            {{ $order['created_at'] }}
+                            {{ \Illuminate\Support\Carbon::parse($order['created_at'])->format('d/m/Y H:i') }}
                         </span>
 
                         <span class="lx-order-total">
-                            {{ number_format($order['total']) }}đ
+                            {{ number_format($order['payable_total'] ?? 0) }}đ
                         </span>
                     </div>
 
