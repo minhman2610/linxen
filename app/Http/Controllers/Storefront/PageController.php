@@ -542,7 +542,7 @@ public function account()
 /* =====================================================
  * 📦 COLLECTION INDEX – LIN XÉN
  * ===================================================== */
-public function collections(ErpStorefrontApi $erp)
+public function collection(ErpStorefrontApi $erp)
 {
     $data = $erp->collections($this->brand);
 
