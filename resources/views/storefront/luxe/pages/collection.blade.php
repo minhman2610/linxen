@@ -5,12 +5,12 @@
 {{-- ===================================================== --}}
 {{-- CATEGORY HERO (LCP IMAGE) --}}
 {{-- ===================================================== --}}
-<section class="lx-category-hero {{ empty($collection['hero']) ? 'no-hero' : '' }}">
+<section class="lx-category-hero {{ empty($collection['hero']) || !is_string($collection['hero']) ? 'no-hero' : '' }}">
 
     @if(!empty($collection['hero']) && is_string($collection['hero']))
         <img
             src="{{ $collection['hero'] }}"
-            alt="{{ is_string($collection['name']) ? $collection['name'] : 'LIN XÉN' }}"
+            alt="{{ is_string($collection['name'] ?? null) ? $collection['name'] : 'LIN XÉN' }}"
             loading="eager"
             fetchpriority="high"
             width="1600"
@@ -19,11 +19,11 @@
 
     <div class="lx-category-hero-text">
         <h1>
-            {{ is_string($collection['name']) ? $collection['name'] : 'Bộ sưu tập LIN XÉN' }}
+            {{ is_string($collection['name'] ?? null) ? $collection['name'] : 'Bộ sưu tập LIN XÉN' }}
         </h1>
 
-        <p class="lx-category-desc {{ empty($collection['description']) ? 'muted' : '' }}">
-            {{ is_string($collection['description'])
+        <p class="lx-category-desc {{ empty($collection['description']) || !is_string($collection['description']) ? 'muted' : '' }}">
+            {{ is_string($collection['description'] ?? null)
                 ? $collection['description']
                 : 'Khám phá các thiết kế nữ tính, tinh tế và dễ mặc từ LIN XÉN.' }}
         </p>
@@ -37,8 +37,26 @@
 <section class="lx-product-section">
 
     <div class="lx-product-grid">
-        
-        @foreach($products as $product)
+
+        @foreach(($products ?? []) as $product)
+
+            @php
+                // -----------------------------
+                // PHÒNG THỦ CẤP CUỐI
+                // -----------------------------
+                $name  = is_string($product['name'] ?? null) ? $product['name'] : '';
+                $slug  = is_string($product['slug'] ?? null) ? $product['slug'] : '#';
+                $thumb = is_string($product['thumb'] ?? null) ? $product['thumb'] : '';
+                $price = is_numeric($product['price'] ?? null) ? (float) $product['price'] : 0;
+                $salePercent = is_numeric($product['sale_percent'] ?? null) ? (int) $product['sale_percent'] : 0;
+                $available = (int) ($product['available'] ?? 0);
+                $colors = is_array($product['colors'] ?? null) ? $product['colors'] : [];
+                $tag = is_string($product['tag'] ?? null) ? $product['tag'] : null;
+
+                $salePrice = $salePercent > 0
+                    ? round($price * (100 - $salePercent) / 100)
+                    : $price;
+            @endphp
 
             <div class="lx-product-card">
 
@@ -47,25 +65,25 @@
                 {{-- ================================================= --}}
                 <div class="lx-product-media">
 
-                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}">
+                    <a href="{{ $slug !== '#' ? route('linxen.product', ['slug' => $slug]) : '#' }}">
                         <img
                             class="lx-img lazy"
                             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23f3f3f3'/%3E%3C/svg%3E"
-                            data-src="{{ $product['thumb'] }}"
-                            alt="{{ is_string($product['name']) ? $product['name'] : 'LIN XÉN' }}"
+                            data-src="{{ $thumb }}"
+                            alt="{{ $name ?: 'LIN XÉN' }}"
                             width="300"
                             height="400">
                     </a>
 
                     {{-- SALE --}}
-                    @if(!empty($product['sale_percent']) && is_numeric($product['sale_percent']))
+                    @if($salePercent > 0)
                         <span class="lx-sale-badge">
-                            -{{ (int) $product['sale_percent'] }}%
+                            -{{ $salePercent }}%
                         </span>
                     @endif
 
                     {{-- QUICK ORDER --}}
-                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}"
+                    <a href="{{ $slug !== '#' ? route('linxen.product', ['slug' => $slug]) : '#' }}"
                        class="lx-quick-order-float"
                        aria-label="Chọn sản phẩm">
 
@@ -83,21 +101,13 @@
                 {{-- ================================================= --}}
                 <div class="lx-product-head">
                     <p class="lx-product-name">
-                        {{ is_string($product['name']) ? $product['name'] : '' }}
+                        {{ $name }}
                     </p>
                 </div>
 
                 {{-- ================================================= --}}
                 {{-- PRICE --}}
                 {{-- ================================================= --}}
-                @php
-                    $price = (float) ($product['price'] ?? 0);
-                    $salePercent = (int) ($product['sale_percent'] ?? 0);
-                    $salePrice = $salePercent > 0
-                        ? round($price * (100 - $salePercent) / 100)
-                        : $price;
-                @endphp
-
                 <div class="lx-product-price-wrap">
                     <span class="lx-price-sale">
                         {{ number_format($salePrice) }}₫
@@ -113,10 +123,10 @@
                 {{-- ================================================= --}}
                 {{-- COLORS --}}
                 {{-- ================================================= --}}
-                @if(!empty($product['colors']) && is_array($product['colors']))
+                @if(!empty($colors))
                     <div class="lx-product-variants">
                         <div class="lx-product-colors">
-                            @foreach($product['colors'] as $i => $color)
+                            @foreach($colors as $i => $color)
                                 @if(is_string($color))
                                     <span class="lx-color-swatch {{ $color }} {{ $i === 0 ? 'active' : '' }}"></span>
                                 @endif
@@ -130,13 +140,13 @@
                 {{-- ================================================= --}}
                 <div class="lx-product-tags">
 
-                    @if(($product['available'] ?? 0) > 0)
+                    @if($available > 0)
                         <span class="lx-tag lx-tag-stock">✔ Còn hàng</span>
                     @endif
 
-                    @if(!empty($product['tag']) && is_string($product['tag']))
+                    @if($tag)
                         <span class="lx-tag lx-tag-best">
-                            {{ $product['tag'] }}
+                            {{ $tag }}
                         </span>
                     @endif
 
@@ -168,7 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const images = document.querySelectorAll('img.lazy');
 
     if (!('IntersectionObserver' in window)) {
-        images.forEach(img => img.src = img.dataset.src);
+        images.forEach(img => {
+            if (img.dataset.src) img.src = img.dataset.src;
+        });
         return;
     }
 
@@ -177,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!entry.isIntersecting) return;
 
             const img = entry.target;
-            img.src = img.dataset.src;
+            if (img.dataset.src) img.src = img.dataset.src;
             img.classList.remove('lazy');
             observer.unobserve(img);
         });
