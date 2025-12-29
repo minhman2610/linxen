@@ -2,6 +2,13 @@
 
 @section('content')
 
+@php
+    $subtotal = $order->summary['total'] ?? 0;
+    $discount = max($order->summary['discount'] ?? 0, 0);
+    $payable  = max($subtotal - $discount, 0);
+    $paid     = $order->summary['total_payment'] ?? 0;
+@endphp
+
 <div class="lx-account-container lx-order-detail">
 
     {{-- HEADER --}}
@@ -71,18 +78,29 @@
     <div class="lx-order-card lx-order-summary">
         <div class="lx-summary-row">
             <span>Tạm tính</span>
-            <span>{{ number_format($order->summary['total']) }}đ</span>
+            <span>{{ number_format($subtotal) }}đ</span>
         </div>
 
-        <div class="lx-summary-row">
-            <span>Giảm giá</span>
-            <span>-{{ number_format($order->summary['discount']) }}đ</span>
-        </div>
+        @if($discount > 0)
+            <div class="lx-summary-row">
+                <span>Giảm giá</span>
+                <span>-{{ number_format($discount) }}đ</span>
+            </div>
+        @endif
 
         <div class="lx-summary-row total">
-            <span>Tổng thanh toán</span>
-            <strong>{{ number_format($order->summary['total_payment']) }}đ</strong>
+            <span>Tổng cần thanh toán</span>
+            <strong>{{ number_format($payable) }}đ</strong>
         </div>
+
+        @if($paid > 0)
+            <div class="lx-summary-row">
+                <span>Đã thanh toán</span>
+                <strong class="text-success">
+                    {{ number_format($paid) }}đ
+                </strong>
+            </div>
+        @endif
     </div>
 
 </div>
@@ -93,6 +111,8 @@
 </div>
 
 @endsection
+
+@push('scripts')
 <script>
 function openImageViewer(src) {
     const viewer = document.getElementById('lxImageViewer');
@@ -106,3 +126,4 @@ function closeImageViewer() {
     document.getElementById('lxImageViewer').style.display = 'none';
 }
 </script>
+@endpush
