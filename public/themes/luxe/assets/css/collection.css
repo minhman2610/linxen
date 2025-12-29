@@ -1,26 +1,26 @@
 /* =====================================================
    COLLECTION – LIN XÉN
-   Premium • Minimal • Fashion-forward
+   Premium • Minimal • Fashion-forward (CLEAN)
 ===================================================== */
 
 :root {
     --lx-text: #111;
     --lx-muted: #6b7280;
     --lx-border: #e5e7eb;
-    --lx-bg-soft: #f8f8f8;
+    --lx-bg-soft: #f6f6f6;
     --lx-accent: #111;
 }
 
-/* =========================
+/* =====================================================
    CATEGORY HERO
-========================= */
+===================================================== */
 
 .lx-category-hero {
     position: relative;
-    min-height: 360px;
-    background: linear-gradient(to bottom, #fafafa, #ffffff);
+    min-height: 320px;
     display: flex;
     align-items: flex-end;
+    background: linear-gradient(to bottom, #fafafa, #fff);
 }
 
 .lx-category-hero img {
@@ -38,7 +38,7 @@
     background: linear-gradient(
         to top,
         rgba(0,0,0,.45),
-        rgba(0,0,0,.1),
+        rgba(0,0,0,.12),
         transparent
     );
 }
@@ -50,7 +50,7 @@
 .lx-category-hero-text {
     position: relative;
     z-index: 2;
-    padding: 32px 24px;
+    padding: 28px 20px;
     max-width: 720px;
     color: #fff;
 }
@@ -60,49 +60,68 @@
 }
 
 .lx-category-hero-text h1 {
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 600;
     letter-spacing: -0.02em;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .lx-category-desc {
     font-size: 14px;
-    line-height: 1.6;
-    opacity: .95;
+    line-height: 1.55;
 }
 
 .lx-category-desc.muted {
     color: var(--lx-muted);
 }
 
-/* =========================
+/* =====================================================
    COLLECTION SECTION
-========================= */
+===================================================== */
 
 .lx-product-section {
-    padding: 56px 24px;
+    padding: 48px 16px;
 }
 
-/* =========================
-   PRODUCT GRID
-========================= */
+/* =====================================================
+   PRODUCT GRID (CORE FIX)
+===================================================== */
 
 .lx-product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 32px 24px;
+    grid-template-columns: repeat(2, 1fr); /* mobile 2 cột */
+    gap: 14px;
 }
 
-/* =========================
+@media (min-width: 768px) {
+    .lx-product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lx-product-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+    }
+}
+
+/* =====================================================
    PRODUCT CARD
-========================= */
+===================================================== */
 
 .lx-product-card {
     background: #fff;
     display: flex;
     flex-direction: column;
+    padding: 8px;               /* 🔥 GIẢM MẠNH PADDING */
+    border-radius: 14px;
 }
+
+/* =====================================================
+   PRODUCT MEDIA
+===================================================== */
 
 .lx-product-media {
     position: relative;
@@ -116,40 +135,40 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform .4s ease;
+    display: block;
+    transition: transform .35s ease;
 }
 
 .lx-product-card:hover .lx-product-media img {
-    transform: scale(1.04);
+    transform: scale(1.03);
 }
 
 /* SALE BADGE */
 
 .lx-sale-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: 10px;
+    left: 10px;
     background: #111;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     padding: 4px 8px;
     border-radius: 999px;
 }
 
-/* =========================
+/* =====================================================
    PRODUCT INFO
-========================= */
+===================================================== */
 
 .lx-product-head {
-    margin-top: 14px;
+    margin-top: 10px;
 }
 
 .lx-product-name {
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 500;
-    line-height: 1.45;
+    line-height: 1.4;
     color: var(--lx-text);
-    margin-top: 4px;
 }
 
 /* TAG */
@@ -168,35 +187,35 @@
     color: #fff;
 }
 
-/* =========================
-   PRICE
-========================= */
+/* =====================================================
+   PRICE (EMPHASIS)
+===================================================== */
 
 .lx-product-price-wrap {
-    margin-top: 8px;
+    margin-top: 6px;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .lx-price-sale {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     color: #111;
 }
 
 .lx-price-origin {
     font-size: 13px;
-    color: var(--lx-muted);
+    color: #9ca3af;
     text-decoration: line-through;
 }
 
-/* =========================
-   VARIANTS (COLORS + QUICK)
-========================= */
+/* =====================================================
+   VARIANTS
+===================================================== */
 
 .lx-product-variants {
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -210,25 +229,27 @@
 }
 
 .lx-color-swatch {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
     border: 1px solid #ddd;
 }
 
-/* COLOR PRESETS (demo) */
+.lx-color-swatch.active {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}
+
+/* COLOR DEMO */
+
 .lx-color-swatch.black { background: #000; }
 .lx-color-swatch.white { background: #fff; }
 .lx-color-swatch.beige { background: #e6d8c3; }
 .lx-color-swatch.brown { background: #6b4f3f; }
-.lx-color-swatch.red { background: #b11226; }
-.lx-color-swatch.blue { background: #1f4fd8; }
-.lx-color-swatch.navy { background: #1b2a4e; }
+.lx-color-swatch.red   { background: #b11226; }
+.lx-color-swatch.blue  { background: #1f4fd8; }
+.lx-color-swatch.navy  { background: #1b2a4e; }
 .lx-color-swatch.olive { background: #6b7c4a; }
-
-.lx-color-swatch.active {
-    outline: 2px solid #111;
-}
 
 /* QUICK ORDER */
 
@@ -238,14 +259,12 @@
     color: #111;
 }
 
-/* =========================
-   STATUS TAGS
-========================= */
+/* =====================================================
+   STATUS
+===================================================== */
 
 .lx-product-tags {
-    margin-top: 10px;
-    display: flex;
-    gap: 6px;
+    margin-top: 8px;
 }
 
 .lx-tag-stock {
@@ -253,170 +272,34 @@
     color: #047857;
 }
 
-.lx-tag-trend {
-    background: #fff7ed;
-    color: #c2410c;
-}
-
-/* =========================
+/* =====================================================
    PAGINATION
-========================= */
+===================================================== */
 
 .lx-pagination {
-    margin-top: 56px;
+    margin-top: 48px;
 }
 
-/* =========================
+/* =====================================================
    EMPTY STATE
-========================= */
+===================================================== */
 
 .lx-empty-state {
     text-align: center;
-    padding: 80px 0;
+    padding: 72px 0;
     color: var(--lx-muted);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* =====================================================
+   MOBILE ADJUST
+===================================================== */
 
-@media (max-width: 768px) {
-
+@media (max-width: 480px) {
     .lx-category-hero {
-        min-height: 240px;
+        min-height: 220px;
     }
 
     .lx-category-hero-text h1 {
-        font-size: 26px;
+        font-size: 24px;
     }
-
-    .lx-product-section {
-        padding: 40px 16px;
-    }
-
-    .lx-product-grid {
-        gap: 24px 16px;
-    }
-}
-/* =========================
-   PRODUCT GRID – FORCE 2 COLUMNS
-========================= */
-
-.lx-product-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 28px 20px;
-}
-
-/* Desktop lớn hơn */
-@media (min-width: 1024px) {
-    .lx-product-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 32px 24px;
-    }
-}
-
-/* Desktop rất lớn */
-@media (min-width: 1280px) {
-    .lx-product-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-/* =========================
-   PRICE – EMPHASIS
-========================= */
-
-.lx-price-sale {
-    font-size: 16px;
-    font-weight: 700;
-    color: #111;
-    letter-spacing: .2px;
-}
-
-.lx-price-origin {
-    font-size: 13px;
-    color: #9ca3af;
-    text-decoration: line-through;
-}
-/* =========================
-   COLORS – CLEARER
-========================= */
-
-.lx-color-swatch {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 1px solid #ddd;
-    cursor: pointer;
-}
-
-.lx-color-swatch.active {
-    outline: 2px solid #111;
-    outline-offset: 2px;
-}
-/* =========================
-   PRODUCT NAME – BALANCE
-========================= */
-
-.lx-product-name {
-    font-size: 13.5px;
-    font-weight: 500;
-    line-height: 1.4;
-}
-.lx-paging {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin: 56px 0 24px;
-}
-
-.lx-page {
-    min-width: 34px;
-    height: 34px;
-    padding: 0 10px;
-    border-radius: 999px;
-    border: 1px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #111;
-    text-decoration: none;
-}
-
-.lx-page.active {
-    background: #111;
-    color: #fff;
-    border-color: #111;
-}
-
-.lx-page.dots,
-.lx-page.disabled {
-    color: #9ca3af;
-    pointer-events: none;
-    border-color: transparent;
-}
-.lx-product-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* mobile 2 cột */
-    gap: 12px; /* 🔥 giảm mạnh */
-}
-
-@media (min-width: 768px) {
-    .lx-product-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-    }
-}
-
-@media (min-width: 1024px) {
-    .lx-product-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-    }
-}
-.lx-product-card {
-    padding: 10px;   /* 🔥 giảm padding */
-    border-radius: 14px;
 }
