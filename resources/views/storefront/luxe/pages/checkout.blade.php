@@ -5,7 +5,7 @@
 @php
     $cartItems   = $cart ?? [];
     $subtotal    = collect($cartItems)->sum(fn($i) => ($i['price'] ?? 0) * ($i['qty'] ?? 0));
-    $shippingFee = $subtotal >= 1000000 ? 0 : 30000;
+    $shippingFee = 30000;
     $total       = $subtotal + $shippingFee;
 
     /*
