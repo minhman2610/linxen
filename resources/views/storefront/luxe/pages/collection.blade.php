@@ -61,10 +61,16 @@
 
     {{-- QUICK ORDER --}}
     <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}"
-       class="lx-quick-order-float"
-       aria-label="Đặt hàng">
-        🛒
-    </a>
+   class="lx-quick-order-float"
+   aria-label="Đặt hàng">
+
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <path fill="currentColor"
+              d="M6 7V6a6 6 0 0 1 12 0v1h3v15H3V7h3Zm2 0h8V6a4 4 0 0 0-8 0v1Z"/>
+    </svg>
+
+</a>
+
 
 </div>
 
