@@ -105,6 +105,12 @@
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/account-profile.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-profile.css')) }}">
 @endif
+@if (
+    request()->routeIs('linxen.account.orders') ||
+    request()->routeIs('linxen.account.orders.show')
+)
+    <link rel="stylesheet" href="{{ asset('themes/luxe/assets/css/orders.css') }}">
+@endif
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"
