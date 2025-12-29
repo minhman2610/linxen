@@ -423,7 +423,7 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – FAST & SAFE (FIXED)
+ * 📦 COLLECTION (STORE CATEGORY) – SAFE NORMALIZE
  * =====================================================
  */
 public function collection(
@@ -432,11 +432,9 @@ public function collection(
     int $page = 1,
     int $limit = 24
 ): array {
-    // 🔒 Normalize params
     $page  = max($page, 1);
     $limit = min(max($limit, 1), 48);
 
-    // 🔑 Cache key (PAGE ĐÃ ĐƯỢC TÁCH RIÊNG)
     $cacheKey = "storefront:collection:{$brand}:{$slug}:{$page}:{$limit}";
 
     return \Cache::remember($cacheKey, now()->addMinutes(5), function () use (
@@ -446,9 +444,7 @@ public function collection(
         $limit
     ) {
 
-        // =====================================================
-        // 1️⃣ CALL ERP API (3mg.ai – PAGINATED)
-        // =====================================================
+        // 1️⃣ Call ERP (3mg.ai)
         $data = $this->get(
             "/api/storefront/{$brand}/collection/{$slug}",
             [
@@ -459,7 +455,6 @@ public function collection(
 
         if (
             empty($data)
-            || !is_array($data)
             || empty($data['collection'])
         ) {
             return [
@@ -469,9 +464,7 @@ public function collection(
             ];
         }
 
-        // =====================================================
-        // 2️⃣ COLLECTION META (PASS-THROUGH)
-        // =====================================================
+        // 2️⃣ Collection meta
         $collection = [
             'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
             'description' => $data['collection']['description'] ?? null,
@@ -479,14 +472,16 @@ public function collection(
             'slug'        => $slug,
         ];
 
-        // =====================================================
-        // 3️⃣ PRODUCTS – ROOT KEY `thumb` (QUAN TRỌNG)
-        // =====================================================
+        // 3️⃣ PRODUCTS – NORMALIZE THUMB (SAFE)
         $products = collect($data['products'] ?? [])
             ->map(function ($p) {
 
-                // ✅ ĐÚNG CẤU TRÚC DATA ĐANG CHẠY
-                $thumb = $p['thumb'] ?? null;
+                // ✅ SAFE THUMB RESOLVE (3 CASES)
+                $thumb =
+                    $p['thumb']
+                    ?? $p['media']['thumb_mobile']
+                    ?? $p['media']['thumb']
+                    ?? null;
 
                 if (!$thumb) {
                     return null;
@@ -506,15 +501,10 @@ public function collection(
             ->values()
             ->toArray();
 
-        // =====================================================
-        // 4️⃣ META PAGINATION (PASS-THROUGH)
-        // =====================================================
-        $meta = $data['meta'] ?? null;
-
         return [
             'collection' => $collection,
             'products'   => $products,
-            'meta'       => $meta,
+            'meta'       => $data['meta'] ?? null,
         ];
     });
 }
