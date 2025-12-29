@@ -3,11 +3,10 @@
 @section('content')
 
 {{-- ===================================================== --}}
-{{-- CATEGORY HERO – LIN XÉN --}}
+{{-- CATEGORY HERO --}}
 {{-- ===================================================== --}}
 <section class="lx-category-hero {{ empty($collection['hero']) ? 'no-hero' : '' }}">
 
-    {{-- HERO IMAGE (OPTIONAL) --}}
     @if(!empty($collection['hero']))
         <img
             src="{{ $collection['hero'] }}"
@@ -15,26 +14,66 @@
             loading="eager">
     @endif
 
-    {{-- HERO TEXT --}}
     <div class="lx-category-hero-text">
+        <h1>{{ $collection['name'] }}</h1>
 
-        {{-- 🔑 H1 – SEO PRIMARY --}}
-        <h1 title="{{ $collection['name'] }} LIN XÉN">
-            {{ $collection['name'] }}
-        </h1>
-
-        {{-- DESCRIPTION (OPTIONAL) --}}
         @if(!empty($collection['description']))
             <p class="lx-category-desc">
                 {{ $collection['description'] }}
             </p>
         @else
-            {{-- FALLBACK COPY – KHÔNG ẢNH HƯỞNG SEO --}}
             <p class="lx-category-desc muted">
-                Khám phá các thiết kế nữ tính, dễ mặc và tinh tế từ LIN XÉN.
+                Khám phá các thiết kế nữ tính, tinh tế và dễ mặc từ LIN XÉN.
             </p>
         @endif
-
     </div>
 
 </section>
+
+{{-- ===================================================== --}}
+{{-- COLLECTION PRODUCTS --}}
+{{-- ===================================================== --}}
+<section class="lx-collection-products">
+
+    @if(empty($products))
+        {{-- EMPTY STATE --}}
+        <div class="lx-empty-state">
+            <p>Hiện chưa có sản phẩm phù hợp trong danh mục này.</p>
+        </div>
+    @else
+        <div class="lx-product-grid">
+
+            @foreach($products as $product)
+                <a
+                    href="/{{ $brand }}/product/{{ $product['slug'] ?? $product['product_id'] }}"
+                    class="lx-product-card"
+                >
+
+                    {{-- PRODUCT IMAGE --}}
+                    <div class="lx-product-thumb">
+                        <img
+                            src="{{ $product['thumb'] }}"
+                            alt="{{ $product['name'] }}"
+                            loading="lazy">
+                    </div>
+
+                    {{-- PRODUCT INFO --}}
+                    <div class="lx-product-info">
+                        <h3 class="lx-product-name">
+                            {{ $product['name'] }}
+                        </h3>
+
+                        <div class="lx-product-price">
+                            {{ number_format($product['price']) }}₫
+                        </div>
+                    </div>
+
+                </a>
+            @endforeach
+
+        </div>
+    @endif
+
+</section>
+
+@endsection
