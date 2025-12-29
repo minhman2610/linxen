@@ -546,6 +546,11 @@ public function account()
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
+    dd('COLLECTION CONTROLLER HIT', [
+        'slug' => $slug,
+        'page' => request()->input('page'),
+        'url'  => request()->fullUrl(),
+    ]);
     // --------------------------------------------------
     // 🚨 DEBUG 0: CONTROLLER HIT?
     // --------------------------------------------------
