@@ -61,7 +61,7 @@
     @endphp
 
     <a href="{{ $orderCode
-            ? route('linxen.account.orders', ['order_code' => $orderCode])
+            ? route('linxen.account.orders.show', ['code' => $orderCode])
             : route('linxen.account.orders')
         }}"
        class="lx-btn-secondary lx-btn-orders">
