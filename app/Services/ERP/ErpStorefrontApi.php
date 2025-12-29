@@ -429,7 +429,10 @@ public function orderDetail(string $code): array
 public function collection(string $brand, string $slug): array
 {
     $data = $this->get("/api/storefront/{$brand}/collection/{$slug}");
-
+    \Log::info('ERP STOREFRONT API RAW RESPONSE', [
+        'url' => "/api/storefront/{$brand}/collection/{$slug}",
+        'data' => $data,
+    ]);
     if (empty($data) || !is_array($data)) {
         return [
             'collection' => null,
