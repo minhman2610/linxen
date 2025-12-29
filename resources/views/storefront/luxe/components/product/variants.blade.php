@@ -3,28 +3,17 @@
 @php
     /*
     |--------------------------------------------------------------------------
-    | 🔑 MAP SIZE → PRODUCT_ID (SKU CON) TỪ VARIANTS ERP
+    | 🔑 MAP SIZE → PRODUCT_ID (CHỈ SKU CON)
     |--------------------------------------------------------------------------
-    | ERP mới trả:
-    | variants = [
-    |   [
-    |     product_id: xxx,
-    |     attributes: [
-    |       'SIZE' => 'L',
-    |       'MÀU SẮC' => 'Nâu'
-    |     ]
-    |   ]
-    | ]
-    |
-    | 👉 attributes là associative array, KHÔNG phải [{name,value}]
+    | ERP trả cả SKU cha + con
+    | FE chỉ dùng SKU CON cho chọn size
     */
     $sizeProductMap = [];
 
     foreach ($variants ?? [] as $variant) {
         if (
-            isset($variant['product_id'], $variant['attributes'])
-            && is_array($variant['attributes'])
-            && isset($variant['attributes']['SIZE'])
+            empty($variant['is_master'])
+            && isset($variant['attributes']['SIZE'], $variant['product_id'])
         ) {
             $size = $variant['attributes']['SIZE'];
             $sizeProductMap[$size] = $variant['product_id'];
@@ -52,9 +41,7 @@
                 @foreach($values as $val)
 
                     @if($isSizeAttr)
-                        {{-- =====================================================
-                             SIZE VARIANT – SKU CON
-                        ===================================================== --}}
+                        {{-- SIZE – SKU CON --}}
                         <button
                             type="button"
                             class="variant-option"
@@ -66,9 +53,7 @@
                             {{ $val }}
                         </button>
                     @else
-                        {{-- =====================================================
-                             OTHER VARIANTS (COLOR, MATERIAL…)
-                        ===================================================== --}}
+                        {{-- OTHER VARIANTS --}}
                         <button
                             type="button"
                             class="variant-option"
