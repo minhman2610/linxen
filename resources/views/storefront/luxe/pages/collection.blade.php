@@ -41,25 +41,33 @@
 
                 {{-- IMAGE --}}
                 <div class="lx-product-media">
-                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}">
 
-                        {{-- Placeholder SVG (siêu nhẹ, tránh CLS) --}}
-                        <img
-                            class="lx-img lazy"
-                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23f3f3f3'/%3E%3C/svg%3E"
-                            data-src="{{ $product['thumb'] }}"
-                            alt="{{ $product['name'] }}"
-                            width="300"
-                            height="400">
+    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}">
+        <img
+            class="lx-img lazy"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23f3f3f3'/%3E%3C/svg%3E"
+            data-src="{{ $product['thumb'] }}"
+            alt="{{ $product['name'] }}"
+            width="300"
+            height="400">
+    </a>
 
-                    </a>
+    {{-- SALE --}}
+    @if($product['sale_percent'])
+        <span class="lx-sale-badge">
+            -{{ $product['sale_percent'] }}%
+        </span>
+    @endif
 
-                    @if($product['sale_percent'])
-                        <span class="lx-sale-badge">
-                            -{{ $product['sale_percent'] }}%
-                        </span>
-                    @endif
-                </div>
+    {{-- QUICK ORDER --}}
+    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}"
+       class="lx-quick-order-float"
+       aria-label="Đặt hàng">
+        🛒
+    </a>
+
+</div>
+
 
                 {{-- NAME --}}
                 <div class="lx-product-head">
@@ -91,11 +99,7 @@
                         @endforeach
                     </div>
 
-                    <a href="{{ route('linxen.product', ['slug' => $product['slug']]) }}"
-                       class="lx-quick-order-inline"
-                       aria-label="Đặt hàng">
-                        🛒
-                    </a>
+                    
                 </div>
 
                 {{-- STATUS --}}

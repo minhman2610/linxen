@@ -143,18 +143,6 @@
     transform: scale(1.03);
 }
 
-/* SALE BADGE */
-
-.lx-sale-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #111;
-    color: #fff;
-    font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 999px;
-}
 
 /* =====================================================
    PRODUCT INFO
@@ -318,4 +306,89 @@
 .lx-product-card {
     padding: 0 !important;   /* ❗ ảnh chạm sát card */
     background: transparent;
+}
+/* =====================================================
+   SALE BADGE – PREMIUM
+===================================================== */
+
+.lx-sale-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+
+    background: rgba(17, 17, 17, 0.92);
+    color: #fff;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .3px;
+
+    padding: 6px 10px;
+    border-radius: 999px;
+
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+
+    z-index: 3;
+}
+/* =====================================================
+   TAG – BEST SELLER (REFINED)
+===================================================== */
+
+.lx-tag-best {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    background: linear-gradient(
+        135deg,
+        #111,
+        #333
+    );
+
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .3px;
+
+    padding: 4px 10px;
+    border-radius: 999px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+}
+/* =====================================================
+   QUICK ORDER – FLOATING BUTTON
+===================================================== */
+
+.lx-quick-order-float {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.95);
+    color: #111;
+
+    border-radius: 50%;
+    text-decoration: none;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,.2);
+    backdrop-filter: blur(6px);
+
+    font-size: 18px;
+
+    transition: transform .2s ease, box-shadow .2s ease;
+    z-index: 3;
+}
+
+.lx-quick-order-float:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(0,0,0,.25);
 }
