@@ -50,11 +50,23 @@ Route::domain('linxen.vn')
 
         /*
 |--------------------------------------------------------------------------
-| 📦 COLLECTION / CATEGORY
+| 📦 COLLECTION / CATEGORY (PRIMARY)
+|--------------------------------------------------------------------------
+| Dùng cho:
+| - Category Pills (Đi làm, Dạo phố, Dự tiệc…)
+| - Product Type (Váy basic, Váy thiết kế…)
+| URL SEO: /collections/{slug}
+*/
+Route::get('/collections/{slug}', [PageController::class, 'collection'])
+    ->name('linxen.collection');
+/*
+|--------------------------------------------------------------------------
+| 📦 COLLECTION (SHORT / LEGACY)
 |--------------------------------------------------------------------------
 */
 Route::get('/c/{slug}', [PageController::class, 'collection'])
-    ->name('linxen.collection');
+    ->name('linxen.collection.short');
+
 
 
         /*

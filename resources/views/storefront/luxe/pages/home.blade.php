@@ -153,96 +153,181 @@
 
 
 {{-- ===================================================== --}}
-{{-- CATEGORY PILLS – LIN XÉN (REFINED) --}}
+{{-- CATEGORY PILLS – LIN XÉN (SEO OPTIMIZED) --}}
 {{-- ===================================================== --}}
-<section class="lx-category-pills refined">
+<section class="lx-category-pills refined"
+         aria-labelledby="lx-category-featured-title">
 
     <div class="lx-category-head">
-        <h3 class="lx-category-title">Danh mục nổi bật</h3>
-        <span class="lx-category-hint">Vuốt ngang để xem</span>
+        <h2 id="lx-category-featured-title" class="lx-category-title">
+            Danh mục nổi bật
+        </h2>
+        <span class="lx-category-hint">
+            Gợi ý theo hoàn cảnh sử dụng
+        </span>
     </div>
 
-    <div class="lx-category-scroll">
+    <div class="lx-category-scroll" role="navigation" aria-label="Danh mục sử dụng">
 
-        <a href="/collections/di-lam" class="lx-category-pill">
+        {{-- Đi làm --}}
+        <a href="{{ route('linxen.collection', ['slug' => 'di-lam']) }}"
+           class="lx-category-pill"
+           title="Trang phục đi làm nữ LIN XÉN – Thanh lịch, dễ mặc">
+
             <div class="lx-category-thumb">
-                <img src="/themes/luxe/assets/images/categories/di-lam.webp" alt="Đi làm">
+                <img
+                    src="/themes/luxe/assets/images/categories/di-lam.webp"
+                    alt="Trang phục nữ đi làm LIN XÉN"
+                    loading="lazy">
             </div>
+
             <span class="lx-category-name">Đi làm</span>
         </a>
 
-        <a href="/collections/dao-pho" class="lx-category-pill">
+        {{-- Dạo phố --}}
+        <a href="{{ route('linxen.collection', ['slug' => 'dao-pho']) }}"
+           class="lx-category-pill"
+           title="Trang phục dạo phố nữ LIN XÉN – Trẻ trung, thoải mái">
+
             <div class="lx-category-thumb">
-                <img src="/themes/luxe/assets/images/categories/dao-pho.webp" alt="Dạo phố">
+                <img
+                    src="/themes/luxe/assets/images/categories/dao-pho.webp"
+                    alt="Trang phục nữ dạo phố LIN XÉN"
+                    loading="lazy">
             </div>
+
             <span class="lx-category-name">Dạo phố</span>
         </a>
 
-        <a href="/collections/du-tiec" class="lx-category-pill">
+        {{-- Dự tiệc --}}
+        <a href="{{ route('linxen.collection', ['slug' => 'du-tiec']) }}"
+           class="lx-category-pill"
+           title="Váy dự tiệc nữ LIN XÉN – Tinh tế, sang trọng">
+
             <div class="lx-category-thumb">
-                <img src="/themes/luxe/assets/images/categories/du-tiec.webp" alt="Dự tiệc">
+                <img
+                    src="/themes/luxe/assets/images/categories/du-tiec.webp"
+                    alt="Váy nữ dự tiệc LIN XÉN"
+                    loading="lazy">
             </div>
+
             <span class="lx-category-name">Dự tiệc</span>
         </a>
 
-        <a href="/collections/thoai-mai" class="lx-category-pill">
+        {{-- Thoải mái --}}
+        <a href="{{ route('linxen.collection', ['slug' => 'thoai-mai']) }}"
+           class="lx-category-pill"
+           title="Trang phục mặc thoải mái nữ LIN XÉN – Nhẹ nhàng, dễ chịu">
+
             <div class="lx-category-thumb">
-                <img src="/themes/luxe/assets/images/categories/thoai-mai.webp" alt="Thoải mái">
+                <img
+                    src="/themes/luxe/assets/images/categories/thoai-mai.webp"
+                    alt="Trang phục nữ mặc thoải mái LIN XÉN"
+                    loading="lazy">
             </div>
+
             <span class="lx-category-name">Thoải mái</span>
         </a>
 
-        <a href="/collections/thiet-ke-moi" class="lx-category-pill highlight">
+        {{-- Thiết kế mới --}}
+        <a href="{{ route('linxen.collection', ['slug' => 'thiet-ke-moi']) }}"
+           class="lx-category-pill highlight"
+           title="Thiết kế mới LIN XÉN – Bộ sưu tập mới nhất">
+
             <div class="lx-category-thumb">
-                <img src="/themes/luxe/assets/images/categories/new.webp" alt="Thiết kế mới">
+                <img
+                    src="/themes/luxe/assets/images/categories/new.webp"
+                    alt="Thiết kế mới nhất LIN XÉN"
+                    loading="lazy">
             </div>
+
             <span class="lx-category-name">Mới</span>
         </a>
 
     </div>
-
 </section>
-
 {{-- ===================================================== --}}
-{{-- PRODUCT TYPE CATEGORIES – IMAGE BASED --}}
+{{-- PRODUCT TYPE CATEGORIES – SEO OPTIMIZED --}}
 {{-- ===================================================== --}}
-<section class="lx-product-type-categories">
+<section class="lx-product-type-categories"
+         aria-labelledby="lx-product-type-title">
 
     <div class="lx-product-type-head">
-        <h3 class="lx-product-type-title">Loại sản phẩm</h3>
-        <span class="lx-product-type-hint">Chọn nhanh theo nhu cầu</span>
+        <h2 id="lx-product-type-title" class="lx-product-type-title">
+            Loại sản phẩm
+        </h2>
+        <span class="lx-product-type-hint">
+            Phân loại theo kiểu dáng
+        </span>
     </div>
 
-    <div class="lx-product-type-scroll">
+    <div class="lx-product-type-scroll"
+         role="navigation"
+         aria-label="Loại sản phẩm nữ LIN XÉN">
 
-        <a href="/collections/vay-basic" class="lx-product-type-card">
-            <img src="/themes/luxe/assets/images/categories/vay-basic.webp" alt="Váy basic">
+        <a href="{{ route('linxen.collection', ['slug' => 'vay-basic']) }}"
+           class="lx-product-type-card"
+           title="Váy basic nữ LIN XÉN – Dễ mặc, không lỗi mốt">
+
+            <img
+                src="/themes/luxe/assets/images/categories/vay-basic.webp"
+                alt="Váy basic nữ LIN XÉN"
+                loading="lazy">
+
             <span>Váy basic</span>
         </a>
 
-        <a href="/collections/vay-thiet-ke" class="lx-product-type-card highlight">
-            <img src="/themes/luxe/assets/images/categories/vay-thiet-ke.webp" alt="Váy thiết kế">
+        <a href="{{ route('linxen.collection', ['slug' => 'vay-thiet-ke']) }}"
+           class="lx-product-type-card highlight"
+           title="Váy thiết kế nữ LIN XÉN – Form dáng tinh tế">
+
+            <img
+                src="/themes/luxe/assets/images/categories/vay-thiet-ke.webp"
+                alt="Váy thiết kế nữ LIN XÉN"
+                loading="lazy">
+
             <span>Váy thiết kế</span>
         </a>
 
-        <a href="/collections/vay-body" class="lx-product-type-card">
-            <img src="/themes/luxe/assets/images/categories/vay-body.webp" alt="Váy body">
+        <a href="{{ route('linxen.collection', ['slug' => 'vay-body']) }}"
+           class="lx-product-type-card"
+           title="Váy body nữ LIN XÉN – Tôn dáng, quyến rũ">
+
+            <img
+                src="/themes/luxe/assets/images/categories/vay-body.webp"
+                alt="Váy body nữ LIN XÉN"
+                loading="lazy">
+
             <span>Váy body</span>
         </a>
 
-        <a href="/collections/ao-da" class="lx-product-type-card">
-            <img src="/themes/luxe/assets/images/categories/ao-da.webp" alt="Áo dạ">
+        <a href="{{ route('linxen.collection', ['slug' => 'ao-da']) }}"
+           class="lx-product-type-card"
+           title="Áo dạ nữ LIN XÉN – Ấm áp, thanh lịch">
+
+            <img
+                src="/themes/luxe/assets/images/categories/ao-da.webp"
+                alt="Áo dạ nữ LIN XÉN"
+                loading="lazy">
+
             <span>Áo dạ</span>
         </a>
 
-        <a href="/collections/set-bo" class="lx-product-type-card">
-            <img src="/themes/luxe/assets/images/categories/set-bo.webp" alt="Set bộ">
+        <a href="{{ route('linxen.collection', ['slug' => 'set-bo']) }}"
+           class="lx-product-type-card"
+           title="Set bộ nữ LIN XÉN – Phối sẵn, mặc đẹp ngay">
+
+            <img
+                src="/themes/luxe/assets/images/categories/set-bo.webp"
+                alt="Set bộ nữ LIN XÉN"
+                loading="lazy">
+
             <span>Set bộ</span>
         </a>
 
     </div>
-
 </section>
+
 
 
 {{-- FEATURED PRODUCTS --}}
