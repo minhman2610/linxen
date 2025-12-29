@@ -467,3 +467,33 @@ document.addEventListener('click', function (e) {
 
 
 })();
+/* =====================================================
+   AUTO SELECT FIRST SIZE (FIX FINAL)
+===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+
+    const sizeRow = document.querySelector('.lx-variant-row[data-attr-key="size"]');
+    if (!sizeRow) return;
+
+    // nếu chưa có size nào được chọn
+    if (!sizeRow.dataset.selected) {
+
+        const firstOption = sizeRow.querySelector('.variant-option[data-product-id]');
+        if (!firstOption) return;
+
+        // set active
+        firstOption.classList.add('active');
+
+        // set selected cho validate
+        sizeRow.dataset.selected = firstOption.dataset.value;
+
+        // sync product_id cho add-to-cart
+        const btn = document.getElementById('lxAddToCartBtn');
+        if (btn && firstOption.dataset.productId) {
+            btn.dataset.productId = firstOption.dataset.productId;
+        }
+
+        // sync attrs
+        syncSelectedVariants();
+    }
+});
