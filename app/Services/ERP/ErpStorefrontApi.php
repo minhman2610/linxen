@@ -423,7 +423,7 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – SAFE, PAGINATED
+ * 📦 COLLECTION (STORE CATEGORY) – NO CACHE (DEBUG)
  * =====================================================
  */
 public function collection(
@@ -439,140 +439,124 @@ public function collection(
     $page  = max((int) $page, 1);
     $limit = min(max((int) $limit, 1), 48);
 
-    // -------------------------------------------------
-    // 1️⃣ Cache key (BẮT BUỘC có page + limit)
-    // -------------------------------------------------
-    $cacheKey = "storefront:collection:{$brand}:{$slug}:{$page}:{$limit}";
-
-    \Log::error('🧠 ERP COLLECTION PARAMS', [
+    \Log::error('🧠 ERP COLLECTION PARAMS (NO CACHE)', [
         'brand' => $brand,
         'slug'  => $slug,
         'page'  => $page,
         'limit' => $limit,
     ]);
 
-    return \Cache::remember($cacheKey, now()->addMinutes(5), function () use (
-        $brand,
-        $slug,
-        $page,
-        $limit
-    ) {
+    // -------------------------------------------------
+    // 1️⃣ Call ERP (KHÔNG CACHE)
+    // -------------------------------------------------
+    $endpoint = "/api/storefront/{$brand}/collection/{$slug}";
+    $params   = [
+        'page'  => $page,
+        'limit' => $limit,
+    ];
 
-        // -------------------------------------------------
-        // 2️⃣ Call ERP
-        // -------------------------------------------------
-        $endpoint = "/api/storefront/{$brand}/collection/{$slug}";
-        $params   = [
-            'page'  => $page,
-            'limit' => $limit,
-        ];
+    \Log::error('📡 ERP COLLECTION REQUEST (NO CACHE)', [
+        'endpoint' => $endpoint,
+        'params'   => $params,
+    ]);
 
-        $data = $this->get($endpoint, $params);
+    $data = $this->get($endpoint, $params);
 
-        if (empty($data) || empty($data['collection'])) {
-            return [
-                'collection' => null,
-                'products'   => [],
-                'meta'       => null,
-            ];
-        }
-
-        // -------------------------------------------------
-        // 3️⃣ COLLECTION META
-        // -------------------------------------------------
-        $collection = [
-            'name'        => is_string($data['collection']['name'] ?? null)
-                ? $data['collection']['name']
-                : 'Bộ sưu tập',
-            'description' => is_string($data['collection']['description'] ?? null)
-                ? $data['collection']['description']
-                : null,
-            'hero'        => is_string($data['collection']['hero'] ?? null)
-                ? $data['collection']['hero']
-                : null,
-            'slug'        => $slug,
-        ];
-
-        // -------------------------------------------------
-        // 4️⃣ PRODUCTS – RESOLVE IMAGE CHUẨN (QUAN TRỌNG)
-        // -------------------------------------------------
-        $products = collect($data['products'] ?? [])
-            ->map(function ($p) {
-
-                /**
-                 * ✅ Resolve thumb theo thứ tự ƯU TIÊN:
-                 * 1. $p['thumb'] (string)
-                 * 2. $p['media']['thumb']
-                 * 3. $p['media']['thumb_mobile']
-                 * 4. $p['media']['images'][0]
-                 */
-                $thumb = null;
-
-                if (!empty($p['thumb']) && is_string($p['thumb'])) {
-                    $thumb = $p['thumb'];
-                } elseif (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
-                    $thumb = $p['media']['thumb'];
-                } elseif (!empty($p['media']['thumb_mobile']) && is_string($p['media']['thumb_mobile'])) {
-                    $thumb = $p['media']['thumb_mobile'];
-                } elseif (
-                    !empty($p['media']['images'][0])
-                    && is_string($p['media']['images'][0])
-                ) {
-                    $thumb = $p['media']['images'][0];
-                }
-
-                // ---------- COLORS ----------
-                $colors = collect($p['colors'] ?? [])
-                    ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
-                    ->filter(fn ($c) => is_string($c))
-                    ->values()
-                    ->toArray();
-
-                return [
-                    // Identity
-                    'product_id' => (int) ($p['product_id'] ?? 0),
-                    'name'       => is_string($p['name'] ?? null)
-                        ? $p['name']
-                        : ($p['name']['vi'] ?? null),
-                    'slug'       => is_string($p['slug'] ?? null)
-                        ? $p['slug']
-                        : null,
-
-                    // Data
-                    'price'     => is_numeric($p['price'] ?? null)
-                        ? (float) $p['price']
-                        : null,
-                    'available' => (int) ($p['available'] ?? 0),
-                    'colors'    => $colors,
-
-                    // Media (BẮT BUỘC string|null)
-                    'thumb' => $thumb,
-
-                    // UX helpers
-                    'tag' => '🔥 Bán chạy',
-                ];
-            })
-            // ❗ KHÔNG filter theo thumb – tránh mất SP
-            ->filter(fn ($p) =>
-                $p['product_id'] > 0
-                && !empty($p['name'])
-                && isset($p['price'])
-            )
-            ->values()
-            ->toArray();
-
-        // -------------------------------------------------
-        // 5️⃣ META (PASS-THROUGH)
-        // -------------------------------------------------
-        $meta = $data['meta'] ?? null;
-
+    if (empty($data) || empty($data['collection'])) {
         return [
-            'collection' => $collection,
-            'products'   => $products,
-            'meta'       => $meta,
+            'collection' => null,
+            'products'   => [],
+            'meta'       => null,
         ];
-    });
+    }
+
+    // -------------------------------------------------
+    // 2️⃣ COLLECTION META
+    // -------------------------------------------------
+    $collection = [
+        'name'        => is_string($data['collection']['name'] ?? null)
+            ? $data['collection']['name']
+            : 'Bộ sưu tập',
+        'description' => is_string($data['collection']['description'] ?? null)
+            ? $data['collection']['description']
+            : null,
+        'hero'        => is_string($data['collection']['hero'] ?? null)
+            ? $data['collection']['hero']
+            : null,
+        'slug'        => $slug,
+    ];
+
+    // -------------------------------------------------
+    // 3️⃣ PRODUCTS – RESOLVE IMAGE CHUẨN
+    // -------------------------------------------------
+    $products = collect($data['products'] ?? [])
+        ->map(function ($p) {
+
+            $thumb = null;
+
+            if (!empty($p['thumb']) && is_string($p['thumb'])) {
+                $thumb = $p['thumb'];
+            } elseif (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
+                $thumb = $p['media']['thumb'];
+            } elseif (!empty($p['media']['thumb_mobile']) && is_string($p['media']['thumb_mobile'])) {
+                $thumb = $p['media']['thumb_mobile'];
+            } elseif (
+                !empty($p['media']['images'][0])
+                && is_string($p['media']['images'][0])
+            ) {
+                $thumb = $p['media']['images'][0];
+            }
+
+            $colors = collect($p['colors'] ?? [])
+                ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
+                ->filter(fn ($c) => is_string($c))
+                ->values()
+                ->toArray();
+
+            return [
+                'product_id' => (int) ($p['product_id'] ?? 0),
+                'name'       => is_string($p['name'] ?? null)
+                    ? $p['name']
+                    : ($p['name']['vi'] ?? null),
+                'slug'       => is_string($p['slug'] ?? null)
+                    ? $p['slug']
+                    : null,
+                'price'      => is_numeric($p['price'] ?? null)
+                    ? (float) $p['price']
+                    : null,
+                'available'  => (int) ($p['available'] ?? 0),
+                'colors'     => $colors,
+                'thumb'      => $thumb,
+                'tag'        => '🔥 Bán chạy',
+            ];
+        })
+        ->filter(fn ($p) =>
+            $p['product_id'] > 0
+            && !empty($p['name'])
+            && isset($p['price'])
+        )
+        ->values()
+        ->toArray();
+
+    // -------------------------------------------------
+    // 4️⃣ META – PASS THROUGH
+    // -------------------------------------------------
+    $meta = $data['meta'] ?? null;
+
+    \Log::error('📦 ERP COLLECTION RESULT (NO CACHE)', [
+        'page'          => $page,
+        'product_count' => count($products),
+        'ids'           => array_slice(array_column($products, 'product_id'), 0, 10),
+        'meta'          => $meta,
+    ]);
+
+    return [
+        'collection' => $collection,
+        'products'   => $products,
+        'meta'       => $meta,
+    ];
 }
+
 
 
 
