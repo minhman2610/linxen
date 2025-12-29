@@ -4,120 +4,33 @@ namespace App\Http\Controllers\Storefront\Account;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use App\Services\ERP\ErpStorefrontApi;
 
 class OrderController extends Controller
 {
     /**
      * =====================================================
-     * 🔗 Resolve ERP BASE URL (SAFE – THE SOURCE OF TRUTH)
-     * =====================================================
-     */
-    protected function erpBaseUrl(): ?string
-    {
-        // 👈 ĐÚNG KEY theo config/services.php
-        $erpUrl = rtrim((string) config('services.erp.base_url'), '/');
-
-        if (!$erpUrl || !str_starts_with($erpUrl, 'http')) {
-            Log::critical('[ERP URL MISCONFIGURED]', [
-                'erp_base_url' => $erpUrl,
-            ]);
-
-            return null;
-        }
-
-        return $erpUrl;
-    }
-
-    /**
-     * =====================================================
-     * 🔗 Resolve ERP order link (internal / CS / debug)
-     * =====================================================
-     */
-    protected function resolveErpOrderLink(string $code): ?string
-    {
-        // Có thể tắt ở production nếu muốn
-        if (!config('app.show_erp_link', true)) {
-            return null;
-        }
-
-        $erpUrl = $this->erpBaseUrl();
-        if (!$erpUrl) {
-            return null;
-        }
-
-        // 👉 TUỲ ERP: đổi path nếu backend ERP khác
-        return "{$erpUrl}/orders/{$code}";
-    }
-
-    /**
-     * =====================================================
      * 🧾 DANH SÁCH ĐƠN HÀNG
      * =====================================================
+     * - Lấy theo SĐT khách từ session
+     * - ERP là source of truth
      */
-    public function index(Request $request)
+    public function index(Request $request, ErpStorefrontApi $erp)
     {
         $customer = session('customer');
-        $orders   = [];
-        $error    = null;
 
         if (!$customer || empty($customer['phone'])) {
             return redirect()->route('linxen.home');
         }
 
-        $erpUrl = $this->erpBaseUrl();
-        if (!$erpUrl) {
-            return view('storefront.luxe.pages.account.orders.index', [
-                'orders'   => [],
-                'customer' => (object) $customer,
-                'error'    => 'Hệ thống đang cấu hình sai kết nối ERP.',
-            ]);
-        }
-
-        try {
-            $res = Http::withOptions(['verify' => false])
-                ->timeout(6)
-                ->withHeaders([
-                    'X-Storefront-Code' => 'linxen',
-                    'Authorization'     => 'Bearer ' . session('login_token'),
-                    'Accept'            => 'application/json',
-                ])
-                ->get("{$erpUrl}/api/storefront/orders", [
-                    'phone' => $customer['phone'],
-                ]);
-
-            if (!$res->ok()) {
-                Log::warning('[ACCOUNT ORDERS FETCH FAILED]', [
-                    'status' => $res->status(),
-                    'body'   => $res->body(),
-                ]);
-
-                $error = 'Không thể tải danh sách đơn hàng.';
-            } else {
-                $orders = collect($res->json('orders') ?? [])
-                    ->map(function ($order) {
-                        $order['erp_link'] = !empty($order['code'])
-                            ? $this->resolveErpOrderLink($order['code'])
-                            : null;
-
-                        return $order;
-                    })
-                    ->toArray();
-            }
-
-        } catch (\Throwable $e) {
-            Log::error('[ACCOUNT ORDERS EXCEPTION]', [
-                'error' => $e->getMessage(),
-            ]);
-
-            $error = 'Có lỗi kỹ thuật xảy ra khi tải danh sách đơn hàng.';
-        }
+        $res = $erp->orders($customer['phone']);
 
         return view('storefront.luxe.pages.account.orders.index', [
-            'orders'   => $orders,
+            'orders'   => $res['orders'] ?? [],
             'customer' => (object) $customer,
-            'error'    => $error,
+            'error'    => ($res['success'] ?? false)
+                ? null
+                : ($res['message'] ?? 'Không thể tải danh sách đơn hàng.'),
         ]);
     }
 
@@ -125,84 +38,22 @@ class OrderController extends Controller
      * =====================================================
      * 📦 CHI TIẾT ĐƠN HÀNG
      * =====================================================
+     * - Không redirect mù
+     * - Lỗi thì render show-error
      */
-    public function show(string $code)
+    public function show(string $code, ErpStorefrontApi $erp)
     {
-        $order = null;
-        $error = null;
+        $res = $erp->orderDetail($code);
 
-        $erpUrl = $this->erpBaseUrl();
-        if (!$erpUrl) {
+        if (!($res['success'] ?? false)) {
             return view('storefront.luxe.pages.account.orders.show-error', [
                 'orderCode' => $code,
-                'message'   => 'Hệ thống đang cấu hình sai kết nối ERP. Vui lòng liên hệ bộ phận kỹ thuật.',
+                'message'   => $res['message'] ?? 'Không thể tải thông tin đơn hàng.',
             ]);
         }
 
-        try {
-            $res = Http::withOptions(['verify' => false])
-                ->timeout(6)
-                ->withHeaders([
-                    'X-Storefront-Code' => 'linxen',
-                ])
-                ->get("{$erpUrl}/api/storefront/orders/{$code}");
-
-            // ❌ Lỗi HTTP / ERP chết
-            if (!$res->ok()) {
-                Log::warning('[STORE ORDER FETCH FAILED]', [
-                    'code'   => $code,
-                    'status' => $res->status(),
-                    'body'   => $res->body(),
-                ]);
-
-                $error = 'Không thể tải thông tin đơn hàng. Vui lòng thử lại sau.';
-            } else {
-                $payload = $res->json();
-
-                // ❌ Lỗi nghiệp vụ
-                if (empty($payload['success'])) {
-                    $error = $payload['message'] ?? 'Không thể xác minh đơn hàng.';
-                }
-                // ❌ Không có order
-                elseif (empty($payload['order'])) {
-                    Log::warning('[STORE ORDER NOT FOUND]', [
-                        'code'    => $code,
-                        'payload' => $payload,
-                    ]);
-
-                    $error = 'Không tìm thấy đơn hàng với mã này.';
-                }
-                // ✅ OK
-                else {
-                    $order = (object) $payload['order'];
-
-                    // 🔗 ERP LINK (internal)
-                    $order->erp_link = $this->resolveErpOrderLink(
-                        $order->code ?? $code
-                    );
-                }
-            }
-
-        } catch (\Throwable $e) {
-            Log::error('[STORE ORDER EXCEPTION]', [
-                'code'  => $code,
-                'error' => $e->getMessage(),
-            ]);
-
-            $error = 'Có lỗi kỹ thuật xảy ra khi tải đơn hàng.';
-        }
-
-        // ❌ Có lỗi → render page thông báo (KHÔNG redirect)
-        if ($error) {
-            return view('storefront.luxe.pages.account.orders.show-error', [
-                'orderCode' => $code,
-                'message'   => $error,
-            ]);
-        }
-
-        // ✅ OK
         return view('storefront.luxe.pages.account.orders.show', [
-            'order' => $order,
+            'order' => (object) $res['order'],
         ]);
     }
 }

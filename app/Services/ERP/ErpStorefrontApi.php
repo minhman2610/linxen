@@ -348,6 +348,96 @@ public function createCustomerAddress(array $payload): array
 
     /**
  * =====================================================
+ * 🧾 ORDERS LIST (STORE ACCOUNT)
+ * =====================================================
+ * ERP route:
+ * GET /api/storefront/orders?phone=...
+ */
+public function orders(?string $phone = null): array
+{
+    try {
+        $query = [];
+
+        if ($phone) {
+            $query['phone'] = $phone;
+        }
+
+        $res = $this->get('/api/storefront/orders' . (!empty($query) ? '?' . http_build_query($query) : ''));
+
+        if (!is_array($res) || !($res['success'] ?? false)) {
+            return [
+                'success' => false,
+                'orders'  => [],
+                'message' => $res['message'] ?? 'Không thể tải danh sách đơn hàng.',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'orders'  => is_array($res['orders'] ?? null) ? $res['orders'] : [],
+        ];
+
+    } catch (\Throwable $e) {
+        Log::error('[LINXEN][ORDERS_LIST_FAIL]', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return [
+            'success' => false,
+            'orders'  => [],
+            'message' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
+        ];
+    }
+}
+
+
+/**
+ * =====================================================
+ * 📦 ORDER DETAIL
+ * =====================================================
+ * ERP route:
+ * GET /api/storefront/orders/{code}
+ */
+public function orderDetail(string $code): array
+{
+    try {
+        $res = $this->get("/api/storefront/orders/{$code}");
+
+        if (!is_array($res) || !($res['success'] ?? false)) {
+            return [
+                'success' => false,
+                'message' => $res['message'] ?? 'Không tìm thấy đơn hàng.',
+            ];
+        }
+
+        if (empty($res['order']) || !is_array($res['order'])) {
+            return [
+                'success' => false,
+                'message' => 'Dữ liệu đơn hàng không hợp lệ.',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'order'   => $res['order'],
+        ];
+
+    } catch (\Throwable $e) {
+        Log::error('[LINXEN][ORDER_DETAIL_FAIL]', [
+            'code'  => $code,
+            'error' => $e->getMessage(),
+        ]);
+
+        return [
+            'success' => false,
+            'message' => 'Hệ thống đang bận. Vui lòng thử lại sau.',
+        ];
+    }
+}
+
+
+    /**
+ * =====================================================
  * 🧠 BUILD COMMON HEADERS
  * =====================================================
  */
