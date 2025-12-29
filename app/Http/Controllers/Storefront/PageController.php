@@ -545,15 +545,19 @@ public function account()
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    // =====================================================
-    // 0️⃣ Pagination params
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 0️⃣ Pagination params
+    |--------------------------------------------------------------------------
+    */
     $page    = max((int) request('page', 1), 1);
     $perPage = 24;
 
-    // =====================================================
-    // 1️⃣ Call ERP (ĐÃ PAGINATE + CACHE)
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ Call ERP (ĐÃ paginate + cache ở service)
+    |--------------------------------------------------------------------------
+    */
     $data = $erp->collection(
         $this->brand,
         $slug,
@@ -565,9 +569,11 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         abort(404);
     }
 
-    // =====================================================
-    // 2️⃣ COLLECTION META (PASS-THROUGH)
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ COLLECTION META
+    |--------------------------------------------------------------------------
+    */
     $collection = [
         'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
         'description' => $data['collection']['description'] ?? null,
@@ -575,43 +581,50 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         'slug'        => $slug,
     ];
 
-    // =====================================================
-    // 3️⃣ PRODUCTS – MINIMAL NORMALIZE (O(n) rất nhỏ)
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 3️⃣ PRODUCTS – MINIMAL NORMALIZE (RẤT NHẸ)
+    |--------------------------------------------------------------------------
+    | ❗ LƯU Ý QUAN TRỌNG:
+    | - KHÔNG dùng $p['media']
+    | - thumb đã được service đưa ra root key
+    |--------------------------------------------------------------------------
+    */
     $items = collect($data['products'] ?? [])
         ->map(function ($p) {
 
-            // Thumb đã được ERP chuẩn hoá
-            $thumb =
-                $p['media']['thumb']
-                ?? $p['media']['thumb_mobile']
-                ?? null;
+            // ✅ KEY ĐÚNG
+            $thumb = $p['thumb'] ?? null;
 
-            if (!$thumb) {
+            if (empty($thumb)) {
                 return null;
             }
 
             return [
-                'product_id' => (int) $p['product_id'],
-                'name'       => $p['name'],
+                'product_id' => (int) ($p['product_id'] ?? 0),
+                'name'       => $p['name'] ?? '',
                 'slug'       => $p['slug']
-                    ?? Str::slug($p['name']) . '-' . $p['product_id'],
-                'price'      => (float) $p['price'],
+                    ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
+                'price'      => (float) ($p['price'] ?? 0),
                 'thumb'      => $thumb,
 
-                // UX (đã chuẩn bị sẵn từ ERP)
+                // UX helpers
                 'colors'       => $p['colors'] ?? [],
                 'available'    => $p['available'] ?? 0,
                 'sale_percent' => 20, // demo
                 'tag'          => '🔥 Bán chạy',
             ];
         })
-        ->filter()
+        ->filter()   // loại null
         ->values();
 
-    // =====================================================
-    // 4️⃣ LengthAwarePaginator (KHÔNG slice lại)
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ LengthAwarePaginator
+    |--------------------------------------------------------------------------
+    | ❗ total lấy từ ERP meta (chuẩn), KHÔNG từ count()
+    |--------------------------------------------------------------------------
+    */
     $products = new LengthAwarePaginator(
         $items,
         $data['meta']['total'] ?? $items->count(),
@@ -623,9 +636,11 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         ]
     );
 
-    // =====================================================
-    // 5️⃣ Render view
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | 5️⃣ Render view
+    |--------------------------------------------------------------------------
+    */
     return view(
         "storefront.{$this->theme}.pages.collection",
         compact('collection', 'products')
