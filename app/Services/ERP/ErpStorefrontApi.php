@@ -423,7 +423,7 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – SAFE NORMALIZE
+ * 📦 COLLECTION (STORE CATEGORY) – SAFE NORMALIZE (FIXED)
  * =====================================================
  */
 public function collection(
@@ -444,7 +444,7 @@ public function collection(
         $limit
     ) {
 
-        // 1️⃣ Call ERP (3mg.ai)
+        // 1️⃣ Call ERP
         $data = $this->get(
             "/api/storefront/{$brand}/collection/{$slug}",
             [
@@ -453,10 +453,7 @@ public function collection(
             ]
         );
 
-        if (
-            empty($data)
-            || empty($data['collection'])
-        ) {
+        if (empty($data) || empty($data['collection'])) {
             return [
                 'collection' => null,
                 'products'   => [],
@@ -472,21 +469,24 @@ public function collection(
             'slug'        => $slug,
         ];
 
-        // 3️⃣ PRODUCTS – NORMALIZE THUMB (SAFE)
+        // 3️⃣ PRODUCTS – SAFE & REALISTIC
         $products = collect($data['products'] ?? [])
             ->map(function ($p) {
 
-                // ✅ SAFE THUMB RESOLVE (3 CASES)
-                $thumb =
-                    $p['thumb']
-                    ?? $p['media']['thumb_mobile']
-                    ?? $p['media']['thumb']
-                    ?? null;
+                // ✅ ƯU TIÊN ẢNH ĐẦU TIÊN (GIỐNG HOME)
+                $thumb = null;
 
-                if (!$thumb) {
-                    return null;
+                if (!empty($p['thumb'])) {
+                    $thumb = $p['thumb'];
+                } elseif (!empty($p['media']['images'][0])) {
+                    $thumb = $p['media']['images'][0];
+                } elseif (!empty($p['media']['thumb_mobile'])) {
+                    $thumb = $p['media']['thumb_mobile'];
+                } elseif (!empty($p['media']['thumb'])) {
+                    $thumb = $p['media']['thumb'];
                 }
 
+                // ❗ KHÔNG GIẾT SP – CHỈ BỎ THUMB
                 return [
                     'product_id' => $p['product_id'] ?? null,
                     'name'       => $p['name'] ?? null,
@@ -497,7 +497,12 @@ public function collection(
                     'thumb'      => $thumb,
                 ];
             })
-            ->filter()
+            // chỉ lọc identity, KHÔNG lọc thumb
+            ->filter(fn ($p) =>
+                $p['product_id']
+                && $p['name']
+                && $p['price']
+            )
             ->values()
             ->toArray();
 
