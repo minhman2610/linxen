@@ -521,3 +521,112 @@
         font-size: 16px;
     }
 }
+/* =====================================================
+   PAGINATION – LUXURY / EDITORIAL
+===================================================== */
+
+.lx-paging {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin: 56px 0 24px;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* -----------------------------------------------------
+   PAGE ITEM – BASE
+----------------------------------------------------- */
+
+.lx-page {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+
+    color: #1f2933;                 /* charcoal */
+    text-decoration: none;
+
+    border-radius: 999px;
+    border: 1px solid transparent;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+/* -----------------------------------------------------
+   HOVER (DESKTOP)
+----------------------------------------------------- */
+
+@media (hover: hover) {
+    .lx-page:hover {
+        background: rgba(242, 238, 231, 0.9); /* champagne */
+        border-color: rgba(0,0,0,.06);
+    }
+}
+
+/* -----------------------------------------------------
+   ACTIVE PAGE
+----------------------------------------------------- */
+
+.lx-page.active {
+    background: linear-gradient(
+        135deg,
+        rgba(242, 238, 231, 0.95),
+        rgba(235, 229, 219, 0.95)
+    );
+    color: #6b5e4b;                 /* warm taupe */
+    border-color: rgba(0,0,0,.08);
+
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
+}
+
+/* -----------------------------------------------------
+   DISABLED / DOTS
+----------------------------------------------------- */
+
+.lx-page.disabled,
+.lx-page.dots {
+    color: #9ca3af;
+    pointer-events: none;
+    background: transparent;
+}
+
+/* -----------------------------------------------------
+   PREV / NEXT (‹ ›)
+----------------------------------------------------- */
+
+.lx-page[rel="prev"],
+.lx-page[rel="next"] {
+    font-size: 16px;
+    padding: 0 10px;
+}
+
+/* -----------------------------------------------------
+   MOBILE TUNING
+----------------------------------------------------- */
+
+@media (max-width: 480px) {
+    .lx-paging {
+        gap: 6px;
+        margin: 40px 0 20px;
+    }
+
+    .lx-page {
+        min-width: 32px;
+        height: 32px;
+        font-size: 13px;
+        padding: 0 10px;
+    }
+}
