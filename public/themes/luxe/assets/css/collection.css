@@ -416,3 +416,7 @@
         gap: 18px;
     }
 }
+.lx-product-card {
+    padding: 10px;   /* 🔥 giảm padding */
+    border-radius: 14px;
+}
