@@ -37,16 +37,7 @@
 <section class="lx-product-section">
 
     <div class="lx-product-grid">
-        @php
-    foreach ($products as $i => $p) {
-        foreach ($p as $k => $v) {
-            if (is_array($v)) {
-                dd('ARRAY FIELD', $k, $v);
-            }
-        }
-    }
-@endphp
-
+        
         @foreach($products as $product)
 
             <div class="lx-product-card">

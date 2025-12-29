@@ -439,7 +439,7 @@ public function collection(
     $limit = min(max((int) $limit, 1), 48);
 
     // -------------------------------------------------
-    // 1️⃣ Cache key (PHẢI có page + limit)
+    // 1️⃣ Cache key (BẮT BUỘC có page + limit)
     // -------------------------------------------------
     $cacheKey = "storefront:collection:{$brand}:{$slug}:{$page}:{$limit}";
 
@@ -451,7 +451,7 @@ public function collection(
     ) {
 
         // -------------------------------------------------
-        // 2️⃣ Call ERP (3mg.ai) – ERP paginate CHUẨN
+        // 2️⃣ Call ERP (3mg.ai) – ERP paginate
         // -------------------------------------------------
         $data = $this->get(
             "/api/storefront/{$brand}/collection/{$slug}",
@@ -470,55 +470,99 @@ public function collection(
         }
 
         // -------------------------------------------------
-        // 3️⃣ COLLECTION META
+        // 3️⃣ COLLECTION META (SCALAR ONLY)
         // -------------------------------------------------
         $collection = [
-            'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
-            'description' => $data['collection']['description'] ?? null,
-            'hero'        => $data['collection']['hero'] ?? null,
+            'name'        => is_string($data['collection']['name'] ?? null)
+                ? $data['collection']['name']
+                : 'Bộ sưu tập',
+
+            'description' => is_string($data['collection']['description'] ?? null)
+                ? $data['collection']['description']
+                : null,
+
+            'hero'        => is_string($data['collection']['hero'] ?? null)
+                ? $data['collection']['hero']
+                : null,
+
             'slug'        => $slug,
         ];
 
         // -------------------------------------------------
-        // 4️⃣ PRODUCTS – SAFE NORMALIZE (KHÔNG GIẾT SP)
+        // 4️⃣ PRODUCTS – NORMALIZE 100% SCALAR
         // -------------------------------------------------
         $products = collect($data['products'] ?? [])
             ->map(function ($p) {
 
-                // ✅ Resolve thumb AN TOÀN – GIỐNG HOME
+                /*
+                |--------------------------------------------------------------------------
+                | 🖼 Resolve THUMB – TUYỆT ĐỐI KHÔNG ARRAY
+                |--------------------------------------------------------------------------
+                */
                 $thumb = null;
 
-                if (!empty($p['thumb']) && is_string($p['thumb'])) {
-                    $thumb = $p['thumb'];
-                } elseif (!empty($p['media']['images'][0])) {
+                if (!empty($p['thumb'])) {
+                    if (is_string($p['thumb'])) {
+                        $thumb = $p['thumb'];
+                    } elseif (is_array($p['thumb'])) {
+                        $thumb = $p['thumb']['thumb']
+                            ?? $p['thumb']['mobile']
+                            ?? $p['thumb']['full']
+                            ?? null;
+                    }
+                } elseif (!empty($p['media']['images'][0]) && is_string($p['media']['images'][0])) {
                     $thumb = $p['media']['images'][0];
-                } elseif (!empty($p['media']['thumb_mobile'])) {
+                } elseif (!empty($p['media']['thumb_mobile']) && is_string($p['media']['thumb_mobile'])) {
                     $thumb = $p['media']['thumb_mobile'];
-                } elseif (!empty($p['media']['thumb'])) {
+                } elseif (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
                     $thumb = $p['media']['thumb'];
                 }
 
+                /*
+                |--------------------------------------------------------------------------
+                | 🎨 COLORS – ARRAY STRING ONLY
+                |--------------------------------------------------------------------------
+                */
+                $colors = collect($p['colors'] ?? [])
+                    ->map(function ($c) {
+                        if (is_string($c)) return $c;
+                        if (is_array($c)) return $c['code'] ?? null;
+                        return null;
+                    })
+                    ->filter(fn ($c) => is_string($c))
+                    ->values()
+                    ->toArray();
+
                 return [
                     // Identity
-                    'product_id' => $p['product_id'] ?? null,
-                    'name'       => $p['name'] ?? null,
-                    'slug'       => $p['slug'] ?? null,
+                    'product_id' => (int) ($p['product_id'] ?? 0),
+
+                    'name' => is_string($p['name'] ?? null)
+                        ? $p['name']
+                        : ($p['name']['vi'] ?? null),
+
+                    'slug' => is_string($p['slug'] ?? null)
+                        ? $p['slug']
+                        : null,
 
                     // Data
-                    'price'      => $p['price'] ?? null,
-                    'available'  => $p['available'] ?? 0,
-                    'colors'     => is_array($p['colors'] ?? null) ? $p['colors'] : [],
+                    'price'     => is_numeric($p['price'] ?? null)
+                        ? (float) $p['price']
+                        : null,
 
-                    // Media
-                    'thumb'      => $thumb,
+                    'available' => (int) ($p['available'] ?? 0),
+                    'colors'    => $colors,
 
-                    // UX helpers (BẮT BUỘC STRING)
-                    'tag'        => '🔥 Bán chạy',
+                    // Media (BLADE-SAFE)
+                    'thumb'     => is_string($thumb) ? $thumb : null,
+
+                    // UX helpers
+                    'tag'       => '🔥 Bán chạy',
                 ];
             })
-            // ❗ Chỉ lọc identity + price, KHÔNG lọc thumb
+            // ❗ Chỉ lọc identity + price (KHÔNG lọc thumb)
             ->filter(fn ($p) =>
-                !empty($p['product_id'])
+                $p['product_id'] > 0
                 && !empty($p['name'])
                 && isset($p['price'])
             )
