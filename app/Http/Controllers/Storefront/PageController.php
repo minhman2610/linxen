@@ -541,23 +541,20 @@ public function account()
     ]);
 }
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (FAST, PAGINATED, HOME-LIKE)
+ * 📦 COLLECTION – LIN XÉN (FIX PAGINATION)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-    /*
-    |--------------------------------------------------------------------------
-    | 0️⃣ Pagination params
-    |--------------------------------------------------------------------------
-    */
-    $page    = max((int) request('page', 1), 1);
+    // =====================================================
+    // 0️⃣ Pagination params
+    // =====================================================
+    $page    = (int) request()->query('page', 1);
+    $page    = max($page, 1);
     $perPage = 24;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 1️⃣ Call ERP (ĐÃ paginate + cache ở service)
-    |--------------------------------------------------------------------------
-    */
+    // =====================================================
+    // 1️⃣ Call ERP (3mg.ai – PAGINATED)
+    // =====================================================
     $data = $erp->collection(
         $this->brand,
         $slug,
@@ -565,15 +562,13 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         $perPage
     );
 
-    if (empty($data) || empty($data['collection'])) {
+    if (empty($data['collection'])) {
         abort(404);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2️⃣ COLLECTION META
-    |--------------------------------------------------------------------------
-    */
+    // =====================================================
+    // 2️⃣ Collection meta
+    // =====================================================
     $collection = [
         'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
         'description' => $data['collection']['description'] ?? null,
@@ -581,66 +576,48 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         'slug'        => $slug,
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3️⃣ PRODUCTS – MINIMAL NORMALIZE (RẤT NHẸ)
-    |--------------------------------------------------------------------------
-    | ❗ LƯU Ý QUAN TRỌNG:
-    | - KHÔNG dùng $p['media']
-    | - thumb đã được service đưa ra root key
-    |--------------------------------------------------------------------------
-    */
+    // =====================================================
+    // 3️⃣ Products (ERP đã paginate sẵn → KHÔNG slice)
+    // =====================================================
     $items = collect($data['products'] ?? [])
         ->map(function ($p) {
-
-            // ✅ KEY ĐÚNG
-            $thumb = $p['thumb'] ?? null;
-
-            if (empty($thumb)) {
+            if (empty($p['media']['thumb'])) {
                 return null;
             }
 
             return [
-                'product_id' => (int) ($p['product_id'] ?? 0),
-                'name'       => $p['name'] ?? '',
+                'product_id' => (int) $p['product_id'],
+                'name'       => $p['name'],
                 'slug'       => $p['slug']
-                    ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
-                'price'      => (float) ($p['price'] ?? 0),
-                'thumb'      => $thumb,
-
-                // UX helpers
-                'colors'       => $p['colors'] ?? [],
-                'available'    => $p['available'] ?? 0,
-                'sale_percent' => 20, // demo
-                'tag'          => '🔥 Bán chạy',
+                    ?? Str::slug($p['name']) . '-' . $p['product_id'],
+                'price'      => (float) $p['price'],
+                'thumb'      => $p['media']['thumb'],
+                'colors'     => $p['colors'] ?? [],
+                'available'  => $p['available'] ?? 0,
+                'sale_percent' => 20,
+                'tag'        => '🔥 Bán chạy',
             ];
         })
-        ->filter()   // loại null
+        ->filter()
         ->values();
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4️⃣ LengthAwarePaginator
-    |--------------------------------------------------------------------------
-    | ❗ total lấy từ ERP meta (chuẩn), KHÔNG từ count()
-    |--------------------------------------------------------------------------
-    */
+    // =====================================================
+    // 4️⃣ FIX LengthAwarePaginator (🚨 QUAN TRỌNG)
+    // =====================================================
     $products = new LengthAwarePaginator(
         $items,
-        $data['meta']['total'] ?? $items->count(),
+        (int) ($data['meta']['total'] ?? 0),
         $perPage,
         $page,
         [
-            'path'  => request()->url(),
-            'query' => request()->query(),
+            'path'     => request()->url(),
+            'pageName' => 'page',
         ]
     );
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5️⃣ Render view
-    |--------------------------------------------------------------------------
-    */
+    // =====================================================
+    // 5️⃣ Render
+    // =====================================================
     return view(
         "storefront.{$this->theme}.pages.collection",
         compact('collection', 'products')
