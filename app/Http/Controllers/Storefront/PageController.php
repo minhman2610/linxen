@@ -93,6 +93,13 @@ public function product(string $slug, ErpStorefrontApi $erp)
 {
     $product = $erp->product($this->brand, $slug);
 
+// 🔴 DEBUG ERP RAW
+\Log::error('[DEBUG STOREFRONT PRODUCT RAW]', [
+    'variants'   => $product['variants'] ?? null,
+    'attributes' => $product['attributes'] ?? null,
+]);
+
+    
     if (empty($product) || !is_array($product)) {
         abort(404);
     }
