@@ -139,55 +139,6 @@
           href="{{ asset('themes/luxe/assets/css/size-guide.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/size-guide.css')) }}">
 @endif
 
-{{-- =====================================================
-    CART ONLY CSS
-===================================================== --}}
-@if(request()->routeIs('linxen.cart'))
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}">
-@endif
-
-{{-- =====================================================
-    ACCOUNT / CHECKOUT CSS
-===================================================== --}}
-@if(Route::is('linxen.account.*'))
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/account.css?v={{ filemtime(public_path('themes/luxe/assets/css/account.css')) }}">
-@endif
-
-@if(request()->routeIs('linxen.checkout*'))
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
-@endif
-
-<link rel="stylesheet"
-      href="/themes/luxe/assets/css/auth.css?v={{ filemtime(public_path('themes/luxe/assets/css/auth.css')) }}">
-
-@if(Route::is('linxen.account.addresses'))
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/account-addresses.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-addresses.css')) }}">
-@endif
-
-@if(Route::is('linxen.account.profile'))
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/account-profile.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-profile.css')) }}">
-@endif
-
-@if(
-    request()->routeIs('linxen.account.orders') ||
-    request()->routeIs('linxen.account.orders.show')
-)
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/orders.css') }}">
-@endif
-
-{{-- =====================================================
-    COLLECTION CSS
-===================================================== --}}
-@if(request()->routeIs('linxen.collection'))
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/collection.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/collection.css')) }}">
-@endif
 
 
     {{-- Swiper CSS --}}
@@ -218,6 +169,69 @@
 
 </head>
 
+<body class="luxe-body">
 
+    {{-- ANNOUNCEMENT --}}
+    @include('storefront.luxe.components.announcement')
+
+    {{-- HEADER --}}
+    @include('storefront.luxe.components.header')
+
+    {{-- MOBILE MENU --}}
+    @include('storefront.luxe.components.mobile-menu')
+
+    {{-- MAIN CONTENT --}}
+    <main class="luxe-main">
+        @yield('content')
+    </main>
+
+    {{-- FOOTER --}}
+    @include('storefront.luxe.components.footer')
+
+    {{-- =====================================================
+        BOTTOM NAV (HOME ONLY)
+    ===================================================== --}}
+    @if(request()->routeIs('home') || request()->routeIs('linxen.home'))
+        @include('storefront.luxe.components.bottom-nav')
+    @endif
+
+    {{-- =====================================================
+        SCRIPTS
+    ===================================================== --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    @if(request()->routeIs('product.*') || request()->routeIs('linxen.product'))
+        @if(file_exists(public_path('themes/luxe/assets/js/product.js')))
+            <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
+        @endif
+
+        @if(file_exists(public_path('themes/luxe/assets/js/product-real-gallery.js')))
+            <script src="{{ asset('themes/luxe/assets/js/product-real-gallery.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product-real-gallery.js')) }}"></script>
+        @endif
+    @endif
+
+    @if(request()->routeIs('linxen.cart'))
+        @if(file_exists(public_path('themes/luxe/assets/js/cart.js')))
+            <script src="{{ asset('themes/luxe/assets/js/cart.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/cart.js')) }}"></script>
+        @endif
+    @endif
+
+    @if(request()->routeIs('linxen.checkout'))
+        @if(file_exists(public_path('themes/luxe/assets/js/checkout.js')))
+            <script src="{{ asset('themes/luxe/assets/js/checkout.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/checkout.js')) }}" defer></script>
+        @endif
+    @endif
+
+    @if(file_exists(public_path('themes/luxe/assets/js/mobile-menu.js')))
+        <script src="{{ asset('themes/luxe/assets/js/mobile-menu.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
+    @endif
+
+    @if(file_exists(public_path('themes/luxe/assets/js/theme.js')))
+        <script src="{{ asset('themes/luxe/assets/js/theme.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/theme.js')) }}"></script>
+    @endif
+
+    @stack('scripts')
+
+</body>
 
 </html>
