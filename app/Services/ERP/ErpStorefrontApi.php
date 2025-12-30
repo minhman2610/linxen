@@ -446,13 +446,7 @@ public function collection(
     $page  = max((int) $page, 1);
     $limit = min(max((int) $limit, 1), 48);
 
-    \Log::error('🧠 ERP COLLECTION PARAMS (NO CACHE)', [
-        'brand' => $brand,
-        'slug'  => $slug,
-        'page'  => $page,
-        'limit' => $limit,
-    ]);
-
+    
     // -------------------------------------------------
     // 1️⃣ Call ERP (KHÔNG CACHE)
     // -------------------------------------------------
@@ -462,10 +456,7 @@ public function collection(
         'limit' => $limit,
     ];
 
-    \Log::error('📡 ERP COLLECTION REQUEST (NO CACHE)', [
-        'endpoint' => $endpoint,
-        'params'   => $params,
-    ]);
+    
 
     $data = $this->get($endpoint, $params);
 
@@ -550,13 +541,7 @@ public function collection(
     // -------------------------------------------------
     $meta = $data['meta'] ?? null;
 
-    \Log::error('📦 ERP COLLECTION RESULT (NO CACHE)', [
-        'page'          => $page,
-        'product_count' => count($products),
-        'ids'           => array_slice(array_column($products, 'product_id'), 0, 10),
-        'meta'          => $meta,
-    ]);
-
+    
     return [
         'collection' => $collection,
         'products'   => $products,
