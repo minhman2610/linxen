@@ -212,7 +212,7 @@
   "logo": "https://linxen.vn/themes/luxe/assets/images/logo.png",
   "description": "Thời trang nữ cao cấp – Váy thiết kế LIN XÉN",
   "sameAs": [
-    "https://www.facebook.com/linxen.official"
+    "https://www.facebook.com/linxen.vn"
   ]
 }
 </script>
