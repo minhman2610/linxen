@@ -142,21 +142,22 @@ document.addEventListener('click', function (e) {
 
 document.getElementById('size-submit')?.addEventListener('click', function () {
 
-    const h = +document.getElementById('size-height').value;
-    const w = +document.getElementById('size-weight').value;
-    const bust  = +document.getElementById('size-bust').value;
-    const waist = +document.getElementById('size-waist').value;
-    const hip   = +document.getElementById('size-hip').value;
+    const h = +document.getElementById('size-height')?.value || null;
+    const w = +document.getElementById('size-weight')?.value || null;
+    const bust  = +document.getElementById('size-bust')?.value || null;
+    const waist = +document.getElementById('size-waist')?.value || null;
+    const hip   = +document.getElementById('size-hip')?.value || null;
 
     const resultBox = document.getElementById('size-result');
 
-    if (!h || !w || !bust || !waist || !hip) {
+    if (!h && !w && !bust && !waist && !hip) {
         resultBox.hidden = false;
-        resultBox.innerHTML = 'Vui lòng nhập đầy đủ số đo để gợi ý size.';
+        resultBox.innerHTML = 'Vui lòng nhập ít nhất <strong>1 nhóm thông số</strong> để LIN XÉN gợi ý size.';
         return;
     }
 
-    // RULESET LIN XÉN (dễ chỉnh)
+    /* ================= RULESET LIN XÉN ================= */
+
     const sizes = [
         {
             size: 'S',
@@ -192,29 +193,79 @@ document.getElementById('size-submit')?.addEventListener('click', function () {
         },
     ];
 
-    const match = sizes.find(s =>
-        h >= s.height[0] && h <= s.height[1] &&
-        w >= s.weight[0] && w <= s.weight[1] &&
-        bust  >= s.bust[0]  && bust  <= s.bust[1] &&
-        waist >= s.waist[0] && waist <= s.waist[1] &&
-        hip   >= s.hip[0]   && hip   <= s.hip[1]
-    );
+    /* ================= SCORING ================= */
+
+    const scored = sizes.map(s => {
+        let score = 0;
+        let checks = 0;
+
+        // Chiều cao
+        if (h) {
+            checks++;
+            if (h >= s.height[0] && h <= s.height[1]) score += 1;
+        }
+
+        // Cân nặng
+        if (w) {
+            checks++;
+            if (w >= s.weight[0] && w <= s.weight[1]) score += 1;
+        }
+
+        // 3 vòng – ưu tiên cao hơn
+        if (bust) {
+            checks++;
+            if (bust >= s.bust[0] && bust <= s.bust[1]) score += 1.5;
+        }
+
+        if (waist) {
+            checks++;
+            if (waist >= s.waist[0] && waist <= s.waist[1]) score += 1.5;
+        }
+
+        if (hip) {
+            checks++;
+            if (hip >= s.hip[0] && hip <= s.hip[1]) score += 1.5;
+        }
+
+        return {
+            size: s.size,
+            score,
+            checks,
+            ratio: checks ? score / checks : 0
+        };
+    });
+
+    // Sort theo độ phù hợp
+    scored.sort((a, b) => b.ratio - a.ratio);
+
+    const best = scored[0];
+    const second = scored[1];
 
     resultBox.hidden = false;
 
-    if (match) {
+    /* ================= OUTPUT ================= */
+
+    if (best.ratio >= 0.6) {
+        let note = '';
+
+        if (second && (best.ratio - second.ratio) < 0.15) {
+            note = `<br><small>Số đo của bạn nằm giữa 2 size, nếu thích mặc rộng hãy chọn size lớn hơn.</small>`;
+        }
+
         resultBox.innerHTML = `
             ✨ LIN XÉN gợi ý bạn nên chọn size
-            <strong style="font-size:20px"> ${match.size} </strong>
+            <strong style="font-size:22px"> ${best.size} </strong>
+            ${note}
         `;
     } else {
         resultBox.innerHTML = `
-            Số đo của bạn nằm giữa các size.
-            <br>LIN XÉN gợi ý <strong>chọn size lớn hơn</strong> hoặc liên hệ stylist để được tư vấn.
+            Số đo của bạn nằm ngoài khung tiêu chuẩn.
+            <br>LIN XÉN gợi ý <strong>liên hệ stylist</strong> để được tư vấn chính xác hơn.
         `;
     }
 });
 </script>
+
 
 @endpush
 
