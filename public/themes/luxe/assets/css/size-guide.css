@@ -166,3 +166,10 @@
         font-size: 18px;
     }
 }
+/* =====================================================
+   FIX: RESPECT [hidden] ATTRIBUTE
+===================================================== */
+
+.lx-size-guide-overlay[hidden] {
+    display: none !important;
+}
