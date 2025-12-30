@@ -87,11 +87,7 @@
 
             {{-- ILLUSTRATION --}}
             <div class="lx-size-guide-illustration">
-                <img
-                    src="/themes/luxe/assets/images/size-guide-body.webp"
-                    alt="Hướng dẫn đo cơ thể LIN XÉN"
-                    loading="lazy"
-                >
+                
                 <ul>
                     <li><strong>Ngực</strong>: đo vòng nở nhất</li>
                     <li><strong>Eo</strong>: đo chỗ nhỏ nhất</li>
