@@ -1,3 +1,51 @@
+{{-- ================= SIZE ASSISTANT ================= --}}
+<div class="lx-size-assistant">
+
+    <h4 class="lx-size-assistant-title">
+        Trợ lý chọn size
+    </h4>
+
+    <p class="lx-size-assistant-note">
+        Nhập số đo cơ thể để LIN XÉN gợi ý size phù hợp nhất cho bạn.
+    </p>
+
+    <div class="lx-size-form">
+
+        <div class="lx-size-field">
+            <label>Chiều cao (cm)</label>
+            <input type="number" id="size-height" placeholder="VD: 160">
+        </div>
+
+        <div class="lx-size-field">
+            <label>Cân nặng (kg)</label>
+            <input type="number" id="size-weight" placeholder="VD: 52">
+        </div>
+
+        <div class="lx-size-field">
+            <label>Vòng ngực (cm)</label>
+            <input type="number" id="size-bust" placeholder="VD: 86">
+        </div>
+
+        <div class="lx-size-field">
+            <label>Vòng eo (cm)</label>
+            <input type="number" id="size-waist" placeholder="VD: 68">
+        </div>
+
+        <div class="lx-size-field">
+            <label>Vòng mông (cm)</label>
+            <input type="number" id="size-hip" placeholder="VD: 92">
+        </div>
+
+    </div>
+
+    <button class="lx-size-submit" id="size-submit">
+        Gợi ý size phù hợp
+    </button>
+
+    <div class="lx-size-result" id="size-result" hidden></div>
+
+</div>
+
 {{-- ================= SIZE GUIDE – LIN XÉN ================= --}}
 
 {{-- SIZE GUIDE TRIGGER --}}
