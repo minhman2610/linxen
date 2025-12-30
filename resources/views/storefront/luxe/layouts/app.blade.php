@@ -194,7 +194,30 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
-    
+    {{-- =====================================================
+    PAGE META / EXTRA HEAD
+===================================================== --}}
+@stack('head')
+
+{{-- =====================================================
+    STRUCTURED DATA – BRAND
+===================================================== --}}
+@verbatim
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FashionBrand",
+  "name": "LIN XÉN",
+  "url": "https://linxen.vn",
+  "logo": "https://linxen.vn/themes/luxe/assets/images/logo.png",
+  "description": "Thời trang nữ cao cấp – Váy thiết kế LIN XÉN",
+  "sameAs": [
+    "https://www.facebook.com/linxen.official"
+  ]
+}
+</script>
+@endverbatim
+
 
 </head>
 
