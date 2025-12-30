@@ -426,3 +426,44 @@
 .lx-pdp .lx-product-description{
     margin: 0px;
 }
+/* ================= ADD TO CART – GOLD LUXURY ================= */
+
+.lx-btn-addtocart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: 100%;
+    padding: 14px 16px;
+
+    border-radius: 14px;
+    border: 1px solid #D6B46A;
+
+    background: linear-gradient(
+        to bottom,
+        #FAF6EE,
+        #F2E6C9
+    );
+
+    color: #6B4F1D;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: .3px;
+
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.lx-btn-addtocart:hover {
+    background: linear-gradient(
+        to bottom,
+        #F2E6C9,
+        #E8D7A8
+    );
+    border-color: #C8A94F;
+}
+
+.lx-btn-addtocart:active {
+    transform: translateY(1px);
+}
