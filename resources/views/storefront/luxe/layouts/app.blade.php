@@ -65,6 +65,8 @@
               href="{{ asset('themes/luxe/assets/css/product-suggested.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-suggested.css')) }}">
         <link rel="stylesheet"
               href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
+              <link rel="stylesheet"
+              href="{{ asset('themes/luxe/assets/css/size-guide.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/size-guide.css')) }}">
     @endif
 
     {{-- ============================
