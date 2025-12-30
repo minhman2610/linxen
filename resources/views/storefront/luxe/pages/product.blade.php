@@ -115,16 +115,30 @@ document.addEventListener('click', function (e) {
     const overlay = document.querySelector('[data-size-guide-overlay]');
     if (!overlay) return;
 
+    // OPEN
     if (e.target.closest('[data-size-guide-open]')) {
         overlay.hidden = false;
+        document.body.style.overflow = 'hidden'; // lock scroll
+        return;
     }
 
+    // CLOSE bằng nút X
+    if (e.target.closest('[data-size-guide-close]')) {
+        overlay.hidden = true;
+        document.body.style.overflow = '';
+        return;
+    }
+
+    // CLOSE khi click ra ngoài modal
     if (
-        e.target.closest('[data-size-guide-close]') ||
-        e.target === overlay
+        e.target.closest('[data-size-guide-overlay]') &&
+        !e.target.closest('.lx-size-guide-modal')
     ) {
         overlay.hidden = true;
+        document.body.style.overflow = '';
+        return;
     }
 });
 </script>
 @endpush
+

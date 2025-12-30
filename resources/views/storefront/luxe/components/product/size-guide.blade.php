@@ -1,12 +1,15 @@
 {{-- ================= SIZE GUIDE – LIN XÉN ================= --}}
 
-{{-- TRIGGER --}}
-<div class="lx-size-guide-trigger" data-size-guide-open>
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M21 3H3v18h18V3zM9 17H7v-2h2v2zm0-4H7V7h2v6zm8 4h-6v-2h6v2zm0-4h-6V7h6v6z"/>
-    </svg>
-    <span>Xem bảng size LIN XÉN</span>
+{{-- SIZE GUIDE TRIGGER --}}
+<div class="lx-size-guide-cta" data-size-guide-open>
+    <span class="lx-size-guide-icon">📏</span>
+    <div class="lx-size-guide-text">
+        <strong>Xem bảng size</strong>
+        <small>Chọn size chuẩn dáng LIN XÉN</small>
+    </div>
+    <span class="lx-size-guide-arrow">›</span>
 </div>
+
 
 {{-- MODAL --}}
 <div class="lx-size-guide-overlay" data-size-guide-overlay hidden>
