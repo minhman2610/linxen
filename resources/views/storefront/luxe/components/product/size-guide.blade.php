@@ -42,49 +42,175 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Chiều cao (cm)</td>
-                            <td>153 – 160</td>
-                            <td>155 – 165</td>
-                            <td>160 – 170</td>
-                            <td>160 – 170</td>
-                        </tr>
-                        <tr>
-                            <td>Cân nặng (kg)</td>
-                            <td>43–49</td>
-                            <td>50–56</td>
-                            <td>57–62</td>
-                            <td>63–68</td>
-                        </tr>
-                        <tr>
-                            <td>Vai (cm)</td>
-                            <td>35</td>
-                            <td>36</td>
-                            <td>37</td>
-                            <td>38</td>
-                        </tr>
-                        <tr>
-                            <td>Ngực (cm)</td>
-                            <td>82–85</td>
-                            <td>86–89</td>
-                            <td>90–93</td>
-                            <td>94–97</td>
-                        </tr>
-                        <tr>
-                            <td>Eo (cm)</td>
-                            <td>64–67</td>
-                            <td>68–71</td>
-                            <td>72–75</td>
-                            <td>76–79</td>
-                        </tr>
-                        <tr>
-                            <td>Mông (cm)</td>
-                            <td>88–91</td>
-                            <td>92–95</td>
-                            <td>96–99</td>
-                            <td>100–103</td>
-                        </tr>
-                    </tbody>
+    <tr>
+        <td>Chiều cao (cm)</td>
+        <td>
+            <div class="lx-range">
+                <span>153</span>
+                <span class="lx-range-mid">–</span>
+                <span>160</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>155</span>
+                <span class="lx-range-mid">–</span>
+                <span>165</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>160</span>
+                <span class="lx-range-mid">–</span>
+                <span>170</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>160</span>
+                <span class="lx-range-mid">–</span>
+                <span>170</span>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Cân nặng (kg)</td>
+        <td>
+            <div class="lx-range">
+                <span>43</span>
+                <span class="lx-range-mid">–</span>
+                <span>49</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>50</span>
+                <span class="lx-range-mid">–</span>
+                <span>56</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>57</span>
+                <span class="lx-range-mid">–</span>
+                <span>62</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>63</span>
+                <span class="lx-range-mid">–</span>
+                <span>68</span>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Vai (cm)</td>
+        <td>35</td>
+        <td>36</td>
+        <td>37</td>
+        <td>38</td>
+    </tr>
+
+    <tr>
+        <td>Ngực (cm)</td>
+        <td>
+            <div class="lx-range">
+                <span>82</span>
+                <span class="lx-range-mid">–</span>
+                <span>85</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>86</span>
+                <span class="lx-range-mid">–</span>
+                <span>89</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>90</span>
+                <span class="lx-range-mid">–</span>
+                <span>93</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>94</span>
+                <span class="lx-range-mid">–</span>
+                <span>97</span>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Eo (cm)</td>
+        <td>
+            <div class="lx-range">
+                <span>64</span>
+                <span class="lx-range-mid">–</span>
+                <span>67</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>68</span>
+                <span class="lx-range-mid">–</span>
+                <span>71</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>72</span>
+                <span class="lx-range-mid">–</span>
+                <span>75</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>76</span>
+                <span class="lx-range-mid">–</span>
+                <span>79</span>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Mông (cm)</td>
+        <td>
+            <div class="lx-range">
+                <span>88</span>
+                <span class="lx-range-mid">–</span>
+                <span>91</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>92</span>
+                <span class="lx-range-mid">–</span>
+                <span>95</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>96</span>
+                <span class="lx-range-mid">–</span>
+                <span>99</span>
+            </div>
+        </td>
+        <td>
+            <div class="lx-range">
+                <span>100</span>
+                <span class="lx-range-mid">–</span>
+                <span>103</span>
+            </div>
+        </td>
+    </tr>
+</tbody>
+
                 </table>
             </div>
 
