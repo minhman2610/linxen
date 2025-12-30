@@ -50,34 +50,6 @@
     outline: none;
 }
 
-/* ================= ADD TO CART ================= */
-
-.lx-pdp .lx-btn-addtocart {
-    height: 44px;
-    flex: 1;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-
-    padding: 0 20px;
-
-    background: #111;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-
-    font-size: 13px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.lx-pdp .lx-btn-icon {
-    font-size: 15px;
-    line-height: 1;
-}
 
 /* =====================================================
    VARIANT ERROR STATE – PREMIUM
