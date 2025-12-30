@@ -108,86 +108,87 @@
           href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">
 
     {{-- =====================================================
-        HOME ONLY CSS
-    ===================================================== --}}
-    @if(request()->routeIs('home') || request()->routeIs('linxen.home'))
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}">
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
-    @endif
-
-    {{-- =====================================================
-        PRODUCT ONLY CSS
-    ===================================================== --}}
-    @if(request()->routeIs('product.*') || request()->routeIs('linxen.product'))
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/product-actions.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-actions.css')) }}">
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/brand-simple.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/brand-simple.css')) }}">
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/product-real-gallery.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-real-gallery.css')) }}">
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/product-suggested.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-suggested.css')) }}">
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/size-guide.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/size-guide.css')) }}">
-    @endif
-
-    {{-- =====================================================
-        CART ONLY CSS
-    ===================================================== --}}
-    @if(request()->routeIs('linxen.cart'))
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}">
-    @endif
-
-    {{-- =====================================================
-        ACCOUNT / CHECKOUT CSS
-    ===================================================== --}}
-    @if(Route::is('linxen.account.*'))
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/account.css?v={{ filemtime(public_path('themes/luxe/assets/css/account.css')) }}">
-    @endif
-
-    @if(request()->routeIs('linxen.checkout*'))
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
-    @endif
-
+    HOME ONLY CSS
+===================================================== --}}
+@if(request()->routeIs('home') || request()->routeIs('linxen.home'))
     <link rel="stylesheet"
-          href="/themes/luxe/assets/css/auth.css?v={{ filemtime(public_path('themes/luxe/assets/css/auth.css')) }}">
+          href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}">
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
+@endif
 
-    @if(Route::is('linxen.account.addresses'))
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/account-addresses.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-addresses.css')) }}">
-    @endif
+{{-- =====================================================
+    PRODUCT ONLY CSS
+===================================================== --}}
+@if(request()->routeIs('product.*') || request()->routeIs('linxen.product'))
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/product-actions.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-actions.css')) }}">
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/brand-simple.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/brand-simple.css')) }}">
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/product-real-gallery.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-real-gallery.css')) }}">
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/product-suggested.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-suggested.css')) }}">
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/size-guide.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/size-guide.css')) }}">
+@endif
 
-    @if(Route::is('linxen.account.profile'))
-        <link rel="stylesheet"
-              href="/themes/luxe/assets/css/account-profile.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-profile.css')) }}">
-    @endif
+{{-- =====================================================
+    CART ONLY CSS
+===================================================== --}}
+@if(request()->routeIs('linxen.cart'))
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/cart.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/cart.css')) }}">
+@endif
 
-    @if (
-        request()->routeIs('linxen.account.orders') ||
-        request()->routeIs('linxen.account.orders.show')
-    )
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/orders.css') }}">
-    @endif
+{{-- =====================================================
+    ACCOUNT / CHECKOUT CSS
+===================================================== --}}
+@if(Route::is('linxen.account.*'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/account.css?v={{ filemtime(public_path('themes/luxe/assets/css/account.css')) }}">
+@endif
 
-    {{-- =====================================================
-        COLLECTION CSS
-    ===================================================== --}}
-    @if (request()->routeIs('linxen.collection'))
-        <link rel="stylesheet"
-              href="{{ asset('themes/luxe/assets/css/collection.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/collection.css')) }}">
-    @endif
+@if(request()->routeIs('linxen.checkout*'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/checkout.css?v={{ filemtime(public_path('themes/luxe/assets/css/checkout.css')) }}">
+@endif
+
+<link rel="stylesheet"
+      href="/themes/luxe/assets/css/auth.css?v={{ filemtime(public_path('themes/luxe/assets/css/auth.css')) }}">
+
+@if(Route::is('linxen.account.addresses'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/account-addresses.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-addresses.css')) }}">
+@endif
+
+@if(Route::is('linxen.account.profile'))
+    <link rel="stylesheet"
+          href="/themes/luxe/assets/css/account-profile.css?v={{ filemtime(public_path('themes/luxe/assets/css/account-profile.css')) }}">
+@endif
+
+@if(
+    request()->routeIs('linxen.account.orders') ||
+    request()->routeIs('linxen.account.orders.show')
+)
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/orders.css') }}">
+@endif
+
+{{-- =====================================================
+    COLLECTION CSS
+===================================================== --}}
+@if(request()->routeIs('linxen.collection'))
+    <link rel="stylesheet"
+          href="{{ asset('themes/luxe/assets/css/collection.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/collection.css')) }}">
+@endif
+
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"
