@@ -249,23 +249,32 @@
     font-size: 14px;
     text-align: center;
 }
-/* SIZE ASSISTANT BUTTON – BLUSH */
+/* SIZE ASSISTANT BUTTON – GOLD LUXURY */
 
 .lx-size-submit {
     margin-top: 12px;
-    padding: 10px 14px;
+    padding: 11px 14px;
     width: 100%;
-    border-radius: 8px;
-    border: 1px solid #E6D2D2;
+    border-radius: 10px;
+    border: 1px solid #D6B46A;
     cursor: pointer;
-    background: #F6ECEC;
-    color: #5C3A3A;
+    background: linear-gradient(
+        to bottom,
+        #FAF6EE,
+        #F2E6C9
+    );
+    color: #7A5A12;
     font-size: 14px;
     font-weight: 500;
+    letter-spacing: .2px;
     transition: all .2s ease;
 }
 
 .lx-size-submit:hover {
-    background: #F0E2E2;
-    border-color: #D9BEBE;
+    background: linear-gradient(
+        to bottom,
+        #F2E6C9,
+        #E8D7A8
+    );
+    border-color: #C8A94F;
 }
