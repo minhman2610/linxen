@@ -5,8 +5,6 @@
 
     <div class="lx-product-content lx-pdp-content">
 
-        
-
         {{-- ================= PRODUCT LAYOUT ================= --}}
         <div class="lx-product-layout">
 
@@ -20,14 +18,18 @@
 
             {{-- RIGHT: INFO --}}
             <div class="lx-product-info">
+
                 {{-- ================= BREADCRUMB ================= --}}
-        @include('storefront.luxe.components.product.breadcrumb', [
-            'breadcrumbs' => $breadcrumbs
-        ])
+                @include('storefront.luxe.components.product.breadcrumb', [
+                    'breadcrumbs' => $breadcrumbs
+                ])
+
                 {{-- BRAND HERO --}}
                 <div class="lx-brand-hero">
-                    <div class="lx-brand-typewriter"
-                         data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY">
+                    <div
+                        class="lx-brand-typewriter"
+                        data-text="LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY"
+                    >
                         LIN XÉN — CHÚNG TÔI ĐAM MÊ VÁY
                     </div>
 
@@ -67,39 +69,62 @@
                     )) !!}
                 </div>
 
-                {{-- VARIANTS --}}
+                {{-- ================= VARIANTS ================= --}}
                 @include('storefront.luxe.components.product.variants', [
-    'attributes' => $attributes,
-    'variants'   => $variants
-])
+                    'attributes' => $attributes,
+                    'variants'   => $variants
+                ])
 
+                {{-- ================= SIZE GUIDE (CTA + MODAL) ================= --}}
+                @include('storefront.luxe.components.product.size-guide')
 
-                {{-- PDP BOTTOM GROUP --}}
-<div class="lx-pdp-bottom">
+                {{-- ================= PDP BOTTOM GROUP ================= --}}
+                <div class="lx-pdp-bottom">
 
-    {{-- ACTIONS --}}
-    @include('storefront.luxe.components.product.actions')
+                    {{-- ACTIONS --}}
+                    @include('storefront.luxe.components.product.actions')
 
-    {{-- TRUST --}}
-    @include('storefront.luxe.components.product.trust')
+                    {{-- TRUST --}}
+                    @include('storefront.luxe.components.product.trust')
 
-    {{-- REAL CUSTOMER GALLERY (FROM 3MG ERP) --}}
-    @include('storefront.luxe.components.product.real-gallery', [
-        'ugcMedia' => $ugcMedia ?? []
-    ])
+                    {{-- REAL CUSTOMER GALLERY (FROM 3MG ERP) --}}
+                    @include('storefront.luxe.components.product.real-gallery', [
+                        'ugcMedia' => $ugcMedia ?? []
+                    ])
 
-    {{-- SUGGESTED PRODUCTS (FROM 3MG ERP) --}}
-    @if(($suggestedCount ?? 0) > 0)
-        @include('storefront.luxe.components.product.suggested-products', [
-            'suggestedProducts' => $suggestedProducts ?? []
-        ])
-    @endif
+                    {{-- SUGGESTED PRODUCTS (FROM 3MG ERP) --}}
+                    @if(($suggestedCount ?? 0) > 0)
+                        @include('storefront.luxe.components.product.suggested-products', [
+                            'suggestedProducts' => $suggestedProducts ?? []
+                        ])
+                    @endif
 
-</div>
-
+                </div>
 
             </div>
         </div>
     </div>
+
 </section>
 @endsection
+
+{{-- ================= SIZE GUIDE JS ================= --}}
+@push('scripts')
+<script>
+document.addEventListener('click', function (e) {
+    const overlay = document.querySelector('[data-size-guide-overlay]');
+    if (!overlay) return;
+
+    if (e.target.closest('[data-size-guide-open]')) {
+        overlay.hidden = false;
+    }
+
+    if (
+        e.target.closest('[data-size-guide-close]') ||
+        e.target === overlay
+    ) {
+        overlay.hidden = true;
+    }
+});
+</script>
+@endpush
