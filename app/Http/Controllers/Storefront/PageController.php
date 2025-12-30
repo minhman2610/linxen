@@ -543,7 +543,7 @@ public function account()
 }
 
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (STABLE)
+ * 📦 COLLECTION – LIN XÉN (STABLE – MOBILE IMAGE)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
@@ -552,8 +552,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     | 0️⃣ Pagination params
     |--------------------------------------------------------------------------
     */
-    $page = (int) request()->input('page', 1);
-    $page = max($page, 1);
+    $page = max((int) request()->input('page', 1), 1);
     $perPage = 24;
 
     /*
@@ -586,15 +585,18 @@ public function collection(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 3️⃣ PRODUCTS (DATA ĐÃ LÀ PAGE ĐÚNG TỪ ERP)
+    | 3️⃣ PRODUCTS – ƯU TIÊN ẢNH MOBILE
     |--------------------------------------------------------------------------
     */
     $items = collect($data['products'] ?? [])
         ->map(function ($p) {
 
-            $thumb = is_string($p['thumb'] ?? null)
-                ? $p['thumb']
-                : null;
+            // 🔥 ƯU TIÊN MOBILE IMAGE
+            $thumb =
+                $p['media']['thumb_mobile']
+                ?? $p['media']['thumb']
+                ?? $p['thumb']
+                ?? null;
 
             return [
                 'product_id' => (int) ($p['product_id'] ?? 0),
@@ -602,7 +604,9 @@ public function collection(string $slug, ErpStorefrontApi $erp)
                 'slug'       => $p['slug']
                     ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
                 'price'      => (float) ($p['price'] ?? 0),
-                'thumb'      => $thumb,
+
+                // 👇 VIEW DÙNG FIELD NÀY
+                'thumb'      => is_string($thumb) ? $thumb : null,
 
                 'colors' => collect($p['colors'] ?? [])
                     ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
@@ -621,8 +625,6 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     |--------------------------------------------------------------------------
     | 4️⃣ LengthAwarePaginator
     |--------------------------------------------------------------------------
-    | ❗ KHÔNG DÙNG meta.page (ERP SAI)
-    | ❗ LUÔN DÙNG $page TỪ REQUEST
     */
     $products = new LengthAwarePaginator(
         $items,
@@ -645,6 +647,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         compact('collection', 'products')
     );
 }
+
 
 
 }
