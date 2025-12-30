@@ -430,7 +430,7 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – NO CACHE (DEBUG)
+ * 📦 COLLECTION (STORE CATEGORY) – NO CACHE (FIX IMAGE)
  * =====================================================
  */
 public function collection(
@@ -446,17 +446,14 @@ public function collection(
     $page  = max((int) $page, 1);
     $limit = min(max((int) $limit, 1), 48);
 
-    
     // -------------------------------------------------
-    // 1️⃣ Call ERP (KHÔNG CACHE)
+    // 1️⃣ Call ERP (NO CACHE)
     // -------------------------------------------------
     $endpoint = "/api/storefront/{$brand}/collection/{$slug}";
     $params   = [
         'page'  => $page,
         'limit' => $limit,
     ];
-
-    
 
     $data = $this->get($endpoint, $params);
 
@@ -485,25 +482,32 @@ public function collection(
     ];
 
     // -------------------------------------------------
-    // 3️⃣ PRODUCTS – RESOLVE IMAGE CHUẨN
+    // 3️⃣ PRODUCTS – FIX ẢNH: MOBILE → DESKTOP → ROOT → NO IMAGE
     // -------------------------------------------------
     $products = collect($data['products'] ?? [])
         ->map(function ($p) {
 
-            $thumb = null;
+            $media = $p['media'] ?? [];
 
-            if (!empty($p['thumb']) && is_string($p['thumb'])) {
-                $thumb = $p['thumb'];
-            } elseif (!empty($p['media']['thumb']) && is_string($p['media']['thumb'])) {
-                $thumb = $p['media']['thumb'];
-            } elseif (!empty($p['media']['thumb_mobile']) && is_string($p['media']['thumb_mobile'])) {
-                $thumb = $p['media']['thumb_mobile'];
-            } elseif (
-                !empty($p['media']['images'][0])
-                && is_string($p['media']['images'][0])
-            ) {
-                $thumb = $p['media']['images'][0];
-            }
+            // 🔥 FIX QUAN TRỌNG: THỨ TỰ ƯU TIÊN
+            $thumb =
+                (is_string($media['thumb_mobile'] ?? null) ? $media['thumb_mobile'] : null)
+                ?? (is_string($media['thumb'] ?? null) ? $media['thumb'] : null)
+                ?? (!empty($media['images'][0]['mobile']) && is_string($media['images'][0]['mobile'])
+                        ? $media['images'][0]['mobile']
+                        : null)
+                ?? (!empty($media['images'][0]['thumb']) && is_string($media['images'][0]['thumb'])
+                        ? $media['images'][0]['thumb']
+                        : null)
+                ?? (is_string($p['thumb'] ?? null) ? $p['thumb'] : null)
+                ?? asset('images/no-image.png'); // ❗ KHÔNG BAO GIỜ NULL
+
+            // 🧪 DEBUG: xem service đang chọn ảnh gì
+            \Log::error('🧪 LINXEN SERVICE THUMB', [
+                'product_id' => $p['product_id'] ?? null,
+                'thumb'      => $thumb,
+                'has_media'  => !empty($media),
+            ]);
 
             $colors = collect($p['colors'] ?? [])
                 ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
@@ -524,7 +528,10 @@ public function collection(
                     : null,
                 'available'  => (int) ($p['available'] ?? 0),
                 'colors'     => $colors,
+
+                // 🔥 FIELD DUY NHẤT VIEW ĐƯỢC DÙNG
                 'thumb'      => $thumb,
+
                 'tag'        => '🔥 Bán chạy',
             ];
         })
@@ -541,16 +548,12 @@ public function collection(
     // -------------------------------------------------
     $meta = $data['meta'] ?? null;
 
-    
     return [
         'collection' => $collection,
         'products'   => $products,
         'meta'       => $meta,
     ];
 }
-
-
-
 
     /**
  * =====================================================
