@@ -44,10 +44,10 @@
                     <tbody>
                         <tr>
                             <td>Chiều cao (cm)</td>
-                            <td>153–160</td>
-                            <td>155–165</td>
-                            <td>160–170</td>
-                            <td>160–170</td>
+                            <td>153 – 160</td>
+                            <td>155 – 165</td>
+                            <td>160 – 170</td>
+                            <td>160 – 170</td>
                         </tr>
                         <tr>
                             <td>Cân nặng (kg)</td>
