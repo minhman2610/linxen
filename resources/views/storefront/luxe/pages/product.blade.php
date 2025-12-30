@@ -139,6 +139,82 @@ document.addEventListener('click', function (e) {
         return;
     }
 });
+
+document.getElementById('size-submit')?.addEventListener('click', function () {
+
+    const h = +document.getElementById('size-height').value;
+    const w = +document.getElementById('size-weight').value;
+    const bust  = +document.getElementById('size-bust').value;
+    const waist = +document.getElementById('size-waist').value;
+    const hip   = +document.getElementById('size-hip').value;
+
+    const resultBox = document.getElementById('size-result');
+
+    if (!h || !w || !bust || !waist || !hip) {
+        resultBox.hidden = false;
+        resultBox.innerHTML = 'Vui lòng nhập đầy đủ số đo để gợi ý size.';
+        return;
+    }
+
+    // RULESET LIN XÉN (dễ chỉnh)
+    const sizes = [
+        {
+            size: 'S',
+            height: [153,160],
+            weight: [43,49],
+            bust:   [82,85],
+            waist:  [64,67],
+            hip:    [88,91],
+        },
+        {
+            size: 'M',
+            height: [155,165],
+            weight: [50,56],
+            bust:   [86,89],
+            waist:  [68,71],
+            hip:    [92,95],
+        },
+        {
+            size: 'L',
+            height: [160,170],
+            weight: [57,62],
+            bust:   [90,93],
+            waist:  [72,75],
+            hip:    [96,99],
+        },
+        {
+            size: 'XL',
+            height: [160,170],
+            weight: [63,68],
+            bust:   [94,97],
+            waist:  [76,79],
+            hip:    [100,103],
+        },
+    ];
+
+    const match = sizes.find(s =>
+        h >= s.height[0] && h <= s.height[1] &&
+        w >= s.weight[0] && w <= s.weight[1] &&
+        bust  >= s.bust[0]  && bust  <= s.bust[1] &&
+        waist >= s.waist[0] && waist <= s.waist[1] &&
+        hip   >= s.hip[0]   && hip   <= s.hip[1]
+    );
+
+    resultBox.hidden = false;
+
+    if (match) {
+        resultBox.innerHTML = `
+            ✨ LIN XÉN gợi ý bạn nên chọn size
+            <strong style="font-size:20px"> ${match.size} </strong>
+        `;
+    } else {
+        resultBox.innerHTML = `
+            Số đo của bạn nằm giữa các size.
+            <br>LIN XÉN gợi ý <strong>chọn size lớn hơn</strong> hoặc liên hệ stylist để được tư vấn.
+        `;
+    }
+});
 </script>
+
 @endpush
 
