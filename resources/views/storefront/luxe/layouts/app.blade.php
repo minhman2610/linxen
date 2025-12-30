@@ -250,22 +250,37 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     @if(request()->routeIs('product.*') || request()->routeIs('linxen.product'))
-        <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
-        <script src="{{ asset('themes/luxe/assets/js/product-real-gallery.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product-real-gallery.js')) }}"></script>
+        @if(file_exists(public_path('themes/luxe/assets/js/product.js')))
+            <script src="{{ asset('themes/luxe/assets/js/product.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product.js')) }}"></script>
+        @endif
+
+        @if(file_exists(public_path('themes/luxe/assets/js/product-real-gallery.js')))
+            <script src="{{ asset('themes/luxe/assets/js/product-real-gallery.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/product-real-gallery.js')) }}"></script>
+        @endif
     @endif
 
     @if(request()->routeIs('linxen.cart'))
-        <script src="{{ asset('themes/luxe/assets/js/cart.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/cart.js')) }}"></script>
+        @if(file_exists(public_path('themes/luxe/assets/js/cart.js')))
+            <script src="{{ asset('themes/luxe/assets/js/cart.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/cart.js')) }}"></script>
+        @endif
     @endif
 
-    @if(Route::is('linxen.checkout') && file_exists(public_path('themes/luxe/assets/js/checkout.js')))
-        <script src="/themes/luxe/assets/js/checkout.js?v={{ filemtime(public_path('themes/luxe/assets/js/checkout.js')) }}" defer></script>
+    @if(request()->routeIs('linxen.checkout'))
+        @if(file_exists(public_path('themes/luxe/assets/js/checkout.js')))
+            <script src="{{ asset('themes/luxe/assets/js/checkout.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/checkout.js')) }}" defer></script>
+        @endif
     @endif
 
-    <script src="/themes/luxe/assets/js/mobile-menu.js?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
-    <script src="{{ asset('themes/luxe/assets/js/theme.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/theme.js')) }}"></script>
+    @if(file_exists(public_path('themes/luxe/assets/js/mobile-menu.js')))
+        <script src="{{ asset('themes/luxe/assets/js/mobile-menu.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/mobile-menu.js')) }}"></script>
+    @endif
+
+    @if(file_exists(public_path('themes/luxe/assets/js/theme.js')))
+        <script src="{{ asset('themes/luxe/assets/js/theme.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/theme.js')) }}"></script>
+    @endif
 
     @stack('scripts')
 
 </body>
+
 </html>
