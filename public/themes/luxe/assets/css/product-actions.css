@@ -400,7 +400,7 @@
     background: linear-gradient(135deg, #ecd9b8, #d8bf8a);
     color: #2a2015;
 }
-/* ================= ADD TO CART – GOLD LUXURY ================= */
+/* ================= ADD TO CART – LUXURY GREEN ================= */
 
 .lx-btn-addtocart {
     display: flex;
@@ -412,15 +412,15 @@
     padding: 14px 16px;
 
     border-radius: 14px;
-    border: 1px solid #D6B46A;
+    border: 1px solid #6E8B3D;
 
     background: linear-gradient(
         to bottom,
-        #FAF6EE,
-        #F2E6C9
+        #8AAE5D,
+        #6E8B3D
     );
 
-    color: #6B4F1D;
+    color: #FFFFFF;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: .3px;
@@ -432,12 +432,13 @@
 .lx-btn-addtocart:hover {
     background: linear-gradient(
         to bottom,
-        #F2E6C9,
-        #E8D7A8
+        #7FA552,
+        #5E7A33
     );
-    border-color: #C8A94F;
+    border-color: #5E7A33;
 }
 
 .lx-btn-addtocart:active {
     transform: translateY(1px);
 }
+
