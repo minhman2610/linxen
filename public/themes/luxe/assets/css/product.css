@@ -468,4 +468,6 @@
 .lx-pdp-bottom > *:last-child {
     margin-bottom: 0;
 }
-
+.lx-pdp .lx-product-price-wrap{
+    margin: 0px 22px;
+}
