@@ -55,7 +55,7 @@
 
                 {{-- NAME --}}
                 <div class="lx-product-head">
-                    <span class="lx-tag lx-tag-best">🔥 Bán chạy</span>
+                    <!-- <span class="lx-tag lx-tag-best">🔥 Bán chạy</span> -->
                     <p class="lx-product-name">
                         {{ $product['name'] }}
                     </p>
