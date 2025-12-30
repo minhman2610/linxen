@@ -2,16 +2,7 @@
    SIZE GUIDE – LIN XÉN
 ===================================================== */
 
-.lx-size-guide-trigger {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 12px;
-    font-size: 13px;
-    color: #444;
-    cursor: pointer;
-    text-decoration: underline;
-}
+/* ================= OVERLAY & MODAL ================= */
 
 .lx-size-guide-overlay {
     position: fixed;
@@ -40,7 +31,9 @@
     border: none;
     background: none;
     font-size: 18px;
+    line-height: 1;
     cursor: pointer;
+    color: #111;
 }
 
 .lx-size-guide-title {
@@ -55,11 +48,15 @@
     margin-bottom: 18px;
 }
 
+/* ================= CONTENT LAYOUT ================= */
+
 .lx-size-guide-content {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: 24px;
 }
+
+/* ================= TABLE ================= */
 
 .lx-size-guide-table {
     width: 100%;
@@ -70,7 +67,7 @@
 .lx-size-guide-table th,
 .lx-size-guide-table td {
     border: 1px solid #eee;
-    padding: 8px;
+    padding: 8px 10px;
     text-align: center;
 }
 
@@ -83,7 +80,10 @@
 .lx-size-guide-table th:first-child {
     text-align: left;
     font-weight: 500;
+    white-space: nowrap;
 }
+
+/* ================= ILLUSTRATION ================= */
 
 .lx-size-guide-illustration img {
     width: 100%;
@@ -95,20 +95,16 @@
     font-size: 13px;
     color: #555;
     padding-left: 16px;
+    line-height: 1.5;
 }
 
-@media (max-width: 768px) {
-    .lx-size-guide-content {
-        grid-template-columns: 1fr;
-    }
-}
-/* ================= SIZE GUIDE CTA ================= */
+/* ================= CTA – VIEW SIZE GUIDE ================= */
 
 .lx-size-guide-cta {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 14px 0 6px;
+    margin: 14px 0 8px;
     padding: 12px 14px;
     border: 1px dashed #e5e7eb;
     border-radius: 10px;
@@ -124,11 +120,12 @@
 
 .lx-size-guide-icon {
     font-size: 20px;
+    line-height: 1;
 }
 
 .lx-size-guide-text {
     flex: 1;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 
 .lx-size-guide-text strong {
@@ -138,11 +135,34 @@
 }
 
 .lx-size-guide-text small {
+    display: block;
     font-size: 12px;
     color: #6b7280;
+    margin-top: 2px;
 }
 
 .lx-size-guide-arrow {
     font-size: 18px;
     color: #9ca3af;
+    transition: transform .2s ease;
+}
+
+.lx-size-guide-cta:hover .lx-size-guide-arrow {
+    transform: translateX(2px);
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+    .lx-size-guide-content {
+        grid-template-columns: 1fr;
+    }
+
+    .lx-size-guide-modal {
+        padding: 20px 16px;
+    }
+
+    .lx-size-guide-title {
+        font-size: 18px;
+    }
 }
