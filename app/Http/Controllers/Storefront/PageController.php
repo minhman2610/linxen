@@ -552,7 +552,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     | 0️⃣ Pagination params
     |--------------------------------------------------------------------------
     */
-    $page = max((int) request()->input('page', 1), 1);
+    $page    = max((int) request()->input('page', 1), 1);
     $perPage = 24;
 
     /*
@@ -585,18 +585,26 @@ public function collection(string $slug, ErpStorefrontApi $erp)
 
     /*
     |--------------------------------------------------------------------------
-    | 3️⃣ PRODUCTS – ƯU TIÊN ẢNH MOBILE
+    | 3️⃣ PRODUCTS – ƯU TIÊN ẢNH MOBILE (FIX CUỐI)
     |--------------------------------------------------------------------------
     */
     $items = collect($data['products'] ?? [])
         ->map(function ($p) {
 
-            // 🔥 ƯU TIÊN MOBILE IMAGE
-            $thumb =
-                $p['media']['thumb_mobile']
-                ?? $p['media']['thumb']
-                ?? $p['thumb']
-                ?? null;
+            $media = $p['media'] ?? [];
+
+            // 🔥 CHỐT: LUÔN LẤY MOBILE TRƯỚC
+            $thumb = null;
+
+            if (isset($media['thumb_mobile']) && is_string($media['thumb_mobile'])) {
+                $thumb = $media['thumb_mobile'];
+            } elseif (isset($media['thumb']) && is_string($media['thumb'])) {
+                $thumb = $media['thumb'];
+            } elseif (!empty($media['images'][0]['mobile'])) {
+                $thumb = $media['images'][0]['mobile'];
+            } elseif (!empty($media['images'][0]['thumb'])) {
+                $thumb = $media['images'][0]['thumb'];
+            }
 
             return [
                 'product_id' => (int) ($p['product_id'] ?? 0),
@@ -605,8 +613,8 @@ public function collection(string $slug, ErpStorefrontApi $erp)
                     ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
                 'price'      => (float) ($p['price'] ?? 0),
 
-                // 👇 VIEW DÙNG FIELD NÀY
-                'thumb'      => is_string($thumb) ? $thumb : null,
+                // ✅ VIEW CHỈ DÙNG FIELD NÀY
+                'thumb'      => $thumb,
 
                 'colors' => collect($p['colors'] ?? [])
                     ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
@@ -615,7 +623,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
                     ->toArray(),
 
                 'available'    => (int) ($p['available'] ?? 0),
-                'sale_percent' => 20, // demo
+                'sale_percent' => 20,
                 'tag'          => '🔥 Bán chạy',
             ];
         })
@@ -647,6 +655,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         compact('collection', 'products')
     );
 }
+
 
 
 
