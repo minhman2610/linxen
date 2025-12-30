@@ -249,3 +249,23 @@
     font-size: 14px;
     text-align: center;
 }
+/* SIZE ASSISTANT BUTTON – NUDE */
+
+.lx-size-submit {
+    margin-top: 12px;
+    padding: 10px 14px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #E2DDD6;
+    cursor: pointer;
+    background: #F3EFEA;
+    color: #3F3A36;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all .2s ease;
+}
+
+.lx-size-submit:hover {
+    background: #E9E3DB;
+    border-color: #D6CFC6;
+}
