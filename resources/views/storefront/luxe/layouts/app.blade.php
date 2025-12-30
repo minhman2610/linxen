@@ -107,39 +107,6 @@
     <link rel="stylesheet"
           href="/themes/luxe/assets/css/bottom-nav.css?v={{ filemtime(public_path('themes/luxe/assets/css/bottom-nav.css')) }}">
 
-    {{-- =====================================================
-    HOME ONLY CSS
-===================================================== --}}
-@if(request()->routeIs('home') || request()->routeIs('linxen.home'))
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/featured-products.css?v={{ filemtime(public_path('themes/luxe/assets/css/featured-products.css')) }}">
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/trust-visual.css?v={{ filemtime(public_path('themes/luxe/assets/css/trust-visual.css')) }}">
-    <link rel="stylesheet"
-          href="/themes/luxe/assets/css/home.css?v={{ filemtime(public_path('themes/luxe/assets/css/home.css')) }}">
-@endif
-
-{{-- =====================================================
-    PRODUCT ONLY CSS
-===================================================== --}}
-@if(request()->routeIs('product.*') || request()->routeIs('linxen.product'))
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product.css')) }}">
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product-actions.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-actions.css')) }}">
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/brand-simple.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/brand-simple.css')) }}">
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product-real-gallery.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-real-gallery.css')) }}">
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product-suggested.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-suggested.css')) }}">
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/product-breadcrumb.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/product-breadcrumb.css')) }}">
-    <link rel="stylesheet"
-          href="{{ asset('themes/luxe/assets/css/size-guide.css') }}?v={{ filemtime(public_path('themes/luxe/assets/css/size-guide.css')) }}">
-@endif
-
-
 
     {{-- Swiper CSS --}}
     <link rel="stylesheet"
