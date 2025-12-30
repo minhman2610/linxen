@@ -415,59 +415,7 @@
 .lx-pdp-bottom .lx-real-editorial {
     margin-top: 0;
 }
-/* =====================================================
-   PDP INFO – COMPACT VERTICAL RHYTHM
-===================================================== */
 
-.lx-product-info > * {
-    margin-bottom: 14px;
-}
-
-/* Nhóm đầu: breadcrumb + hero */
-.lx-product-info nav,
-.lx-product-info .lx-brand-hero {
-    margin-bottom: 12px;
-}
-
-/* Meta + price gần nhau hơn */
-.lx-product-meta {
-    margin-bottom: 8px;
-}
-
-.lx-product-price-wrap {
-    margin-bottom: 10px;
-}
-
-/* Description gọn hơn */
-.lx-product-description {
-    margin-bottom: 12px;
-    line-height: 1.6;
-}
-
-/* Variants: là block quan trọng → vẫn rõ nhưng không “rơi” */
-.lx-product-variants {
-    margin-bottom: 12px;
-}
-
-/* Size guide: là helper → sát variants */
-.lx-size-guide-cta {
-    margin-top: 6px;
-    margin-bottom: 14px;
-}
-
-/* PDP bottom (actions + trust + below) */
-.lx-pdp-bottom {
-    margin-top: 16px;
-}
-
-/* Bên trong PDP bottom cũng nén lại */
-.lx-pdp-bottom > * {
-    margin-bottom: 20px;
-}
-
-.lx-pdp-bottom > *:last-child {
-    margin-bottom: 0;
-}
 .lx-pdp .lx-product-price-wrap{
     margin: 0px 22px;
 }
