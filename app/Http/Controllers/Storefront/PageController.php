@@ -589,45 +589,42 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     |--------------------------------------------------------------------------
     */
     $items = collect($data['products'] ?? [])
-        ->map(function ($p) {
+    ->map(function ($p) {
 
-            $media = $p['media'] ?? [];
+        $media = $p['media'] ?? [];
 
-            // 🔥 CHỐT: LUÔN LẤY MOBILE TRƯỚC
-            $thumb = null;
+        // 🔥 FIX CUỐI: MOBILE → DESKTOP → ROOT → NO IMAGE
+        $thumb =
+            (is_string($media['thumb_mobile'] ?? null) ? $media['thumb_mobile'] : null)
+            ?? (is_string($media['thumb'] ?? null) ? $media['thumb'] : null)
+            ?? (is_string($p['thumb'] ?? null) ? $p['thumb'] : null)
+            ?? (!empty($media['images'][0]['mobile']) ? $media['images'][0]['mobile'] : null)
+            ?? (!empty($media['images'][0]['thumb']) ? $media['images'][0]['thumb'] : null)
+            ?? asset('images/no-image.png'); // ✅ KHÔNG BAO GIỜ NULL
 
-            if (isset($media['thumb_mobile']) && is_string($media['thumb_mobile'])) {
-                $thumb = $media['thumb_mobile'];
-            } elseif (isset($media['thumb']) && is_string($media['thumb'])) {
-                $thumb = $media['thumb'];
-            } elseif (!empty($media['images'][0]['mobile'])) {
-                $thumb = $media['images'][0]['mobile'];
-            } elseif (!empty($media['images'][0]['thumb'])) {
-                $thumb = $media['images'][0]['thumb'];
-            }
+        return [
+            'product_id' => (int) ($p['product_id'] ?? 0),
+            'name'       => $p['name'] ?? '',
+            'slug'       => $p['slug']
+                ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
+            'price'      => (float) ($p['price'] ?? 0),
 
-            return [
-                'product_id' => (int) ($p['product_id'] ?? 0),
-                'name'       => $p['name'] ?? '',
-                'slug'       => $p['slug']
-                    ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
-                'price'      => (float) ($p['price'] ?? 0),
+            // 👇 VIEW LUÔN CÓ ẢNH
+            'thumb'      => $thumb,
 
-                // ✅ VIEW CHỈ DÙNG FIELD NÀY
-                'thumb'      => $thumb,
+            'colors' => collect($p['colors'] ?? [])
+                ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
+                ->filter(fn ($c) => is_string($c))
+                ->values()
+                ->toArray(),
 
-                'colors' => collect($p['colors'] ?? [])
-                    ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
-                    ->filter(fn ($c) => is_string($c))
-                    ->values()
-                    ->toArray(),
+            'available'    => (int) ($p['available'] ?? 0),
+            'sale_percent' => 20,
+            'tag'          => '🔥 Bán chạy',
+        ];
+    })
+    ->values();
 
-                'available'    => (int) ($p['available'] ?? 0),
-                'sale_percent' => 20,
-                'tag'          => '🔥 Bán chạy',
-            ];
-        })
-        ->values();
 
     /*
     |--------------------------------------------------------------------------
