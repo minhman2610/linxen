@@ -1,5 +1,5 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – SALE & STATUS (WITH COLORS) --}}
+{{-- FEATURED PRODUCTS – CLEAN PRICE (NO SALE) --}}
 {{-- ===================================================== --}}
 @if(!empty($home['featured_products']) && is_array($home['featured_products']))
 <section class="lx-product-section">
@@ -25,10 +25,7 @@
                         . '-' . $product['product_id'];
 
                 $thumb = $product['media']['thumb_mobile'];
-
-                $price       = (float) $product['price'];
-                $salePercent = 20; // demo
-                $salePrice   = round($price * (100 - $salePercent) / 100);
+                $price = (float) $product['price'];
 
                 $colorPool = [
                     'black',
@@ -54,13 +51,9 @@
                              alt="{{ $product['name'] }}"
                              loading="lazy">
                     </a>
-
-                    <span class="lx-sale-badge">
-                        -{{ $salePercent }}%
-                    </span>
                 </div>
 
-                {{-- NAME + BEST SELLER --}}
+                {{-- NAME --}}
                 <div class="lx-product-head">
                     <span class="lx-tag lx-tag-best">🔥 Bán chạy</span>
                     <p class="lx-product-name">
@@ -68,17 +61,14 @@
                     </p>
                 </div>
 
-                {{-- PRICE --}}
+                {{-- PRICE – SINGLE --}}
                 <div class="lx-product-price-wrap">
-                    <span class="lx-price-sale">
-                        {{ number_format($salePrice) }}₫
-                    </span>
-                    <span class="lx-price-origin">
+                    <span class="lx-price">
                         {{ number_format($price) }}₫
                     </span>
                 </div>
 
-                {{-- COLORS + QUICK ORDER (⬇️ DƯỚI GIÁ – CÙNG 1 HÀNG) --}}
+                {{-- COLORS + QUICK ORDER --}}
                 <div class="lx-product-variants">
 
                     <div class="lx-product-colors">
