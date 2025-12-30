@@ -417,5 +417,6 @@
 }
 
 .lx-pdp .lx-product-price-wrap{
-    margin: 0px 22px;
+    margin: 0px;
+    margin-bottom: 5px;
 }
