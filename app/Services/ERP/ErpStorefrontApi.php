@@ -245,54 +245,61 @@ public function createCustomerAddress(array $payload): array
         return $this->get($uri);
     }
 
+    
     /**
-     * =====================================================
-     * 🔐 CORE GET REQUEST
-     * =====================================================
-     */
-    protected function get(string $uri): array
-    {
-        $url = $this->baseUrl . $uri;
+ * =====================================================
+ * 🔐 CORE GET REQUEST (FIX QUERY STRING)
+ * =====================================================
+ */
+protected function get(string $uri, array $params = []): array
+{
+    $url = $this->baseUrl . $uri;
 
-        try {
-            $res = Http::withToken($this->token)
-                ->withHeaders($this->buildHeaders())
-                ->withOptions([
-                    'verify'  => false, // internal ERP
-                    'timeout' => 8,
-                ])
-                ->acceptJson()
-                ->get($url);
+    // 🔥 FIX: append query string
+    if (!empty($params)) {
+        $url .= '?' . http_build_query($params);
+    }
 
-            if ($res->failed()) {
-                Log::error('[LINXEN][ERP_API_GET_FAIL]', [
-                    'url'    => $url,
-                    'status' => $res->status(),
-                    'body'   => $res->body(),
-                ]);
-                return [];
-            }
+    try {
+        $res = Http::withToken($this->token)
+            ->withHeaders($this->buildHeaders())
+            ->withOptions([
+                'verify'  => false, // internal ERP
+                'timeout' => 8,
+            ])
+            ->acceptJson()
+            ->get($url);
 
-            $json = $res->json();
-
-            if (!is_array($json)) {
-                Log::error('[LINXEN][ERP_API_INVALID_JSON]', [
-                    'url'  => $url,
-                    'body' => $res->body(),
-                ]);
-                return [];
-            }
-
-            return $json;
-
-        } catch (\Throwable $e) {
-            Log::error('[LINXEN][ERP_API_GET_EXCEPTION]', [
-                'url'     => $url,
-                'message' => $e->getMessage(),
+        if ($res->failed()) {
+            Log::error('[LINXEN][ERP_API_GET_FAIL]', [
+                'url'    => $url,
+                'status' => $res->status(),
+                'body'   => $res->body(),
             ]);
             return [];
         }
+
+        $json = $res->json();
+
+        if (!is_array($json)) {
+            Log::error('[LINXEN][ERP_API_INVALID_JSON]', [
+                'url'  => $url,
+                'body' => $res->body(),
+            ]);
+            return [];
+        }
+
+        return $json;
+
+    } catch (\Throwable $e) {
+        Log::error('[LINXEN][ERP_API_GET_EXCEPTION]', [
+            'url'     => $url,
+            'message' => $e->getMessage(),
+        ]);
+        return [];
     }
+}
+
 
     /**
      * =====================================================
