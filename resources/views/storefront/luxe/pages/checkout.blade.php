@@ -515,3 +515,23 @@
 </section>
 
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof fbq !== 'function') return;
+
+    // 🔒 Chống bắn trùng trong 1 session
+    if (sessionStorage.getItem('lx_initiate_checkout_fired')) return;
+    sessionStorage.setItem('lx_initiate_checkout_fired', '1');
+
+    const cart = @json($cartItems ?? []);
+
+    fbq('track', 'InitiateCheckout', {
+        content_type: 'product',
+        content_ids: cart.map(i => i.sku).filter(Boolean), // SKU CHA
+        value: {{ (int) $total }},
+        currency: 'VND'
+    });
+});
+</script>
+@endpush

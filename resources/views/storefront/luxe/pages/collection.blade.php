@@ -191,3 +191,24 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof fbq !== 'function') return;
+
+    fbq('trackCustom', 'ViewCategory', {
+        content_type: 'product_group',
+        content_category: @json($collection['name'] ?? 'LINXEN_COLLECTION'),
+
+        // Danh sách SKU CHA hiển thị trên trang (tối đa 20–30 là đủ)
+        content_ids: @json(
+            collect($products)
+                ->take(20)
+                ->map(fn($p) => $p['sku'] ?? $p['code'] ?? null)
+                ->filter()
+                ->values()
+        )
+    });
+});
+</script>
+@endpush

@@ -91,3 +91,31 @@
 </section>
 
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof fbq !== 'function') return;
+
+    const orderCode = @json(request('order_code'));
+
+    if (!orderCode) return;
+
+    // 🔒 chống bắn trùng theo order_code
+    const key = 'lx_purchase_' + orderCode;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+
+    fbq('track', 'Purchase', {
+        content_type: 'product',
+        content_ids: @json(
+            collect($order->items ?? [])
+                ->map(fn($i) => $i['sku'] ?? $i['product_sku'] ?? null)
+                ->filter()
+                ->values()
+        ),
+        value: {{ (int) ($order->total_amount ?? 0) }},
+        currency: 'VND'
+    });
+});
+</script>
+@endpush
