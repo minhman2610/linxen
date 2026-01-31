@@ -268,4 +268,19 @@ document.getElementById('size-submit')?.addEventListener('click', function () {
 
 
 @endpush
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof fbq === 'function') {
+        fbq('track', 'ViewContent', {
+            content_type: 'product',
+            content_ids: ['{{ $product['code'] ?? '' }}'],
+            content_name: @json($product['name'] ?? ''),
+            value: {{ (int) ($product['price'] ?? 0) }},
+            currency: 'VND'
+        });
+    }
+});
+</script>
+@endpush
 

@@ -451,6 +451,18 @@ document.addEventListener('click', function (e) {
                 attrs: payload.attrs
             });
 
+            // ================= META ADD TO CART =================
+if (typeof fbq === 'function') {
+    fbq('track', 'AddToCart', {
+        content_type: 'product',
+        content_ids: [payload.sku],          // ✅ SKU CHA
+        content_name: payload.name,
+        value: payload.price * payload.qty,  // tổng giá trị
+        currency: 'VND'
+    });
+}
+
+
         } else {
             showErrorToast(res.message || 'Không thể thêm sản phẩm');
         }
