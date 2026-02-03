@@ -1,8 +1,22 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – CLEAN PRICE (NO SALE) --}}
+{{-- FEATURED PRODUCTS – CLEAN PRICE (NO FLASH SALE) --}}
 {{-- ===================================================== --}}
 @if(!empty($home['featured_products']) && is_array($home['featured_products']))
 <section class="lx-product-section">
+
+    @php
+        /**
+         * ❌ LOẠI BỎ SKU CHA ĐÃ DÙNG CHO FLASH SALE
+         */
+        $flashSaleCodes = [
+            'SP14535165',
+            'SP14530509',
+            'SP14529951',
+            'SP14527951',
+            'SP14527939',
+            'SP14530151',
+        ];
+    @endphp
 
     <div class="lx-section-header">
         <h2 class="lx-section-title">VÁY NỔI BẬT</h2>
@@ -13,6 +27,13 @@
 
     <div class="lx-product-grid">
         @foreach($home['featured_products'] as $product)
+
+            @php
+                $code = $product['code'] ?? null;
+            @endphp
+
+            {{-- ❌ Bỏ sản phẩm thuộc Flash Sale --}}
+            @continue($code && in_array($code, $flashSaleCodes, true))
 
             @continue(
                 empty($product['product_id'])
@@ -55,13 +76,12 @@
 
                 {{-- NAME --}}
                 <div class="lx-product-head">
-                    <!-- <span class="lx-tag lx-tag-best">🔥 Bán chạy</span> -->
                     <p class="lx-product-name">
                         {{ $product['name'] }}
                     </p>
                 </div>
 
-                {{-- PRICE – SINGLE --}}
+                {{-- PRICE – CLEAN --}}
                 <div class="lx-product-price-wrap">
                     <span class="lx-price">
                         {{ number_format($price) }}₫
