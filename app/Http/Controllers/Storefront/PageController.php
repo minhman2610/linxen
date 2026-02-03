@@ -81,16 +81,17 @@ public function home(ErpStorefrontApi $erp)
                     : null;
 
                 return [
-                    ...$p,
+    ...$p,
 
-                    'sku'           => $sku,
-                    'thumb'         => $thumb,
+    // media
+    'thumb' => $thumb,
 
-                    // 🔥 Flash sale flags
-                    'is_flash_sale' => $isFlashSale,
-                    'sale_price'    => $salePrice,
-                    'sale_percent'  => $salePercent,
-                ];
+    // 🔥 GIỮ NGUYÊN FLASH SALE TỪ API
+    'is_flash_sale' => (bool) ($p['is_flash_sale'] ?? false),
+    'sale_price'    => $p['sale_price'] ?? null,
+    'sale_percent'  => $p['sale_percent'] ?? null,
+];
+
             })
 
             // 3️⃣ Chỉ giữ sản phẩm có ảnh
