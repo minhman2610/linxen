@@ -37,24 +37,9 @@
 </section>
 
 {{-- ===================================================== --}}
-{{-- FLASH SALE – LIN XÉN (FIX CỨNG SKU + GIÁ) --}}
+{{-- FLASH SALE – LIN XÉN (API-DRIVEN) --}}
 {{-- ===================================================== --}}
 <section class="lx-flash-sale">
-
-    @php
-        /**
-         * 🔥 FLASH SALE FIX CỨNG – SKU / PRODUCT_ID => GIÁ BÁN
-         * ❗ TẠM THỜI HARDCODE – DỄ GỠ SAU
-         */
-        $flashSaleMap = [
-            'SP14535165' => 299000,
-            'SP14530509' => 458000,
-            'SP14529951' => 399000,
-            'SP14527951' => 356000,
-            'SP14527939' => 385000,
-            'SP14530151' => 399000,
-        ];
-    @endphp
 
     {{-- HEAD --}}
     <div class="lx-flash-sale-head">
@@ -86,42 +71,36 @@
     <div class="lx-flash-sale-scroll">
         <div class="lx-product-row">
 
+            @php
+                $hasFlashSale = false;
+            @endphp
+
             @foreach($home['featured_products'] as $product)
 
-                @php
-                    /**
-                     * 🔑 Ưu tiên SKU → fallback product_id
-                     */
-                    $sku = $product['sku']
-                        ?? $product['product_id']
-                        ?? null;
-                @endphp
-
-                {{-- ❌ Không thuộc Flash Sale --}}
-                @continue(!$sku || !isset($flashSaleMap[$sku]))
+                {{-- ❌ Chỉ render sản phẩm Flash Sale do API quyết định --}}
+                @continue(empty($product['is_flash_sale']))
 
                 @continue(
                     empty($product['product_id'])
                     || empty($product['name'])
                     || empty($product['thumb'])
+                    || empty($product['sale_price'])
                 )
 
                 @php
+                    $hasFlashSale = true;
+
                     $slug = \Illuminate\Support\Str::slug($product['name'])
                             . '-' . $product['product_id'];
 
-                    $thumb = $product['thumb'];
-
-                    $originPrice = (float) $product['price'];
-                    $salePrice   = (float) $flashSaleMap[$sku];
-
-                    // % giảm chỉ để hiển thị badge
-                    $salePercent = $originPrice > 0
-                        ? round(100 - ($salePrice / $originPrice * 100))
-                        : 0;
+                    $thumb        = $product['thumb'];
+                    $originPrice  = (float) $product['price'];
+                    $salePrice    = (float) $product['sale_price'];
+                    $salePercent  = (int) ($product['sale_percent'] ?? 0);
 
                     /**
                      * 🎨 FIX CỨNG MÀU – RANDOM 3 MÀU / SẢN PHẨM
+                     * (Home chỉ để UX, không ảnh hưởng PDP)
                      */
                     $colorPool = [
                         'black',
@@ -174,10 +153,20 @@
 
             @endforeach
 
+            {{-- ❌ Không có sản phẩm Flash Sale --}}
+            @if(!$hasFlashSale)
+                <div class="lx-flash-sale-empty">
+                    <p class="text-muted">
+                        Hiện chưa có sản phẩm Flash Sale
+                    </p>
+                </div>
+            @endif
+
         </div>
     </div>
 
 </section>
+
 
 
 
