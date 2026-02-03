@@ -20,10 +20,20 @@ class PageController extends Controller
     }
 
     /* =====================================================
- * 🏠 HOME – LIN XÉN STORE (MEDIA-SAFE)
+ * 🏠 HOME – LIN XÉN STORE (MEDIA-SAFE + FLASH SALE FIX)
  * ===================================================== */
 public function home(ErpStorefrontApi $erp)
 {
+    // 🔥 FLASH SALE FIX CỨNG – SKU / PRODUCT_ID => GIÁ BÁN
+    $flashSaleMap = [
+        'SP14535165' => 299000,
+        'SP14530509' => 458000,
+        'SP14529951' => 399000,
+        'SP14527951' => 356000,
+        'SP14527939' => 385000,
+        'SP14530151' => 399000,
+    ];
+
     // Lấy dữ liệu home từ ERP
     $rawHome = $erp->home($this->brand);
 
@@ -42,12 +52,16 @@ public function home(ErpStorefrontApi $erp)
                 && !empty($p['price'])
             )
 
-            // 2️⃣ Chuẩn hoá MEDIA → 1 KEY DUY NHẤT
-            ->map(function ($p) {
+            // 2️⃣ Chuẩn hoá MEDIA + FLASH SALE
+            ->map(function ($p) use ($flashSaleMap) {
 
+                /**
+                 * -------------------------------------------------
+                 * 🖼 RESOLVE THUMB (MEDIA-SAFE)
+                 * -------------------------------------------------
+                 */
                 $thumb = null;
 
-                // Ưu tiên thứ tự: images → thumb → mobile
                 if (!empty($p['media']['images'][0])) {
                     $thumb = $p['media']['images'][0];
                 } elseif (!empty($p['media']['thumb'])) {
@@ -56,11 +70,42 @@ public function home(ErpStorefrontApi $erp)
                     $thumb = $p['media']['mobile'];
                 }
 
+                /**
+                 * -------------------------------------------------
+                 * 🔑 RESOLVE SKU (SOURCE OF TRUTH)
+                 * -------------------------------------------------
+                 */
+                $sku = $p['sku']
+                    ?? $p['product_id']
+                    ?? null;
+
+                /**
+                 * -------------------------------------------------
+                 * 🔥 FLASH SALE LOGIC (FIX CỨNG)
+                 * -------------------------------------------------
+                 */
+                $originPrice = (float) $p['price'];
+
+                $isFlashSale = $sku && isset($flashSaleMap[$sku]);
+
+                $salePrice = $isFlashSale
+                    ? (float) $flashSaleMap[$sku]
+                    : null;
+
+                $salePercent = ($isFlashSale && $originPrice > 0)
+                    ? round(100 - ($salePrice / $originPrice * 100))
+                    : null;
+
                 return [
                     ...$p,
 
                     // 🔑 KEY DUY NHẤT CHO BLADE
                     'thumb' => $thumb,
+
+                    // 🔥 FLASH SALE FLAGS
+                    'is_flash_sale' => $isFlashSale,
+                    'sale_price'    => $salePrice,
+                    'sale_percent'  => $salePercent,
                 ];
             })
 
@@ -77,6 +122,7 @@ public function home(ErpStorefrontApi $erp)
         compact('home')
     );
 }
+
 
 
     /* =====================================================
