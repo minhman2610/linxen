@@ -724,17 +724,27 @@
 </style>
 {{-- themes/luxe/layouts/app.blade.php --}}
 <script src="{{ asset('themes/luxe/assets/js/home.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/home.js')) }}"></script>
-<!-- Messenger Floating Button -->
-<a href="https://m.me/linxen.vn"
-   target="_blank"
-   class="lx-messenger-btn"
-   aria-label="Chat với LIN XÉN trên Messenger">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="white"
-              d="M12 2C6.48 2 2 6.02 2 11c0 2.89 
-                 1.64 5.47 4.22 7.24V22l3.73-2.05
-                 c.65.18 1.33.28 2.05.28
-                 5.52 0 10-4.02 10-9
-                 S17.52 2 12 2z"/>
-    </svg>
-</a>
+<div id="fb-root"></div>
+<div id="fb-customer-chat" class="fb-customerchat"></div>
+<script>
+  var chatbox = document.getElementById('fb-customer-chat');
+  chatbox.setAttribute("page_id", "869669046236554");
+  chatbox.setAttribute("attribution", "biz_inbox");
+</script>
+
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      xfbml            : true,
+      version          : 'v24.0'
+    });
+  };
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
