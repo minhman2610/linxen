@@ -17,19 +17,72 @@ class ErpStorefrontApi
     }
 
     /**
-     * =====================================================
-     * 🏠 HOME DATA
-     * =====================================================
-     */
-    public function home(string $brand): array
-    {
-        $data = $this->get("/api/storefront/{$brand}/home");
+ * =====================================================
+ * 🏠 HOME DATA (STORE FRONT)
+ * - Chuẩn hoá product cho Controller
+ * - KHÔNG xử lý Flash Sale tại Service
+ * =====================================================
+ */
+public function home(string $brand): array
+{
+    $data = $this->get("/api/storefront/{$brand}/home");
 
-        return [
-            'hero'     => $data['hero'] ?? null,
-            'products' => $data['products'] ?? [],
-        ];
-    }
+    $products = collect($data['products'] ?? [])
+        ->map(function ($p) {
+
+            /**
+             * -------------------------------------------------
+             * 🔑 PRODUCT ID / SKU – SOURCE OF TRUTH
+             * -------------------------------------------------
+             */
+            $productId = $p['product_id']
+                ?? $p['id']
+                ?? null;
+
+            $sku = $p['sku']
+                ?? $productId
+                ?? null;
+
+            /**
+             * -------------------------------------------------
+             * 🖼 RESOLVE THUMB – MEDIA SAFE
+             * -------------------------------------------------
+             */
+            $media = $p['media'] ?? [];
+
+            $thumb =
+                (is_string($media['thumb_mobile'] ?? null) ? $media['thumb_mobile'] : null)
+                ?? (is_string($media['thumb'] ?? null) ? $media['thumb'] : null)
+                ?? (!empty($media['images'][0]['mobile']) ? $media['images'][0]['mobile'] : null)
+                ?? (!empty($media['images'][0]['thumb']) ? $media['images'][0]['thumb'] : null)
+                ?? null;
+
+            return [
+                ...$p,
+
+                // 🔑 chuẩn hoá ID
+                'product_id' => $productId,
+                'sku'        => $sku,
+
+                // 🔑 key duy nhất cho frontend
+                'thumb'      => $thumb,
+            ];
+        })
+        // ❌ loại sản phẩm lỗi
+        ->filter(fn ($p) =>
+            !empty($p['product_id'])
+            && !empty($p['name'])
+            && !empty($p['price'])
+        )
+        ->values()
+        ->toArray();
+
+    return [
+        'hero'     => $data['hero'] ?? null,
+        'products' => $products,
+    ];
+}
+
 
     /**
      * =====================================================
