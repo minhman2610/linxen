@@ -37,9 +37,24 @@
 </section>
 
 {{-- ===================================================== --}}
-{{-- FLASH SALE – LIN XÉN --}}
+{{-- FLASH SALE – LIN XÉN (FIX CỨNG SKU + GIÁ) --}}
 {{-- ===================================================== --}}
 <section class="lx-flash-sale">
+
+    @php
+        /**
+         * 🔥 FLASH SALE FIX CỨNG – SKU / PRODUCT_ID => GIÁ BÁN
+         * ❗ TẠM THỜI HARDCODE – DỄ GỠ SAU
+         */
+        $flashSaleMap = [
+            'SP14535165' => 299000,
+            'SP14530509' => 458000,
+            'SP14529951' => 399000,
+            'SP14527951' => 356000,
+            'SP14527939' => 385000,
+            'SP14530151' => 399000,
+        ];
+    @endphp
 
     {{-- HEAD --}}
     <div class="lx-flash-sale-head">
@@ -47,7 +62,7 @@
             ⚡ FLASH SALE
         </h3>
 
-        <div class="lx-flash-sale-countdown" data-end-time="2025-12-25 23:59:59">
+        <div class="lx-flash-sale-countdown" data-end-time="2026-02-03 23:59:59">
             <div class="lx-countdown-item">
                 <span class="num" data-days>00</span>
                 <span class="label">Ngày</span>
@@ -73,24 +88,40 @@
 
             @foreach($home['featured_products'] as $product)
 
+                @php
+                    /**
+                     * 🔑 Ưu tiên SKU → fallback product_id
+                     */
+                    $sku = $product['sku']
+                        ?? $product['product_id']
+                        ?? null;
+                @endphp
+
+                {{-- ❌ Không thuộc Flash Sale --}}
+                @continue(!$sku || !isset($flashSaleMap[$sku]))
+
                 @continue(
                     empty($product['product_id'])
                     || empty($product['name'])
-                    || empty($product['media']['thumb_mobile'])
+                    || empty($product['thumb'])
                 )
 
                 @php
                     $slug = \Illuminate\Support\Str::slug($product['name'])
                             . '-' . $product['product_id'];
 
-                    $thumb = $product['media']['thumb_mobile'];
+                    $thumb = $product['thumb'];
 
-                    $price       = (float) $product['price'];
-                    $salePercent = 20; // demo
-                    $salePrice   = round($price * (100 - $salePercent) / 100);
+                    $originPrice = (float) $product['price'];
+                    $salePrice   = (float) $flashSaleMap[$sku];
+
+                    // % giảm chỉ để hiển thị badge
+                    $salePercent = $originPrice > 0
+                        ? round(100 - ($salePrice / $originPrice * 100))
+                        : 0;
 
                     /**
-                     * FIX CỨNG DANH SÁCH MÀU – RANDOM 3 MÀU / SẢN PHẨM
+                     * 🎨 FIX CỨNG MÀU – RANDOM 3 MÀU / SẢN PHẨM
                      */
                     $colorPool = [
                         'black',
@@ -122,7 +153,7 @@
                         </span>
                     </div>
 
-                    {{-- NAME + BEST SELLER --}}
+                    {{-- NAME --}}
                     <div class="lx-product-head">
                         <p class="lx-product-name one-line">
                             {{ $product['name'] }}
@@ -135,10 +166,9 @@
                             {{ number_format($salePrice) }}₫
                         </span>
                         <span class="lx-price-origin">
-                            {{ number_format($price) }}₫
+                            {{ number_format($originPrice) }}₫
                         </span>
                     </div>
-
 
                 </div>
 
@@ -148,6 +178,7 @@
     </div>
 
 </section>
+
 
 
 
