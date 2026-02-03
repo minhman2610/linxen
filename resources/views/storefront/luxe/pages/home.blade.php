@@ -607,10 +607,6 @@
 </section>
 
 
-
-
-@endsection
-
 {{-- ===================================================== --}}
 {{-- 🎨 STYLE — FIX HERO VIDEO BLOCKING HEADER --}}
 {{-- ===================================================== --}}
@@ -723,9 +719,15 @@
 
 </style>
 {{-- themes/luxe/layouts/app.blade.php --}}
-<script src="{{ asset('themes/luxe/assets/js/home.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/home.js')) }}"></script>
+
 <div id="fb-root"></div>
 <div id="fb-customer-chat" class="fb-customerchat"></div>
+
+@endsection
+
+
+@push('scripts')
+<script src="{{ asset('themes/luxe/assets/js/home.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/home.js')) }}"></script>
 <script>
   var chatbox = document.getElementById('fb-customer-chat');
   chatbox.setAttribute("page_id", "869669046236554");
@@ -748,3 +750,4 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 </script>
+@endpush
