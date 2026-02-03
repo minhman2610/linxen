@@ -24,7 +24,7 @@ class PageController extends Controller
  * ===================================================== */
 public function home(ErpStorefrontApi $erp)
 {
-    // 🔥 FLASH SALE FIX CỨNG – SKU / PRODUCT_ID => GIÁ BÁN
+    // 🔥 FLASH SALE FIX CỨNG – SKU (CODE) => GIÁ BÁN
     $flashSaleMap = [
         'SP14535165' => 299000,
         'SP14530509' => 458000,
@@ -39,51 +39,35 @@ public function home(ErpStorefrontApi $erp)
 
     // Chuẩn hoá data cho view
     $home = [
-        // HERO (video / banner / null đều OK)
         'hero' => $rawHome['hero'] ?? null,
 
-        // SẢN PHẨM CHỦ LỰC
         'featured_products' => collect($rawHome['products'] ?? [])
 
             // 1️⃣ Lọc sản phẩm hợp lệ cơ bản
             ->filter(fn ($p) =>
                 !empty($p['product_id'])
                 && !empty($p['name'])
-                && !empty($p['price'])
+                && isset($p['price'])
             )
 
             // 2️⃣ Chuẩn hoá MEDIA + FLASH SALE
             ->map(function ($p) use ($flashSaleMap) {
 
-                /**
-                 * -------------------------------------------------
-                 * 🖼 RESOLVE THUMB (MEDIA-SAFE)
-                 * -------------------------------------------------
-                 */
-                $thumb = null;
+                /* ---------- MEDIA ---------- */
+                $media = $p['media'] ?? [];
 
-                if (!empty($p['media']['images'][0])) {
-                    $thumb = $p['media']['images'][0];
-                } elseif (!empty($p['media']['thumb'])) {
-                    $thumb = $p['media']['thumb'];
-                } elseif (!empty($p['media']['mobile'])) {
-                    $thumb = $p['media']['mobile'];
-                }
+                $thumb =
+                    $media['thumb_mobile']
+                    ?? $media['thumb']
+                    ?? ($media['images'][0] ?? null);
 
-                /**
-                 * -------------------------------------------------
-                 * 🔑 RESOLVE SKU (SOURCE OF TRUTH)
-                 * -------------------------------------------------
-                 */
+                /* ---------- SKU (QUAN TRỌNG NHẤT) ---------- */
                 $sku = $p['sku']
+                    ?? $p['code']          // 🔥 FIX QUYẾT ĐỊNH
                     ?? $p['product_id']
                     ?? null;
 
-                /**
-                 * -------------------------------------------------
-                 * 🔥 FLASH SALE LOGIC (FIX CỨNG)
-                 * -------------------------------------------------
-                 */
+                /* ---------- FLASH SALE ---------- */
                 $originPrice = (float) $p['price'];
 
                 $isFlashSale = $sku && isset($flashSaleMap[$sku]);
@@ -99,20 +83,19 @@ public function home(ErpStorefrontApi $erp)
                 return [
                     ...$p,
 
-                    // 🔑 KEY DUY NHẤT CHO BLADE
-                    'thumb' => $thumb,
+                    'sku'           => $sku,
+                    'thumb'         => $thumb,
 
-                    // 🔥 FLASH SALE FLAGS
+                    // 🔥 Flash sale flags
                     'is_flash_sale' => $isFlashSale,
                     'sale_price'    => $salePrice,
                     'sale_percent'  => $salePercent,
                 ];
             })
 
-            // 3️⃣ Chỉ giữ sản phẩm có ảnh hợp lệ
+            // 3️⃣ Chỉ giữ sản phẩm có ảnh
             ->filter(fn ($p) => !empty($p['thumb']))
 
-            // 4️⃣ Reset index
             ->values()
             ->toArray(),
     ];
@@ -122,6 +105,7 @@ public function home(ErpStorefrontApi $erp)
         compact('home')
     );
 }
+
 
 
 
