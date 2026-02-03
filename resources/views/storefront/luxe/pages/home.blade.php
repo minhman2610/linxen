@@ -724,3 +724,17 @@
 </style>
 {{-- themes/luxe/layouts/app.blade.php --}}
 <script src="{{ asset('themes/luxe/assets/js/home.js') }}?v={{ filemtime(public_path('themes/luxe/assets/js/home.js')) }}"></script>
+<!-- Messenger Floating Button -->
+<a href="https://m.me/linxen.vn"
+   target="_blank"
+   class="lx-messenger-btn"
+   aria-label="Chat với LIN XÉN trên Messenger">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="white"
+              d="M12 2C6.48 2 2 6.02 2 11c0 2.89 
+                 1.64 5.47 4.22 7.24V22l3.73-2.05
+                 c.65.18 1.33.28 2.05.28
+                 5.52 0 10-4.02 10-9
+                 S17.52 2 12 2z"/>
+    </svg>
+</a>
