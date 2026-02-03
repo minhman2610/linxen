@@ -716,47 +716,9 @@
     pointer-events: auto;
     z-index: 200;
 }
-/* ===============================
-   LIN XÉN – Messenger Floating
-================================ */
-.lx-messenger-btn {
-    position: fixed;
-    right: 18px;
-    bottom: 88px; /* tránh đè bottom nav */
-    width: 56px;
-    height: 56px;
-    background: #0084ff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 28px rgba(0,0,0,.35);
-    z-index: 99999;
-}
-
-.lx-messenger-btn svg {
-    width: 26px;
-    height: 26px;
-}
 
 </style>
 {{-- themes/luxe/layouts/app.blade.php --}}
-
-<!-- LIN XÉN – Messenger Floating Button -->
-<a href="https://m.me/linxen.vn"
-   class="lx-messenger-btn"
-   target="_blank"
-   aria-label="Chat với LIN XÉN trên Messenger">
-    <svg viewBox="0 0 24 24">
-        <path fill="white"
-              d="M12 2C6.48 2 2 6.02 2 11c0 2.89 
-                 1.64 5.47 4.22 7.24V22l3.73-2.05
-                 c.65.18 1.33.28 2.05.28
-                 5.52 0 10-4.02 10-9
-                 S17.52 2 12 2z"/>
-    </svg>
-</a>
-
 
 @endsection
 
