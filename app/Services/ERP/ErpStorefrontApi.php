@@ -20,7 +20,7 @@ class ErpStorefrontApi
  * =====================================================
  * 🏠 HOME DATA (STORE FRONT)
  * - Chuẩn hoá product cho Controller
- * - KHÔNG xử lý Flash Sale tại Service
+ * - GIỮ NGUYÊN FLASH SALE DATA TỪ API
  * =====================================================
  */
 public function home(string $brand): array
@@ -40,6 +40,7 @@ public function home(string $brand): array
                 ?? null;
 
             $sku = $p['sku']
+                ?? $p['code']   // 🔥 QUAN TRỌNG: API HomeController dùng code = SKU
                 ?? $productId
                 ?? null;
 
@@ -60,19 +61,23 @@ public function home(string $brand): array
             return [
                 ...$p,
 
-                // 🔑 chuẩn hoá ID
+                // 🔑 chuẩn hoá identity
                 'product_id' => $productId,
                 'sku'        => $sku,
 
-                // 🔑 key duy nhất cho frontend
+                // 🔑 media dùng cho Blade
                 'thumb'      => $thumb,
+
+                // 🔥 ENSURE FLASH SALE FLAGS KHÔNG BỊ MẤT
+                'is_flash_sale' => (bool) ($p['is_flash_sale'] ?? false),
+                'sale_price'    => $p['sale_price'] ?? null,
+                'sale_percent'  => $p['sale_percent'] ?? null,
             ];
         })
-        // ❌ loại sản phẩm lỗi
+        // ❗ FIX QUAN TRỌNG: KHÔNG LỌC price
         ->filter(fn ($p) =>
             !empty($p['product_id'])
             && !empty($p['name'])
-            && !empty($p['price'])
         )
         ->values()
         ->toArray();
@@ -82,6 +87,7 @@ public function home(string $brand): array
         'products' => $products,
     ];
 }
+
 
 
     /**
