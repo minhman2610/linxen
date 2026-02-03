@@ -17,78 +17,19 @@ class ErpStorefrontApi
     }
 
     /**
- * =====================================================
- * 🏠 HOME DATA (STORE FRONT)
- * - Chuẩn hoá product cho Controller
- * - GIỮ NGUYÊN FLASH SALE DATA TỪ API
- * =====================================================
- */
-public function home(string $brand): array
-{
-    $data = $this->get("/api/storefront/{$brand}/home");
+     * =====================================================
+     * 🏠 HOME DATA
+     * =====================================================
+     */
+    public function home(string $brand): array
+    {
+        $data = $this->get("/api/storefront/{$brand}/home");
 
-    $products = collect($data['products'] ?? [])
-        ->map(function ($p) {
-
-            /**
-             * -------------------------------------------------
-             * 🔑 PRODUCT ID / SKU – SOURCE OF TRUTH
-             * -------------------------------------------------
-             */
-            $productId = $p['product_id']
-                ?? $p['id']
-                ?? null;
-
-            $sku = $p['sku']
-                ?? $p['code']   // 🔥 QUAN TRỌNG: API HomeController dùng code = SKU
-                ?? $productId
-                ?? null;
-
-            /**
-             * -------------------------------------------------
-             * 🖼 RESOLVE THUMB – MEDIA SAFE
-             * -------------------------------------------------
-             */
-            $media = $p['media'] ?? [];
-
-            $thumb =
-                (is_string($media['thumb_mobile'] ?? null) ? $media['thumb_mobile'] : null)
-                ?? (is_string($media['thumb'] ?? null) ? $media['thumb'] : null)
-                ?? (!empty($media['images'][0]['mobile']) ? $media['images'][0]['mobile'] : null)
-                ?? (!empty($media['images'][0]['thumb']) ? $media['images'][0]['thumb'] : null)
-                ?? null;
-
-            return [
-                ...$p,
-
-                // 🔑 chuẩn hoá identity
-                'product_id' => $productId,
-                'sku'        => $sku,
-
-                // 🔑 media dùng cho Blade
-                'thumb'      => $thumb,
-
-                // 🔥 ENSURE FLASH SALE FLAGS KHÔNG BỊ MẤT
-                'is_flash_sale' => (bool) ($p['is_flash_sale'] ?? false),
-                'sale_price'    => $p['sale_price'] ?? null,
-                'sale_percent'  => $p['sale_percent'] ?? null,
-            ];
-        })
-        // ❗ FIX QUAN TRỌNG: KHÔNG LỌC price
-        ->filter(fn ($p) =>
-            !empty($p['product_id'])
-            && !empty($p['name'])
-        )
-        ->values()
-        ->toArray();
-
-    return [
-        'hero'     => $data['hero'] ?? null,
-        'products' => $products,
-    ];
-}
-
-
+        return [
+            'hero'     => $data['hero'] ?? null,
+            'products' => $data['products'] ?? [],
+        ];
+    }
 
     /**
      * =====================================================
