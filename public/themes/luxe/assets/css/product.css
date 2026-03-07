@@ -1119,3 +1119,94 @@ color:#444;
 border-top:1px dashed #eee;
 padding-top:8px;
 }
+/* ================= AI SUGGESTED ================= */
+
+.lx-ai-suggested{
+
+margin-top:26px;
+}
+
+
+/* HEADER */
+
+.lx-ai-head h3{
+
+font-size:16px;
+font-weight:700;
+
+margin-bottom:4px;
+}
+
+.lx-ai-head p{
+
+font-size:13px;
+color:#666;
+
+margin-bottom:12px;
+}
+
+
+/* SCROLL */
+
+.lx-ai-scroll{
+
+display:flex;
+gap:12px;
+
+overflow-x:auto;
+padding-bottom:6px;
+}
+
+
+/* CARD */
+
+.lx-ai-card{
+
+min-width:140px;
+
+text-decoration:none;
+color:#111;
+}
+
+
+/* IMAGE */
+
+.lx-ai-image{
+
+border-radius:10px;
+overflow:hidden;
+
+background:#f6f6f6;
+}
+
+.lx-ai-image img{
+
+width:100%;
+display:block;
+}
+
+
+/* INFO */
+
+.lx-ai-info{
+
+padding-top:6px;
+}
+
+.lx-ai-name{
+
+font-size:13px;
+line-height:1.4;
+
+height:36px;
+overflow:hidden;
+}
+
+
+.lx-ai-price{
+
+font-size:14px;
+font-weight:700;
+
+margin-top:4px;
+}

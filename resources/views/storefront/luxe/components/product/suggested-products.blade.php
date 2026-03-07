@@ -1,75 +1,88 @@
-{{-- ===================================================== --}}
-{{-- SUGGESTED PRODUCTS (FROM 3MG ERP) --}}
-{{-- ===================================================== --}}
+{{-- =====================================================
+   AI SUGGESTED PRODUCTS – CONVERSION BLOCK
+===================================================== --}}
 
 @php
-    $suggestedProducts = is_array($suggestedProducts ?? null)
-        ? $suggestedProducts
-        : [];
+$suggestedProducts = is_array($suggestedProducts ?? null)
+? $suggestedProducts
+: [];
 
-    $count = count($suggestedProducts);
+$count = count($suggestedProducts);
 @endphp
 
-<section class="lx-suggested-products">
+
+<section class="lx-ai-suggested">
 
     {{-- HEADER --}}
-    <div class="lx-suggested-head">
+    <div class="lx-ai-head">
+
         <h3>
-            <span>✦</span>
-            Gợi ý cho bạn
+            Có thể bạn sẽ thích chiếc váy này hơn
         </h3>
+
         <p>
-            Những thiết kế LIN XÉN có thể bạn sẽ thích
+            Những thiết kế được nhiều khách LIN XÉN chọn khi xem mẫu này
         </p>
+
     </div>
+
 
     {{-- LIST --}}
     @if($count > 0)
-        <div class="lx-suggested-scroll">
 
-            @foreach($suggestedProducts as $item)
+    <div class="lx-ai-scroll">
 
-                @php
-                    $url   = $item['url'] ?? '#';
-                    $name  = $item['name'] ?? '';
-                    $price = $item['price'] ?? null;
+        @foreach($suggestedProducts as $item)
 
-                    $thumb = $item['thumb_mobile']
-                        ?? $item['thumb']
-                        ?? asset('images/no-image.png');
-                @endphp
+        @php
+        $url   = $item['url'] ?? '#';
+        $name  = $item['name'] ?? '';
+        $price = $item['price'] ?? null;
 
-                <a href="{{ $url }}" class="lx-suggested-card">
+        $thumb = $item['thumb_mobile']
+        ?? $item['thumb']
+        ?? asset('images/no-image.png');
+        @endphp
 
-                    <div class="lx-suggested-image">
-                        <img
-                            src="{{ $thumb }}"
-                            alt="{{ $name }}"
-                            loading="lazy">
-                    </div>
 
-                    <div class="lx-suggested-info">
-                        <div class="lx-suggested-name">
-                            {{ $name }}
-                        </div>
+        <a href="{{ $url }}" class="lx-ai-card">
 
-                        @if($price)
-                            <div class="lx-suggested-price">
-                                {{ number_format($price) }}₫
-                            </div>
-                        @endif
-                    </div>
+            <div class="lx-ai-image">
 
-                </a>
+                <img
+                src="{{ $thumb }}"
+                alt="{{ $name }}"
+                loading="lazy">
 
-            @endforeach
+            </div>
 
-        </div>
+
+            <div class="lx-ai-info">
+
+                <div class="lx-ai-name">
+                    {{ $name }}
+                </div>
+
+                @if($price)
+                <div class="lx-ai-price">
+                    {{ number_format($price) }}₫
+                </div>
+                @endif
+
+            </div>
+
+        </a>
+
+        @endforeach
+
+    </div>
+
     @else
-        {{-- EMPTY STATE --}}
-        <div class="lx-suggested-empty">
-            Sản phẩm gợi ý đang được cập nhật
-        </div>
+
+    <div class="lx-ai-empty">
+        LIN XÉN đang chọn thêm thiết kế phù hợp cho bạn
+    </div>
+
     @endif
 
 </section>
