@@ -3,49 +3,25 @@
 @php
 /*
 |--------------------------------------------------------------------------
-| 🔑 MAP SIZE → PRODUCT_ID (SKU CON)
+| 🔑 MAP SIZE → PRODUCT_ID
 |--------------------------------------------------------------------------
-| Debug version
+| Fix:
+| - Không loại master SKU
+| - Normalize SIZE
+| - Hỗ trợ key SIZE / Size / size
 */
 
 $sizeProductMap = [];
 
 foreach ($variants ?? [] as $variant) {
 
-    if (!empty($variant['is_master'])) {
-        continue;
-    }
-
     $size = null;
 
-    $attrs = $variant['attributes'] ?? [];
+    foreach (($variant['attributes'] ?? []) as $key => $value) {
 
-    if (is_array($attrs)) {
-
-        foreach ($attrs as $k => $v) {
-
-            // CASE attributes = ["SIZE"=>"S"]
-            if (!is_array($v)) {
-
-                if (mb_strtoupper(trim($k)) === 'SIZE') {
-                    $size = trim($v);
-                    break;
-                }
-
-            }
-            // CASE attributes = [{name,value}]
-            else {
-
-                $name  = mb_strtoupper(trim($v['name'] ?? ''));
-                $value = trim($v['value'] ?? '');
-
-                if ($name === 'SIZE') {
-                    $size = $value;
-                    break;
-                }
-
-            }
-
+        if (mb_strtoupper(trim($key)) === 'SIZE') {
+            $size = mb_strtoupper(trim($value));
+            break;
         }
 
     }
@@ -53,22 +29,8 @@ foreach ($variants ?? [] as $variant) {
     if ($size && !empty($variant['product_id'])) {
         $sizeProductMap[$size] = $variant['product_id'];
     }
-
 }
 @endphp
-
-
-{{-- ================= DEBUG BLOCK ================= --}}
-<pre style="background:#111;color:#0f0;padding:12px;font-size:12px;overflow:auto;">
-SIZE MAP:
-{{ json_encode($sizeProductMap, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE) }}
-</pre>
-
-<pre style="background:#000;color:#fff;padding:12px;font-size:12px;overflow:auto;">
-VARIANTS RAW:
-{{ json_encode($variants, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE) }}
-</pre>
-{{-- ================================================= --}}
 
 
 <div class="lx-product-variants" id="lxVariants">
@@ -92,28 +54,27 @@ $isSizeAttr = mb_strtoupper($attr) === 'SIZE';
 
 @foreach($values as $val)
 
+@php
+$normalizedVal = mb_strtoupper(trim($val));
+@endphp
+
 @if($isSizeAttr)
 
+{{-- SIZE – SKU --}}
 <button
 type="button"
 class="variant-option"
 data-attr="{{ $attr }}"
 data-attr-key="{{ $attrKey }}"
 data-value="{{ $val }}"
-data-product-id="{{ $sizeProductMap[$val] ?? '' }}"
+data-product-id="{{ $sizeProductMap[$normalizedVal] ?? '' }}"
 >
-
 {{ $val }}
-
-{{-- DEBUG ID --}}
-<span style="font-size:10px;color:#888;">
-({{ $sizeProductMap[$val] ?? 'NO_ID' }})
-</span>
-
 </button>
 
 @else
 
+{{-- OTHER VARIANTS --}}
 <button
 type="button"
 class="variant-option"
