@@ -878,3 +878,80 @@ border-radius:8px;
 
 font-weight:600;
 }
+/* ================= QTY BAR ================= */
+
+.lx-qty-bar{
+
+display:inline-flex;
+align-items:center;
+
+border:1px solid #ddd;
+border-radius:10px;
+
+overflow:hidden;
+
+height:44px;
+
+background:#fff;
+
+margin-bottom:12px;
+}
+
+
+/* BUTTON */
+
+.lx-qty-btn{
+
+width:42px;
+height:44px;
+
+border:none;
+background:#f7f7f7;
+
+font-size:20px;
+font-weight:600;
+
+cursor:pointer;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+transition:all .15s ease;
+}
+
+.lx-qty-btn:hover{
+
+background:#eee;
+}
+
+
+/* INPUT */
+
+#lxQty{
+
+width:56px;
+height:44px;
+
+border:none;
+
+text-align:center;
+
+font-size:16px;
+font-weight:600;
+
+outline:none;
+}
+
+
+/* remove arrows */
+
+#lxQty::-webkit-outer-spin-button,
+#lxQty::-webkit-inner-spin-button{
+-webkit-appearance:none;
+margin:0;
+}
+
+#lxQty[type=number]{
+-moz-appearance:textfield;
+}
