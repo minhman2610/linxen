@@ -3,30 +3,31 @@
 @php
 /*
 |--------------------------------------------------------------------------
-| 🔑 MAP SIZE → PRODUCT_ID (CHỈ SKU CON)
+| 🔑 MAP SIZE → PRODUCT_ID
 |--------------------------------------------------------------------------
-| ERP trả cả SKU cha + con
-| FE chỉ dùng SKU CON cho chọn size
-| Fix: scan attribute không phân biệt hoa thường
+| Fix:
+| - normalize size
+| - ignore case
+| - trim space
 */
+
 $sizeProductMap = [];
 
 foreach ($variants ?? [] as $variant) {
 
-    // bỏ SKU cha
     if (!empty($variant['is_master'])) {
         continue;
     }
 
     $size = null;
 
-    foreach ($variant['attributes'] ?? [] as $key => $value) {
+    foreach (($variant['attributes'] ?? []) as $key => $value) {
 
-        // normalize key
-        $normalized = mb_strtoupper(trim($key));
+        $normalizedKey = mb_strtoupper(trim($key));
 
-        if ($normalized === 'SIZE' || $normalized === 'KÍCH THƯỚC') {
-            $size = $value;
+        if (in_array($normalizedKey, ['SIZE','KÍCH THƯỚC'])) {
+
+            $size = mb_strtoupper(trim($value));
             break;
         }
     }
@@ -40,60 +41,62 @@ foreach ($variants ?? [] as $variant) {
 
 <div class="lx-product-variants" id="lxVariants">
 
-    @foreach($attributes as $attr => $values)
-        @php
-            $attrKey    = Str::slug($attr, '_');
-            $isSizeAttr = mb_strtoupper($attr) === 'SIZE'
-                        || mb_strtoupper($attr) === 'KÍCH THƯỚC';
-        @endphp
+@foreach($attributes as $attr => $values)
 
-        <div class="lx-variant-row"
-             data-attr="{{ $attr }}"
-             data-attr-key="{{ $attrKey }}">
+@php
+$attrKey = Str::slug($attr,'_');
+$isSizeAttr = in_array(mb_strtoupper($attr),['SIZE','KÍCH THƯỚC']);
+@endphp
 
-            <div class="lx-variant-label">
-                {{ Str::upper($attr) }}
-            </div>
+<div class="lx-variant-row"
+     data-attr="{{ $attr }}"
+     data-attr-key="{{ $attrKey }}">
 
-            <div class="lx-variant-options">
+<div class="lx-variant-label">
+{{ Str::upper($attr) }}
+</div>
 
-                @foreach($values as $val)
+<div class="lx-variant-options">
 
-                    @if($isSizeAttr)
+@foreach($values as $val)
 
-                        {{-- SIZE – SKU CON --}}
-                        <button
-                            type="button"
-                            class="variant-option"
-                            data-attr="{{ $attr }}"
-                            data-attr-key="{{ $attrKey }}"
-                            data-value="{{ $val }}"
-                            data-product-id="{{ $sizeProductMap[$val] ?? '' }}"
-                        >
-                            {{ $val }}
-                        </button>
+@php
+$normalizedVal = mb_strtoupper(trim($val));
+@endphp
 
-                    @else
+@if($isSizeAttr)
 
-                        {{-- OTHER VARIANTS --}}
-                        <button
-                            type="button"
-                            class="variant-option"
-                            data-attr="{{ $attr }}"
-                            data-attr-key="{{ $attrKey }}"
-                            data-value="{{ $val }}"
-                        >
-                            {{ $val }}
-                        </button>
+<button
+type="button"
+class="variant-option"
+data-attr="{{ $attr }}"
+data-attr-key="{{ $attrKey }}"
+data-value="{{ $val }}"
+data-product-id="{{ $sizeProductMap[$normalizedVal] ?? '' }}"
+>
+{{ $val }}
+</button>
 
-                    @endif
+@else
 
-                @endforeach
+<button
+type="button"
+class="variant-option"
+data-attr="{{ $attr }}"
+data-attr-key="{{ $attrKey }}"
+data-value="{{ $val }}"
+>
+{{ $val }}
+</button>
 
-            </div>
+@endif
 
-        </div>
-    @endforeach
+@endforeach
+
+</div>
+</div>
+
+@endforeach
 
 </div>
 
