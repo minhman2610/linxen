@@ -1036,3 +1036,86 @@ transform:translateY(-1px);
 box-shadow:0 6px 16px rgba(230,0,35,.35);
 
 }
+/* ================= EXPERIENCE CARD ================= */
+
+.lx-brand-experience{
+margin:18px 0;
+}
+
+.lx-exp-card{
+
+border:1px solid #eee;
+border-radius:12px;
+
+padding:14px;
+
+background:#fafafa;
+}
+
+
+/* TITLE */
+
+.lx-exp-title{
+
+font-size:14px;
+font-weight:700;
+
+margin-bottom:10px;
+color:#111;
+}
+
+
+/* LIST */
+
+.lx-exp-list{
+list-style:none;
+padding:0;
+margin:0;
+}
+
+.lx-exp-list li{
+
+display:flex;
+gap:10px;
+
+margin-bottom:8px;
+}
+
+.lx-exp-check{
+
+color:#16a34a;
+font-weight:700;
+
+font-size:16px;
+}
+
+
+/* TEXT */
+
+.lx-exp-list strong{
+
+font-size:13px;
+color:#111;
+}
+
+.lx-exp-list p{
+
+font-size:12px;
+color:#666;
+
+margin:2px 0 0;
+}
+
+
+/* NOTE */
+
+.lx-exp-note{
+
+margin-top:10px;
+
+font-size:12px;
+color:#444;
+
+border-top:1px dashed #eee;
+padding-top:8px;
+}
