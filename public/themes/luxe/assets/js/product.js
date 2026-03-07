@@ -138,6 +138,8 @@ document.addEventListener('click', function (e) {
 
     // sync attrs cho Add to Cart
     syncSelectedVariants();
+
+    
 });
 
 
@@ -380,7 +382,93 @@ function showAddToCartToast(product) {
     }, 4000);
 }
 
+/* =====================================================
+   BUY NOW (ADD → CHECKOUT)
+===================================================== */
 
+document.addEventListener('click', function (e) {
+
+    const btn = e.target.closest('#lxBuyNowBtn');
+    if (!btn) return;
+
+    e.preventDefault();
+
+    // validate variant
+    if (!validateVariants()) return;
+
+    const sizeOption = document.querySelector(
+        '.lx-variant-row[data-attr-key="size"] .variant-option.active'
+    );
+
+    const productId = sizeOption?.dataset?.productId || null;
+
+    if (!productId || isNaN(productId)) {
+        showErrorToast('Vui lòng chọn size trước khi mua');
+        return;
+    }
+
+    const addBtn = document.getElementById('lxAddToCartBtn');
+
+    const payload = {
+        sku:        addBtn.dataset.sku,
+        product_id: Number(productId),
+        name:       addBtn.dataset.name,
+        price:      Number(addBtn.dataset.price || 0),
+        image:      addBtn.dataset.image || null,
+        qty:        Number(addBtn.dataset.qty || 1),
+        attrs:      addBtn.dataset.attrs
+            ? JSON.parse(addBtn.dataset.attrs)
+            : {}
+    };
+
+    btn.classList.add('is-loading');
+    btn.disabled = true;
+
+    fetch('/cart/add', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute('content')
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(res => {
+
+        if (!res.success) {
+            showErrorToast(res.message || 'Không thể thêm sản phẩm');
+            return;
+        }
+
+        // cập nhật cart badge
+        updateCartCount(res.cart_count);
+
+        // meta pixel buy intent
+        if (typeof fbq === 'function') {
+            fbq('track', 'InitiateCheckout', {
+                content_ids: [payload.sku],
+                content_name: payload.name,
+                value: payload.price * payload.qty,
+                currency: 'VND'
+            });
+        }
+
+        // redirect checkout
+        window.location.href = '/checkout';
+
+    })
+    .catch(() => {
+        showErrorToast('Có lỗi xảy ra, vui lòng thử lại');
+    })
+    .finally(() => {
+        btn.classList.remove('is-loading');
+        btn.disabled = false;
+    });
+
+});
     /* ================= ADD TO CART (FIX SKU – FINAL) ================= */
 document.addEventListener('click', function (e) {
 

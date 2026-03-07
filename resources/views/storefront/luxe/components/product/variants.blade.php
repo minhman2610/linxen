@@ -35,54 +35,54 @@ foreach ($variants ?? [] as $variant) {
 
 <div class="lx-product-variants" id="lxVariants">
 
-@foreach($attributes as $attr => $values)
+    @foreach($attributes as $attr => $values)
 
-@php
-$attrKey = Str::slug($attr,'_');
-$isSizeAttr = mb_strtoupper($attr) === 'SIZE';
-@endphp
+    @php
+    $attrKey = Str::slug($attr,'_');
+    $isSizeAttr = mb_strtoupper($attr) === 'SIZE';
+    @endphp
 
-<div class="lx-variant-row"
-     data-attr="{{ $attr }}"
-     data-attr-key="{{ $attrKey }}">
+    <div class="lx-variant-row"
+    data-attr="{{ $attr }}"
+    data-attr-key="{{ $attrKey }}">
 
-<div class="lx-variant-label">
-{{ Str::upper($attr) }}
-</div>
+    <div class="lx-variant-label">
+        {{ Str::upper($attr) }}
+    </div>
 
-<div class="lx-variant-options">
+    <div class="lx-variant-options">
 
-@foreach($values as $val)
+        @foreach($values as $val)
 
-@php
-$normalizedVal = mb_strtoupper(trim($val));
-@endphp
+        @php
+        $normalizedVal = mb_strtoupper(trim($val));
+        @endphp
 
-@if($isSizeAttr)
+        @if($isSizeAttr)
 
-{{-- SIZE – SKU --}}
-<button
-type="button"
-class="variant-option"
-data-attr="{{ $attr }}"
-data-attr-key="{{ $attrKey }}"
-data-value="{{ $val }}"
-data-product-id="{{ $sizeProductMap[$normalizedVal] ?? '' }}"
->
-{{ $val }}
-</button>
+        {{-- SIZE – SKU --}}
+        <button
+        type="button"
+        class="variant-option"
+        data-attr="{{ $attr }}"
+        data-attr-key="{{ $attrKey }}"
+        data-value="{{ $val }}"
+        data-product-id="{{ $sizeProductMap[$normalizedVal] ?? '' }}"
+        >
+        {{ $val }}
+    </button>
 
-@else
+    @else
 
-{{-- OTHER VARIANTS --}}
-<button
-type="button"
-class="variant-option"
-data-attr="{{ $attr }}"
-data-attr-key="{{ $attrKey }}"
-data-value="{{ $val }}"
->
-{{ $val }}
+    {{-- OTHER VARIANTS --}}
+    <button
+    type="button"
+    class="variant-option"
+    data-attr="{{ $attr }}"
+    data-attr-key="{{ $attrKey }}"
+    data-value="{{ $val }}"
+    >
+    {{ $val }}
 </button>
 
 @endif
