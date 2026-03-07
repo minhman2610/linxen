@@ -1006,14 +1006,14 @@ background:#000;
 
 height:48px;
 
-border:1px solid #111;
+border:none;
 border-radius:10px;
 
-background:#fff;
-color:#111;
+background:#e60023;   /* đỏ nổi bật */
+color:#fff;
 
 font-size:15px;
-font-weight:600;
+font-weight:700;
 
 cursor:pointer;
 
@@ -1021,12 +1021,18 @@ display:flex;
 align-items:center;
 justify-content:center;
 
-transition:all .15s;
+transition:all .15s ease;
+
+box-shadow:0 4px 12px rgba(230,0,35,.25);
+
 }
 
 .lx-btn-buynow:hover{
 
-background:#111;
-color:#fff;
+background:#cc001f;
+
+transform:translateY(-1px);
+
+box-shadow:0 6px 16px rgba(230,0,35,.35);
 
 }
