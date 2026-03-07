@@ -1,59 +1,40 @@
-{{-- =====================================================
-   PRODUCT ACTIONS – CLEAN CONTROL BAR (AJAX READY)
-===================================================== --}}
 <div class="lx-product-actions lx-pdp-actions">
 
-    {{-- QUANTITY --}}
+    {{-- QTY --}}
     <div class="lx-qty-bar">
-        <button
-            type="button"
-            class="lx-qty-btn"
-            aria-label="Giảm số lượng"
-            onclick="changeQty(-1)"
-        >−</button>
+        <button class="lx-qty-btn" onclick="changeQty(-1)">−</button>
 
-        <input
-            type="number"
-            id="lxQty"
-            class="lx-qty-input"
-            value="1"
-            min="1"
-            aria-label="Số lượng"
-        >
+        <input type="number" id="lxQty" value="1" min="1">
 
-        <button
-            type="button"
-            class="lx-qty-btn"
-            aria-label="Tăng số lượng"
-            onclick="changeQty(1)"
-        >+</button>
+        <button class="lx-qty-btn" onclick="changeQty(1)">+</button>
     </div>
 
-    {{-- ADD TO CART --}}
-    <button
+    {{-- BUTTON GROUP --}}
+    <div class="lx-action-buttons">
+
+        <button
         class="lx-btn-addtocart"
         id="lxAddToCartBtn"
         type="button"
         data-add-to-cart
-
-        {{-- ❌ KHÔNG set product_id ở Blade (tránh SKU cha) --}}
-        {{-- product_id sẽ được JS resolve từ variant size --}}
-
-        {{-- SKU hiển thị / tracking --}}
         data-sku="{{ $product['sku'] ?? $product['code'] }}"
-
         data-name="{{ $product['name'] }}"
         data-price="{{ $product['price'] ?? 0 }}"
         data-image="{{ $mainImage ?? '' }}"
-
-        {{-- JS sẽ sync theo input #lxQty --}}
         data-qty="1"
-
-        {{-- Attrs sẽ được JS update khi chọn biến thể --}}
         data-attrs='@json([])'
-    >
-        <span class="lx-btn-icon">👜</span>
-        <span class="lx-btn-text">Thêm vào giỏ</span>
+        >
+        👜 Thêm vào giỏ
     </button>
+
+    <button
+    class="lx-btn-buynow"
+    id="lxBuyNowBtn"
+    type="button"
+    >
+    ⚡ Mua ngay
+</button>
+
+</div>
 
 </div>
