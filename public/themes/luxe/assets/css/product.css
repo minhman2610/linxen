@@ -682,6 +682,109 @@
     }
 
 }
+/* SIZE ASSISTANT */
+
+.lx-size-assistant{
+margin:12px 0;
+}
+
+.lx-size-toggle{
+
+width:100%;
+text-align:left;
+
+padding:10px 12px;
+
+border:1px solid #eee;
+border-radius:8px;
+
+background:#fafafa;
+
+font-size:14px;
+font-weight:500;
+
+cursor:pointer;
+}
+
+.lx-size-panel{
+
+margin-top:10px;
+
+padding:12px;
+
+border:1px solid #eee;
+border-radius:8px;
+
+background:#fff;
+}
+
+.lx-size-form{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:8px;
+}
+
+.lx-size-form input{
+
+padding:8px;
+
+border:1px solid #ddd;
+border-radius:6px;
+
+font-size:13px;
+}
+
+.lx-size-submit{
+
+margin-top:10px;
+
+width:100%;
+
+padding:10px;
+
+background:#111;
+color:#fff;
+
+border-radius:8px;
+
+font-weight:600;
+}
+.lx-action-buttons{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.lx-btn-addtocart{
+
+flex:1;
+
+background:#111;
+color:#fff;
+
+padding:12px;
+
+border-radius:8px;
+
+font-weight:600;
+}
+
+.lx-btn-buynow{
+
+flex:1;
+
+background:#ff4d4f;
+color:#fff;
+
+padding:12px;
+
+border-radius:8px;
+
+font-weight:700;
+}
 /* SIZE HELP */
 
 .lx-size-help{

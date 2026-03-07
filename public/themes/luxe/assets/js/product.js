@@ -477,3 +477,93 @@ if (typeof fbq === 'function') {
 
 
 })();
+/* =====================================================
+   SIZE HELP UI (TOGGLE ONLY)
+===================================================== */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const sizePanel = document.querySelector('.lx-size-panel');
+    const sizeOverlay = document.querySelector('[data-size-guide-overlay]');
+
+    /* ================= TOGGLE SIZE SUGGEST ================= */
+
+    document.addEventListener('click', function (e) {
+
+        const toggleBtn = e.target.closest('[data-size-toggle]');
+        if (!toggleBtn) return;
+
+        if (!sizePanel) return;
+
+        sizePanel.hidden = !sizePanel.hidden;
+
+    });
+
+
+    /* ================= OPEN SIZE GUIDE ================= */
+
+    document.addEventListener('click', function (e) {
+
+        const openBtn = e.target.closest('[data-size-guide-open]');
+        if (!openBtn) return;
+
+        if (!sizeOverlay) return;
+
+        sizeOverlay.hidden = false;
+        document.body.style.overflow = 'hidden';
+
+    });
+
+
+    /* ================= CLOSE SIZE GUIDE ================= */
+
+    document.addEventListener('click', function (e) {
+
+        const closeBtn = e.target.closest('[data-size-guide-close]');
+        if (!closeBtn) return;
+
+        if (!sizeOverlay) return;
+
+        sizeOverlay.hidden = true;
+        document.body.style.overflow = '';
+
+    });
+
+
+    /* ================= CLICK OUTSIDE MODAL ================= */
+
+    document.addEventListener('click', function (e) {
+
+        if (!sizeOverlay) return;
+
+        if (
+            !sizeOverlay.hidden &&
+            e.target === sizeOverlay
+        ) {
+
+            sizeOverlay.hidden = true;
+            document.body.style.overflow = '';
+
+        }
+
+    });
+
+
+    /* ================= ESC CLOSE ================= */
+
+    document.addEventListener('keydown', function (e) {
+
+        if (e.key !== 'Escape') return;
+
+        if (!sizeOverlay) return;
+
+        if (!sizeOverlay.hidden) {
+
+            sizeOverlay.hidden = true;
+            document.body.style.overflow = '';
+
+        }
+
+    });
+
+});
