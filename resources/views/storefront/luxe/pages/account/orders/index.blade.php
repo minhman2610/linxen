@@ -49,7 +49,6 @@
                             {{ number_format($order['payable_total'] ?? 0) }}đ
                         </span>
                     </div>
-
                 </a>
             @endforeach
 

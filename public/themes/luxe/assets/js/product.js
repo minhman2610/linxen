@@ -397,13 +397,11 @@ document.addEventListener('click', function (e) {
     }
 
     // 🔥 FIX ĐÚNG: LẤY SKU CON TỪ OPTION ACTIVE CÓ data-product-id
-    let productId = null;
+    const sizeOption = document.querySelector(
+    '.lx-variant-row[data-attr-key="size"] .variant-option.active'
+);
 
-    document.querySelectorAll('.variant-option.active').forEach(option => {
-        if (option.dataset.productId) {
-            productId = option.dataset.productId;
-        }
-    });
+const productId = sizeOption?.dataset?.productId || null;
 
     // 🔴 BẮT BUỘC PHẢI CÓ SKU CON
     if (!productId || isNaN(productId)) {
