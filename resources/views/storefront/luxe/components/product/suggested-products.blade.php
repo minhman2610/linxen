@@ -1,19 +1,5 @@
-{{-- =====================================================
-   AI SUGGESTED PRODUCTS – CONVERSION BLOCK
-===================================================== --}}
-
-@php
-$suggestedProducts = is_array($suggestedProducts ?? null)
-? $suggestedProducts
-: [];
-
-$count = count($suggestedProducts);
-@endphp
-
-
 <section class="lx-ai-suggested">
 
-    {{-- HEADER --}}
     <div class="lx-ai-head">
 
         <h3>
@@ -21,14 +7,11 @@ $count = count($suggestedProducts);
         </h3>
 
         <p>
-            Những thiết kế được nhiều khách LIN XÉN chọn khi xem mẫu này
+            Những mẫu khách LIN XÉN thường chọn khi xem thiết kế này
         </p>
 
     </div>
 
-
-    {{-- LIST --}}
-    @if($count > 0)
 
     <div class="lx-ai-scroll">
 
@@ -54,6 +37,12 @@ $count = count($suggestedProducts);
                 alt="{{ $name }}"
                 loading="lazy">
 
+                @if(!empty($item['badge']))
+                <span class="lx-ai-badge">
+                    {{ $item['badge'] }}
+                </span>
+                @endif
+
             </div>
 
 
@@ -76,13 +65,5 @@ $count = count($suggestedProducts);
         @endforeach
 
     </div>
-
-    @else
-
-    <div class="lx-ai-empty">
-        LIN XÉN đang chọn thêm thiết kế phù hợp cho bạn
-    </div>
-
-    @endif
 
 </section>
