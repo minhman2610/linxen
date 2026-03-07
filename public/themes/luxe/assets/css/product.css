@@ -878,11 +878,23 @@ border-radius:8px;
 
 font-weight:600;
 }
+/* ================= PDP ACTION BAR ================= */
+
+.lx-product-actions{
+
+display:flex;
+gap:12px;
+
+align-items:stretch;
+margin-top:12px;
+}
+
+
 /* ================= QTY BAR ================= */
 
 .lx-qty-bar{
 
-display:inline-flex;
+display:flex;
 align-items:center;
 
 border:1px solid #ddd;
@@ -890,23 +902,17 @@ border-radius:10px;
 
 overflow:hidden;
 
-height:44px;
-
-background:#fff;
-
-margin-bottom:12px;
+height:48px;
+flex-shrink:0;
 }
-
-
-/* BUTTON */
 
 .lx-qty-btn{
 
-width:42px;
-height:44px;
+width:44px;
+height:48px;
 
 border:none;
-background:#f7f7f7;
+background:#f6f6f6;
 
 font-size:20px;
 font-weight:600;
@@ -917,34 +923,30 @@ display:flex;
 align-items:center;
 justify-content:center;
 
-transition:all .15s ease;
+transition:background .15s;
 }
 
 .lx-qty-btn:hover{
-
 background:#eee;
 }
 
-
-/* INPUT */
-
 #lxQty{
 
-width:56px;
-height:44px;
+width:60px;
+height:48px;
 
 border:none;
 
 text-align:center;
-
 font-size:16px;
 font-weight:600;
 
 outline:none;
+background:#fff;
 }
 
 
-/* remove arrows */
+/* remove spinner */
 
 #lxQty::-webkit-outer-spin-button,
 #lxQty::-webkit-inner-spin-button{
@@ -952,6 +954,79 @@ outline:none;
 margin:0;
 }
 
-#lxQty[type=number]{
+#lxQty{
 -moz-appearance:textfield;
+}
+
+
+/* ================= BUTTON GROUP ================= */
+
+.lx-action-buttons{
+
+display:flex;
+flex-direction:column;
+gap:8px;
+
+flex:1;
+}
+
+
+/* ================= ADD TO CART ================= */
+
+.lx-btn-addtocart{
+
+height:48px;
+
+border:none;
+border-radius:10px;
+
+background:#111;
+color:#fff;
+
+font-size:15px;
+font-weight:600;
+
+cursor:pointer;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+transition:all .15s;
+}
+
+.lx-btn-addtocart:hover{
+background:#000;
+}
+
+
+/* ================= BUY NOW ================= */
+
+.lx-btn-buynow{
+
+height:48px;
+
+border:1px solid #111;
+border-radius:10px;
+
+background:#fff;
+color:#111;
+
+font-size:15px;
+font-weight:600;
+
+cursor:pointer;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+transition:all .15s;
+}
+
+.lx-btn-buynow:hover{
+
+background:#111;
+color:#fff;
+
 }
