@@ -426,3 +426,127 @@
 .lx-pdp .lx-product-description{
     margin: 0px;
 }
+/* HERO */
+
+.lx-product-hero{
+    margin-bottom:16px;
+}
+
+.lx-brand-line{
+    font-size:12px;
+    letter-spacing:2px;
+    color:#777;
+    margin-bottom:6px;
+}
+
+.lx-brand{
+    font-weight:700;
+    color:#111;
+}
+
+.lx-product-title{
+    font-size:28px;
+    font-weight:600;
+    line-height:1.35;
+    margin-bottom:12px;
+}
+
+
+/* SOCIAL PROOF */
+
+.lx-product-proof{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.lx-proof-badge{
+    font-size:12px;
+    padding:4px 8px;
+    background:#f5f5f5;
+    border-radius:6px;
+}
+
+.lx-proof-badge.hot{
+    background:#ffe7e7;
+    color:#c20000;
+    font-weight:600;
+}
+
+
+/* META */
+
+.lx-product-meta{
+    margin-bottom:12px;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.lx-meta-tag{
+    font-size:11px;
+    padding:4px 6px;
+    background:#f4f4f4;
+    border-radius:4px;
+}
+
+.lx-meta-tag.accent{
+    background:#111;
+    color:#fff;
+}
+
+
+/* PRICE */
+
+.lx-price-block{
+    margin:12px 0 8px;
+}
+
+.lx-product-price{
+    font-size:32px;
+    font-weight:700;
+    color:#111;
+}
+
+.lx-price-note{
+    font-size:12px;
+    color:#777;
+    margin-top:4px;
+}
+
+
+/* SCARCITY */
+
+.lx-stock-alert{
+    font-size:13px;
+    color:#c00000;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+}
+
+.lx-stock-dot{
+    width:8px;
+    height:8px;
+    background:red;
+    border-radius:50%;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:1}
+    50%{opacity:.4}
+    100%{opacity:1}
+}
+
+
+/* DESCRIPTION */
+
+.lx-product-description{
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:14px;
+    color:#444;
+}
