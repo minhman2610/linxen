@@ -148,7 +148,7 @@
 
 
 {{-- ================= PDP STYLE ================= --}}
-@push('styles')
+
 <style>
 
 /* HERO */
@@ -277,7 +277,7 @@
 }
 
 </style>
-@endpush
+
 
 {{-- ================= SIZE GUIDE JS ================= --}}
 @push('scripts')
