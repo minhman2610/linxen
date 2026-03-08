@@ -142,3 +142,247 @@
 .lx-menu-link:focus {
     outline: none;
 }
+
+/* ================================
+MOBILE MENU CORE
+================================ */
+
+.lx-mobile-menu{
+background:#fff;
+width:82%;
+max-width:360px;
+height:100%;
+position:fixed;
+left:0;
+top:0;
+z-index:1200;
+overflow-y:auto;
+padding-bottom:40px;
+}
+
+/* ================================
+MENU ITEM
+================================ */
+
+.lx-menu-list{
+list-style:none;
+padding:10px 0;
+margin:0;
+}
+
+.lx-menu-item{
+border-bottom:1px solid #f3f3f3;
+}
+
+.lx-menu-link{
+display:flex;
+align-items:center;
+padding:16px 18px;
+font-size:15px;
+font-weight:500;
+color:#111;
+text-decoration:none;
+transition:all .2s ease;
+}
+
+.lx-menu-link:hover{
+background:#fafafa;
+}
+
+/* ================================
+ICON
+================================ */
+
+.menu-icon{
+width:20px;
+height:20px;
+margin-right:12px;
+stroke:currentColor;
+stroke-width:2;
+fill:none;
+opacity:.75;
+}
+
+/* ================================
+🔥 SALE ITEM
+================================ */
+
+.highlight-sale{
+
+background:linear-gradient(90deg,#fff3f3,#fff);
+border-bottom:none;
+}
+
+.highlight-sale .lx-menu-link{
+
+font-weight:700;
+font-size:16px;
+color:#e53935;
+}
+
+.highlight-sale .menu-icon{
+
+fill:#e53935;
+stroke:none;
+}
+
+.highlight-sale::after{
+
+content:"HOT";
+font-size:10px;
+font-weight:700;
+color:#fff;
+background:#ff4d4f;
+padding:2px 6px;
+border-radius:12px;
+margin-left:6px;
+}
+
+/* ================================
+⚡ BEST SELLER
+================================ */
+
+.lx-menu-item:nth-child(2){
+
+background:#fafafa;
+}
+
+.lx-menu-item:nth-child(2) .lx-menu-link{
+
+font-weight:600;
+color:#222;
+}
+
+/* ================================
+NEW ARRIVAL
+================================ */
+
+.lx-menu-item:nth-child(3) .lx-menu-link{
+
+color:#333;
+}
+
+/* ================================
+CATEGORY GROUP
+================================ */
+
+.lx-menu-item.has-sub .lx-menu-link{
+
+font-weight:600;
+}
+
+.lx-submenu{
+
+background:#fafafa;
+padding:4px 0 10px;
+}
+
+.lx-submenu li a{
+
+display:block;
+padding:12px 50px;
+font-size:14px;
+color:#555;
+text-decoration:none;
+transition:all .15s ease;
+}
+
+.lx-submenu li a:hover{
+
+background:#f0f0f0;
+color:#111;
+}
+
+/* ================================
+LOW PRIORITY MENU
+================================ */
+
+.lx-menu-item:nth-last-child(-n+3) .lx-menu-link{
+
+font-size:14px;
+color:#777;
+}
+
+/* ================================
+BRAND ZONE
+================================ */
+
+.lx-menu-brand-zone{
+
+padding:22px 18px;
+border-bottom:1px solid #eee;
+position:relative;
+}
+
+.lx-brand-logo{
+
+font-size:22px;
+font-weight:700;
+letter-spacing:.05em;
+}
+
+.lx-brand-tagline{
+
+font-size:12px;
+color:#777;
+margin-top:3px;
+}
+
+/* ================================
+CLOSE BUTTON
+================================ */
+
+.close-btn{
+
+position:absolute;
+right:14px;
+top:20px;
+font-size:20px;
+background:none;
+border:none;
+cursor:pointer;
+color:#888;
+}
+
+/* ================================
+SUBMENU TOGGLE ICON
+================================ */
+
+.lx-menu-toggle::after{
+
+content:"›";
+margin-left:auto;
+font-size:16px;
+color:#aaa;
+}
+
+/* ================================
+SALE PULSE EFFECT
+================================ */
+
+@keyframes salePulse{
+
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+}
+
+.highlight-sale{
+
+animation:salePulse 2.5s infinite;
+}
+
+/* ================================
+SCROLL BAR CLEAN
+================================ */
+
+.lx-mobile-menu::-webkit-scrollbar{
+
+width:4px;
+}
+
+.lx-mobile-menu::-webkit-scrollbar-thumb{
+
+background:#ddd;
+border-radius:10px;
+}
