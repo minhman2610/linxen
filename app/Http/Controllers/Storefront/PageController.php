@@ -540,6 +540,7 @@ public function account()
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
+
     /*
     |--------------------------------------------------------------------------
     | 0️⃣ Pagination params
@@ -547,6 +548,7 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     */
     $page    = max((int) request()->input('page', 1), 1);
     $perPage = 24;
+
 
     /*
     |--------------------------------------------------------------------------
@@ -560,32 +562,66 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         $perPage
     );
 
-    if (empty($data) || empty($data['collection'])) {
-        abort(404);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ ERP ERROR HANDLING
+    |--------------------------------------------------------------------------
+    */
+
+    if (!$data) {
+
+        \Log::error('ERP collection API failed', [
+            'brand' => $this->brand,
+            'slug'  => $slug
+        ]);
+
+        abort(500, 'Không thể tải dữ liệu bộ sưu tập từ ERP.');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2️⃣ COLLECTION META
-    |--------------------------------------------------------------------------
-    */
-    $collection = [
-        'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
-        'description' => $data['collection']['description'] ?? null,
-        'hero'        => $data['collection']['hero'] ?? null,
-        'slug'        => $slug,
-    ];
 
     /*
     |--------------------------------------------------------------------------
-    | 3️⃣ PRODUCTS
-    | 🔥 TUYỆT ĐỐI KHÔNG TỰ TÍNH SALE
+    | 3️⃣ COLLECTION NOT FOUND
     |--------------------------------------------------------------------------
     */
+
+    if (!isset($data['collection'])) {
+
+        abort(404, "Không tìm thấy bộ sưu tập: {$slug}");
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ COLLECTION META
+    |--------------------------------------------------------------------------
+    */
+
+    $collection = [
+
+        'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
+
+        'description' => $data['collection']['description'] ?? null,
+
+        'hero'        => $data['collection']['hero'] ?? null,
+
+        'slug'        => $slug,
+
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 5️⃣ PRODUCTS
+    |--------------------------------------------------------------------------
+    */
+
     $items = collect($data['products'] ?? [])
         ->map(function ($p) {
 
             $price = (float) ($p['price'] ?? 0);
+
             $salePercent = isset($p['sale_percent'])
                 ? (int) $p['sale_percent']
                 : 0;
@@ -599,27 +635,33 @@ public function collection(string $slug, ErpStorefrontApi $erp)
                 'slug' => $p['slug']
                     ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
 
+
                 /*
                 |--------------------------------------------------------------------------
                 | PRICE FROM ERP
                 |--------------------------------------------------------------------------
                 */
+
                 'price' => $price,
 
                 'sale_percent' => $salePercent,
+
 
                 /*
                 |--------------------------------------------------------------------------
                 | IMAGE
                 |--------------------------------------------------------------------------
                 */
+
                 'thumb' => $p['thumb'] ?? asset('images/no-image.png'),
+
 
                 /*
                 |--------------------------------------------------------------------------
                 | COLORS
                 |--------------------------------------------------------------------------
                 */
+
                 'colors' => collect($p['colors'] ?? [])
                     ->map(fn ($c) => is_array($c)
                         ? ($c['code'] ?? null)
@@ -629,28 +671,45 @@ public function collection(string $slug, ErpStorefrontApi $erp)
                     ->values()
                     ->toArray(),
 
+
                 /*
                 |--------------------------------------------------------------------------
                 | STOCK
                 |--------------------------------------------------------------------------
                 */
+
                 'available' => (int) ($p['available'] ?? 0),
+
 
                 /*
                 |--------------------------------------------------------------------------
                 | TAG FROM ERP
                 |--------------------------------------------------------------------------
                 */
+
                 'tag' => $p['tag'] ?? null,
+
             ];
+
         })
         ->values();
 
+
     /*
     |--------------------------------------------------------------------------
-    | 4️⃣ LengthAwarePaginator
+    | 6️⃣ Empty collection notice
     |--------------------------------------------------------------------------
     */
+
+    $isEmpty = $items->isEmpty();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 7️⃣ LengthAwarePaginator
+    |--------------------------------------------------------------------------
+    */
+
     $products = new LengthAwarePaginator(
         $items,
         (int) ($data['meta']['total'] ?? $items->count()),
@@ -662,15 +721,22 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         ]
     );
 
+
     /*
     |--------------------------------------------------------------------------
-    | 5️⃣ Render view
+    | 8️⃣ Render view
     |--------------------------------------------------------------------------
     */
+
     return view(
         "storefront.{$this->theme}.pages.collection",
-        compact('collection', 'products')
+        compact(
+            'collection',
+            'products',
+            'isEmpty'
+        )
     );
+
 }
 
 
