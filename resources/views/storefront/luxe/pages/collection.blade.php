@@ -1,7 +1,20 @@
 @extends('storefront.luxe.layouts.app')
 
 @section('content')
+@if($isEmpty)
 
+<div class="collection-empty">
+
+    <h3>Chưa có sản phẩm</h3>
+
+    <p>
+        Bộ sưu tập <strong>{{ $collection['name'] }}</strong>
+        đang được cập nhật.
+    </p>
+
+</div>
+
+@endif
 {{-- ===================================================== --}}
 {{-- COLLECTION HERO --}}
 {{-- ===================================================== --}}
