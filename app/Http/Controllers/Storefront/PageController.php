@@ -95,13 +95,6 @@ public function product(string $slug, ErpStorefrontApi $erp)
 {
     $product = $erp->product($this->brand, $slug);
 
-// 🔴 DEBUG ERP RAW
-\Log::error('[DEBUG STOREFRONT PRODUCT RAW]', [
-    'variants'   => $product['variants'] ?? null,
-    'attributes' => $product['attributes'] ?? null,
-]);
-
-
     if (empty($product) || !is_array($product)) {
         abort(404);
     }
@@ -543,7 +536,7 @@ public function account()
 }
 
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (FINAL – SERVICE DRIVEN)
+ * 📦 COLLECTION – LIN XÉN (ERP SOURCE OF TRUTH)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
@@ -558,9 +551,6 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     /*
     |--------------------------------------------------------------------------
     | 1️⃣ Call ERP service
-    | 👉 SERVICE ĐÃ:
-    | - forward page
-    | - resolve image (mobile → fallback)
     |--------------------------------------------------------------------------
     */
     $data = $erp->collection(
@@ -589,31 +579,69 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     /*
     |--------------------------------------------------------------------------
     | 3️⃣ PRODUCTS
-    | ❗ TUYỆT ĐỐI KHÔNG TOUCH IMAGE Ở ĐÂY
+    | 🔥 TUYỆT ĐỐI KHÔNG TỰ TÍNH SALE
     |--------------------------------------------------------------------------
     */
     $items = collect($data['products'] ?? [])
         ->map(function ($p) {
 
+            $price = (float) ($p['price'] ?? 0);
+            $salePercent = isset($p['sale_percent'])
+                ? (int) $p['sale_percent']
+                : 0;
+
             return [
+
                 'product_id' => (int) ($p['product_id'] ?? 0),
-                'name'       => $p['name'] ?? '',
-                'slug'       => $p['slug']
+
+                'name' => $p['name'] ?? '',
+
+                'slug' => $p['slug']
                     ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
-                'price'      => (float) ($p['price'] ?? 0),
 
-                // 🔥 DÙNG NGUYÊN thumb SERVICE TRẢ VỀ
-                'thumb'      => $p['thumb'] ?? asset('images/no-image.png'),
+                /*
+                |--------------------------------------------------------------------------
+                | PRICE FROM ERP
+                |--------------------------------------------------------------------------
+                */
+                'price' => $price,
 
+                'sale_percent' => $salePercent,
+
+                /*
+                |--------------------------------------------------------------------------
+                | IMAGE
+                |--------------------------------------------------------------------------
+                */
+                'thumb' => $p['thumb'] ?? asset('images/no-image.png'),
+
+                /*
+                |--------------------------------------------------------------------------
+                | COLORS
+                |--------------------------------------------------------------------------
+                */
                 'colors' => collect($p['colors'] ?? [])
-                    ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
+                    ->map(fn ($c) => is_array($c)
+                        ? ($c['code'] ?? null)
+                        : $c
+                    )
                     ->filter(fn ($c) => is_string($c))
                     ->values()
                     ->toArray(),
 
-                'available'    => (int) ($p['available'] ?? 0),
-                'sale_percent' => 20,
-                'tag'          => '🔥 Bán chạy',
+                /*
+                |--------------------------------------------------------------------------
+                | STOCK
+                |--------------------------------------------------------------------------
+                */
+                'available' => (int) ($p['available'] ?? 0),
+
+                /*
+                |--------------------------------------------------------------------------
+                | TAG FROM ERP
+                |--------------------------------------------------------------------------
+                */
+                'tag' => $p['tag'] ?? null,
             ];
         })
         ->values();
