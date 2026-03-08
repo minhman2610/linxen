@@ -586,10 +586,11 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     |--------------------------------------------------------------------------
     */
 
-    if (!isset($data['collection'])) {
+    if (!array_key_exists('collection', $data) || $data['collection'] === null) {
 
-        abort(404, "Không tìm thấy bộ sưu tập: {$slug}");
-    }
+    abort(404, "Collection '{$slug}' không tồn tại trong ERP.");
+
+}
 
 
     /*
