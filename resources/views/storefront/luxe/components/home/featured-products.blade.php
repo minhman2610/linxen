@@ -1,49 +1,82 @@
+{{-- ===================================================== --}}
+{{-- FEATURED PRODUCTS – LIN XÉN STYLE --}}
+{{-- ===================================================== --}}
+
 <div class="lx-product-grid">
 
-    @foreach($home['featured_products'] as $product)
+@foreach($home['featured_products'] as $product)
 
-    @php
+@php
 
-    $slug = Str::slug($product['name']).'-'.$product['product_id'];
-    $thumb = $product['media']['thumb_mobile'];
-    $price = (float)$product['price'];
+$slug = Str::slug($product['name']).'-'.$product['product_id'];
+$thumb = $product['media']['thumb_mobile'];
+$price = (float)$product['price'];
 
-    $colors = $product['colors'] ?? [];
-    $hasColors = count($colors) > 1;
+$colors = $product['colors'] ?? [];
+$hasColors = count($colors) > 1;
 
-    @endphp
+$stock = $product['available'] ?? null;
 
-    <div class="lx-product-card">
+@endphp
 
-        <div class="lx-product-media">
+
+<div class="lx-product-card">
+
+    {{-- IMAGE --}}
+    <div class="lx-product-media">
+
+        <a href="{{ route('linxen.product',['slug'=>$slug]) }}">
+
+            <img
+                src="{{ $thumb }}"
+                alt="{{ $product['name'] }}"
+                loading="lazy"
+            >
+
+        </a>
+
+        {{-- BADGE --}}
+        <div class="lx-badge">
+
+            <span>✨ Bestseller</span>
+
+        </div>
+
+    </div>
+
+
+
+    {{-- BODY --}}
+    <div class="lx-product-body">
+
+        {{-- NAME --}}
+        <h3 class="lx-product-name">
 
             <a href="{{ route('linxen.product',['slug'=>$slug]) }}">
-                <img src="{{ $thumb }}" loading="lazy">
+                {{ $product['name'] }}
             </a>
 
-        </div>
+        </h3>
 
-        <div class="lx-product-head">
 
-            <p class="lx-product-name">
-                {{ $product['name'] }}
-            </p>
 
-        </div>
-
+        {{-- PRICE --}}
         <div class="lx-product-price">
 
             {{ number_format($price) }}₫
 
         </div>
 
+
+
+        {{-- COLORS --}}
         @if($hasColors)
 
         <div class="lx-product-colors">
 
             @foreach($colors as $color)
 
-            <span class="lx-color-swatch"></span>
+            <span class="lx-color-dot"></span>
 
             @endforeach
 
@@ -51,29 +84,45 @@
 
         @endif
 
-        <div class="lx-product-tags">
 
-            <span class="lx-tag">✨ Được yêu thích</span>
+
+        {{-- STOCK --}}
+        @if($stock && $stock < 8)
+
+        <div class="lx-product-stock">
+
+            Chỉ còn <strong>{{ $stock }}</strong> sản phẩm
 
         </div>
 
-        <a href="{{ route('linxen.product',['slug'=>$slug]) }}"
-            class="lx-product-cta">
+        @endif
 
-            Xem chi tiết →
 
+
+        {{-- CTA --}}
+        <a
+            href="{{ route('linxen.product',['slug'=>$slug]) }}"
+            class="lx-product-btn"
+        >
+            Xem chi tiết
         </a>
 
     </div>
 
-    @endforeach
+</div>
+
+@endforeach
 
 </div>
+
+
+
+{{-- VIEW MORE --}}
 <div class="lx-product-more">
 
 <a href="/collections/vay" class="lx-more-btn">
 
-Xem thêm mẫu mới →
+Khám phá thêm mẫu →
 
 </a>
 
