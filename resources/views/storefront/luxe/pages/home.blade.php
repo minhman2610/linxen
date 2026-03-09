@@ -37,154 +37,139 @@
 </section>
 
 {{-- ===================================================== --}}
-{{-- FLASH SALE – LIN XÉN (FILTER BY SKU CHA – ROADMAP) --}}
+{{-- FLASH SALE – LIN XÉN (AUTO FROM PRICE RULE) --}}
 {{-- ===================================================== --}}
 <section class="lx-flash-sale">
 
-    @php
-        /**
-         * 🔥 ROADMAP FLASH SALE – SKU CHA => GIÁ BÁN
-         * Source of truth: product['code']
-         */
-        $flashSaleRoadmap = [
-            'SP14535165' => 299000,
-            'SP14530509' => 458000,
-            'SP14529951' => 399000,
-            'SP14527951' => 356000,
-            'SP14527939' => 385000,
-            'SP14530151' => 399000,
-        ];
-    @endphp
-
     {{-- HEAD --}}
     <div class="lx-flash-sale-head">
+
         <h3 class="lx-flash-sale-title">
             ⚡ FLASH SALE
         </h3>
 
-        <div class="lx-flash-sale-countdown" data-end-time="2026-02-03 23:59:59">
-            <div class="lx-countdown-item">
-                <span class="num" data-days>00</span>
-                <span class="label">Ngày</span>
-            </div>
+        {{-- Countdown reset mỗi ngày --}}
+        <div class="lx-flash-sale-countdown"
+             data-end-time="{{ now()->endOfDay()->format('Y-m-d H:i:s') }}">
+
             <div class="lx-countdown-item">
                 <span class="num" data-hours>00</span>
                 <span class="label">Giờ</span>
             </div>
+
             <div class="lx-countdown-item">
                 <span class="num" data-minutes>00</span>
                 <span class="label">Phút</span>
             </div>
+
             <div class="lx-countdown-item">
                 <span class="num" data-seconds>00</span>
                 <span class="label">Giây</span>
             </div>
+
         </div>
+
     </div>
 
-    {{-- LIST – TRƯỢT NGANG 1 HÀNG --}}
+
+    {{-- LIST – SCROLL NGANG --}}
     <div class="lx-flash-sale-scroll">
+
         <div class="lx-product-row">
 
-            @php $hasFlashSale = false; @endphp
-
-            @foreach($home['featured_products'] as $product)
+            @forelse($home['flash_products'] ?? [] as $product)
 
                 @php
-                    /**
-                     * 🔑 SKU CHA – SOURCE OF TRUTH
-                     */
-                    $code = $product['code'] ?? null;
-                @endphp
 
-                {{-- ❌ Không nằm trong roadmap --}}
-                @continue(!$code || !isset($flashSaleRoadmap[$code]))
-
-                @continue(
-                    empty($product['product_id'])
-                    || empty($product['name'])
-                    || empty($product['media']['thumb_mobile'])
-                )
-
-                @php
-                    $hasFlashSale = true;
-
-                    $slug  = \Illuminate\Support\Str::slug($product['name'])
+                    $slug = \Illuminate\Support\Str::slug($product['name'])
                             . '-' . $product['product_id'];
 
-                    $thumb = $product['media']['thumb_mobile'];
+                    $thumb = $product['thumb']
+                        ?? $product['media']['thumb_mobile']
+                        ?? null;
 
-                    $originPrice = (float) $product['price'];
-                    $salePrice   = (float) $flashSaleRoadmap[$code];
+                    $originPrice = (float) ($product['origin_price']
+                        ?? $product['original_price']
+                        ?? $product['price']);
 
-                    $salePercent = $originPrice > 0
-                        ? round(100 - ($salePrice / $originPrice * 100))
-                        : 0;
+                    $salePrice = (float) $product['price'];
 
-                    /**
-                     * 🎨 RANDOM 3 MÀU – UI ONLY
-                     */
-                    $colorPool = [
-                        'black',
-                        'white',
-                        'beige',
-                        'brown',
-                        'red',
-                        'blue',
-                        'navy',
-                        'olive'
-                    ];
+                    $salePercent = (int) ($product['sale_percent'] ?? 0);
 
-                    shuffle($colorPool);
-                    $productColors = array_slice($colorPool, 0, 3);
                 @endphp
+
+                @continue(empty($thumb))
+
 
                 <div class="lx-product-card">
 
                     {{-- IMAGE --}}
                     <div class="lx-product-media">
-                        <a href="{{ route('linxen.product', ['slug' => $slug]) }}">
-                            <img src="{{ $thumb }}"
-                                 alt="{{ $product['name'] }}"
-                                 loading="lazy">
+
+                        <a href="{{ route('linxen.product',['slug'=>$slug]) }}">
+
+                            <img
+                                src="{{ $thumb }}"
+                                alt="{{ $product['name'] }}"
+                                loading="lazy">
+
                         </a>
 
-                        <span class="lx-sale-badge">
-                            -{{ $salePercent }}%
-                        </span>
+                        {{-- SALE BADGE --}}
+                        @if($salePercent > 0)
+
+                            <span class="lx-sale-badge">
+                                -{{ $salePercent }}%
+                            </span>
+
+                        @endif
+
                     </div>
+
 
                     {{-- NAME --}}
                     <div class="lx-product-head">
+
                         <p class="lx-product-name one-line">
                             {{ $product['name'] }}
                         </p>
+
                     </div>
+
 
                     {{-- PRICE --}}
                     <div class="lx-product-price-wrap">
+
                         <span class="lx-price-sale">
                             {{ number_format($salePrice) }}₫
                         </span>
-                        <span class="lx-price-origin">
-                            {{ number_format($originPrice) }}₫
-                        </span>
+
+                        @if($originPrice > $salePrice)
+
+                            <span class="lx-price-origin">
+                                {{ number_format($originPrice) }}₫
+                            </span>
+
+                        @endif
+
                     </div>
 
                 </div>
 
-            @endforeach
+            @empty
 
-            {{-- FALLBACK --}}
-            @if(!$hasFlashSale)
                 <div class="lx-flash-sale-empty">
+
                     <p class="text-muted">
-                        Hiện chưa có sản phẩm Flash Sale
+                        Flash Sale đang được cập nhật
                     </p>
+
                 </div>
-            @endif
+
+            @endforelse
 
         </div>
+
     </div>
 
 </section>

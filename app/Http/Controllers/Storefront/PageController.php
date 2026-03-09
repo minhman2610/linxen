@@ -24,53 +24,178 @@ class PageController extends Controller
  * ===================================================== */
 public function home(ErpStorefrontApi $erp)
 {
-    // Lấy dữ liệu home từ ERP
+    /*
+    |--------------------------------------------------------------------------
+    | 1️⃣ LOAD DATA FROM ERP
+    |--------------------------------------------------------------------------
+    */
+
     $rawHome = $erp->home($this->brand);
 
-    // Chuẩn hoá data cho view
+    $products = collect($rawHome['products'] ?? [])
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2️⃣ BASIC VALIDATION
+    |--------------------------------------------------------------------------
+    */
+
+    ->filter(fn ($p) =>
+        !empty($p['product_id'])
+        && !empty($p['name'])
+        && !empty($p['price'])
+    )
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 3️⃣ NORMALIZE MEDIA
+    |--------------------------------------------------------------------------
+    */
+
+    ->map(function ($p) {
+
+        $thumb = null;
+
+        if (!empty($p['media']['images'][0])) {
+
+            $thumb = $p['media']['images'][0];
+
+        } elseif (!empty($p['media']['thumb_mobile'])) {
+
+            $thumb = $p['media']['thumb_mobile'];
+
+        } elseif (!empty($p['media']['thumb'])) {
+
+            $thumb = $p['media']['thumb'];
+
+        }
+
+        return [
+
+            ...$p,
+
+            'thumb' => $thumb,
+
+        ];
+
+    })
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 4️⃣ REQUIRE IMAGE
+    |--------------------------------------------------------------------------
+    */
+
+    ->filter(fn ($p) => !empty($p['thumb']))
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 5️⃣ RESET INDEX
+    |--------------------------------------------------------------------------
+    */
+
+    ->values();
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 6️⃣ FLASH SALE PRODUCTS
+    |--------------------------------------------------------------------------
+    */
+
+    $flashProducts = $products
+
+        ->filter(fn ($p) => !empty($p['is_flash_sale']))
+
+        ->shuffle()
+
+        ->take(10)
+
+        ->values()
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD FLASH UI DATA
+        |--------------------------------------------------------------------------
+        */
+
+        ->map(function ($p) {
+
+            $origin = (float)($p['original_price'] ?? $p['price']);
+            $price  = (float)$p['price'];
+
+            $percent = $origin > 0
+                ? round(100 - ($price / $origin * 100))
+                : 0;
+
+            return [
+
+                ...$p,
+
+                'sale_percent' => $percent,
+
+                'origin_price' => $origin,
+
+            ];
+
+        })
+
+        ->toArray();
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 7️⃣ FEATURED PRODUCTS (NON FLASH)
+    |--------------------------------------------------------------------------
+    */
+
+    $featuredProducts = $products
+
+        ->filter(fn ($p) => empty($p['is_flash_sale']))
+
+        ->take(12)
+
+        ->values()
+
+        ->toArray();
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 8️⃣ BUILD HOME DATA
+    |--------------------------------------------------------------------------
+    */
+
     $home = [
-        // HERO (video / banner / null đều OK)
+
         'hero' => $rawHome['hero'] ?? null,
 
-        // SẢN PHẨM CHỦ LỰC
-        'featured_products' => collect($rawHome['products'] ?? [])
+        'flash_products' => $flashProducts,
 
-            // 1️⃣ Lọc sản phẩm hợp lệ cơ bản
-            ->filter(fn ($p) =>
-                !empty($p['product_id'])
-                && !empty($p['name'])
-                && !empty($p['price'])
-            )
+        'featured_products' => $featuredProducts,
 
-            // 2️⃣ Chuẩn hoá MEDIA → 1 KEY DUY NHẤT
-            ->map(function ($p) {
-
-                $thumb = null;
-
-                // Ưu tiên thứ tự: images → thumb → mobile
-                if (!empty($p['media']['images'][0])) {
-                    $thumb = $p['media']['images'][0];
-                } elseif (!empty($p['media']['thumb'])) {
-                    $thumb = $p['media']['thumb'];
-                } elseif (!empty($p['media']['mobile'])) {
-                    $thumb = $p['media']['mobile'];
-                }
-
-                return [
-                    ...$p,
-
-                    // 🔑 KEY DUY NHẤT CHO BLADE
-                    'thumb' => $thumb,
-                ];
-            })
-
-            // 3️⃣ Chỉ giữ sản phẩm có ảnh hợp lệ
-            ->filter(fn ($p) => !empty($p['thumb']))
-
-            // 4️⃣ Reset index
-            ->values()
-            ->toArray(),
     ];
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 9️⃣ VIEW
+    |--------------------------------------------------------------------------
+    */
 
     return view(
         "storefront.{$this->theme}.pages.home",
