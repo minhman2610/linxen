@@ -68,11 +68,38 @@
                 </div>
 
                 {{-- PRICE --}}
-                <div class="lx-product-price-wrap">
-                    <span class="lx-price">
-                        {{ number_format($price) }}₫
-                    </span>
-                </div>
+<div class="lx-product-price-wrap">
+
+@php
+$price = (float) $product['price'];
+$original = (float) ($product['original_price'] ?? $price);
+$salePercent = (int) ($product['sale_percent'] ?? 0);
+@endphp
+
+
+@if($original > $price)
+
+    <div class="lx-price-sale">
+        {{ number_format($price) }}₫
+    </div>
+
+    <div class="lx-price-origin">
+        {{ number_format($original) }}₫
+    </div>
+
+    <div class="lx-price-discount">
+        -{{ $salePercent }}%
+    </div>
+
+@else
+
+    <div class="lx-price-normal">
+        {{ number_format($price) }}₫
+    </div>
+
+@endif
+
+</div>
 
                 <!-- {{-- QUICK ORDER --}}
                 <div class="lx-product-variants">

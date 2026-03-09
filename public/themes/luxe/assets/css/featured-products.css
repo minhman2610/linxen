@@ -571,3 +571,53 @@
 }
 
 }
+/* SALE PRICE */
+
+.lx-price-sale{
+
+font-size:20px;
+font-weight:700;
+color:#d62828;
+
+}
+
+/* ORIGINAL PRICE */
+
+.lx-price-origin{
+
+font-size:14px;
+color:#888;
+text-decoration:line-through;
+
+margin-top:2px;
+
+}
+
+/* DISCOUNT */
+
+.lx-price-discount{
+
+font-size:13px;
+font-weight:600;
+
+color:#fff;
+background:#d62828;
+
+display:inline-block;
+
+padding:2px 6px;
+border-radius:4px;
+
+margin-top:4px;
+
+}
+
+/* NORMAL PRICE */
+
+.lx-price-normal{
+
+font-size:20px;
+font-weight:700;
+color:#111;
+
+}
