@@ -74,7 +74,7 @@
                     </span>
                 </div>
 
-                {{-- QUICK ORDER --}}
+                <!-- {{-- QUICK ORDER --}}
                 <div class="lx-product-variants">
 
                     <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
@@ -97,7 +97,7 @@
 
                     </a>
 
-                </div>
+                </div> -->
 
                 {{-- STATUS --}}
                 <!-- <div class="lx-product-tags">
