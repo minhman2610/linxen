@@ -76,36 +76,103 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+
     const el = document.querySelector('.lx-flash-sale-countdown');
     if (!el) return;
 
-    const endTime = new Date(el.dataset.endTime.replace(' ', 'T')).getTime();
+    /*
+    |--------------------------------------------------------------------------
+    | END TIME
+    |--------------------------------------------------------------------------
+    */
 
-    const d = el.querySelector('[data-days]');
+    let endTime = el.dataset.endTime
+        ? new Date(el.dataset.endTime.replace(' ', 'T')).getTime()
+        : null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nếu endTime không hợp lệ → mặc định hết ngày
+    |--------------------------------------------------------------------------
+    */
+
+    if (!endTime || isNaN(endTime)) {
+
+        const now = new Date();
+        now.setHours(23,59,59,999);
+        endTime = now.getTime();
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ELEMENTS
+    |--------------------------------------------------------------------------
+    */
+
     const h = el.querySelector('[data-hours]');
     const m = el.querySelector('[data-minutes]');
     const s = el.querySelector('[data-seconds]');
 
-    const tick = () => {
-        const now = Date.now();
-        let diff = Math.max(0, endTime - now);
 
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        diff %= 1000 * 60 * 60 * 24;
+
+    /*
+    |--------------------------------------------------------------------------
+    | FORMAT
+    |--------------------------------------------------------------------------
+    */
+
+    const pad = n => String(n).padStart(2,'0');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TICK
+    |--------------------------------------------------------------------------
+    */
+
+    const tick = () => {
+
+        const now = Date.now();
+        let diff = endTime - now;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nếu countdown hết → reset về 24h (fake flash sale)
+        |--------------------------------------------------------------------------
+        */
+
+        if (diff <= 0) {
+
+            diff = 24 * 60 * 60 * 1000;
+            endTime = now + diff;
+
+        }
 
         const hours = Math.floor(diff / (1000 * 60 * 60));
-        diff %= 1000 * 60 * 60;
+        diff %= (1000 * 60 * 60);
 
         const minutes = Math.floor(diff / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        d.textContent = String(days).padStart(2, '0');
-        h.textContent = String(hours).padStart(2, '0');
-        m.textContent = String(minutes).padStart(2, '0');
-        s.textContent = String(seconds).padStart(2, '0');
+
+        if (h) h.textContent = pad(hours);
+        if (m) m.textContent = pad(minutes);
+        if (s) s.textContent = pad(seconds);
+
     };
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | START
+    |--------------------------------------------------------------------------
+    */
+
     tick();
-    setInterval(tick, 1000);
+    setInterval(tick,1000);
+
 });
 
