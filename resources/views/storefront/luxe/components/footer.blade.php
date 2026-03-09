@@ -32,7 +32,7 @@
                 </div>
                 <div class="lx-stat">
                     <strong>15 ngày</strong>
-                    <span>Đổi trả dễ dàng</span>
+                    <span>Đổi hàng dễ dàng</span>
                 </div>
             </div>
 

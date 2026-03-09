@@ -47,20 +47,6 @@
 
                 $thumb = $product['media']['thumb_mobile'];
                 $price = (float) $product['price'];
-
-                $colorPool = [
-                    'black',
-                    'white',
-                    'beige',
-                    'brown',
-                    'red',
-                    'blue',
-                    'navy',
-                    'olive'
-                ];
-
-                shuffle($colorPool);
-                $productColors = array_slice($colorPool, 0, 3);
             @endphp
 
             <div class="lx-product-card">
@@ -81,25 +67,20 @@
                     </p>
                 </div>
 
-                {{-- PRICE – CLEAN --}}
+                {{-- PRICE --}}
                 <div class="lx-product-price-wrap">
                     <span class="lx-price">
                         {{ number_format($price) }}₫
                     </span>
                 </div>
 
-                {{-- COLORS + QUICK ORDER --}}
+                {{-- QUICK ORDER --}}
                 <div class="lx-product-variants">
-
-                    <div class="lx-product-colors">
-                        @foreach($productColors as $index => $color)
-                            <span class="lx-color-swatch {{ $color }} {{ $index === 0 ? 'active' : '' }}"></span>
-                        @endforeach
-                    </div>
 
                     <a href="{{ route('linxen.product', ['slug' => $slug]) }}"
                        class="lx-quick-order-inline"
                        aria-label="Đặt hàng">
+
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path fill="currentColor"
                                   d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 
@@ -113,6 +94,7 @@
                                      2.44C4.52 14.37 5.48 
                                      16 7 16h12v-2H7.17Z"/>
                         </svg>
+
                     </a>
 
                 </div>
