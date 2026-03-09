@@ -71,14 +71,19 @@
                 {{-- ================= PRICE ================= --}}
                 <div class="lx-price-block">
 
-                    <div class="lx-product-price">
-                        {{ number_format($product['price'] ?? 0) }}₫
-                    </div>
+                    @if(($product['sale_percent'] ?? 0) > 0)
 
-                    <div class="lx-price-note">
-                        ✔ Đã bao gồm VAT • Đổi size trong 7 ngày
-                    </div>
+<div class="lx-price-compare">
+    {{ number_format($product['original_price']) }}₫
+</div>
 
+@endif
+
+<div class="lx-product-price">
+    {{ number_format($product['price']) }}₫
+</div>
+
+                    
                 </div>
 
 
