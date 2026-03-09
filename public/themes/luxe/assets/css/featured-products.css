@@ -433,14 +433,29 @@
 }
 
 /* =========================================
-   GRID
+   RESPONSIVE
 ========================================= */
 
+@media(min-width:768px){
+
 .lx-product-grid{
-    margin-top:28px;
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-    gap:28px;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:22px;
+
+}
+
+}
+
+@media(min-width:1200px){
+
+.lx-product-grid{
+
+    grid-template-columns:repeat(4,1fr);
+
+}
+
 }
 
 /* =========================================
