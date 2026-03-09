@@ -100,10 +100,10 @@
                 </div>
 
                 {{-- STATUS --}}
-                <div class="lx-product-tags">
+                <!-- <div class="lx-product-tags">
                     <span class="lx-tag lx-tag-stock">✔ Còn hàng</span>
                     <span class="lx-tag lx-tag-trend">✨ Xu hướng</span>
-                </div>
+                </div> -->
 
             </div>
 
