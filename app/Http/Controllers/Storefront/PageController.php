@@ -156,20 +156,65 @@ public function home(ErpStorefrontApi $erp)
 
 
     /*
-    |--------------------------------------------------------------------------
-    | 7️⃣ FEATURED PRODUCTS (NON FLASH)
-    |--------------------------------------------------------------------------
-    */
+|--------------------------------------------------------------------------
+| 7️⃣ FEATURED PRODUCTS (NON FLASH)
+|--------------------------------------------------------------------------
+*/
 
-    $featuredProducts = $products
+$featuredProducts = $products
 
-        ->filter(fn ($p) => empty($p['is_flash_sale']))
+    // ❌ bỏ flash sale
+    ->filter(fn ($p) => empty($p['is_flash_sale']))
 
-        ->take(12)
+    // ❌ bỏ sản phẩm lỗi
+    ->filter(fn ($p) =>
+        !empty($p['product_id'])
+        && !empty($p['name'])
+        && !empty($p['media']['thumb_mobile'])
+        && !empty($p['price'])
+    )
+
+    // ⭐ ưu tiên sản phẩm còn nhiều stock
+    ->sortByDesc(function ($p) {
+        return $p['available'] ?? 0;
+    })
+
+    // lấy tối đa 12
+    ->take(12)
+
+    ->values()
+
+    ->toArray();
+
+
+
+/*
+|--------------------------------------------------------------------------
+| FALLBACK – nếu thiếu sản phẩm
+|--------------------------------------------------------------------------
+*/
+
+if (count($featuredProducts) < 8) {
+
+    $fallback = $products
+
+        ->filter(fn ($p) =>
+            !empty($p['product_id'])
+            && !empty($p['name'])
+            && !empty($p['media']['thumb_mobile'])
+        )
+
+        ->take(12 - count($featuredProducts))
 
         ->values()
 
         ->toArray();
+
+    $featuredProducts = array_merge(
+        $featuredProducts,
+        $fallback
+    );
+}
 
 
 
