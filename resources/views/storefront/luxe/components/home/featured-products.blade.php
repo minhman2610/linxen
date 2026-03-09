@@ -1,22 +1,8 @@
 {{-- ===================================================== --}}
-{{-- FEATURED PRODUCTS – CLEAN PRICE (NO FLASH SALE) --}}
+{{-- FEATURED PRODUCTS – SALE & STATUS (WITH COLORS) --}}
 {{-- ===================================================== --}}
 @if(!empty($home['featured_products']) && is_array($home['featured_products']))
 <section class="lx-product-section">
-
-    @php
-        /**
-         * ❌ LOẠI BỎ SKU CHA ĐÃ DÙNG CHO FLASH SALE
-         */
-        $flashSaleCodes = [
-            'SP14535165',
-            'SP14530509',
-            'SP14529951',
-            'SP14527951',
-            'SP14527939',
-            'SP14530151',
-        ];
-    @endphp
 
     <div class="lx-section-header">
         <h2 class="lx-section-title">VÁY NỔI BẬT</h2>
@@ -27,13 +13,6 @@
 
     <div class="lx-product-grid">
         @foreach($home['featured_products'] as $product)
-
-            @php
-                $code = $product['code'] ?? null;
-            @endphp
-
-            {{-- ❌ Bỏ sản phẩm thuộc Flash Sale --}}
-            @continue($code && in_array($code, $flashSaleCodes, true))
 
             @continue(
                 empty($product['product_id'])
@@ -46,7 +25,10 @@
                         . '-' . $product['product_id'];
 
                 $thumb = $product['media']['thumb_mobile'];
-                $price = (float) $product['price'];
+
+                $price       = (float) $product['price'];
+                $salePercent = 20; // demo
+                $salePrice   = round($price * (100 - $salePercent) / 100);
 
                 $colorPool = [
                     'black',
@@ -72,23 +54,31 @@
                              alt="{{ $product['name'] }}"
                              loading="lazy">
                     </a>
+
+                    <span class="lx-sale-badge">
+                        -{{ $salePercent }}%
+                    </span>
                 </div>
 
-                {{-- NAME --}}
+                {{-- NAME + BEST SELLER --}}
                 <div class="lx-product-head">
+                    <span class="lx-tag lx-tag-best">🔥 Bán chạy</span>
                     <p class="lx-product-name">
                         {{ $product['name'] }}
                     </p>
                 </div>
 
-                {{-- PRICE – CLEAN --}}
+                {{-- PRICE --}}
                 <div class="lx-product-price-wrap">
-                    <span class="lx-price">
+                    <span class="lx-price-sale">
+                        {{ number_format($salePrice) }}₫
+                    </span>
+                    <span class="lx-price-origin">
                         {{ number_format($price) }}₫
                     </span>
                 </div>
 
-                {{-- COLORS + QUICK ORDER --}}
+                {{-- COLORS + QUICK ORDER (⬇️ DƯỚI GIÁ – CÙNG 1 HÀNG) --}}
                 <div class="lx-product-variants">
 
                     <div class="lx-product-colors">
