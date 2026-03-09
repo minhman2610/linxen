@@ -469,7 +469,7 @@
 {{-- ===================================================== --}}
 {{-- EDITORIAL IMAGE – LIN XÉN --}}
 {{-- ===================================================== --}}
-<section class="lx-editorial">
+<!-- <section class="lx-editorial">
     <img
         src="/themes/luxe/assets/images/home/anh_thudo.webp"
         alt="LIN XÉN – Timeless Style"
@@ -477,7 +477,7 @@
     >
 
     
-</section>
+</section> -->
 
 {{-- ===================================================== --}}
 {{-- TRY AT HOME – PREMIUM FLOW (REFINED) --}}
@@ -541,7 +541,7 @@
 <!-- ============================================= -->
 <!-- EXCHANGE POSTER – LIN XÉN -->
 <!-- ============================================= -->
-<section class="lx-exchange-poster">
+<!-- <section class="lx-exchange-poster">
 
     <img
         src="/themes/luxe/assets/images/home/anh_doihang.webp"
@@ -549,7 +549,7 @@
         loading="lazy"
     >
 
-</section>
+</section> -->
 
 <section class="lx-exchange">
 
