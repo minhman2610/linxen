@@ -3,15 +3,15 @@
 @php
 /*
 |--------------------------------------------------------------------------
-| 🔑 MAP SIZE → PRODUCT_ID
+| 🔑 MAP SIZE → PRODUCT_ID + STOCK
 |--------------------------------------------------------------------------
-| Fix:
-| - Không loại master SKU
 | - Normalize SIZE
-| - Hỗ trợ key SIZE / Size / size
+| - Map product_id
+| - Map stock
 */
 
 $sizeProductMap = [];
+$sizeStockMap   = [];
 
 foreach ($variants ?? [] as $variant) {
 
@@ -27,7 +27,10 @@ foreach ($variants ?? [] as $variant) {
     }
 
     if ($size && !empty($variant['product_id'])) {
+
         $sizeProductMap[$size] = $variant['product_id'];
+
+        $sizeStockMap[$size] = (int)($variant['available'] ?? 0);
     }
 }
 @endphp
@@ -38,62 +41,78 @@ foreach ($variants ?? [] as $variant) {
     @foreach($attributes as $attr => $values)
 
     @php
-    $attrKey = Str::slug($attr,'_');
-    $isSizeAttr = mb_strtoupper($attr) === 'SIZE';
+        $attrKey    = Str::slug($attr,'_');
+        $isSizeAttr = mb_strtoupper($attr) === 'SIZE';
     @endphp
 
-    <div class="lx-variant-row"
-    data-attr="{{ $attr }}"
-    data-attr-key="{{ $attrKey }}">
-
-    <div class="lx-variant-label">
-        {{ Str::upper($attr) }}
-    </div>
-
-    <div class="lx-variant-options">
-
-        @foreach($values as $val)
-
-        @php
-        $normalizedVal = mb_strtoupper(trim($val));
-        @endphp
-
-        @if($isSizeAttr)
-
-        {{-- SIZE – SKU --}}
-        <button
-        type="button"
-        class="variant-option"
+    <div
+        class="lx-variant-row"
         data-attr="{{ $attr }}"
         data-attr-key="{{ $attrKey }}"
-        data-value="{{ $val }}"
-        data-product-id="{{ $sizeProductMap[$normalizedVal] ?? '' }}"
-        >
-        {{ $val }}
-    </button>
-
-    @else
-
-    {{-- OTHER VARIANTS --}}
-    <button
-    type="button"
-    class="variant-option"
-    data-attr="{{ $attr }}"
-    data-attr-key="{{ $attrKey }}"
-    data-value="{{ $val }}"
     >
-    {{ $val }}
-</button>
 
-@endif
+        <div class="lx-variant-label">
+            {{ Str::upper($attr) }}
+        </div>
 
-@endforeach
+        <div class="lx-variant-options">
 
-</div>
+            @foreach($values as $val)
 
-</div>
+                @php
+                    $normalizedVal = mb_strtoupper(trim($val));
+                @endphp
 
-@endforeach
+                @if($isSizeAttr)
+
+                    @php
+                        $productId = $sizeProductMap[$normalizedVal] ?? null;
+                        $stock     = $sizeStockMap[$normalizedVal] ?? 0;
+                        $isOut     = $stock <= 0;
+                    @endphp
+
+                    {{-- SIZE OPTION --}}
+                    <button
+                        type="button"
+                        class="variant-option {{ $isOut ? 'is-out' : '' }}"
+                        data-attr="{{ $attr }}"
+                        data-attr-key="{{ $attrKey }}"
+                        data-value="{{ $val }}"
+                        data-product-id="{{ $productId }}"
+                        data-stock="{{ $stock }}"
+                        {{ $isOut ? 'disabled' : '' }}
+                    >
+
+                        {{ $val }}
+
+                        @if($isOut)
+                        <span class="variant-x">×</span>
+                        @endif
+
+                    </button>
+
+                @else
+
+                    {{-- OTHER VARIANTS --}}
+                    <button
+                        type="button"
+                        class="variant-option"
+                        data-attr="{{ $attr }}"
+                        data-attr-key="{{ $attrKey }}"
+                        data-value="{{ $val }}"
+                    >
+                        {{ $val }}
+                    </button>
+
+                @endif
+
+            @endforeach
+
+        </div>
+
+    </div>
+
+    @endforeach
 
 </div>
 
