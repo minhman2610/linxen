@@ -1257,3 +1257,43 @@ height:100%;
 object-fit:cover;
 display:block;
 }
+/* ================= PRICE BLOCK ================= */
+
+.lx-price-block{
+margin:18px 0 22px;
+}
+
+.lx-price-row{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.lx-product-price{
+font-size:32px;
+font-weight:700;
+color:#d62828;
+letter-spacing:-0.5px;
+}
+
+.lx-price-compare{
+font-size:16px;
+color:#999;
+text-decoration:line-through;
+margin-top:4px;
+}
+
+.lx-sale-badge{
+background:#d62828;
+color:#fff;
+font-size:13px;
+font-weight:600;
+padding:4px 10px;
+border-radius:20px;
+}
+
+.lx-price-note{
+font-size:13px;
+color:#777;
+margin-top:6px;
+}

@@ -69,22 +69,36 @@
 
 
                 {{-- ================= PRICE ================= --}}
-                <div class="lx-price-block">
+<div class="lx-price-block">
 
-                    @if(($product['sale_percent'] ?? 0) > 0)
+    <div class="lx-price-row">
 
-<div class="lx-price-compare">
-    {{ number_format($product['original_price']) }}₫
+        {{-- SALE PRICE --}}
+        <div class="lx-product-price">
+            {{ number_format($product['price'] ?? 0) }}₫
+        </div>
+
+        {{-- SALE BADGE --}}
+        @if(($product['sale_percent'] ?? 0) > 0)
+        <div class="lx-sale-badge">
+            -{{ $product['sale_percent'] }}%
+        </div>
+        @endif
+
+    </div>
+
+    {{-- ORIGINAL PRICE --}}
+    @if(($product['sale_percent'] ?? 0) > 0)
+    <div class="lx-price-compare">
+        {{ number_format($product['original_price'] ?? 0) }}₫
+    </div>
+    @endif
+
+    <div class="lx-price-note">
+        ✔ Đã bao gồm VAT • Đổi size trong 7 ngày
+    </div>
+
 </div>
-
-@endif
-
-<div class="lx-product-price">
-    {{ number_format($product['price']) }}₫
-</div>
-
-                    
-                </div>
 
 
                 {{-- ================= SCARCITY ================= --}}
