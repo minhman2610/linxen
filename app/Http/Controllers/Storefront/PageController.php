@@ -706,11 +706,10 @@ public function account()
 }
 
 /* =====================================================
- * 📦 COLLECTION – LIN XÉN (ERP SOURCE OF TRUTH)
+ * 📦 COLLECTION – LINXEN (RS SOURCE OF TRUTH)
  * ===================================================== */
 public function collection(string $slug, ErpStorefrontApi $erp)
 {
-
     /*
     |--------------------------------------------------------------------------
     | 0️⃣ Pagination params
@@ -719,10 +718,9 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     $page    = max((int) request()->input('page', 1), 1);
     $perPage = 24;
 
-
     /*
     |--------------------------------------------------------------------------
-    | 1️⃣ Call ERP service
+    | 1️⃣ Call ERP
     |--------------------------------------------------------------------------
     */
     $data = $erp->collection(
@@ -732,115 +730,116 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         $perPage
     );
 
-
     /*
     |--------------------------------------------------------------------------
-    | 2️⃣ ERP ERROR HANDLING
+    | 2️⃣ ERP ERROR
     |--------------------------------------------------------------------------
     */
-
     if (!$data) {
 
-        \Log::error('ERP collection API failed', [
+        \Log::error('[LINXEN][ERP_COLLECTION_FAILED]', [
             'brand' => $this->brand,
             'slug'  => $slug
         ]);
 
-        abort(500, 'Không thể tải dữ liệu bộ sưu tập từ ERP.');
+        abort(500, 'Không thể tải dữ liệu từ ERP.');
     }
-
 
     /*
     |--------------------------------------------------------------------------
     | 3️⃣ COLLECTION NOT FOUND
     |--------------------------------------------------------------------------
     */
-
-    if (!array_key_exists('collection', $data) || $data['collection'] === null) {
-
-    abort(404, "Collection '{$slug}' không tồn tại trong ERP.");
-
-}
-
+    if (empty($data['collection'])) {
+        abort(404, "Collection '{$slug}' không tồn tại.");
+    }
 
     /*
     |--------------------------------------------------------------------------
     | 4️⃣ COLLECTION META
     |--------------------------------------------------------------------------
     */
-
     $collection = [
-
         'name'        => $data['collection']['name'] ?? 'Bộ sưu tập',
-
         'description' => $data['collection']['description'] ?? null,
-
         'hero'        => $data['collection']['hero'] ?? null,
-
         'slug'        => $slug,
-
     ];
 
-
     /*
     |--------------------------------------------------------------------------
-    | 5️⃣ PRODUCTS
+    | 5️⃣ PRODUCTS (RS MAPPING)
     |--------------------------------------------------------------------------
     */
-
     $items = collect($data['products'] ?? [])
-    ->map(function ($p) {
+        ->map(function ($p) {
 
-        $rsId = (int) ($p['rs_id'] ?? 0);
+            $rsId = (int) ($p['rs_id'] ?? 0);
 
-        return [
+            // ❗ Bỏ qua nếu không có RS
+            if ($rsId <= 0) return null;
 
-            'product_id' => $rsId, // 🔥 KEY CHUẨN
+            $name = is_string($p['name'] ?? null)
+                ? $p['name']
+                : '';
 
-            'name' => $p['name'] ?? '',
+            $slug = is_string($p['slug'] ?? null)
+                ? $p['slug']
+                : \Str::slug($name) . '-rs-' . $rsId;
 
-            'slug' => $p['slug']
-                ?? Str::slug($p['name'] ?? '') . '-rs-' . $rsId,
+            // 🔥 IMAGE FALLBACK CHUẨN
+            $thumb =
+                (is_string($p['thumb'] ?? null) ? $p['thumb'] : null)
+                ?? (!empty($p['images'][0]) ? $p['images'][0] : null)
+                ?? asset('images/no-image.png');
 
-            'price' => (float) ($p['price'] ?? 0),
+            return [
+                // 🔥 RS KEY
+                'product_id' => $rsId,
 
-            'sale_percent' => (int) ($p['sale_percent'] ?? 0),
+                'name'       => $name,
+                'slug'       => $slug,
 
-            'thumb' => $p['thumb'] ?? asset('images/no-image.png'),
+                // 🔥 PRICE
+                'price'      => is_numeric($p['price'] ?? null)
+                    ? (float) $p['price']
+                    : 0,
 
-            'colors' => collect($p['colors'] ?? [])
-                ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
-                ->filter(fn ($c) => is_string($c))
-                ->values()
-                ->toArray(),
+                'sale_percent' => (int) ($p['sale_percent'] ?? 0),
 
-            'available' => (int) ($p['available'] ?? 0),
+                // 🔥 IMAGE
+                'thumb' => $thumb,
 
-            'tag' => $p['tag'] ?? null,
+                // 🔥 COLORS
+                'colors' => collect($p['colors'] ?? [])
+                    ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
+                    ->filter(fn ($c) => is_string($c))
+                    ->values()
+                    ->toArray(),
 
-        ];
+                // 🔥 STOCK
+                'available' => (int) ($p['available'] ?? 0),
 
-    })
-    ->filter(fn ($p) => $p['product_id'] > 0) // 🔥 giờ OK
-    ->values();
-
+                // 🔥 TAG
+                'tag' => $p['tag'] ?? null,
+            ];
+        })
+        ->filter() // remove null
+        ->values();
 
     /*
     |--------------------------------------------------------------------------
-    | 6️⃣ Empty collection notice
+    | 6️⃣ EMPTY FLAG
     |--------------------------------------------------------------------------
     */
-
     $isEmpty = $items->isEmpty();
 
-
     /*
     |--------------------------------------------------------------------------
-    | 7️⃣ LengthAwarePaginator
+    | 7️⃣ PAGINATOR
     |--------------------------------------------------------------------------
     */
-
-    $products = new LengthAwarePaginator(
+    $products = new \Illuminate\Pagination\LengthAwarePaginator(
         $items,
         (int) ($data['meta']['total'] ?? $items->count()),
         $perPage,
@@ -851,13 +850,11 @@ public function collection(string $slug, ErpStorefrontApi $erp)
         ]
     );
 
-
     /*
     |--------------------------------------------------------------------------
-    | 8️⃣ Render view
+    | 8️⃣ RENDER VIEW
     |--------------------------------------------------------------------------
     */
-
     return view(
         "storefront.{$this->theme}.pages.collection",
         compact(
@@ -866,7 +863,6 @@ public function collection(string $slug, ErpStorefrontApi $erp)
             'isEmpty'
         )
     );
-
 }
 
 
