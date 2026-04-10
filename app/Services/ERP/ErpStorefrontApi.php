@@ -430,7 +430,7 @@ public function orderDetail(string $code): array
 }
 /**
  * =====================================================
- * 📦 COLLECTION (STORE CATEGORY) – NO CACHE (FIX IMAGE)
+ * 📦 COLLECTION (ERP → LINXEN) – DEBUG VERSION
  * =====================================================
  */
 public function collection(
@@ -447,7 +447,7 @@ public function collection(
     $limit = min(max((int) $limit, 1), 48);
 
     // -------------------------------------------------
-    // 1️⃣ Call ERP (NO CACHE)
+    // 1️⃣ Call ERP
     // -------------------------------------------------
     $endpoint = "/api/storefront/{$brand}/collection/{$slug}";
     $params   = [
@@ -455,9 +455,26 @@ public function collection(
         'limit' => $limit,
     ];
 
+    \Log::info('[LINXEN][COLLECTION_CALL]', [
+        'endpoint' => $endpoint,
+        'params'   => $params,
+    ]);
+
     $data = $this->get($endpoint, $params);
 
+    \Log::info('[LINXEN][COLLECTION_RESPONSE]', [
+        'has_data'   => !empty($data),
+        'has_items'  => !empty($data['products']),
+        'count'      => count($data['products'] ?? []),
+    ]);
+
     if (empty($data) || empty($data['collection'])) {
+
+        \Log::warning('[LINXEN][COLLECTION_EMPTY]', [
+            'slug' => $slug,
+            'raw'  => $data
+        ]);
+
         return [
             'collection' => null,
             'products'   => [],
@@ -472,73 +489,106 @@ public function collection(
         'name'        => is_string($data['collection']['name'] ?? null)
             ? $data['collection']['name']
             : 'Bộ sưu tập',
+
         'description' => is_string($data['collection']['description'] ?? null)
             ? $data['collection']['description']
             : null,
+
         'hero'        => is_string($data['collection']['hero'] ?? null)
             ? $data['collection']['hero']
             : null,
+
         'slug'        => $slug,
     ];
 
     // -------------------------------------------------
-    // 3️⃣ PRODUCTS – FIX ẢNH: MOBILE → DESKTOP → ROOT → NO IMAGE
+    // 3️⃣ PRODUCTS (FIX RS MAPPING + DEBUG)
     // -------------------------------------------------
     $products = collect($data['products'] ?? [])
         ->map(function ($p) {
 
-            $media = $p['media'] ?? [];
+            $rsId = (int) ($p['rs_id'] ?? 0);
 
-            // 🔥 FIX QUAN TRỌNG: THỨ TỰ ƯU TIÊN
+            if ($rsId <= 0) {
+                \Log::warning('[LINXEN][INVALID_RS]', $p);
+                return null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | 🔥 IMAGE FALLBACK
+            |--------------------------------------------------------------------------
+            */
             $thumb =
-                (is_string($media['thumb_mobile'] ?? null) ? $media['thumb_mobile'] : null)
-                ?? (is_string($media['thumb'] ?? null) ? $media['thumb'] : null)
-                ?? (!empty($media['images'][0]['mobile']) && is_string($media['images'][0]['mobile'])
-                        ? $media['images'][0]['mobile']
-                        : null)
-                ?? (!empty($media['images'][0]['thumb']) && is_string($media['images'][0]['thumb'])
-                        ? $media['images'][0]['thumb']
-                        : null)
-                ?? (is_string($p['thumb'] ?? null) ? $p['thumb'] : null)
-                ?? asset('images/no-image.png'); // ❗ KHÔNG BAO GIỜ NULL
+                (is_string($p['thumb'] ?? null) ? $p['thumb'] : null)
+                ?? (!empty($p['images'][0]) ? $p['images'][0] : null)
+                ?? asset('images/no-image.png');
 
-
+            /*
+            |--------------------------------------------------------------------------
+            | 🔥 COLORS
+            |--------------------------------------------------------------------------
+            */
             $colors = collect($p['colors'] ?? [])
                 ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
                 ->filter(fn ($c) => is_string($c))
                 ->values()
                 ->toArray();
 
+            /*
+            |--------------------------------------------------------------------------
+            | 🔥 BUILD ITEM
+            |--------------------------------------------------------------------------
+            */
             return [
-                'product_id' => (int) ($p['product_id'] ?? 0),
-                'name'       => is_string($p['name'] ?? null)
+                'product_id' => $rsId, // 🔥 FIX QUAN TRỌNG
+
+                'name' => is_string($p['name'] ?? null)
                     ? $p['name']
-                    : ($p['name']['vi'] ?? null),
-                'slug'       => is_string($p['slug'] ?? null)
+                    : '',
+
+                'slug' => is_string($p['slug'] ?? null)
                     ? $p['slug']
-                    : null,
-                'price'      => is_numeric($p['price'] ?? null)
+                    : \Str::slug($p['name'] ?? '') . '-rs-' . $rsId,
+
+                'price' => is_numeric($p['price'] ?? null)
                     ? (float) $p['price']
-                    : null,
-                'available'  => (int) ($p['available'] ?? 0),
-                'colors'     => $colors,
+                    : 0,
 
-                // 🔥 FIELD DUY NHẤT VIEW ĐƯỢC DÙNG
-                'thumb'      => $thumb,
+                'available' => (int) ($p['available'] ?? 0),
 
-                'tag'        => '🔥 Bán chạy',
+                'colors' => $colors,
+
+                'thumb' => $thumb,
+
+                'tag' => $p['tag'] ?? null,
             ];
         })
-        ->filter(fn ($p) =>
-            $p['product_id'] > 0
-            && !empty($p['name'])
-            && isset($p['price'])
-        )
+        ->filter(function ($p) {
+
+            $valid = $p
+                && $p['product_id'] > 0
+                && !empty($p['name']);
+
+            if (!$valid) {
+                \Log::warning('[LINXEN][FILTERED_ITEM]', $p);
+            }
+
+            return $valid;
+        })
         ->values()
         ->toArray();
 
     // -------------------------------------------------
-    // 4️⃣ META – PASS THROUGH
+    // 4️⃣ FINAL DEBUG
+    // -------------------------------------------------
+    \Log::info('[LINXEN][COLLECTION_FINAL]', [
+        'slug' => $slug,
+        'count_after_map' => count($products),
+    ]);
+
+    // -------------------------------------------------
+    // 5️⃣ META
     // -------------------------------------------------
     $meta = $data['meta'] ?? null;
 
