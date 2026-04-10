@@ -789,81 +789,40 @@ public function collection(string $slug, ErpStorefrontApi $erp)
     */
 
     $items = collect($data['products'] ?? [])
-        ->map(function ($p) {
+    ->map(function ($p) {
 
-            $price = (float) ($p['price'] ?? 0);
+        $rsId = (int) ($p['rs_id'] ?? 0);
 
-            $salePercent = isset($p['sale_percent'])
-                ? (int) $p['sale_percent']
-                : 0;
+        return [
 
-            return [
+            'product_id' => $rsId, // 🔥 KEY CHUẨN
 
-                'product_id' => (int) ($p['product_id'] ?? 0),
+            'name' => $p['name'] ?? '',
 
-                'name' => $p['name'] ?? '',
+            'slug' => $p['slug']
+                ?? Str::slug($p['name'] ?? '') . '-rs-' . $rsId,
 
-                'slug' => $p['slug']
-                    ?? Str::slug($p['name'] ?? '') . '-' . ($p['product_id'] ?? ''),
+            'price' => (float) ($p['price'] ?? 0),
 
+            'sale_percent' => (int) ($p['sale_percent'] ?? 0),
 
-                /*
-                |--------------------------------------------------------------------------
-                | PRICE FROM ERP
-                |--------------------------------------------------------------------------
-                */
+            'thumb' => $p['thumb'] ?? asset('images/no-image.png'),
 
-                'price' => $price,
+            'colors' => collect($p['colors'] ?? [])
+                ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
+                ->filter(fn ($c) => is_string($c))
+                ->values()
+                ->toArray(),
 
-                'sale_percent' => $salePercent,
+            'available' => (int) ($p['available'] ?? 0),
 
+            'tag' => $p['tag'] ?? null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | IMAGE
-                |--------------------------------------------------------------------------
-                */
+        ];
 
-                'thumb' => $p['thumb'] ?? asset('images/no-image.png'),
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | COLORS
-                |--------------------------------------------------------------------------
-                */
-
-                'colors' => collect($p['colors'] ?? [])
-                    ->map(fn ($c) => is_array($c)
-                        ? ($c['code'] ?? null)
-                        : $c
-                    )
-                    ->filter(fn ($c) => is_string($c))
-                    ->values()
-                    ->toArray(),
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | STOCK
-                |--------------------------------------------------------------------------
-                */
-
-                'available' => (int) ($p['available'] ?? 0),
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | TAG FROM ERP
-                |--------------------------------------------------------------------------
-                */
-
-                'tag' => $p['tag'] ?? null,
-
-            ];
-
-        })
-        ->values();
+    })
+    ->filter(fn ($p) => $p['product_id'] > 0) // 🔥 giờ OK
+    ->values();
 
 
     /*

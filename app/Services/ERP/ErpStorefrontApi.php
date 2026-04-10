@@ -502,12 +502,6 @@ public function collection(
                 ?? (is_string($p['thumb'] ?? null) ? $p['thumb'] : null)
                 ?? asset('images/no-image.png'); // ❗ KHÔNG BAO GIỜ NULL
 
-            // 🧪 DEBUG: xem service đang chọn ảnh gì
-            \Log::error('🧪 LINXEN SERVICE THUMB', [
-                'product_id' => $p['product_id'] ?? null,
-                'thumb'      => $thumb,
-                'has_media'  => !empty($media),
-            ]);
 
             $colors = collect($p['colors'] ?? [])
                 ->map(fn ($c) => is_array($c) ? ($c['code'] ?? null) : $c)
