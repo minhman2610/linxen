@@ -193,3 +193,7 @@ Route::prefix('account')
     });
 
     });
+
+/* AI_PATCH_LINXEN_STOREFRONT_V2_ROUTES_V1_START */
+require __DIR__ . '/commerce_v2.php';
+/* AI_PATCH_LINXEN_STOREFRONT_V2_ROUTES_V1_END */

@@ -22,3 +22,12 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# SSL private material
+/ssl/**/*.key
+/ssl/**/*.csr
+/ssl/**/*.cnf
+
+# SSL private keys
+/lxsh/*.key
+/lxsh/**/*.key
