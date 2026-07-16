@@ -32,6 +32,7 @@
     const selectedText = root.querySelector('[data-lxv2-selected-text]');
     const selectedStock = root.querySelector('[data-lxv2-selected-stock]');
     const buyButton = root.querySelector('[data-lxv2-buy]');
+    const skuInput = root.querySelector('[data-lxv2-sku-input]');
     const priceRoot = root.querySelector('[data-lxv2-price]');
 
     let selectedColor = null;
@@ -98,10 +99,23 @@
             }
         }
 
+        if (skuInput) {
+            skuInput.value = ready
+                ? String(selectedSize.sellable_sku_id || '')
+                : '';
+        }
+
         if (buyButton) {
-            buyButton.disabled = true;
-            buyButton.textContent = ready
-                ? 'Giỏ hàng sẽ mở ở giai đoạn tiếp theo'
+            const canAdd = Boolean(
+                ready
+                && selectedSize.sellable_sku_id
+                && selectedSize.sellable
+                && Number(selectedSize.available || 0) > 0
+            );
+
+            buyButton.disabled = !canAdd;
+            buyButton.textContent = canAdd
+                ? 'Thêm vào giỏ hàng'
                 : 'Chọn màu và kích thước';
         }
     }
@@ -226,4 +240,3 @@
         });
     });
 })();
-

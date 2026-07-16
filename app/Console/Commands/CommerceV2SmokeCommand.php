@@ -12,6 +12,7 @@ class CommerceV2SmokeCommand extends Command
     protected $signature = 'commerce-v2:smoke
         {--product=rs_4451 : Public product id}
         {--sku=SP14546158 : Exact SKU search}
+        {--sellable-sku=sku_54369629 : Exact public sellable SKU}
         {--collection=moi-nhat : Collection slug}
         {--limit=2 : Small smoke page size}
         {--json : Machine-readable JSON}';
@@ -48,6 +49,15 @@ class CommerceV2SmokeCommand extends Command
                 $collectionSlug,
                 $limit
             );
+
+            $cartValidation = $client->validateCart([
+                [
+                    'sellable_sku_id' => (string) $this->option(
+                        'sellable-sku'
+                    ),
+                    'quantity' => 1,
+                ],
+            ]);
 
             $presentedProduct = $presenter->productDetail(
                 (array) data_get($product, 'data', [])
@@ -185,6 +195,18 @@ class CommerceV2SmokeCommand extends Command
                 'collection_non_empty' => count(
                     $collectionItems
                 ) > 0,
+                'cart_validation' => (
+                    data_get(
+                        $cartValidation,
+                        'data.items.0.valid'
+                    ) === true
+                    && data_get(
+                        $cartValidation,
+                        'data.items.0.sellable_sku_id'
+                    ) === (string) $this->option(
+                        'sellable-sku'
+                    )
+                ),
             ];
 
             $ok = ! in_array(false, $checks, true);

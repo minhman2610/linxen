@@ -111,17 +111,32 @@
             <small data-lxv2-selected-stock></small>
         </div>
 
-        <button
-            class="lxv2-button lxv2-button--wide"
-            type="button"
-            disabled
-            data-lxv2-buy
+        <form
+            method="post"
+            action="{{ route('commerce.v2.cart.items.store') }}"
+            data-lxv2-cart-form
         >
-            Chọn màu và kích thước
-        </button>
+            @csrf
+            <input
+                type="hidden"
+                name="sellable_sku_id"
+                value=""
+                data-lxv2-sku-input
+            >
+            <input type="hidden" name="quantity" value="1">
+
+            <button
+                class="lxv2-button lxv2-button--wide"
+                type="submit"
+                disabled
+                data-lxv2-buy
+            >
+                Chọn màu và kích thước
+            </button>
+        </form>
 
         <p class="lxv2-next-phase-note">
-            Giỏ hàng và thanh toán an toàn sẽ được mở ở giai đoạn tiếp theo.
+            ERP sẽ kiểm tra lại giá và tồn kho khi thêm vào giỏ.
         </p>
 
         @if(!empty($product['specs']))
@@ -164,4 +179,3 @@
     id="lxv2ProductData"
 >{!! $productPayloadJson !!}</script>
 @endsection
-

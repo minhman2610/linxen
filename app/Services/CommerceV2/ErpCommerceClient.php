@@ -82,6 +82,45 @@ class ErpCommerceClient
         );
     }
 
+
+    public function validateCart(array $items): array
+    {
+        return $this->request(
+            'POST',
+            '/cart/validate',
+            ['items' => array_values($items)]
+        );
+    }
+
+    public function exchangeCustomerTicket(string $ticket): array
+    {
+        return $this->request(
+            'POST',
+            '/customer/auth/exchange',
+            ['ticket' => $ticket]
+        );
+    }
+
+    public function customerAccount(string $customerToken): array
+    {
+        return $this->request(
+            'GET',
+            '/customer/account',
+            [],
+            $customerToken
+        );
+    }
+
+    public function logoutCustomer(string $customerToken): array
+    {
+        return $this->request(
+            'DELETE',
+            '/customer/auth/session',
+            [],
+            $customerToken
+        );
+    }
+
     public function configurationStatus(): array
     {
         $baseUrl = $this->baseUrl();
@@ -107,6 +146,79 @@ class ErpCommerceClient
                 'file'
             ),
         ];
+    }
+
+
+    protected function request(
+        string $method,
+        string $path,
+        array $payload = [],
+        ?string $customerToken = null
+    ): array {
+        $this->assertConfigured();
+
+        $requestId = (string) Str::uuid();
+
+        try {
+            $http = Http::acceptJson()
+                ->withToken($this->token())
+                ->withHeaders(array_filter([
+                    'X-Commerce-Site' => $this->site(),
+                    'X-Commerce-Customer-Token' => trim(
+                        (string) $customerToken
+                    ),
+                    'X-Request-ID' => $requestId,
+                    'User-Agent' => 'LinXen-Storefront-V2/1.1',
+                ]))
+                ->connectTimeout(max(
+                    1,
+                    (int) config(
+                        'commerce_v2.connect_timeout_seconds',
+                        3
+                    )
+                ))
+                ->timeout(max(
+                    2,
+                    (int) config(
+                        'commerce_v2.timeout_seconds',
+                        8
+                    )
+                ));
+
+            $response = match (strtoupper($method)) {
+                'GET' => $http->get($this->url($path), $payload),
+                'POST' => $http->post($this->url($path), $payload),
+                'DELETE' => $http->delete($this->url($path), $payload),
+                default => throw new CommerceV2ClientException(
+                    'Commerce HTTP method không hợp lệ.',
+                    500,
+                    'storefront_erp_method_invalid'
+                ),
+            };
+        } catch (CommerceV2ClientException $e) {
+            throw $e;
+        } catch (ConnectionException $e) {
+            throw new CommerceV2ClientException(
+                'Không thể kết nối hệ thống Commerce.',
+                503,
+                'storefront_erp_connection_failed',
+                ['request_id' => $requestId],
+                $e
+            );
+        } catch (Throwable $e) {
+            throw new CommerceV2ClientException(
+                'Hệ thống Commerce đang bận.',
+                503,
+                'storefront_erp_request_failed',
+                ['request_id' => $requestId],
+                $e
+            );
+        }
+
+        return $this->decodeResponse(
+            $response,
+            $requestId
+        );
     }
 
     protected function get(

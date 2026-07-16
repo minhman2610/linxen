@@ -19,7 +19,7 @@
         <meta property="og:image" content="{{ $ogImage }}">
     @endif
 
-    <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=1">
+    <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=2">
     @stack('head')
 </head>
 <body class="lxv2-body">
@@ -39,6 +39,8 @@
                 <a href="{{ route('commerce.v2.home') }}" @class(['active' => request()->routeIs('commerce.v2.home')])>Trang chủ</a>
                 <a href="{{ route('commerce.v2.shop') }}" @class(['active' => request()->routeIs('commerce.v2.shop')])>Sản phẩm</a>
                 <a href="{{ route('commerce.v2.search') }}" @class(['active' => request()->routeIs('commerce.v2.search')])>Tìm kiếm</a>
+                <a href="{{ route('commerce.v2.cart.index') }}" @class(['active' => request()->routeIs('commerce.v2.cart.*')])>Giỏ hàng</a>
+                <a href="{{ route('commerce.v2.account.index') }}" @class(['active' => request()->routeIs('commerce.v2.account.*')])>Tài khoản</a>
             </nav>
 
             <form class="lxv2-header-search" method="get" action="{{ route('commerce.v2.search') }}">
@@ -62,6 +64,24 @@
     @endif
 
     <main id="main-content" class="lxv2-main">
+        @if(session('success'))
+            <div class="lxv2-alert lxv2-alert--success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="lxv2-alert lxv2-alert--error">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="lxv2-alert lxv2-alert--error">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
         @yield('content')
     </main>
 
@@ -91,7 +111,7 @@
         </a>
     </nav>
 
-    <script src="{{ asset('commerce-v2/commerce.js') }}?v=1" defer></script>
+    <script src="{{ asset('commerce-v2/commerce.js') }}?v=2" defer></script>
     @stack('scripts')
 </body>
 </html>
