@@ -7,6 +7,23 @@
         return;
     }
 
+    const payloadElement = document.getElementById('lxv2ProductData');
+    let productData = { colors: [] };
+
+    if (payloadElement) {
+        try {
+            productData = JSON.parse(
+                payloadElement.textContent || '{"colors":[]}'
+            );
+        } catch (error) {
+            productData = { colors: [] };
+        }
+    }
+
+    const productColors = Array.isArray(productData.colors)
+        ? productData.colors
+        : [];
+
     const mainImage = root.querySelector('[data-lxv2-main-image]');
     const colorLabel = root.querySelector('[data-lxv2-color-label]');
     const sizeLabel = root.querySelector('[data-lxv2-size-label]');
@@ -52,16 +69,30 @@
         }
 
         if (ready) {
-            selectedText.textContent = selectedColor.label + ' · Size ' + selectedSize.size;
-            selectedStock.textContent = selectedSize.available > 0
-                ? 'Còn ' + Math.floor(selectedSize.available) + ' sản phẩm'
-                : 'Tạm hết hàng';
+            if (selectedText) {
+                selectedText.textContent = selectedColor.label
+                    + ' · Size '
+                    + selectedSize.size;
+            }
+
+            if (selectedStock) {
+                selectedStock.textContent = selectedSize.available > 0
+                    ? 'Còn '
+                        + Math.floor(selectedSize.available)
+                        + ' sản phẩm'
+                    : 'Tạm hết hàng';
+            }
 
             if (priceRoot && selectedSize.price_current > 0) {
-                priceRoot.innerHTML = '<strong>' + money(selectedSize.price_current) + '</strong>'
+                priceRoot.innerHTML = '<strong>'
+                    + money(selectedSize.price_current)
+                    + '</strong>'
                     + (
-                        selectedSize.price_original > selectedSize.price_current
-                            ? '<del>' + money(selectedSize.price_original) + '</del>'
+                        selectedSize.price_original
+                            > selectedSize.price_current
+                            ? '<del>'
+                                + money(selectedSize.price_original)
+                                + '</del>'
                             : ''
                     );
             }
@@ -98,23 +129,34 @@
 
         sizes.forEach((size) => {
             const button = document.createElement('button');
-            const sellable = Boolean(size.sellable) && Number(size.available || 0) > 0;
+            const sellable = Boolean(size.sellable)
+                && Number(size.available || 0) > 0;
 
             button.type = 'button';
             button.className = 'lxv2-size-option';
             button.textContent = size.size || '—';
             button.disabled = !sellable;
-            button.setAttribute('aria-label', 'Size ' + (size.size || ''));
+            button.setAttribute(
+                'aria-label',
+                'Size ' + (size.size || '')
+            );
 
             button.addEventListener('click', () => {
-                sizesRoot.querySelectorAll('.lxv2-size-option').forEach((item) => {
-                    item.classList.toggle('active', item === button);
-                });
+                sizesRoot
+                    .querySelectorAll('.lxv2-size-option')
+                    .forEach((item) => {
+                        item.classList.toggle(
+                            'active',
+                            item === button
+                        );
+                    });
 
                 selectedSize = size;
+
                 if (sizeLabel) {
                     sizeLabel.textContent = 'Size ' + size.size;
                 }
+
                 updateSelection();
             });
 
@@ -141,13 +183,16 @@
                 item.classList.toggle('active', item === button);
             });
 
-            let sizes = [];
-
-            try {
-                sizes = JSON.parse(button.dataset.sizes || '[]');
-            } catch (error) {
-                sizes = [];
-            }
+            const colorIndex = Number(
+                button.dataset.colorIndex || -1
+            );
+            const color = (
+                Number.isInteger(colorIndex)
+                && colorIndex >= 0
+            ) ? productColors[colorIndex] : null;
+            const sizes = color && Array.isArray(color.sizes)
+                ? color.sizes
+                : [];
 
             selectedColor = {
                 code: button.dataset.code || '',
@@ -161,8 +206,18 @@
             setMainImage(button.dataset.cover);
             renderSizes(sizes);
 
+            const escapedCode = window.CSS
+                && typeof window.CSS.escape === 'function'
+                ? window.CSS.escape(selectedColor.code)
+                : selectedColor.code.replace(
+                    /[^A-Za-z0-9_-]/g,
+                    ''
+                );
+
             const matchingThumb = root.querySelector(
-                '[data-lxv2-thumb][data-color="' + CSS.escape(selectedColor.code) + '"]'
+                '[data-lxv2-thumb][data-color="'
+                    + escapedCode
+                    + '"]'
             );
 
             if (matchingThumb) {
@@ -171,3 +226,4 @@
         });
     });
 })();
+

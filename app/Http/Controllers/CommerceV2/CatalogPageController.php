@@ -106,24 +106,44 @@ class CatalogPageController extends Controller
                 );
             }
 
-            return view('commerce_v2.pages.product', [
-                'product' => $product,
-                'cacheStatus' => data_get(
-                    $result,
-                    '_storefront_cache'
-                ),
-                'pageTitle' => $product['name'] . ' — LIN XÉN',
-                'pageDescription' => $this->presenter
-                    ->safeSeoDescription(
-                        $product['description'],
-                        'Xem màu, kích thước, giá và tồn kho của '
-                            . $product['name']
-                            . '.'
+            $productPayloadJson = $this->productPayloadJson(
+                $product
+            );
+
+            return response()->view(
+                'commerce_v2.pages.product',
+                [
+                    'product' => $product,
+                    'productPayloadJson' => $productPayloadJson,
+                    'cacheStatus' => data_get(
+                        $result,
+                        '_storefront_cache'
                     ),
-                'ogImage' => $product['cover_url'],
-            ]);
+                    'pageTitle' => $product['name'] . ' — LIN XÉN',
+                    'pageDescription' => $this->presenter
+                        ->safeSeoDescription(
+                            $product['description'],
+                            'Xem màu, kích thước, giá và tồn kho của '
+                                . $product['name']
+                                . '.'
+                        ),
+                    'ogImage' => $product['cover_url'],
+                ]
+            );
         } catch (CommerceV2ClientException $e) {
             return $this->errorView($e);
+        } catch (Throwable $e) {
+            report($e);
+
+            return $this->errorView(
+                new CommerceV2ClientException(
+                    'Trang sản phẩm đang được cập nhật.',
+                    500,
+                    'storefront_product_render_failed',
+                    [],
+                    $e
+                )
+            );
         }
     }
 
@@ -287,6 +307,39 @@ class CatalogPageController extends Controller
                 (int) $request->query('limit', 8)
             )
         );
+    }
+
+    protected function productPayloadJson(
+        array $product
+    ): string {
+        $encoded = json_encode(
+            [
+                'id' => (string) data_get(
+                    $product,
+                    'id'
+                ),
+                'name' => (string) data_get(
+                    $product,
+                    'name'
+                ),
+                'colors' => array_values(
+                    (array) data_get(
+                        $product,
+                        'colors',
+                        []
+                    )
+                ),
+            ],
+            JSON_HEX_TAG
+            | JSON_HEX_APOS
+            | JSON_HEX_AMP
+            | JSON_HEX_QUOT
+            | JSON_UNESCAPED_UNICODE
+            | JSON_UNESCAPED_SLASHES
+            | JSON_THROW_ON_ERROR
+        );
+
+        return $encoded;
     }
 
     protected function errorView(

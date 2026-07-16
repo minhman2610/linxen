@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\CommerceV2\CommerceV2Presenter;
 use App\Services\CommerceV2\ErpCommerceClient;
 use Illuminate\Console\Command;
 use Throwable;
@@ -18,7 +19,8 @@ class CommerceV2SmokeCommand extends Command
     protected $description = 'Read-only smoke for Lin Xén Storefront V2 → ERP Commerce V2.';
 
     public function handle(
-        ErpCommerceClient $client
+        ErpCommerceClient $client,
+        CommerceV2Presenter $presenter
     ): int {
         try {
             $limit = max(
@@ -46,6 +48,55 @@ class CommerceV2SmokeCommand extends Command
                 $collectionSlug,
                 $limit
             );
+
+            $presentedProduct = $presenter->productDetail(
+                (array) data_get($product, 'data', [])
+            );
+
+            $productPayloadJson = json_encode(
+                [
+                    'id' => data_get(
+                        $presentedProduct,
+                        'id'
+                    ),
+                    'name' => data_get(
+                        $presentedProduct,
+                        'name'
+                    ),
+                    'colors' => data_get(
+                        $presentedProduct,
+                        'colors',
+                        []
+                    ),
+                ],
+                JSON_HEX_TAG
+                | JSON_HEX_APOS
+                | JSON_HEX_AMP
+                | JSON_HEX_QUOT
+                | JSON_UNESCAPED_UNICODE
+                | JSON_UNESCAPED_SLASHES
+                | JSON_THROW_ON_ERROR
+            );
+
+            $productViewHtml = view(
+                'commerce_v2.pages.product',
+                [
+                    'product' => $presentedProduct,
+                    'productPayloadJson' => $productPayloadJson,
+                    'cacheStatus' => null,
+                    'pageTitle' => data_get(
+                        $presentedProduct,
+                        'name',
+                        'Sản phẩm'
+                    ) . ' — LIN XÉN',
+                    'pageDescription' => 'Storefront V2 render smoke.',
+                    'ogImage' => data_get(
+                        $presentedProduct,
+                        'cover_url',
+                        ''
+                    ),
+                ]
+            )->render();
 
             $listingItems = (array) data_get(
                 $listing,
@@ -85,6 +136,37 @@ class CommerceV2SmokeCommand extends Command
                     $product,
                     'data.id'
                 ) === $productId,
+                'product_presenter' => (
+                    data_get(
+                        $presentedProduct,
+                        'id'
+                    ) === $productId
+                    && data_get(
+                        $presentedProduct,
+                        'public_ready'
+                    ) === true
+                    && count(
+                        (array) data_get(
+                            $presentedProduct,
+                            'colors',
+                            []
+                        )
+                    ) > 0
+                ),
+                'product_view_render' => (
+                    str_contains(
+                        $productViewHtml,
+                        'data-lxv2-product'
+                    )
+                    && str_contains(
+                        $productViewHtml,
+                        'lxv2ProductData'
+                    )
+                    && str_contains(
+                        $productViewHtml,
+                        $productId
+                    )
+                ),
                 'search_exact_first' => data_get(
                     $searchItems,
                     '0.id'
