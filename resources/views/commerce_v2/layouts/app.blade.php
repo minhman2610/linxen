@@ -76,7 +76,7 @@
             </div>
         @endif
 
-        @if($errors->any())
+        @if(isset($errors) && $errors->any())
             <div class="lxv2-alert lxv2-alert--error">
                 {{ $errors->first() }}
             </div>
