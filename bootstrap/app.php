@@ -10,6 +10,11 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    /* AI_PATCH_LINXEN_COMMERCE_V2_COMMAND_DISCOVERY_V1_START */
+    ->withCommands([
+        __DIR__.'/../app/Console/Commands',
+    ])
+    /* AI_PATCH_LINXEN_COMMERCE_V2_COMMAND_DISCOVERY_V1_END */
     ->withMiddleware(function (Middleware $middleware): void {
 
         // 🔥 FIX CSRF CHO API STOREFRONT
