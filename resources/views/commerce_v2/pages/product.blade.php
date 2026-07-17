@@ -5,7 +5,7 @@
 @push('head')
     <link
         rel="stylesheet"
-        href="{{ asset('commerce-v2/pdp-sales-experience.css') }}?v=1"
+        href="{{ asset('commerce-v2/pdp-sales-experience.css') }}?v=2"
     >
 @endpush
 
@@ -27,6 +27,21 @@
         'size_chart',
         []
     );
+    $chartSizes = collect((array) data_get(
+        $sizeChart,
+        'sizes',
+        []
+    ));
+    $chartPoints = collect((array) data_get(
+        $sizeChart,
+        'points',
+        []
+    ));
+    $hasStructuredChart = (bool) data_get(
+        $sizeChart,
+        'structured',
+        false
+    ) && $chartSizes->isNotEmpty() && $chartPoints->isNotEmpty();
 @endphp
 
 <article
@@ -333,13 +348,28 @@
             @endforeach
         </div>
 
-        <section class="lxpdp-size-chart">
-            <div>
+        <section
+            class="lxpdp-size-chart {{ $hasStructuredChart ? 'lxpdp-size-chart--structured' : '' }}"
+        >
+            <div class="lxpdp-size-chart__intro">
                 <p class="lxpdp-kicker">Chọn size có căn cứ</p>
                 <h2>Bảng kích thước và tư vấn</h2>
                 <p>
                     {{ data_get($sizeChart, 'message', data_get($sizeAdvisor, 'disclaimer')) }}
                 </p>
+
+                @if($hasStructuredChart)
+                    <div class="lxpdp-size-chart__source">
+                        <strong>Số đo thành phẩm</strong>
+                        <span>
+                            Nguồn: {{ data_get($sizeChart, 'tech_pack.code', 'Tech Pack sản xuất') }}
+                            @if(data_get($sizeChart, 'tech_pack.version'))
+                                · {{ data_get($sizeChart, 'tech_pack.version') }}
+                            @endif
+                        </span>
+                    </div>
+                @endif
+
                 <button
                     type="button"
                     class="lxpdp-secondary-button"
@@ -350,7 +380,67 @@
                 </button>
             </div>
 
-            @if(data_get($sizeChart, 'image_url'))
+            @if($hasStructuredChart)
+                <div
+                    class="lxpdp-size-chart__matrix"
+                    data-lxpdp-size-chart-structured
+                >
+                    <div class="lxpdp-size-chart__scroll" tabindex="0">
+                        <table>
+                            <caption class="sr-only">
+                                Bảng số đo thành phẩm {{ $product['name'] }}
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Điểm đo</th>
+                                    @foreach($chartSizes as $size)
+                                        <th scope="col">{{ $size }}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($chartPoints as $point)
+                                    <tr>
+                                        <th scope="row">
+                                            <span>{{ data_get($point, 'label') }}</span>
+                                            @if(data_get($point, 'note'))
+                                                <small>{{ data_get($point, 'note') }}</small>
+                                            @endif
+                                        </th>
+                                        @foreach($chartSizes as $size)
+                                            @php
+                                                $displayValue = data_get(
+                                                    $point,
+                                                    'display_values.' . $size
+                                                );
+                                                $rawValue = data_get(
+                                                    $point,
+                                                    'values.' . $size
+                                                );
+                                            @endphp
+                                            <td>
+                                                {{ $displayValue !== null && $displayValue !== ''
+                                                    ? $displayValue
+                                                    : ($rawValue !== null && $rawValue !== '' ? $rawValue : '—') }}
+                                                @if($rawValue !== null && $rawValue !== '')
+                                                    <small>{{ data_get($point, 'unit', 'cm') }}</small>
+                                                @endif
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="lxpdp-size-chart__guidance">
+                        {{ data_get(
+                            $sizeChart,
+                            'comparison_guidance',
+                            'Đây là số đo thành phẩm; hãy so với một sản phẩm đang mặc vừa.'
+                        ) }}
+                    </p>
+                </div>
+            @elseif(data_get($sizeChart, 'image_url'))
                 <a
                     href="{{ data_get($sizeChart, 'image_url') }}"
                     target="_blank"
@@ -463,7 +553,7 @@
 
 @push('scripts')
     <script
-        src="{{ asset('commerce-v2/pdp-sales-experience.js') }}?v=1"
+        src="{{ asset('commerce-v2/pdp-sales-experience.js') }}?v=2"
         defer
     ></script>
 @endpush

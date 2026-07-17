@@ -74,6 +74,24 @@ class CommerceV2PdpSalesExperienceSmokeCommand extends Command
                 $product,
                 'size_advisor.status'
             ) === 'provisional',
+            'structured_tech_pack_chart' => (bool) data_get(
+                $product,
+                'size_advisor.size_chart.structured',
+                false
+            ) && data_get(
+                $product,
+                'size_advisor.size_chart.source'
+            ) === 'production_tech_pack_specs',
+            'structured_chart_render' => str_contains(
+                $html,
+                'data-lxpdp-size-chart-structured'
+            ) && str_contains(
+                $html,
+                'Số đo thành phẩm'
+            ) && str_contains(
+                $html,
+                'Vòng ngực'
+            ),
             'product_route' => Route::has(
                 'commerce.v2.product'
             ),
@@ -176,16 +194,66 @@ class CommerceV2PdpSalesExperienceSmokeCommand extends Command
                 'size_advisor' => [
                     'enabled' => true,
                     'status' => 'provisional',
-                    'mode' => 'generic_body_measurements_v1',
+                    'mode' => 'product_tech_pack_plus_generic_body_profile_v1',
                     'confidence_cap' => 'medium',
-                    'source_label' => 'Bảng gợi ý chung LIN XÉN',
+                    'source_label' => 'Tech Pack TP260620002 + Bảng gợi ý chung LIN XÉN',
                     'input_schema' => [],
-                    'disclaimer' => 'Gợi ý tham khảo.',
+                    'disclaimer' => 'Gợi ý tham khảo; bảng Tech Pack là số đo thành phẩm.',
                     'size_chart' => [
-                        'status' => 'image_only',
-                        'image_url' => 'https://example.test/size-chart.webp',
-                        'thumb_url' => 'https://example.test/size-chart-thumb.webp',
-                        'message' => 'Bảng kích thước dạng ảnh.',
+                        'status' => 'structured',
+                        'structured' => true,
+                        'source' => 'production_tech_pack_specs',
+                        'measurement_type' => 'garment',
+                        'sizes' => ['S', 'M', 'L', 'XL'],
+                        'points' => [
+                            [
+                                'code' => 'dress_length_from_shoulder',
+                                'label' => 'Dài váy từ đỉnh vai',
+                                'unit' => 'cm',
+                                'values' => [
+                                    'S' => 83,
+                                    'M' => 85,
+                                    'L' => 87,
+                                    'XL' => 89,
+                                ],
+                                'display_values' => [
+                                    'S' => '83',
+                                    'M' => '85',
+                                    'L' => '87',
+                                    'XL' => '89',
+                                ],
+                                'note' => 'Đo từ điểm vai cao nhất xuống gấu váy.',
+                            ],
+                            [
+                                'code' => 'bust',
+                                'label' => 'Vòng ngực',
+                                'unit' => 'cm',
+                                'values' => [
+                                    'S' => 88,
+                                    'M' => 92,
+                                    'L' => 96,
+                                    'XL' => 100,
+                                ],
+                                'display_values' => [
+                                    'S' => '88',
+                                    'M' => '92',
+                                    'L' => '96',
+                                    'XL' => '100',
+                                ],
+                            ],
+                        ],
+                        'spec_count' => 28,
+                        'point_count' => 7,
+                        'size_count' => 4,
+                        'comparison_guidance' => 'Đây là số đo thành phẩm; hãy so với một sản phẩm đang mặc vừa.',
+                        'message' => 'Bảng số đo thành phẩm từ Tech Pack.',
+                        'tech_pack' => [
+                            'code' => 'TP260620002',
+                            'version' => 'v1',
+                            'status' => 'bom_ready',
+                        ],
+                        'image_url' => '',
+                        'thumb_url' => '',
                     ],
                 ],
             ],
@@ -281,6 +349,13 @@ class CommerceV2PdpSalesExperienceSmokeCommand extends Command
                         [
                             'label' => 'Form dáng',
                             'value' => 'Ôm eo xòe',
+                        ],
+                    ],
+                    'tech_pack' => [
+                        'status' => 'available',
+                        'source' => 'production_tech_pack_specs',
+                        'size_chart' => [
+                            'structured' => true,
                         ],
                     ],
                 ],

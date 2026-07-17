@@ -469,6 +469,10 @@
         const alternatives = Array.isArray(recommendation.alternatives)
             ? recommendation.alternatives
             : [];
+        const fitEvidence = Array.isArray(payload?.fit_evidence?.items)
+            ? payload.fit_evidence.items
+            : [];
+        const profileSource = payload?.profile?.source_label || '';
         let title = 'Cần thêm thông tin';
         let body = 'Vui lòng nhập đủ số đo để nhận gợi ý.';
 
@@ -489,6 +493,18 @@
             <h3>${escapeHtml(title)}</h3>
             <p>${escapeHtml(body)}</p>
             ${reasons.length ? `<ul>${reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join('')}</ul>` : ''}
+            ${fitEvidence.length ? `
+                <div class="lxpdp-advisor__evidence">
+                    <strong>Đối chiếu số đo thành phẩm size ${escapeHtml(payload?.fit_evidence?.size || '')}</strong>
+                    <ul>${fitEvidence.map((item) => `
+                        <li>
+                            ${escapeHtml(item.label)}: cơ thể ${escapeHtml(item.body_cm)} cm · thành phẩm ${escapeHtml(item.garment_cm)} cm · chênh ${escapeHtml(item.difference_cm)} cm
+                        </li>
+                    `).join('')}</ul>
+                    <small>${escapeHtml(payload?.fit_evidence?.message || '')}</small>
+                </div>
+            ` : ''}
+            ${profileSource ? `<small>Nguồn gợi ý: ${escapeHtml(profileSource)}</small>` : ''}
             ${payload?.disclaimer ? `<small>${escapeHtml(payload.disclaimer)}</small>` : ''}
         `;
         sizeResult.hidden = false;

@@ -387,6 +387,11 @@ class CommerceV2Presenter
                 'materials',
                 []
             ),
+            'tech_pack' => (array) data_get(
+                $pdp,
+                'tech_pack',
+                []
+            ),
             'media' => collect($colors)
                 ->flatMap(fn ($color) => (array) data_get(
                     $color,
@@ -475,6 +480,56 @@ class CommerceV2Presenter
                         $sizeChart,
                         'status',
                         'missing'
+                    ),
+                    'structured' => (bool) data_get(
+                        $sizeChart,
+                        'structured',
+                        false
+                    ),
+                    'source' => (string) data_get(
+                        $sizeChart,
+                        'source',
+                        ''
+                    ),
+                    'measurement_type' => (string) data_get(
+                        $sizeChart,
+                        'measurement_type',
+                        ''
+                    ),
+                    'sizes' => array_values((array) data_get(
+                        $sizeChart,
+                        'sizes',
+                        []
+                    )),
+                    'points' => array_values((array) data_get(
+                        $sizeChart,
+                        'points',
+                        data_get($sizeChart, 'measurement_rows', [])
+                    )),
+                    'spec_count' => (int) data_get(
+                        $sizeChart,
+                        'spec_count',
+                        0
+                    ),
+                    'point_count' => (int) data_get(
+                        $sizeChart,
+                        'point_count',
+                        0
+                    ),
+                    'size_count' => (int) data_get(
+                        $sizeChart,
+                        'size_count',
+                        0
+                    ),
+                    'comparison_guidance' => (string) data_get(
+                        $sizeChart,
+                        'comparison_guidance',
+                        ''
+                    ),
+                    'tech_pack' => (array) data_get(
+                        $sizeChart,
+                        'tech_pack',
+                        []
                     ),
                     'image_url' => (string) data_get(
                         $sizeChart,
