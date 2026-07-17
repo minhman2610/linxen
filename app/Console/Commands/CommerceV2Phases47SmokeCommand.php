@@ -86,12 +86,27 @@ class CommerceV2Phases47SmokeCommand extends Command
                     ])->render(),
                     'Discover'
                 ),
-                'orders_view_render' => str_contains(
-                    view('commerce_v2.pages.orders', [
-                        'orders' => ['items' => []],
-                        'pageTitle' => 'Đơn hàng — LIN XÉN',
-                    ])->render(),
-                    'Đơn hàng'
+                'orders_view_render' => (
+                    str_contains(
+                        view('commerce_v2.pages.orders', [
+                            'orders' => ['items' => []],
+                            'verifiedHistory' => false,
+                            'guestHistoryNotice' => true,
+                            'pageTitle' => 'Đơn hàng — LIN XÉN',
+                        ])->render(),
+                        'Đơn trong phiên hiện tại'
+                    )
+                ),
+                'orders_guest_scope_copy' => (
+                    str_contains(
+                        view('commerce_v2.pages.orders', [
+                            'orders' => ['items' => []],
+                            'verifiedHistory' => false,
+                            'guestHistoryNotice' => true,
+                            'pageTitle' => 'Đơn hàng — LIN XÉN',
+                        ])->render(),
+                        'Guest checkout chỉ hiển thị đơn được tạo trong phiên'
+                    )
                 ),
                 'order_view_render' => str_contains(
                     view('commerce_v2.pages.order', [

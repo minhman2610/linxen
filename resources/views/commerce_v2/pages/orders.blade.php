@@ -4,7 +4,17 @@
 
 @section('content')
 @php
-    $items = collect((array) data_get($orders, 'items', []));
+    $verifiedHistory = (bool) ($verifiedHistory ?? false);
+    $guestHistoryNotice = (bool) (
+        $guestHistoryNotice ?? ! $verifiedHistory
+    );
+    $items = collect(
+        (array) data_get(
+            $orders ?? [],
+            'items',
+            []
+        )
+    );
 @endphp
 
 <section class="lxv2-page-head">
