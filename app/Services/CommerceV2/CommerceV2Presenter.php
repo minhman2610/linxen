@@ -138,49 +138,29 @@ class CommerceV2Presenter
     public function productDetail(array $product): array
     {
         $summary = $this->productSummary($product);
-        $media = collect((array) data_get(
+        $pdp = (array) data_get(
+            $product,
+            'media.pdp',
+            []
+        );
+        $sets = collect((array) data_get(
+            $pdp,
+            'media_sets_by_color',
+            []
+        ))->keyBy(
+            fn ($set) => (string) data_get(
+                $set,
+                'color_id'
+            )
+        );
+        $fallbackMedia = collect((array) data_get(
             $product,
             'media.items',
             []
         ))
-            ->map(fn ($item) => [
-                'id' => (string) data_get($item, 'id'),
-                'url' => (string) data_get($item, 'url'),
-                'thumb_url' => (string) (
-                    data_get($item, 'thumb_url')
-                    ?: data_get($item, 'url')
-                ),
-                'color_code' => (string) data_get(
-                    $item,
-                    'color.code'
-                ),
-                'color_name' => (string) data_get(
-                    $item,
-                    'color.name'
-                ),
-                'shot' => (string) data_get(
-                    $item,
-                    'shot'
-                ),
-            ])
+            ->map(fn ($item) => $this->presentMedia($item))
             ->filter(fn ($item) => $item['url'] !== '')
-            ->values()
-            ->all();
-
-        $supportMedia = collect((array) data_get(
-            $product,
-            'media.support_items',
-            []
-        ))
-            ->map(fn ($item) => [
-                'id' => (string) data_get($item, 'id'),
-                'url' => (string) data_get($item, 'url'),
-                'support_role' => (string) data_get(
-                    $item,
-                    'support_role'
-                ),
-            ])
-            ->filter(fn ($item) => $item['url'] !== '')
+            ->take(6)
             ->values()
             ->all();
 
@@ -189,7 +169,10 @@ class CommerceV2Presenter
             'colors',
             []
         ))
-            ->map(function ($color) {
+            ->map(function ($color) use (
+                $sets,
+                $fallbackMedia
+            ) {
                 $sizes = collect((array) data_get(
                     $color,
                     'sizes',
@@ -235,9 +218,47 @@ class CommerceV2Presenter
                     ])
                     ->values()
                     ->all();
+                $colorId = (string) data_get($color, 'id');
+                $set = (array) $sets->get($colorId, []);
+                $media = collect((array) data_get(
+                    $set,
+                    'items',
+                    []
+                ))
+                    ->map(fn ($item) => $this->presentMedia(
+                        $item
+                    ))
+                    ->filter(fn ($item) => $item['url'] !== '')
+                    ->take(6)
+                    ->values()
+                    ->all();
+
+                /*
+                 * Never substitute media from a different color. The product
+                 * fallback is only allowed when the ERP extension is absent,
+                 * preserving backward compatibility during staged deploy.
+                 */
+                if ($sets->isEmpty()) {
+                    $media = collect((array) data_get(
+                        $color,
+                        'media',
+                        []
+                    ))
+                        ->map(fn ($item) => $this->presentMedia(
+                            $item
+                        ))
+                        ->filter(fn ($item) => $item['url'] !== '')
+                        ->take(6)
+                        ->values()
+                        ->all();
+
+                    if ($media === []) {
+                        $media = $fallbackMedia;
+                    }
+                }
 
                 return [
-                    'id' => (string) data_get($color, 'id'),
+                    'id' => $colorId,
                     'code' => (string) data_get(
                         $color,
                         'code'
@@ -245,6 +266,10 @@ class CommerceV2Presenter
                     'label' => (string) data_get(
                         $color,
                         'label'
+                    ),
+                    'key' => (string) data_get(
+                        $color,
+                        'key'
                     ),
                     'hex' => (string) data_get(
                         $color,
@@ -260,16 +285,82 @@ class CommerceV2Presenter
                         'sellable',
                         false
                     ),
-                    'cover_url' => (string) data_get(
-                        $color,
-                        'cover.url',
-                        ''
+                    'cover_url' => (string) (
+                        data_get($set, 'cover.url')
+                        ?: data_get($color, 'cover.url')
                     ),
+                    'media' => $media,
+                    'media_count' => count($media),
+                    'media_source_count' => (int) data_get(
+                        $set,
+                        'source_count',
+                        count($media)
+                    ),
+                    'media_tier' => data_get(
+                        $set,
+                        'best_selection_tier'
+                    ),
+                    'media_fallback_reason' => data_get(
+                        $set,
+                        'fallback_reason'
+                    ),
+                    'exact_color_media' => $sets->isNotEmpty(),
                     'sizes' => $sizes,
                 ];
             })
             ->values()
             ->all();
+        $defaultColor = (array) data_get(
+            $pdp,
+            'default_color',
+            []
+        );
+        $defaultColorId = (string) data_get(
+            $defaultColor,
+            'id'
+        );
+
+        if ($defaultColorId === '' && $colors !== []) {
+            $defaultColorId = (string) data_get(
+                $colors,
+                '0.id'
+            );
+        }
+
+        $supportMedia = collect((array) data_get(
+            $product,
+            'media.support_items',
+            []
+        ))
+            ->map(fn ($item) => [
+                'id' => (string) data_get($item, 'id'),
+                'url' => (string) data_get($item, 'url'),
+                'thumb_url' => (string) (
+                    data_get($item, 'thumb_url')
+                    ?: data_get($item, 'url')
+                ),
+                'support_role' => (string) data_get(
+                    $item,
+                    'support_role'
+                ),
+                'category_code' => (string) data_get(
+                    $item,
+                    'category'
+                ),
+            ])
+            ->filter(fn ($item) => $item['url'] !== '')
+            ->values()
+            ->all();
+        $sizeAdvisor = (array) data_get(
+            $product,
+            'availability.size_advisor',
+            []
+        );
+        $sizeChart = (array) data_get(
+            $sizeAdvisor,
+            'size_chart',
+            []
+        );
 
         return array_merge($summary, [
             'description' => (string) data_get(
@@ -279,20 +370,183 @@ class CommerceV2Presenter
             'specs' => array_values(
                 (array) data_get($product, 'specs', [])
             ),
+            'structured_specs' => (array) data_get(
+                $pdp,
+                'structured_specs',
+                []
+            ),
+            'highlights' => array_values(
+                (array) data_get(
+                    $pdp,
+                    'highlights',
+                    []
+                )
+            ),
             'materials' => (array) data_get(
                 $product,
                 'materials',
                 []
             ),
-            'media' => $media,
+            'media' => collect($colors)
+                ->flatMap(fn ($color) => (array) data_get(
+                    $color,
+                    'media',
+                    []
+                ))
+                ->unique('url')
+                ->values()
+                ->all(),
             'support_media' => $supportMedia,
             'colors' => $colors,
+            'default_color_id' => $defaultColorId,
+            'gallery_limit' => (int) data_get(
+                $pdp,
+                'gallery_limit',
+                6
+            ),
+            'media_strategy' => [
+                'version' => (string) data_get(
+                    $pdp,
+                    'version',
+                    'legacy'
+                ),
+                'category_priority' => array_values(
+                    (array) data_get(
+                        $pdp,
+                        'category_priority',
+                        []
+                    )
+                ),
+                'never_cross_color_fallback' => (bool) data_get(
+                    $pdp,
+                    'never_cross_color_fallback',
+                    true
+                ),
+            ],
+            'size_advisor' => [
+                'enabled' => (bool) data_get(
+                    $sizeAdvisor,
+                    'enabled',
+                    false
+                ),
+                'status' => (string) data_get(
+                    $sizeAdvisor,
+                    'status',
+                    'unavailable'
+                ),
+                'mode' => (string) data_get(
+                    $sizeAdvisor,
+                    'mode',
+                    'unavailable'
+                ),
+                'confidence_cap' => (string) data_get(
+                    $sizeAdvisor,
+                    'confidence_cap',
+                    'none'
+                ),
+                'source_label' => (string) data_get(
+                    $sizeAdvisor,
+                    'source_label',
+                    ''
+                ),
+                'input_schema' => array_values(
+                    (array) data_get(
+                        $sizeAdvisor,
+                        'input_schema',
+                        []
+                    )
+                ),
+                'disclaimer' => (string) data_get(
+                    $sizeAdvisor,
+                    'disclaimer',
+                    ''
+                ),
+                'endpoint_url' => route(
+                    'commerce.v2.product.size_advice',
+                    [
+                        'slug' => (string) data_get(
+                            $summary,
+                            'slug'
+                        ),
+                    ]
+                ),
+                'size_chart' => [
+                    'status' => (string) data_get(
+                        $sizeChart,
+                        'status',
+                        'missing'
+                    ),
+                    'image_url' => (string) data_get(
+                        $sizeChart,
+                        'image_url',
+                        ''
+                    ),
+                    'thumb_url' => (string) data_get(
+                        $sizeChart,
+                        'thumb_url',
+                        ''
+                    ),
+                    'message' => (string) data_get(
+                        $sizeChart,
+                        'message',
+                        ''
+                    ),
+                ],
+            ],
             'public_ready' => (bool) data_get(
                 $product,
                 'public_ready',
                 false
             ),
         ]);
+    }
+
+    protected function presentMedia(mixed $item): array
+    {
+        return [
+            'id' => (string) data_get($item, 'id'),
+            'url' => (string) data_get($item, 'url'),
+            'thumb_url' => (string) (
+                data_get($item, 'thumb_url')
+                ?: data_get($item, 'url')
+            ),
+            'role' => (string) data_get(
+                $item,
+                'role',
+                'lifestyle'
+            ),
+            'role_source' => (string) data_get(
+                $item,
+                'role_source'
+            ),
+            'category_code' => (string) data_get(
+                $item,
+                'category_code',
+                data_get($item, 'category')
+            ),
+            'shot_angle' => (string) data_get(
+                $item,
+                'shot_angle',
+                data_get($item, 'shot')
+            ),
+            'selection_tier' => (int) data_get(
+                $item,
+                'selection_tier',
+                9
+            ),
+            'fallback_reason' => data_get(
+                $item,
+                'fallback_reason'
+            ),
+            'color_code' => (string) data_get(
+                $item,
+                'color.code'
+            ),
+            'color_name' => (string) data_get(
+                $item,
+                'color.name'
+            ),
+        ];
     }
 
     public function collection(array $collection): array

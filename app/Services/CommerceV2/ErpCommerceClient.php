@@ -44,6 +44,29 @@ class ErpCommerceClient
         );
     }
 
+    public function productSizeAdvice(
+        string $reference,
+        array $measurements
+    ): array {
+        $reference = trim($reference);
+
+        if ($reference === '') {
+            throw new CommerceV2ClientException(
+                'Sản phẩm không hợp lệ.',
+                404,
+                'storefront_product_reference_invalid'
+            );
+        }
+
+        return $this->request(
+            'POST',
+            '/catalog/products/'
+                . rawurlencode($reference)
+                . '/size-advice',
+            $measurements
+        );
+    }
+
     public function search(
         string $query,
         int $limit = 8,
