@@ -391,6 +391,11 @@ class CommerceV2Presenter
                 $pdp,
                 'tech_pack',
                 []
+            ),            /* AI_PATCH_LINXEN_PDP_PRESENTATION_ENGINE_V1 */
+            'presentation' => (array) data_get(
+                $pdp,
+                'presentation',
+                []
             ),
             'media' => collect($colors)
                 ->flatMap(fn ($color) => (array) data_get(

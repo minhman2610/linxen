@@ -56,6 +56,16 @@ Route::prefix($prefix)
             'product',
         ])->where('slug', '[A-Za-z0-9._-]+')
             ->name('product');
+        /* AI_PATCH_LINXEN_PDP_PRESENTATION_ENGINE_V1_PREVIEW_START */
+        Route::get('/preview/pdp/{variant}/{slug}', [
+            CatalogPageController::class,
+            'productPreview',
+        ])
+            ->where('variant', '[a-z0-9_]+')
+            ->where('slug', '[A-Za-z0-9._-]+')
+            ->middleware('signed')
+            ->name('product.preview');
+        /* AI_PATCH_LINXEN_PDP_PRESENTATION_ENGINE_V1_PREVIEW_END */
 
         /* AI_PATCH_LINXEN_PDP_SALES_EXPERIENCE_V2_START */
         Route::post('/p/{slug}/size-advice', [

@@ -6,6 +6,9 @@ use App\Exceptions\CommerceV2\CommerceV2ClientException;
 use App\Http\Controllers\Controller;
 use App\Services\CommerceV2\CommerceV2Presenter;
 use App\Services\CommerceV2\ErpCommerceClient;
+use App\Services\CommerceV2\Pdp\PdpPageComposer;
+use App\Services\CommerceV2\Pdp\PdpPresentationResolver;
+use App\Services\CommerceV2\Pdp\PdpViewModelBuilder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,7 +19,10 @@ class CatalogPageController extends Controller
 {
     public function __construct(
         protected ErpCommerceClient $client,
-        protected CommerceV2Presenter $presenter
+        protected CommerceV2Presenter $presenter,
+        protected PdpViewModelBuilder $pdpViewModelBuilder,
+        protected PdpPresentationResolver $pdpPresentationResolver,
+        protected PdpPageComposer $pdpPageComposer
     ) {
     }
 
@@ -86,67 +92,79 @@ class CatalogPageController extends Controller
         }
     }
 
+    /* AI_PATCH_LINXEN_PDP_PRESENTATION_ENGINE_V1 */
     public function product(
         Request $request,
         string $slug
     ): View|Response {
+        return $this->renderProduct($request, $slug, null);
+    }
+
+    public function productPreview(
+        Request $request,
+        string $variant,
+        string $slug
+    ): View|Response {
+        return $this->renderProduct($request, $slug, $variant);
+    }
+
+    protected function renderProduct(
+        Request $request,
+        string $slug,
+        ?string $forcedVariant
+    ): View|Response {
         try {
-            $reference = $this->presenter
-                ->normalizeProductReference($slug);
+            $reference = $this->presenter->normalizeProductReference($slug);
             $result = $this->client->product($reference);
-            $product = $this->presenter->productDetail(
-                (array) data_get($result, 'data', [])
-            );
+            $product = $this->presenter->productDetail((array) data_get($result, 'data', []));
 
             if (! $product['public_ready']) {
-                throw new CommerceV2ClientException(
-                    'Sản phẩm chưa sẵn sàng.',
-                    404,
-                    'storefront_product_not_ready'
-                );
+                throw new CommerceV2ClientException('Sản phẩm chưa sẵn sàng.', 404, 'storefront_product_not_ready');
             }
 
-            $productPayloadJson = $this->productPayloadJson(
-                $product
+            $viewModel = $this->pdpViewModelBuilder->build($product);
+            $presentation = $this->pdpPageComposer->compose(
+                $this->pdpPresentationResolver->resolve($request, $viewModel, $forcedVariant),
+                $viewModel
+            );
+            $payload = [
+                'product' => $product,
+                'productPayloadJson' => $this->productPayloadJson($product),
+                'pdp' => $viewModel,
+                'presentation' => $presentation,
+                'pdpPresentation' => $presentation,
+                'cacheStatus' => data_get($result, '_storefront_cache'),
+                'pageTitle' => $product['name'] . ' — LIN XÉN',
+                'pageDescription' => $this->presenter->safeSeoDescription(
+                    $product['description'],
+                    'Xem màu, kích thước, giá và tồn kho của ' . $product['name'] . '.'
+                ),
+                'ogImage' => $product['cover_url'],
+            ];
+            $response = response()->view(
+                (string) data_get($presentation, 'view', 'commerce_v2.pages.product'),
+                $payload
             );
 
-            return response()->view(
-                'commerce_v2.pages.product',
-                [
-                    'product' => $product,
-                    'productPayloadJson' => $productPayloadJson,
-                    'cacheStatus' => data_get(
-                        $result,
-                        '_storefront_cache'
-                    ),
-                    'pageTitle' => $product['name'] . ' — LIN XÉN',
-                    'pageDescription' => $this->presenter
-                        ->safeSeoDescription(
-                            $product['description'],
-                            'Xem màu, kích thước, giá và tồn kho của '
-                                . $product['name']
-                                . '.'
-                        ),
-                    'ogImage' => $product['cover_url'],
-                ]
-            );
+            if ((bool) data_get($presentation, 'is_preview')) {
+                $response->headers->set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+                $response->headers->set('Cache-Control', 'private, no-store');
+            }
+
+            return $response;
         } catch (CommerceV2ClientException $e) {
             return $this->errorView($e);
         } catch (Throwable $e) {
             report($e);
-
-            return $this->errorView(
-                new CommerceV2ClientException(
-                    'Trang sản phẩm đang được cập nhật.',
-                    500,
-                    'storefront_product_render_failed',
-                    [],
-                    $e
-                )
-            );
+            return $this->errorView(new CommerceV2ClientException(
+                'Trang sản phẩm đang được cập nhật.',
+                500,
+                'storefront_product_render_failed',
+                [],
+                $e
+            ));
         }
     }
-
     public function search(Request $request): View|Response
     {
         $query = Str::squish(
@@ -312,24 +330,8 @@ class CatalogPageController extends Controller
     protected function productPayloadJson(
         array $product
     ): string {
-        $encoded = json_encode(
-            [
-                'id' => (string) data_get(
-                    $product,
-                    'id'
-                ),
-                'name' => (string) data_get(
-                    $product,
-                    'name'
-                ),
-                'colors' => array_values(
-                    (array) data_get(
-                        $product,
-                        'colors',
-                        []
-                    )
-                ),
-            ],
+        return json_encode(
+            $product,
             JSON_HEX_TAG
             | JSON_HEX_APOS
             | JSON_HEX_AMP
@@ -338,10 +340,7 @@ class CatalogPageController extends Controller
             | JSON_UNESCAPED_SLASHES
             | JSON_THROW_ON_ERROR
         );
-
-        return $encoded;
     }
-
     protected function errorView(
         CommerceV2ClientException $e
     ): Response {
