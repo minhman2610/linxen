@@ -33,6 +33,15 @@ class CommerceV2Phases47SmokeCommand extends Command
                 (string) $this->option('feed'),
                 2
             );
+            $resolvedControllers = collect([
+                \App\Http\Controllers\CommerceV2\CheckoutController::class,
+                \App\Http\Controllers\CommerceV2\OrderController::class,
+                \App\Http\Controllers\CommerceV2\AttributionRedirectController::class,
+                \App\Http\Controllers\CommerceV2\DiscoverController::class,
+            ])->every(function (string $controller): bool {
+                return app()->make($controller) instanceof $controller;
+            });
+
             $expectedRoutes = [
                 'commerce.v2.attribution.go',
                 'commerce.v2.checkout.index',
@@ -63,6 +72,8 @@ class CommerceV2Phases47SmokeCommand extends Command
                 ) === 'commerce_discover_feed_public_v1',
                 'routes' => collect($expectedRoutes)
                     ->every(fn ($name) => Route::has($name)),
+                'controller_container_resolution' =>
+                    $resolvedControllers,
                 'discover_view_render' => str_contains(
                     view('commerce_v2.pages.discover', [
                         'rules' => [],
