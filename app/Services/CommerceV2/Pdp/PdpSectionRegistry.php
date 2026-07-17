@@ -81,6 +81,66 @@ final class PdpSectionRegistry
                 'required' => ['policies.cod.enabled'],
                 'empty_behavior' => 'render',
             ],
+            /* AI_PATCH_LINXEN_PDP_ATELIER_SECTIONS_V1 */
+            'atelier_hero_purchase' => [
+                'view' => 'commerce_v2.pdp.atelier.hero-purchase',
+                'required' => ['identity.id', 'commerce.colors'],
+                'empty_behavior' => 'render',
+            ],
+            'atelier_image_ribbon' => [
+                'view' => 'commerce_v2.pdp.atelier.image-ribbon',
+                'required' => ['commerce.default_color.media'],
+                'empty_behavior' => 'hide',
+            ],
+            'atelier_manifesto' => [
+                'view' => 'commerce_v2.pdp.atelier.manifesto',
+                'required' => ['identity.id'],
+                'empty_behavior' => 'render',
+            ],
+            'atelier_design_gestures' => [
+                'view' => 'commerce_v2.pdp.atelier.design-gestures',
+                'required_any' => [
+                    'product_truth.highlights',
+                    'product_truth.design.items',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'atelier_fit_story' => [
+                'view' => 'commerce_v2.pdp.atelier.fit-story',
+                'required_any' => [
+                    'fit.garment_size_chart.points',
+                    'fit.fit_items',
+                    'commerce.default_color.media',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'atelier_truth_mosaic' => [
+                'view' => 'commerce_v2.pdp.atelier.truth-mosaic',
+                'required_any' => [
+                    'media.production_truth',
+                    'commerce.default_color.media',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'atelier_size_story' => [
+                'view' => 'commerce_v2.pdp.atelier.size-story',
+                'required' => ['fit.garment_size_chart.points'],
+                'empty_behavior' => 'hide',
+            ],
+            'atelier_material_story' => [
+                'view' => 'commerce_v2.pdp.atelier.material-story',
+                'required_any' => [
+                    'product_truth.materials.main',
+                    'product_truth.materials.lining',
+                    'product_truth.materials.section.items',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'atelier_finale' => [
+                'view' => 'commerce_v2.pdp.atelier.finale',
+                'required' => ['identity.id'],
+                'empty_behavior' => 'render',
+            ],
         ];
     }
 

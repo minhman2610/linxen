@@ -55,6 +55,43 @@ final class PdpVariantRegistry
                 ],
                 'enabled' => true,
             ],
+            /* AI_PATCH_LINXEN_PDP_ATELIER_EDITORIAL_V1 */
+            'atelier_editorial_v1' => [
+                'key' => 'atelier_editorial_v1',
+                'label' => 'Atelier Editorial V1',
+                'version' => '1.0.0',
+                'renderer' => 'sectioned',
+                'view' => 'commerce_v2.pdp.page',
+                'layout' => 'atelier_editorial_v1',
+                'view_model_version' => PdpViewModelBuilder::VERSION,
+                'sections' => [
+                    'atelier_hero_purchase',
+                    'atelier_image_ribbon',
+                    'atelier_manifesto',
+                    'atelier_design_gestures',
+                    'atelier_fit_story',
+                    'atelier_truth_mosaic',
+                    'atelier_size_story',
+                    'atelier_material_story',
+                    'atelier_finale',
+                ],
+                'assets' => [
+                    'styles' => [
+                        'commerce-v2/pdp-sales-experience.css?v=3',
+                        'commerce-v2/pdp/v1/core.css?v=1',
+                        'commerce-v2/pdp/v1/variants/atelier-editorial-v1.css?v=1',
+                    ],
+                    'scripts' => [
+                        'commerce-v2/pdp/v1/variants/atelier-editorial-v1.js?v=1',
+                    ],
+                ],
+                'art_direction' => [
+                    'concept' => 'atelier_editorial',
+                    'tone' => 'modern_fashion_house',
+                    'empty_sections' => 'hide',
+                ],
+                'enabled' => true,
+            ],
         ];
     }
 
