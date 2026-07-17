@@ -109,7 +109,18 @@
                     '.'
                 ) }}₫
             </strong>
-            <p>Checkout và phí giao hàng sẽ được mở ở bundle tiếp theo.</p>
+            <p>
+                ERP sẽ tính phí giao hàng và tạo quote có thời hạn ở bước tiếp theo.
+            </p>
+
+            @if(data_get($summary, 'valid') === true)
+                <a
+                    class="lxv2-button lxv2-button--wide"
+                    href="{{ route('commerce.v2.checkout.index') }}"
+                >
+                    Tiếp tục giao hàng
+                </a>
+            @endif
 
             <form method="post" action="{{ route('commerce.v2.cart.clear') }}">
                 @csrf

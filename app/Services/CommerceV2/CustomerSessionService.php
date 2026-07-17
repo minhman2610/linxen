@@ -54,6 +54,11 @@ class CustomerSessionService
         ));
     }
 
+    public function authenticated(Session $session): bool
+    {
+        return $this->token($session) !== '';
+    }
+
     public function account(Session $session): array
     {
         $token = $this->token($session);
@@ -86,6 +91,7 @@ class CustomerSessionService
         $session->forget([
             self::TOKEN_KEY,
             self::ACCOUNT_KEY,
+            CheckoutQuoteSessionService::QUOTE_KEY,
         ]);
         $session->migrate(true);
         $session->save();

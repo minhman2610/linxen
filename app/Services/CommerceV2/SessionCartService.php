@@ -186,7 +186,10 @@ class SessionCartService
 
     public function clear(Session $session): void
     {
-        $session->forget(self::SESSION_KEY);
+        $session->forget([
+            self::SESSION_KEY,
+            CheckoutQuoteSessionService::QUOTE_KEY,
+        ]);
         $session->save();
     }
 
@@ -221,6 +224,9 @@ class SessionCartService
         $session->put(
             self::SESSION_KEY,
             array_values($items)
+        );
+        $session->forget(
+            CheckoutQuoteSessionService::QUOTE_KEY
         );
         $session->save();
     }

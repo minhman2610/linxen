@@ -121,6 +121,147 @@ class ErpCommerceClient
         );
     }
 
+
+public function createCheckoutQuote(
+    string $customerToken,
+    array $items,
+    string $shippingAddressId,
+    string $shippingMethod = 'standard',
+    string $paymentMethod = 'cod',
+    array $attribution = []
+): array {
+    return $this->request(
+        'POST',
+        '/checkout/quotes',
+        [
+            'items' => array_values($items),
+            'shipping_address_id' => $shippingAddressId,
+            'shipping_method' => $shippingMethod,
+            'payment_method' => $paymentMethod,
+            'attribution' => $attribution,
+        ],
+        $customerToken
+    );
+}
+
+public function checkoutQuote(
+    string $customerToken,
+    string $quoteId
+): array {
+    return $this->request(
+        'GET',
+        '/checkout/quotes/' . rawurlencode($quoteId),
+        [],
+        $customerToken
+    );
+}
+
+
+public function commitOrder(
+    string $customerToken,
+    string $quoteId,
+    string $idempotencyKey,
+    array $attribution = []
+): array {
+    return $this->request(
+        'POST',
+        '/orders',
+        [
+            'quote_id' => $quoteId,
+            'idempotency_key' => $idempotencyKey,
+            'payment_method' => 'cod',
+            'attribution' => $attribution,
+            'client' => [
+                'surface' => 'linxen_storefront_v2',
+            ],
+        ],
+        $customerToken
+    );
+}
+
+public function orders(
+    string $customerToken,
+    int $limit = 20
+): array {
+    return $this->request(
+        'GET',
+        '/customer/orders',
+        ['limit' => max(1, min(50, $limit))],
+        $customerToken
+    );
+}
+
+public function order(
+    string $customerToken,
+    string $orderId
+): array {
+    return $this->request(
+        'GET',
+        '/customer/orders/' . rawurlencode($orderId),
+        [],
+        $customerToken
+    );
+}
+
+public function cancelOrder(
+    string $customerToken,
+    string $orderId
+): array {
+    return $this->request(
+        'DELETE',
+        '/customer/orders/' . rawurlencode($orderId),
+        [],
+        $customerToken
+    );
+}
+
+public function resolveAttribution(string $token): array
+{
+    return $this->request(
+        'GET',
+        '/attribution/resolve/' . rawurlencode($token)
+    );
+}
+
+public function recordAttributionEvent(
+    string $token,
+    string $eventType,
+    ?string $customerToken = null,
+    array $metadata = []
+): array {
+    return $this->request(
+        'POST',
+        '/attribution/events',
+        [
+            'token' => $token,
+            'event_type' => $eventType,
+            'metadata' => $metadata,
+        ],
+        $customerToken
+    );
+}
+
+public function discover(
+    string $feed = 'de-xuat',
+    int $limit = 12,
+    ?string $cursor = null
+): array {
+    return $this->request(
+        'GET',
+        '/discover',
+        array_filter([
+            'feed' => $feed,
+            'limit' => max(1, min(24, $limit)),
+            'cursor' => $cursor,
+        ], fn ($value) => $value !== null && $value !== '')
+    );
+}
+
+public function discoverRules(): array
+{
+    return $this->request('GET', '/discover/rules');
+}
+
     public function configurationStatus(): array
     {
         $baseUrl = $this->baseUrl();

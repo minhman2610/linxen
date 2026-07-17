@@ -19,7 +19,7 @@
         <meta property="og:image" content="{{ $ogImage }}">
     @endif
 
-    <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=4">
     @stack('head')
 </head>
 <body class="lxv2-body">
@@ -39,7 +39,9 @@
                 <a href="{{ route('commerce.v2.home') }}" @class(['active' => request()->routeIs('commerce.v2.home')])>Trang chủ</a>
                 <a href="{{ route('commerce.v2.shop') }}" @class(['active' => request()->routeIs('commerce.v2.shop')])>Sản phẩm</a>
                 <a href="{{ route('commerce.v2.search') }}" @class(['active' => request()->routeIs('commerce.v2.search')])>Tìm kiếm</a>
+                <a href="{{ route('commerce.v2.discover') }}" @class(['active' => request()->routeIs('commerce.v2.discover')])>Khám phá</a>
                 <a href="{{ route('commerce.v2.cart.index') }}" @class(['active' => request()->routeIs('commerce.v2.cart.*')])>Giỏ hàng</a>
+                <a href="{{ route('commerce.v2.orders.index') }}" @class(['active' => request()->routeIs('commerce.v2.orders.*')])>Đơn hàng</a>
                 <a href="{{ route('commerce.v2.account.index') }}" @class(['active' => request()->routeIs('commerce.v2.account.*')])>Tài khoản</a>
             </nav>
 
@@ -92,6 +94,8 @@
         </div>
         <div class="lxv2-footer__links">
             <a href="{{ route('commerce.v2.shop') }}">Sản phẩm</a>
+            <a href="{{ route('commerce.v2.discover') }}">Khám phá</a>
+            <a href="{{ route('commerce.v2.orders.index') }}">Đơn hàng</a>
             <a href="{{ route('commerce.v2.search') }}">Tìm kiếm</a>
             @if(config('commerce_v2.support_url'))
                 <a href="{{ config('commerce_v2.support_url') }}" rel="nofollow">Hỗ trợ</a>
@@ -106,12 +110,18 @@
         <a href="{{ route('commerce.v2.shop') }}" @class(['active' => request()->routeIs('commerce.v2.shop')])>
             <span>◇</span><small>Sản phẩm</small>
         </a>
-        <a href="{{ route('commerce.v2.search') }}" @class(['active' => request()->routeIs('commerce.v2.search')])>
-            <span>⌕</span><small>Tìm kiếm</small>
+        <a href="{{ route('commerce.v2.discover') }}" @class(['active' => request()->routeIs('commerce.v2.discover')])>
+            <span>✦</span><small>Khám phá</small>
+        </a>
+        <a href="{{ route('commerce.v2.cart.index') }}" @class(['active' => request()->routeIs('commerce.v2.cart.*')])>
+            <span>□</span><small>Giỏ hàng</small>
+        </a>
+        <a href="{{ route('commerce.v2.account.index') }}" @class(['active' => request()->routeIs('commerce.v2.account.*') || request()->routeIs('commerce.v2.orders.*')])>
+            <span>○</span><small>Tài khoản</small>
         </a>
     </nav>
 
-    <script src="{{ asset('commerce-v2/commerce.js') }}?v=2" defer></script>
+    <script src="{{ asset('commerce-v2/commerce.js') }}?v=4" defer></script>
     @stack('scripts')
 </body>
 </html>

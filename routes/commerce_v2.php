@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\CommerceV2\AccountController;
+use App\Http\Controllers\CommerceV2\AttributionRedirectController;
 use App\Http\Controllers\CommerceV2\CartController;
 use App\Http\Controllers\CommerceV2\CatalogPageController;
+use App\Http\Controllers\CommerceV2\CheckoutController;
+use App\Http\Controllers\CommerceV2\DiscoverController;
+use App\Http\Controllers\CommerceV2\OrderController;
 use Illuminate\Support\Facades\Route;
 
 $prefix = trim(
@@ -12,6 +16,10 @@ $prefix = trim(
     ),
     '/'
 );
+
+Route::get('/go/{token}', AttributionRedirectController::class)
+    ->where('token', 'att_[A-Za-z0-9]{32,100}')
+    ->name('commerce.v2.attribution.go');
 
 Route::prefix($prefix)
     ->name('commerce.v2.')
@@ -30,6 +38,11 @@ Route::prefix($prefix)
             CatalogPageController::class,
             'search',
         ])->name('search');
+
+        Route::get('/discover', [
+            DiscoverController::class,
+            'index',
+        ])->name('discover');
 
         Route::get('/collections/{slug}', [
             CatalogPageController::class,
@@ -85,4 +98,48 @@ Route::prefix($prefix)
             AccountController::class,
             'logout',
         ])->name('account.logout');
+
+        Route::get('/checkout', [
+            CheckoutController::class,
+            'index',
+        ])->name('checkout.index');
+
+        Route::post('/checkout/quote', [
+            CheckoutController::class,
+            'createQuote',
+        ])->name('checkout.quote.create');
+
+        Route::get('/checkout/confirm', [
+            CheckoutController::class,
+            'confirm',
+        ])->name('checkout.confirm');
+
+        Route::delete('/checkout/quote', [
+            CheckoutController::class,
+            'requote',
+        ])->name('checkout.quote.requote');
+
+        Route::post('/orders', [
+            OrderController::class,
+            'store',
+        ])->name('orders.store');
+
+        Route::get('/orders', [
+            OrderController::class,
+            'index',
+        ])->name('orders.index');
+
+        Route::get('/orders/{order}', [
+            OrderController::class,
+            'show',
+        ])
+            ->where('order', 'ord_[A-Za-z0-9]+')
+            ->name('orders.show');
+
+        Route::delete('/orders/{order}', [
+            OrderController::class,
+            'cancel',
+        ])
+            ->where('order', 'ord_[A-Za-z0-9]+')
+            ->name('orders.cancel');
     });
