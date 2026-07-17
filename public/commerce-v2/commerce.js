@@ -32,7 +32,6 @@
     const selectedText = root.querySelector('[data-lxv2-selected-text]');
     const selectedStock = root.querySelector('[data-lxv2-selected-stock]');
     const buyButton = root.querySelector('[data-lxv2-buy]');
-    const skuInput = root.querySelector('[data-lxv2-sku-input]');
     const priceRoot = root.querySelector('[data-lxv2-price]');
 
     let selectedColor = null;
@@ -99,23 +98,10 @@
             }
         }
 
-        if (skuInput) {
-            skuInput.value = ready
-                ? String(selectedSize.sellable_sku_id || '')
-                : '';
-        }
-
         if (buyButton) {
-            const canAdd = Boolean(
-                ready
-                && selectedSize.sellable_sku_id
-                && selectedSize.sellable
-                && Number(selectedSize.available || 0) > 0
-            );
-
-            buyButton.disabled = !canAdd;
-            buyButton.textContent = canAdd
-                ? 'Thêm vào giỏ hàng'
+            buyButton.disabled = true;
+            buyButton.textContent = ready
+                ? 'Giỏ hàng sẽ mở ở giai đoạn tiếp theo'
                 : 'Chọn màu và kích thước';
         }
     }
@@ -238,5 +224,125 @@
                 activateThumb(matchingThumb);
             }
         });
+    });
+})();
+
+(function () {
+    'use strict';
+
+    const form = document.querySelector(
+        '[data-lxv2-one-page-checkout]'
+    );
+
+    if (!form) {
+        return;
+    }
+
+    const locationSelect = form.querySelector(
+        '[data-lxv2-checkout-location]'
+    );
+    const wardSelect = form.querySelector(
+        '[data-lxv2-checkout-ward]'
+    );
+    const submitButton = form.querySelector(
+        '.lxv2-place-order'
+    );
+    const urlTemplate = String(
+        form.dataset.wardsUrlTemplate || ''
+    );
+
+    if (
+        !locationSelect
+        || !wardSelect
+        || urlTemplate === ''
+    ) {
+        return;
+    }
+
+    async function loadWards(preserveSelection) {
+        const locationId = String(
+            locationSelect.value || ''
+        );
+        const selectedWard = preserveSelection
+            ? String(
+                wardSelect.dataset.selectedWard
+                || wardSelect.value
+                || ''
+            )
+            : '';
+
+        wardSelect.disabled = true;
+        wardSelect.innerHTML =
+            '<option value="">Đang tải Phường / Xã...</option>';
+
+        if (locationId === '') {
+            wardSelect.innerHTML =
+                '<option value="">Chọn Tỉnh / Thành phố trước</option>';
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                urlTemplate.replace(
+                    '__LOCATION__',
+                    encodeURIComponent(locationId)
+                ),
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                }
+            );
+            const payload = await response.json();
+            const items = Array.isArray(payload.items)
+                ? payload.items
+                : [];
+
+            wardSelect.innerHTML =
+                '<option value="">Chọn Phường / Xã</option>';
+
+            items.forEach((item) => {
+                const option = document.createElement(
+                    'option'
+                );
+                option.value = String(item.id || '');
+                option.textContent = String(item.name || '');
+
+                if (
+                    selectedWard !== ''
+                    && option.value === selectedWard
+                ) {
+                    option.selected = true;
+                }
+
+                wardSelect.appendChild(option);
+            });
+
+            wardSelect.disabled = false;
+        } catch (error) {
+            wardSelect.innerHTML =
+                '<option value="">Không tải được Phường / Xã</option>';
+        }
+    }
+
+    locationSelect.addEventListener('change', () => {
+        wardSelect.dataset.selectedWard = '';
+        loadWards(false);
+    });
+
+    if (String(locationSelect.value || '') !== '') {
+        loadWards(true);
+    }
+
+    form.addEventListener('submit', () => {
+        if (!submitButton || submitButton.disabled) {
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent =
+            'Đang kiểm tra giá, tồn kho và ghi nhận đơn...';
     });
 })();

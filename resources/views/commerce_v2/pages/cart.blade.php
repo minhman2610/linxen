@@ -110,7 +110,7 @@
                 ) }}₫
             </strong>
             <p>
-                ERP sẽ tính phí giao hàng và tạo quote có thời hạn ở bước tiếp theo.
+                Phí giao hàng và tổng tiền được ERP kiểm tra ở bước thanh toán.
             </p>
 
             @if(data_get($summary, 'valid') === true)
@@ -118,7 +118,7 @@
                     class="lxv2-button lxv2-button--wide"
                     href="{{ route('commerce.v2.checkout.index') }}"
                 >
-                    Tiếp tục giao hàng
+                    Tiến hành thanh toán
                 </a>
             @endif
 

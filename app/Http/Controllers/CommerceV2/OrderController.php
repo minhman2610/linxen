@@ -8,6 +8,7 @@ use App\Services\CommerceV2\AttributionSessionService;
 use App\Services\CommerceV2\CheckoutQuoteSessionService;
 use App\Services\CommerceV2\CustomerSessionService;
 use App\Services\CommerceV2\ErpCommerceClient;
+use App\Services\CommerceV2\OrderAccessSessionService;
 use App\Services\CommerceV2\OrderIdempotencySessionService;
 use App\Services\CommerceV2\SessionCartService;
 use Illuminate\Http\RedirectResponse;
@@ -23,7 +24,8 @@ class OrderController extends Controller
         protected CheckoutQuoteSessionService $quoteSession,
         protected OrderIdempotencySessionService $idempotency,
         protected AttributionSessionService $attribution,
-        protected SessionCartService $cart
+        protected SessionCartService $cart,
+        protected OrderAccessSessionService $access
     ) {
     }
 
@@ -33,8 +35,7 @@ class OrderController extends Controller
             $request->session()
         )) {
             return redirect()
-                ->route('commerce.v2.account.index')
-                ->with('error', 'Phiên customer chưa đăng nhập.');
+                ->route('commerce.v2.checkout.index');
         }
 
         $quoteId = $this->quoteSession->id(
@@ -46,7 +47,7 @@ class OrderController extends Controller
                 ->route('commerce.v2.checkout.index')
                 ->with(
                     'error',
-                    'Chưa có báo giá hợp lệ để đặt hàng.'
+                    'Thanh toán một trang chưa có quote nội bộ hợp lệ.'
                 );
         }
 
@@ -80,6 +81,10 @@ class OrderController extends Controller
                 );
             }
 
+            $this->access->grant(
+                $request->session(),
+                $orderId
+            );
             $this->cart->clear($request->session());
             $this->quoteSession->forget(
                 $request->session()
@@ -91,63 +96,141 @@ class OrderController extends Controller
 
             return redirect()
                 ->route(
-                    'commerce.v2.orders.show',
+                    'commerce.v2.orders.success',
                     ['order' => $orderId]
                 )
-                ->with(
-                    'success',
-                    data_get($result, 'idempotent_replay')
-                        ? 'Đơn hàng đã được ghi nhận trước đó.'
-                        : 'Đơn hàng đã được ghi nhận an toàn.'
-                );
+                ->with('success', 'Đặt hàng thành công.');
         } catch (CommerceV2ClientException $e) {
-            return back()->with(
-                'error',
-                $e->getMessage()
-            );
+            return redirect()
+                ->route('commerce.v2.checkout.index')
+                ->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with(
-                'error',
-                'Không thể ghi nhận đơn hàng lúc này.'
-            );
+            return redirect()
+                ->route('commerce.v2.checkout.index')
+                ->with(
+                    'error',
+                    'Không thể ghi nhận đơn hàng lúc này.'
+                );
         }
     }
 
-    public function index(
-        Request $request
-    ): View|RedirectResponse {
-        if (! $this->customer->authenticated(
-            $request->session()
-        )) {
-            return redirect()
-                ->route('commerce.v2.account.index')
-                ->with('error', 'Phiên customer chưa đăng nhập.');
-        }
-
+    public function index(Request $request): View
+    {
         try {
-            $orders = (array) data_get(
-                $this->client->orders(
-                    $this->customer->token(
+            if (
+                $this->customer->verified(
+                    $request->session()
+                )
+            ) {
+                $orders = (array) data_get(
+                    $this->client->orders(
+                        $this->customer->token(
+                            $request->session()
+                        )
+                    ),
+                    'data',
+                    []
+                );
+
+                return view('commerce_v2.pages.orders', [
+                    'orders' => $orders,
+                    'verifiedHistory' => true,
+                    'pageTitle' => 'Đơn hàng — LIN XÉN',
+                    'pageDescription' =>
+                        'Danh sách đơn hàng của anh.',
+                ]);
+            }
+
+            $items = [];
+
+            if (
+                $this->customer->authenticated(
+                    $request->session()
+                )
+            ) {
+                foreach (
+                    $this->access->ids(
                         $request->session()
-                    )
-                ),
-                'data',
-                []
-            );
+                    ) as $orderId
+                ) {
+                    try {
+                        $items[] = (array) data_get(
+                            $this->client->order(
+                                $this->customer->token(
+                                    $request->session()
+                                ),
+                                $orderId
+                            ),
+                            'data',
+                            []
+                        );
+                    } catch (Throwable) {
+                    }
+                }
+            }
 
             return view('commerce_v2.pages.orders', [
-                'orders' => $orders,
+                'orders' => [
+                    'items' => $items,
+                    'returned' => count($items),
+                ],
+                'verifiedHistory' => false,
+                'guestHistoryNotice' => true,
                 'pageTitle' => 'Đơn hàng — LIN XÉN',
-                'pageDescription' => 'Danh sách đơn hàng của anh.',
+                'pageDescription' =>
+                    'Các đơn được tạo trong phiên trình duyệt hiện tại.',
             ]);
         } catch (Throwable $e) {
             report($e);
 
+            return view('commerce_v2.pages.orders', [
+                'orders' => ['items' => []],
+                'verifiedHistory' => false,
+                'guestHistoryNotice' => true,
+                'pageTitle' => 'Đơn hàng — LIN XÉN',
+            ]);
+        }
+    }
+
+    public function success(
+        Request $request,
+        string $order
+    ): View|RedirectResponse {
+        if (! $this->canAccess($request, $order)) {
             return redirect()
-                ->route('commerce.v2.account.index')
-                ->with('error', 'Không thể tải đơn hàng.');
+                ->route('commerce.v2.orders.index')
+                ->with(
+                    'error',
+                    'Phiên hiện tại không có quyền xem biên nhận này.'
+                );
+        }
+
+        try {
+            $result = $this->readOrder(
+                $request,
+                $order
+            );
+
+            return view(
+                'commerce_v2.pages.order_success',
+                [
+                    'order' => $result,
+                    'pageTitle' => 'Đặt hàng thành công — LIN XÉN',
+                    'pageDescription' =>
+                        'LIN XÉN đã tiếp nhận đơn hàng.',
+                ]
+            );
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('commerce.v2.orders.index')
+                ->with(
+                    'error',
+                    'Không thể tải biên nhận đơn hàng.'
+                );
         }
     }
 
@@ -155,23 +238,19 @@ class OrderController extends Controller
         Request $request,
         string $order
     ): View|RedirectResponse {
-        if (! $this->customer->authenticated(
-            $request->session()
-        )) {
+        if (! $this->canAccess($request, $order)) {
             return redirect()
-                ->route('commerce.v2.account.index');
+                ->route('commerce.v2.orders.index')
+                ->with(
+                    'error',
+                    'Anh cần xác minh số điện thoại để xem đơn này.'
+                );
         }
 
         try {
-            $result = (array) data_get(
-                $this->client->order(
-                    $this->customer->token(
-                        $request->session()
-                    ),
-                    $order
-                ),
-                'data',
-                []
+            $result = $this->readOrder(
+                $request,
+                $order
             );
 
             return view('commerce_v2.pages.order', [
@@ -181,7 +260,8 @@ class OrderController extends Controller
                     'order_code',
                     'Đơn hàng'
                 ) . ' — LIN XÉN',
-                'pageDescription' => 'Chi tiết đơn hàng LIN XÉN.',
+                'pageDescription' =>
+                    'Chi tiết đơn hàng LIN XÉN.',
             ]);
         } catch (Throwable $e) {
             report($e);
@@ -196,11 +276,13 @@ class OrderController extends Controller
         Request $request,
         string $order
     ): RedirectResponse {
-        if (! $this->customer->authenticated(
-            $request->session()
-        )) {
+        if (! $this->canAccess($request, $order)) {
             return redirect()
-                ->route('commerce.v2.account.index');
+                ->route('commerce.v2.orders.index')
+                ->with(
+                    'error',
+                    'Phiên hiện tại không có quyền hủy đơn này.'
+                );
         }
 
         try {
@@ -221,5 +303,44 @@ class OrderController extends Controller
                 $e->getMessage()
             );
         }
+    }
+
+    protected function canAccess(
+        Request $request,
+        string $order
+    ): bool {
+        if (
+            ! $this->customer->authenticated(
+                $request->session()
+            )
+        ) {
+            return false;
+        }
+
+        return (
+            $this->customer->verified(
+                $request->session()
+            )
+            || $this->access->allows(
+                $request->session(),
+                $order
+            )
+        );
+    }
+
+    protected function readOrder(
+        Request $request,
+        string $order
+    ): array {
+        return (array) data_get(
+            $this->client->order(
+                $this->customer->token(
+                    $request->session()
+                ),
+                $order
+            ),
+            'data',
+            []
+        );
     }
 }

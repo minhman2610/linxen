@@ -7,33 +7,25 @@
     $items = collect((array) data_get($order, 'items', []));
     $totals = (array) data_get($order, 'totals', []);
     $address = (array) data_get($order, 'address', []);
-    $status = (string) data_get($order, 'status');
-    $providerStatus = (string) data_get(
-        $order,
-        'provider_status'
-    );
-    $customerStatus = match (true) {
-        $status === 'canceled' => 'Đã hủy',
-        $providerStatus === 'created' => 'Đã chuyển sang xử lý',
-        $providerStatus === 'unknown' => 'Đang xác minh',
-        default => 'Đã tiếp nhận',
-    };
 @endphp
 
-<section class="lxv2-page-head">
-    <p class="lxv2-eyebrow">
-        {{ data_get($order, 'order_code') }}
-    </p>
-    <h1>Chi tiết đơn hàng</h1>
+<section class="lxv2-order-success">
+    <div class="lxv2-order-success__mark">✓</div>
+    <p class="lxv2-eyebrow">Đã tiếp nhận</p>
+    <h1>Đặt hàng thành công</h1>
     <p>
-        Trạng thái:
-        <strong>{{ $customerStatus }}</strong>
+        Mã đơn:
+        <strong>{{ data_get($order, 'order_code') }}</strong>
+    </p>
+    <p>
+        LIN XÉN đã ghi nhận đơn an toàn.
+        Đồng bộ KiotViet được xử lý riêng qua outbox.
     </p>
 </section>
 
 <div class="lxv2-checkout-grid">
     <section class="lxv2-checkout-card">
-        <h2>Địa chỉ nhận hàng</h2>
+        <h2>Thông tin nhận hàng</h2>
         <p>
             <strong>
                 {{ data_get($address, 'receiver_name') }}
@@ -46,36 +38,45 @@
             {{ data_get($address, 'location_name') }}
         </p>
 
-        @if($providerStatus === 'unknown')
-            <div class="lxv2-alert">
-                Hệ thống đang xác minh trạng thái xử lý.
-                LIN XÉN không tạo lại đơn để tránh trùng.
+        <dl class="lxv2-quote-details">
+            <div>
+                <dt>Thanh toán</dt>
+                <dd>COD</dd>
             </div>
-        @elseif($providerStatus === 'created')
-            <div class="lxv2-alert lxv2-alert--success">
-                Đơn đã được chuyển sang hệ thống xử lý bán hàng.
+            <div>
+                <dt>Trạng thái</dt>
+                <dd>{{ data_get($order, 'status') }}</dd>
             </div>
-        @else
-            <div class="lxv2-alert">
-                LIN XÉN đã tiếp nhận đơn và đang chuẩn bị bước xử lý tiếp theo.
+            <div>
+                <dt>Tiếp nhận</dt>
+                <dd>{{ data_get($order, 'created_at') }}</dd>
             </div>
-        @endif
+        </dl>
 
-        @if(data_get($order, 'can_cancel'))
-            <form
-                method="post"
-                action="{{ route(
-                    'commerce.v2.orders.cancel',
+        <div class="lxv2-order-success__actions">
+            <a
+                class="lxv2-button"
+                href="{{ route(
+                    'commerce.v2.orders.show',
                     ['order' => data_get($order, 'order_id')]
                 ) }}"
             >
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="lxv2-link-button">
-                    Hủy đơn hàng
-                </button>
-            </form>
-        @endif
+                Xem chi tiết đơn
+            </a>
+            <a
+                class="lxv2-button lxv2-button--soft"
+                href="{{ route('commerce.v2.shop') }}"
+            >
+                Tiếp tục mua sắm
+            </a>
+        </div>
+
+        <p class="lxv2-account-note">
+            Anh đang mua bằng guest checkout thì biên nhận này chỉ
+            được giữ trong phiên trình duyệt hiện tại. Xác minh số
+            điện thoại bằng magic link hoặc OTP sau này để xem lịch sử
+            trên thiết bị khác.
+        </p>
     </section>
 
     <aside class="lxv2-checkout-card lxv2-checkout-summary">
@@ -83,9 +84,7 @@
             @foreach($items as $item)
                 <article>
                     <div>
-                        <strong>
-                            {{ data_get($item, 'product_name') }}
-                        </strong>
+                        <strong>{{ data_get($item, 'product_name') }}</strong>
                         <small>
                             {{ data_get($item, 'color_name') }}
                             · Size {{ data_get($item, 'size') }}

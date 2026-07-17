@@ -38,28 +38,52 @@ class AccountController extends Controller
 
             return redirect()
                 ->route('commerce.v2.account.index')
-                ->with('error', 'Magic link không hợp lệ hoặc đã hết hạn.');
+                ->with(
+                    'error',
+                    'Magic link không hợp lệ hoặc đã hết hạn.'
+                );
         }
     }
 
     public function index(Request $request): View
     {
         try {
-            $account = $this->customer->account(
-                $request->session()
-            );
+            if (
+                $this->customer->verified(
+                    $request->session()
+                )
+            ) {
+                return view('commerce_v2.pages.account', [
+                    'account' => $this->customer->account(
+                        $request->session()
+                    ),
+                    'assurance' => $this->customer->assurance(
+                        $request->session()
+                    ),
+                    'pageTitle' => 'Tài khoản — LIN XÉN',
+                    'pageDescription' =>
+                        'Thông tin khách hàng và địa chỉ nhận hàng.',
+                ]);
+            }
 
             return view('commerce_v2.pages.account', [
-                'account' => $account,
+                'account' => [],
+                'guestIdentity' => $this->customer
+                    ->checkoutIdentity($request->session()),
+                'assurance' => $this->customer->assurance(
+                    $request->session()
+                ),
                 'pageTitle' => 'Tài khoản — LIN XÉN',
-                'pageDescription' => 'Thông tin khách hàng và địa chỉ nhận hàng.',
+                'pageDescription' =>
+                    'Xác minh số điện thoại để xem toàn bộ lịch sử đơn.',
             ]);
         } catch (Throwable $e) {
             report($e);
 
             return view('commerce_v2.pages.account', [
                 'account' => [],
-                'accountError' => 'Phiên đăng nhập không còn hợp lệ.',
+                'accountError' =>
+                    'Phiên đăng nhập không còn hợp lệ.',
                 'pageTitle' => 'Tài khoản — LIN XÉN',
             ]);
         }

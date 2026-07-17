@@ -104,6 +104,23 @@ Route::prefix($prefix)
             'index',
         ])->name('checkout.index');
 
+        Route::post('/checkout/place-order', [
+            CheckoutController::class,
+            'placeOrder',
+        ])
+            ->middleware('throttle:10,1')
+            ->name('checkout.place_order');
+
+        Route::get(
+            '/checkout/locations/{location}/wards',
+            [
+                CheckoutController::class,
+                'wards',
+            ]
+        )
+            ->whereNumber('location')
+            ->name('checkout.wards');
+
         Route::post('/checkout/quote', [
             CheckoutController::class,
             'createQuote',
@@ -128,6 +145,13 @@ Route::prefix($prefix)
             OrderController::class,
             'index',
         ])->name('orders.index');
+
+        Route::get('/order-success/{order}', [
+            OrderController::class,
+            'success',
+        ])
+            ->where('order', 'ord_[A-Za-z0-9]+')
+            ->name('orders.success');
 
         Route::get('/orders/{order}', [
             OrderController::class,

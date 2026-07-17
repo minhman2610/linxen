@@ -3,168 +3,207 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Route;
 use Throwable;
 
 class CommerceV2CheckoutFoundationSmokeCommand extends Command
 {
-    protected $signature = 'commerce-v2:checkout-foundation-smoke';
+    protected $signature =
+        'commerce-v2:checkout-foundation-smoke';
 
-    protected $description = 'Static route and Blade smoke for Storefront V2 quote, local-order and outbox foundation.';
+    protected $description =
+        'Static route, container and Blade smoke for one-page guest checkout.';
 
     public function handle(): int
     {
         try {
-            $routeChecks = collect([
+            $controllers = [
+                \App\Http\Controllers\CommerceV2\CheckoutController::class,
+                \App\Http\Controllers\CommerceV2\OrderController::class,
+                \App\Http\Controllers\CommerceV2\AccountController::class,
+            ];
+            $controllerResolution = collect($controllers)
+                ->every(function (string $controller): bool {
+                    return app()->make($controller)
+                        instanceof $controller;
+                });
+            $expectedRoutes = [
                 'commerce.v2.checkout.index',
-                'commerce.v2.checkout.quote.create',
-                'commerce.v2.checkout.confirm',
-                'commerce.v2.checkout.quote.requote',
-            ])->mapWithKeys(
-                fn ($name) => [
-                    $name => app('router')
-                        ->getRoutes()
-                        ->getByName($name) !== null,
-                ]
-            );
-
+                'commerce.v2.checkout.place_order',
+                'commerce.v2.checkout.wards',
+                'commerce.v2.orders.success',
+                'commerce.v2.orders.index',
+                'commerce.v2.orders.show',
+            ];
+            $routes = collect($expectedRoutes)
+                ->every(fn ($name) => Route::has($name));
             $cart = [
                 'items' => [
                     [
                         'sellable_sku_id' => 'sku_54369629',
-                        'product_name' => 'Camila',
-                        'cover_url' => '',
-                        'sku' => 'SP14546158',
+                        'product_name' => 'Sản phẩm smoke',
                         'color_name' => 'Kem',
                         'size' => 'M',
                         'quantity' => 1,
-                        'available' => 4,
-                        'unit_price' => 799000,
                         'line_total' => 799000,
-                        'valid' => true,
+                        'cover_url' => '',
                     ],
                 ],
                 'summary' => [
-                    'item_count' => 1,
                     'quantity_total' => 1,
                     'subtotal' => 799000,
                     'valid' => true,
                 ],
             ];
-            $account = [
-                'customer' => [
-                    'id' => 'customer_1',
-                    'phone' => '0900000000',
-                ],
-                'addresses' => [
-                    [
-                        'id' => 'address_1',
-                        'receiver_name' => 'Khách kiểm thử',
-                        'receiver_phone' => '0900000000',
-                        'street' => 'Địa chỉ kiểm thử',
-                        'ward_name' => 'Phường kiểm thử',
-                        'location_name' => 'Thành phố kiểm thử',
-                        'is_default' => true,
-                    ],
-                ],
-            ];
-            $quote = [
-                'quote_id' => 'qt_static_smoke',
-                'status' => 'active',
-                'expires_at' => now()
-                    ->addMinutes(15)
-                    ->toIso8601String(),
-                'ttl_remaining_seconds' => 900,
-                'items' => $cart['items'],
-                'address' => $account['addresses'][0],
+            $capabilities = [
+                'guest_checkout_enabled' => true,
+                'otp_checkout_enabled' => false,
+                'one_page_checkout_enabled' => true,
+                'order_accept_enabled' => false,
+                'payment_methods' => ['cod'],
                 'shipping' => [
                     'name' => 'Giao hàng tiêu chuẩn',
-                    'fee' => 30000,
-                ],
-                'payment_method' => 'cod',
-                'totals' => [
-                    'subtotal' => 799000,
-                    'shipping_fee' => 30000,
-                    'discount_total' => 0,
-                    'grand_total' => 829000,
+                    'fee_amount' => 30000,
+                    'free_shipping_threshold' => null,
                 ],
             ];
-
             $checkoutHtml = view(
                 'commerce_v2.pages.checkout',
                 [
                     'cart' => $cart,
-                    'account' => $account,
-                    'pageTitle' => 'Checkout smoke',
-                    'pageDescription' => 'Checkout smoke',
+                    'account' => [],
+                    'identity' => [
+                        'receiver_name' => '',
+                        'phone' => '',
+                        'email' => '',
+                        'location_id' => 0,
+                        'ward_id' => 0,
+                        'ward_name' => '',
+                        'street' => '',
+                    ],
+                    'locations' => [
+                        ['id' => 9, 'name' => 'Hà Nội'],
+                    ],
+                    'capabilities' => $capabilities,
+                    'isVerifiedCustomer' => false,
+                    'isGuestCustomer' => false,
+                    'pageTitle' => 'Thanh toán — LIN XÉN',
+                    'pageDescription' =>
+                        'One-page checkout smoke.',
                 ]
             )->render();
-            $confirmHtml = view(
-                'commerce_v2.pages.checkout_confirm',
+            $order = [
+                'order_id' => 'ord_static_smoke',
+                'order_code' => 'LX-SMOKE',
+                'status' => 'validated',
+                'provider_status' => 'pending_gate',
+                'created_at' => now()->toIso8601String(),
+                'address' => [
+                    'receiver_name' => 'Khách smoke',
+                    'receiver_phone' => '0900000000',
+                    'street' => 'Địa chỉ smoke',
+                    'ward_name' => 'Phường smoke',
+                    'location_name' => 'Tỉnh smoke',
+                ],
+                'items' => [
+                    [
+                        'product_name' => 'Sản phẩm smoke',
+                        'color_name' => 'Kem',
+                        'size' => 'M',
+                        'quantity' => 1,
+                        'line_total' => 799000,
+                    ],
+                ],
+                'totals' => [
+                    'subtotal' => 799000,
+                    'shipping_fee' => 30000,
+                    'grand_total' => 829000,
+                ],
+            ];
+            $successHtml = view(
+                'commerce_v2.pages.order_success',
                 [
-                    'quote' => $quote,
-                    'pageTitle' => 'Quote smoke',
-                    'pageDescription' => 'Quote smoke',
+                    'order' => $order,
+                    'pageTitle' =>
+                        'Đặt hàng thành công — LIN XÉN',
+                    'pageDescription' =>
+                        'Order success smoke.',
                 ]
             )->render();
-
-            $checks = $routeChecks->merge([
-                'checkout_view_render' => (
+            $ordersHtml = view(
+                'commerce_v2.pages.orders',
+                [
+                    'orders' => ['items' => []],
+                    'verifiedHistory' => false,
+                    'guestHistoryNotice' => true,
+                    'pageTitle' => 'Đơn hàng — LIN XÉN',
+                ]
+            )->render();
+            $checks = [
+                'controller_container_resolution' =>
+                    $controllerResolution,
+                'routes' => $routes,
+                'one_page_checkout_render' => (
                     str_contains(
                         $checkoutHtml,
-                        'commerce.v2.checkout'
+                        'data-lxv2-one-page-checkout'
                     )
-                    || str_contains(
+                    && str_contains(
+                        $checkoutHtml,
+                        'Giao hàng và đặt hàng'
+                    )
+                ),
+                'order_gate_default_off_copy' => (
+                    str_contains(
+                        $checkoutHtml,
+                        'Chưa mở nhận đơn'
+                    )
+                    && str_contains(
+                        $checkoutHtml,
+                        'Website đang ở chế độ UAT'
+                    )
+                ),
+                'quote_hidden_from_customer' => (
+                    ! str_contains(
                         $checkoutHtml,
                         'Tạo báo giá'
                     )
+                    && ! str_contains(
+                        $checkoutHtml,
+                        'Báo giá ERP'
+                    )
                 ),
-                'confirm_view_render' => (
+                'guest_checkout_copy' => str_contains(
+                    $checkoutHtml,
+                    'Không cần tạo tài khoản'
+                ),
+                'order_success_render' => (
                     str_contains(
-                        $confirmHtml,
-                        'qt_static_smoke'
+                        $successHtml,
+                        'Đặt hàng thành công'
                     )
                     && str_contains(
-                        $confirmHtml,
-                        'Xác nhận đặt hàng'
+                        $successHtml,
+                        'LX-SMOKE'
                     )
                 ),
-                'local_order_control_present' => (
-                    str_contains(
-                        $confirmHtml,
-                        route('commerce.v2.orders.store')
-                    )
-                    && str_contains(
-                        $confirmHtml,
-                        'Xác nhận đặt hàng COD'
-                    )
-                ),
-                'idempotency_contract_present' => str_contains(
-                    $confirmHtml,
-                    'idempotency key'
-                ),
-                'provider_outbox_contract_present' => str_contains(
-                    $confirmHtml,
-                    'Outbox bất đồng bộ'
+                'guest_order_privacy_copy' => str_contains(
+                    $ordersHtml,
+                    'không tra cứu đơn'
                 ),
                 'order_mutation_none' => true,
                 'provider_mutation_none' => true,
-            ]);
+            ];
 
-            foreach ($checks as $name => $passed) {
+            foreach ($checks as $code => $passed) {
                 $this->line(
-                    strtoupper(
-                        str_replace('.', '_', $name)
-                    )
+                    strtoupper($code)
                     . '='
                     . ($passed ? 'PASS' : 'FAIL')
                 );
             }
 
-            $ok = ! in_array(
-                false,
-                $checks->all(),
-                true
-            );
+            $ok = ! in_array(false, $checks, true);
             $this->line(
                 'CHECKOUT_FOUNDATION_SMOKE='
                 . ($ok ? 'PASS' : 'FAIL')

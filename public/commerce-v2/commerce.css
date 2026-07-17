@@ -1508,3 +1508,225 @@ img {
         align-items: start;
     }
 }
+
+
+.lxv2-checkout-head {
+    max-width: 760px;
+}
+
+.lxv2-one-page-checkout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 28px;
+    max-width: var(--lxv2-max);
+    margin: 0 auto 64px;
+    align-items: start;
+}
+
+.lxv2-one-page-form {
+    display: grid;
+    gap: 0;
+    overflow: hidden;
+}
+
+.lxv2-checkout-section {
+    display: grid;
+    gap: 18px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--lxv2-line);
+}
+
+.lxv2-checkout-section:first-child {
+    padding-top: 0;
+}
+
+.lxv2-checkout-section__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.lxv2-checkout-section__head > span {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--lxv2-text);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.lxv2-checkout-section__head h2 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.lxv2-checkout-section__head p {
+    margin: 5px 0 0;
+    color: var(--lxv2-muted);
+    line-height: 1.55;
+}
+
+.lxv2-checkout-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.lxv2-field {
+    display: grid;
+    gap: 7px;
+}
+
+.lxv2-field--wide {
+    grid-column: 1 / -1;
+}
+
+.lxv2-field > span {
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.lxv2-field > span small {
+    color: var(--lxv2-muted);
+    font-weight: 500;
+}
+
+.lxv2-field input,
+.lxv2-field select {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 13px;
+    border: 1px solid var(--lxv2-line);
+    border-radius: 13px;
+    background: #fff;
+    color: var(--lxv2-text);
+    font: inherit;
+}
+
+.lxv2-field input:focus,
+.lxv2-field select:focus {
+    border-color: var(--lxv2-accent);
+    outline: 3px solid rgba(126, 77, 54, .12);
+}
+
+.lxv2-choice-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--lxv2-line);
+    border-radius: 15px;
+    background: var(--lxv2-soft);
+    cursor: pointer;
+}
+
+.lxv2-choice-card input {
+    margin-top: 4px;
+}
+
+.lxv2-choice-card span {
+    display: grid;
+    gap: 4px;
+}
+
+.lxv2-choice-card small {
+    color: var(--lxv2-muted);
+    line-height: 1.5;
+}
+
+.lxv2-place-order {
+    margin-top: 22px;
+    min-height: 54px;
+    font-size: 16px;
+}
+
+.lxv2-place-order:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+}
+
+.lxv2-checkout-legal {
+    margin: 12px 0 0;
+    color: var(--lxv2-muted);
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.lxv2-customer-totals {
+    margin-top: 20px;
+}
+
+.lxv2-order-success {
+    display: grid;
+    justify-items: center;
+    max-width: 720px;
+    margin: 18px auto 34px;
+    text-align: center;
+}
+
+.lxv2-order-success__mark {
+    display: grid;
+    width: 72px;
+    height: 72px;
+    place-items: center;
+    margin-bottom: 18px;
+    border-radius: 999px;
+    background: #e9f8ee;
+    color: #147a3f;
+    font-size: 34px;
+    font-weight: 900;
+}
+
+.lxv2-order-success h1 {
+    margin: 5px 0 12px;
+    font-size: clamp(30px, 5vw, 48px);
+}
+
+.lxv2-order-success p {
+    margin: 4px 0;
+    color: var(--lxv2-muted);
+    line-height: 1.6;
+}
+
+.lxv2-order-success__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 24px 0;
+}
+
+.lxv2-button--soft {
+    background: var(--lxv2-soft);
+    color: var(--lxv2-text);
+}
+
+@media (max-width: 960px) {
+    .lxv2-one-page-checkout {
+        grid-template-columns: 1fr;
+    }
+
+    .lxv2-one-page-checkout .lxv2-checkout-summary {
+        position: static;
+    }
+}
+
+@media (max-width: 640px) {
+    .lxv2-checkout-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .lxv2-field--wide {
+        grid-column: auto;
+    }
+
+    .lxv2-one-page-form,
+    .lxv2-one-page-checkout .lxv2-checkout-summary {
+        padding: 18px;
+    }
+}

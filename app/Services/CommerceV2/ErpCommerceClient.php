@@ -122,6 +122,64 @@ class ErpCommerceClient
     }
 
 
+
+    public function checkoutCapabilities(): array
+    {
+        return $this->request(
+            'GET',
+            '/checkout/capabilities'
+        );
+    }
+
+    public function checkoutLocations(
+        string $query = ''
+    ): array {
+        return $this->request(
+            'GET',
+            '/checkout/locations',
+            array_filter([
+                'q' => trim($query),
+            ], fn ($value) => $value !== '')
+        );
+    }
+
+    public function checkoutWards(
+        int $locationId,
+        string $query = ''
+    ): array {
+        return $this->request(
+            'GET',
+            '/checkout/locations/'
+                . $locationId
+                . '/wards',
+            array_filter([
+                'q' => trim($query),
+            ], fn ($value) => $value !== '')
+        );
+    }
+
+    public function beginGuestCheckout(
+        array $identity
+    ): array {
+        return $this->request(
+            'POST',
+            '/checkout/guest-session',
+            $identity
+        );
+    }
+
+    public function upsertCheckoutAddress(
+        string $customerToken,
+        array $identity
+    ): array {
+        return $this->request(
+            'POST',
+            '/customer/checkout-address',
+            $identity,
+            $customerToken
+        );
+    }
+
 public function createCheckoutQuote(
     string $customerToken,
     array $items,

@@ -189,6 +189,7 @@ class SessionCartService
         $session->forget([
             self::SESSION_KEY,
             CheckoutQuoteSessionService::QUOTE_KEY,
+            OnePageCheckoutSessionService::PIPELINE_KEY,
         ]);
         $session->save();
     }
@@ -225,9 +226,10 @@ class SessionCartService
             self::SESSION_KEY,
             array_values($items)
         );
-        $session->forget(
-            CheckoutQuoteSessionService::QUOTE_KEY
-        );
+        $session->forget([
+            CheckoutQuoteSessionService::QUOTE_KEY,
+            OnePageCheckoutSessionService::PIPELINE_KEY,
+        ]);
         $session->save();
     }
 }

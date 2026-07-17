@@ -19,7 +19,7 @@
         <meta property="og:image" content="{{ $ogImage }}">
     @endif
 
-    <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=4">
+    <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=5">
     @stack('head')
 </head>
 <body class="lxv2-body">
@@ -121,7 +121,7 @@
         </a>
     </nav>
 
-    <script src="{{ asset('commerce-v2/commerce.js') }}?v=4" defer></script>
+    <script src="{{ asset('commerce-v2/commerce.js') }}?v=5" defer></script>
     @stack('scripts')
 </body>
 </html>
