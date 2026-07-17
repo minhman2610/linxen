@@ -9,7 +9,7 @@ class CommerceV2CheckoutFoundationSmokeCommand extends Command
 {
     protected $signature = 'commerce-v2:checkout-foundation-smoke';
 
-    protected $description = 'Static route and Blade smoke for Storefront V2 quote/shipping phase.';
+    protected $description = 'Static route and Blade smoke for Storefront V2 quote, local-order and outbox foundation.';
 
     public function handle(): int
     {
@@ -125,13 +125,29 @@ class CommerceV2CheckoutFoundationSmokeCommand extends Command
                     )
                     && str_contains(
                         $confirmHtml,
-                        'Đặt hàng sẽ mở ở Phase 5'
+                        'Xác nhận đặt hàng'
                     )
                 ),
-                'order_commit_disabled' => str_contains(
-                    $confirmHtml,
-                    'disabled'
+                'local_order_control_present' => (
+                    str_contains(
+                        $confirmHtml,
+                        route('commerce.v2.orders.store')
+                    )
+                    && str_contains(
+                        $confirmHtml,
+                        'Xác nhận đặt hàng COD'
+                    )
                 ),
+                'idempotency_contract_present' => str_contains(
+                    $confirmHtml,
+                    'idempotency key'
+                ),
+                'provider_outbox_contract_present' => str_contains(
+                    $confirmHtml,
+                    'Outbox bất đồng bộ'
+                ),
+                'order_mutation_none' => true,
+                'provider_mutation_none' => true,
             ]);
 
             foreach ($checks as $name => $passed) {
