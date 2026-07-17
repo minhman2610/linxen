@@ -244,7 +244,63 @@ class AiStorefrontContextCommand extends Command
             }
         }
 
-        return self::SUCCESS;
+                /* AI_PATCH_AI_STOREFRONT_CONTEXT_AUTO_DOWNLOAD_ARCHIVE_V1 */
+        if (! (bool) $this->option('no-download')) {
+            $download = $this->publishContextArchiveV1(
+                $outputDir
+            );
+
+            $this->newLine();
+            $this->info('AI Storefront Context download ready');
+            $this->line(
+                'DOWNLOAD_URL='
+                . (string) data_get(
+                    $download,
+                    'url'
+                )
+            );
+            $this->line(
+                'DOWNLOAD_PATH='
+                . (string) data_get(
+                    $download,
+                    'path'
+                )
+            );
+            $this->line(
+                'SHA256='
+                . (string) data_get(
+                    $download,
+                    'sha256'
+                )
+            );
+            $this->line(
+                'SIZE_BYTES='
+                . (int) data_get(
+                    $download,
+                    'size_bytes',
+                    0
+                )
+            );
+            $this->line(
+                'DELETE_COMMAND='
+                . (string) data_get(
+                    $download,
+                    'delete_command'
+                )
+            );
+            $this->warn(
+                'Archive chứa source nội bộ và đang public; '
+                . 'hãy chạy DELETE_COMMAND sau khi tải.'
+            );
+            $this->line(
+                'AI_STOREFRONT_CONTEXT_DOWNLOAD=PASS'
+            );
+        } else {
+            $this->line(
+                'AI_STOREFRONT_CONTEXT_DOWNLOAD=SKIPPED'
+            );
+        }
+return self::SUCCESS;
     }
 
     private function normalizedScanPlan(string $mode, string $phase): array
@@ -1475,5 +1531,216 @@ class AiStorefrontContextCommand extends Command
     private function absolutePath(string $path): string
     {
         return str_starts_with($path, '/') ? $path : base_path($path);
+    }
+
+    /**
+     * AI_PATCH_AI_STOREFRONT_CONTEXT_AUTO_DOWNLOAD_ARCHIVE_V1
+     *
+     * Publish the complete generated context directory as one tar.gz archive.
+     * This intentionally mirrors the ERP context workflow: a random public
+     * filename is printed together with SHA256 and an explicit delete command.
+     */
+    private function publishContextArchiveV1(
+        string $outputDir
+    ): array {
+        $contextFile = rtrim(
+            $outputDir,
+            DIRECTORY_SEPARATOR
+        ) . DIRECTORY_SEPARATOR . 'context.md';
+
+        if (
+            ! is_dir($outputDir)
+            || ! is_file($contextFile)
+            || filesize($contextFile) < 1
+        ) {
+            throw new \RuntimeException(
+                'Context directory is incomplete: '
+                . $outputDir
+            );
+        }
+
+        $downloadDir = trim(
+            (string) (
+                $this->option('download-dir')
+                ?: 'ai-context'
+            ),
+            "/\\"
+        );
+
+        if (
+            $downloadDir === ''
+            || str_contains($downloadDir, '..')
+            || preg_match(
+                '/^[A-Za-z0-9._\/-]+$/',
+                $downloadDir
+            ) !== 1
+        ) {
+            throw new \RuntimeException(
+                'Invalid public download directory.'
+            );
+        }
+
+        $publicDir = public_path($downloadDir);
+
+        if (
+            ! is_dir($publicDir)
+            && ! mkdir(
+                $publicDir,
+                0775,
+                true
+            )
+            && ! is_dir($publicDir)
+        ) {
+            throw new \RuntimeException(
+                'Unable to create public download directory: '
+                . $publicDir
+            );
+        }
+
+        $site = trim(
+            (string) $this->option('site')
+        );
+        $project = trim(
+            (string) (
+                $this->option('project-id')
+                ?: $this->option('phase')
+                ?: $this->option('mode')
+                ?: 'context'
+            )
+        );
+
+        $slug = \Illuminate\Support\Str::slug(
+            trim($site . '-' . $project)
+        );
+
+        if ($slug === '') {
+            $slug = 'storefront-context';
+        }
+
+        $slug = substr($slug, 0, 100);
+        $timestamp = now()->format(
+            'Ymd_His'
+        );
+        $reverseSortKey = max(
+            0,
+            9999999999 - now()->timestamp
+        );
+        $random = bin2hex(
+            random_bytes(4)
+        );
+        $filename = sprintf(
+            '0000_UPLOAD_FIRST_%010d_%s_ai_storefront_context_%s_%s.tar.gz',
+            $reverseSortKey,
+            $timestamp,
+            $slug,
+            $random
+        );
+        $archivePath = $publicDir
+            . DIRECTORY_SEPARATOR
+            . $filename;
+
+        $process = new \Symfony\Component\Process\Process([
+            'tar',
+            '-C',
+            dirname($outputDir),
+            '-czf',
+            $archivePath,
+            basename($outputDir),
+        ]);
+
+        $process->setTimeout(300);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            @unlink($archivePath);
+
+            throw new \RuntimeException(
+                'Unable to create storefront context archive: '
+                . trim(
+                    $process->getErrorOutput()
+                    ?: $process->getOutput()
+                )
+            );
+        }
+
+        if (
+            ! is_file($archivePath)
+            || filesize($archivePath) < 1
+        ) {
+            throw new \RuntimeException(
+                'Storefront context archive is empty.'
+            );
+        }
+
+        @chmod($archivePath, 0644);
+
+        $sha256 = hash_file(
+            'sha256',
+            $archivePath
+        );
+
+        if (! is_string($sha256) || $sha256 === '') {
+            @unlink($archivePath);
+
+            throw new \RuntimeException(
+                'Unable to calculate archive SHA256.'
+            );
+        }
+
+        $baseUrl = rtrim(
+            trim(
+                (string) $this->option(
+                    'base-url'
+                )
+            ),
+            '/'
+        );
+
+        if ($baseUrl === '') {
+            $baseUrl = rtrim(
+                (string) config(
+                    'app.url',
+                    ''
+                ),
+                '/'
+            );
+        }
+
+        if (
+            $baseUrl === ''
+            || str_contains(
+                $baseUrl,
+                'localhost'
+            )
+            || str_contains(
+                $baseUrl,
+                '127.0.0.1'
+            )
+        ) {
+            $baseUrl = $site === 'linxen'
+                ? 'https://linxen.vn'
+                : '';
+        }
+
+        $relativePath = trim(
+            $downloadDir . '/' . $filename,
+            '/'
+        );
+        $url = $baseUrl !== ''
+            ? $baseUrl . '/' . $relativePath
+            : '/' . $relativePath;
+
+        return [
+            'url' => $url,
+            'path' => $archivePath,
+            'sha256' => $sha256,
+            'size_bytes' => (int) filesize(
+                $archivePath
+            ),
+            'delete_command' => 'rm -f '
+                . escapeshellarg(
+                    $archivePath
+                ),
+        ];
     }
 }
