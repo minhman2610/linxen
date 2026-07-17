@@ -92,6 +92,47 @@ final class PdpVariantRegistry
                 ],
                 'enabled' => true,
             ],
+            /* AI_PATCH_LINXEN_PDP_STUDIO_SIGNAL_V1 */
+            'studio_signal_v1' => [
+                'key' => 'studio_signal_v1',
+                'label' => 'Studio Signal V1',
+                'version' => '1.0.0',
+                'renderer' => 'sectioned',
+                'view' => 'commerce_v2.pdp.page',
+                'layout' => 'studio_signal_v1',
+                'view_model_version' => PdpViewModelBuilder::VERSION,
+                'sections' => [
+                    'studio_hero_purchase',
+                    'studio_quick_read',
+                    'studio_design_explorer',
+                    'studio_benefit_grid',
+                    'studio_media_lab',
+                    'studio_size_studio',
+                    'studio_material_feel',
+                    'studio_confidence_strip',
+                    'studio_complete_look',
+                    'studio_recently_viewed',
+                    'studio_final_cta',
+                ],
+                'assets' => [
+                    'styles' => [
+                        'commerce-v2/pdp-sales-experience.css?v=3',
+                        'commerce-v2/pdp/v1/core.css?v=1',
+                        'commerce-v2/pdp/v1/variants/studio-signal-v1.css?v=1',
+                    ],
+                    'scripts' => [
+                        'commerce-v2/pdp/v1/variants/studio-signal-v1.js?v=1',
+                    ],
+                ],
+                'art_direction' => [
+                    'concept' => 'digital_fashion_studio',
+                    'palette' => 'porcelain_graphite_signal_cherry',
+                    'content_density' => 'visual_first_readable',
+                    'mobile_navigation' => 'single_row_contextual_commerce_dock',
+                    'empty_sections' => 'hide',
+                ],
+                'enabled' => true,
+            ],
         ];
     }
 

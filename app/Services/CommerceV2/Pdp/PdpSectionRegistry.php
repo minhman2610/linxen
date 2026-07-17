@@ -141,6 +141,80 @@ final class PdpSectionRegistry
                 'required' => ['identity.id'],
                 'empty_behavior' => 'render',
             ],
+            /* AI_PATCH_LINXEN_PDP_STUDIO_SIGNAL_SECTIONS_V1 */
+            'studio_hero_purchase' => [
+                'view' => 'commerce_v2.pdp.studio.hero-purchase',
+                'required' => ['identity.id', 'commerce.colors'],
+                'empty_behavior' => 'render',
+            ],
+            'studio_quick_read' => [
+                'view' => 'commerce_v2.pdp.studio.quick-read',
+                'required_any' => [
+                    'product_truth.highlights',
+                    'product_truth.design.items',
+                    'fit.fit_items',
+                    'product_truth.materials.section.items',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'studio_design_explorer' => [
+                'view' => 'commerce_v2.pdp.studio.design-explorer',
+                'required_any' => [
+                    'product_truth.highlights',
+                    'product_truth.design.items',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'studio_benefit_grid' => [
+                'view' => 'commerce_v2.pdp.studio.benefit-grid',
+                'required_any' => [
+                    'product_truth.highlights',
+                    'product_truth.design.items',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'studio_media_lab' => [
+                'view' => 'commerce_v2.pdp.studio.media-lab',
+                'required_any' => [
+                    'commerce.default_color.media',
+                    'media.production_truth',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'studio_size_studio' => [
+                'view' => 'commerce_v2.pdp.studio.size-studio',
+                'required' => ['fit.garment_size_chart.points'],
+                'empty_behavior' => 'hide',
+            ],
+            'studio_material_feel' => [
+                'view' => 'commerce_v2.pdp.studio.material-feel',
+                'required_any' => [
+                    'product_truth.materials.main',
+                    'product_truth.materials.lining',
+                    'product_truth.materials.section.items',
+                ],
+                'empty_behavior' => 'hide',
+            ],
+            'studio_confidence_strip' => [
+                'view' => 'commerce_v2.pdp.studio.confidence-strip',
+                'required' => ['policies.cod.enabled'],
+                'empty_behavior' => 'render',
+            ],
+            'studio_complete_look' => [
+                'view' => 'commerce_v2.pdp.studio.complete-look',
+                'required' => ['discovery.related_products'],
+                'empty_behavior' => 'hide',
+            ],
+            'studio_recently_viewed' => [
+                'view' => 'commerce_v2.pdp.studio.recently-viewed',
+                'required' => ['discovery.recently_viewed_enabled'],
+                'empty_behavior' => 'render',
+            ],
+            'studio_final_cta' => [
+                'view' => 'commerce_v2.pdp.studio.final-cta',
+                'required' => ['identity.id'],
+                'empty_behavior' => 'render',
+            ],
         ];
     }
 
