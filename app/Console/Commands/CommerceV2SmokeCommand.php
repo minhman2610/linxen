@@ -63,22 +63,15 @@ class CommerceV2SmokeCommand extends Command
                 (array) data_get($product, 'data', [])
             );
 
+            /*
+             * AI_PATCH_LINXEN_PDP_GENERIC_SMOKE_CONTRACT_V1
+             *
+             * Keep the generic smoke aligned with the production controller:
+             * the PDP JavaScript receives the complete presented product,
+             * not the legacy id/name/colors subset.
+             */
             $productPayloadJson = json_encode(
-                [
-                    'id' => data_get(
-                        $presentedProduct,
-                        'id'
-                    ),
-                    'name' => data_get(
-                        $presentedProduct,
-                        'name'
-                    ),
-                    'colors' => data_get(
-                        $presentedProduct,
-                        'colors',
-                        []
-                    ),
-                ],
+                $presentedProduct,
                 JSON_HEX_TAG
                 | JSON_HEX_APOS
                 | JSON_HEX_AMP
@@ -108,6 +101,15 @@ class CommerceV2SmokeCommand extends Command
                 ]
             )->render();
 
+            $productViewContractMarkers = [
+                'data-lxpdp',
+                'data-lxpdp-gallery',
+                'data-lxpdp-color',
+                'data-lxpdp-size-advisor',
+                'data-lxpdp-mobile-buy',
+                'id="lxv2ProductData"',
+                $productId,
+            ];
             $listingItems = (array) data_get(
                 $listing,
                 'data.items',
@@ -163,21 +165,14 @@ class CommerceV2SmokeCommand extends Command
                         )
                     ) > 0
                 ),
-                'product_view_render' => (
-                    str_contains(
+                'product_view_render' => collect(
+                    $productViewContractMarkers
+                )->every(
+                    fn (string $marker): bool => str_contains(
                         $productViewHtml,
-                        'data-lxv2-product'
+                        $marker
                     )
-                    && str_contains(
-                        $productViewHtml,
-                        'lxv2ProductData'
-                    )
-                    && str_contains(
-                        $productViewHtml,
-                        $productId
-                    )
-                ),
-                'search_exact_first' => data_get(
+                ),                'search_exact_first' => data_get(
                     $searchItems,
                     '0.id'
                 ) === $productId,
