@@ -29,7 +29,8 @@ class CatalogPageController extends Controller
     public function home(Request $request): View|Response
     {
         try {
-            $listing = $this->client->listing(8);
+            /* AI_PATCH_LINXEN_HOME_EDITORIAL_COMMERCE_V2 */
+            $listing = $this->client->listing(12);
             $collections = $this->client->collections();
 
             return view('commerce_v2.pages.home', [
@@ -51,8 +52,8 @@ class CatalogPageController extends Controller
                     $listing,
                     '_storefront_cache'
                 ),
-                'pageTitle' => 'LIN XÉN — Váy thiết kế hiện đại',
-                'pageDescription' => 'Khám phá váy thiết kế LIN XÉN với màu sắc, kích thước, giá và tồn kho được cập nhật từ hệ thống chính thức.',
+                'pageTitle' => 'LIN XÉN — Váy thiết kế cho nhịp sống hiện đại',
+                'pageDescription' => 'Khám phá thiết kế LIN XÉN qua hình ảnh đã duyệt, màu sắc, kích thước, giá và tồn kho từ hệ thống chính thức.',
             ]);
         } catch (CommerceV2ClientException $e) {
             return $this->errorView($e);

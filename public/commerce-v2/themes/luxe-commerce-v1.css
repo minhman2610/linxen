@@ -2361,3 +2361,903 @@
         transform: none;
     }
 }
+
+/* AI_PATCH_LINXEN_HOME_EDITORIAL_COMMERCE_V2_CSS_START */
+.lxh2-home {
+    --lxh2-ink: #101713;
+    --lxh2-jade: #0f6a58;
+    --lxh2-jade-deep: #084d41;
+    --lxh2-lime: #dfff4f;
+    --lxh2-coral: #ff6848;
+    --lxh2-mist: #e8efeb;
+    --lxh2-line: #ced9d3;
+    display: grid;
+    gap: clamp(72px, 8vw, 126px);
+    padding-bottom: clamp(88px, 10vw, 154px);
+}
+
+.lxh2-home h1,
+.lxh2-home h2,
+.lxh2-home h3,
+.lxh2-home p,
+.lxh2-home figure {
+    margin: 0;
+}
+
+.lxh2-hero {
+    position: relative;
+    min-height: min(810px, calc(100vh - 104px));
+    display: grid;
+    grid-template-columns: minmax(0, .82fr) minmax(520px, 1.18fr);
+    overflow: hidden;
+    border: 1px solid rgba(201, 214, 207, .92);
+    border-radius: 38px;
+    background:
+        radial-gradient(circle at 7% 4%, rgba(223, 255, 79, .58), transparent 24rem),
+        linear-gradient(145deg, #f9fbf9 0%, #e8efeb 58%, #dbe7e1 100%);
+    box-shadow: 0 34px 90px rgba(16, 39, 30, .12);
+}
+
+.lxh2-hero::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 22px;
+    left: 22px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--lxh2-coral);
+    box-shadow: 0 0 0 7px rgba(255, 104, 72, .13);
+}
+
+.lxh2-hero__copy {
+    position: relative;
+    z-index: 3;
+    align-self: center;
+    padding: clamp(48px, 6.2vw, 92px);
+}
+
+.lxh2-hero__copy h1 {
+    max-width: 700px;
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: clamp(62px, 7vw, 108px);
+    font-weight: 500;
+    line-height: .82;
+    letter-spacing: -.075em;
+}
+
+.lxh2-hero__lead {
+    max-width: 560px;
+    margin-top: 30px !important;
+    color: #59645e;
+    font-size: clamp(14px, 1.4vw, 17px);
+    line-height: 1.75;
+}
+
+.lxh2-hero__actions {
+    margin-top: 30px;
+}
+
+.lxh2-hero__truth {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 46px;
+    border-top: 1px solid rgba(89, 100, 94, .24);
+}
+
+.lxh2-hero__truth span {
+    min-width: 0;
+    display: grid;
+    gap: 6px;
+    padding: 17px 14px 0 0;
+}
+
+.lxh2-hero__truth span + span {
+    padding-left: 14px;
+    border-left: 1px solid rgba(89, 100, 94, .2);
+}
+
+.lxh2-hero__truth small {
+    color: #78827d;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.lxh2-hero__truth strong {
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lxh2-hero__visual {
+    position: relative;
+    min-width: 0;
+    min-height: 680px;
+    overflow: hidden;
+    background: #cfddd5;
+}
+
+.lxh2-hero__main {
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+
+.lxh2-hero__main::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, transparent 52%, rgba(7, 18, 13, .58)),
+        linear-gradient(90deg, rgba(233, 241, 237, .18), transparent 42%);
+}
+
+.lxh2-hero__main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform .9s cubic-bezier(.18, .76, .18, 1);
+}
+
+.lxh2-hero__main:hover img {
+    transform: scale(1.022);
+}
+
+.lxh2-hero__caption {
+    position: absolute;
+    z-index: 2;
+    right: 34px;
+    bottom: 32px;
+    left: 34px;
+    display: grid;
+    gap: 3px;
+    color: #fff;
+}
+
+.lxh2-hero__caption small {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .16em;
+}
+
+.lxh2-hero__caption strong {
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: clamp(32px, 3.5vw, 54px);
+    font-weight: 500;
+    line-height: 1;
+}
+
+.lxh2-hero__caption b {
+    margin-top: 6px;
+    font-size: 13px;
+}
+
+.lxh2-hero__support {
+    position: absolute;
+    z-index: 4;
+    width: 136px;
+    overflow: hidden;
+    border: 5px solid rgba(255, 255, 255, .92);
+    border-radius: 18px;
+    color: var(--lxh2-ink);
+    background: #fff;
+    box-shadow: 0 24px 58px rgba(10, 31, 22, .23);
+}
+
+.lxh2-hero__support--1 {
+    top: 24px;
+    right: 24px;
+    transform: rotate(2.7deg);
+}
+
+.lxh2-hero__support--2 {
+    top: 154px;
+    right: 46px;
+    transform: rotate(-2.4deg);
+}
+
+.lxh2-hero__support img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+}
+
+.lxh2-hero__support span {
+    display: block;
+    overflow: hidden;
+    padding: 8px 9px 9px;
+    font-size: 9px;
+    font-weight: 850;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lxh2-hero__signal {
+    position: absolute;
+    z-index: 5;
+    top: 24px;
+    left: 24px;
+    width: 76px;
+    height: 76px;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    border-radius: 50%;
+    color: var(--lxh2-ink);
+    background: var(--lxh2-lime);
+    box-shadow: 0 18px 42px rgba(131, 158, 22, .24);
+    transform: rotate(-8deg);
+}
+
+.lxh2-hero__signal span {
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .16em;
+}
+
+.lxh2-hero__signal strong {
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: .85;
+}
+
+.lxh2-hero__placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-content: center;
+    color: rgba(15, 106, 88, .75);
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: clamp(78px, 11vw, 164px);
+    line-height: .68;
+}
+
+.lxh2-hero__placeholder span:last-child {
+    margin-left: .5em;
+}
+
+.lxh2-section-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 28px;
+}
+
+.lxh2-section-head h2 {
+    max-width: 820px;
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: clamp(38px, 4.4vw, 68px);
+    font-weight: 500;
+    line-height: .96;
+    letter-spacing: -.045em;
+}
+
+.lxh2-section-head > a {
+    flex: 0 0 auto;
+    padding-bottom: 5px;
+    border-bottom: 1px solid currentColor;
+    color: var(--lxh2-jade);
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.lxh2-section-head--compact {
+    align-items: end;
+}
+
+.lxh2-section-head--compact > p {
+    max-width: 340px;
+    color: #6a746f;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.lxh2-pulse {
+    min-width: 0;
+}
+
+.lxh2-pulse__rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(240px, 25vw);
+    gap: 14px;
+    overflow-x: auto;
+    padding: 2px 2px 14px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.lxh2-pulse__rail::-webkit-scrollbar {
+    display: none;
+}
+
+.lxh2-pulse-card {
+    min-width: 0;
+    scroll-snap-align: start;
+}
+
+.lxh2-pulse-card > a {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    min-height: 184px;
+    overflow: hidden;
+    border: 1px solid var(--lxh2-line);
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 16px 38px rgba(20, 43, 34, .065);
+    transition: transform .22s ease, box-shadow .22s ease;
+}
+
+.lxh2-pulse-card > a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 23px 48px rgba(20, 43, 34, .11);
+}
+
+.lxh2-pulse-card figure {
+    position: relative;
+    overflow: hidden;
+    background: var(--lxh2-mist);
+}
+
+.lxh2-pulse-card figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lxh2-pulse-card figure span {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    min-width: 30px;
+    padding: 5px 8px;
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(10, 24, 17, .52);
+    backdrop-filter: blur(8px);
+    font-size: 8px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.lxh2-pulse-card > a > div {
+    min-width: 0;
+    display: grid;
+    align-content: center;
+    gap: 7px;
+    padding: 18px;
+}
+
+.lxh2-pulse-card small {
+    color: #7b8580;
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: .12em;
+}
+
+.lxh2-pulse-card h3 {
+    overflow: hidden;
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: 23px;
+    font-weight: 500;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lxh2-pulse-card p {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: baseline;
+}
+
+.lxh2-pulse-card p strong {
+    font-size: 12px;
+}
+
+.lxh2-pulse-card p del {
+    color: #9da6a1;
+    font-size: 10px;
+}
+
+.lxh2-collection-grid {
+    display: grid;
+    grid-template-columns: 1.28fr .72fr .72fr;
+    grid-auto-rows: 230px;
+    gap: 14px;
+}
+
+.lxh2-collection-card {
+    position: relative;
+    display: grid;
+    align-content: space-between;
+    overflow: hidden;
+    padding: 22px;
+    border-radius: 28px;
+    color: #fff;
+    background:
+        linear-gradient(180deg, rgba(6, 16, 11, .03), rgba(6, 16, 11, .72)),
+        var(--lxh2-collection-image, linear-gradient(145deg, #0f6a58, #152e25))
+        center / cover;
+    box-shadow: 0 20px 52px rgba(16, 38, 29, .1);
+}
+
+.lxh2-collection-card:first-child {
+    grid-row: span 2;
+}
+
+.lxh2-collection-card--2 {
+    background:
+        linear-gradient(180deg, rgba(6, 16, 11, .03), rgba(6, 16, 11, .68)),
+        var(--lxh2-collection-image, linear-gradient(145deg, #ff6848, #5e2e27))
+        center / cover;
+}
+
+.lxh2-collection-card--3 {
+    color: var(--lxh2-ink);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(223, 255, 79, .74)),
+        var(--lxh2-collection-image, linear-gradient(145deg, #eaff88, #a6bd34))
+        center / cover;
+}
+
+.lxh2-collection-card--4 {
+    background:
+        linear-gradient(180deg, rgba(6, 16, 11, .03), rgba(6, 16, 11, .7)),
+        var(--lxh2-collection-image, linear-gradient(145deg, #7b8892, #26333b))
+        center / cover;
+}
+
+.lxh2-collection-card > span {
+    width: max-content;
+    min-width: 36px;
+    padding: 6px 9px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 900;
+    opacity: .8;
+}
+
+.lxh2-collection-card > div {
+    display: grid;
+    gap: 7px;
+}
+
+.lxh2-collection-card strong {
+    max-width: 520px;
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 500;
+    line-height: .98;
+}
+
+.lxh2-collection-card small {
+    max-width: 420px;
+    color: inherit;
+    font-size: 11px;
+    line-height: 1.5;
+    opacity: .78;
+}
+
+.lxh2-collection-card > b {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .05em;
+}
+
+.lxh2-product-grid {
+    gap-block: 38px;
+}
+
+.lxh2-story {
+    display: grid;
+    grid-template-columns: minmax(300px, .62fr) minmax(0, 1.38fr);
+    gap: clamp(36px, 6vw, 84px);
+    align-items: center;
+    padding: clamp(42px, 6vw, 82px);
+    overflow: hidden;
+    border-radius: 34px;
+    color: #fff;
+    background:
+        radial-gradient(circle at 12% 0%, rgba(223, 255, 79, .18), transparent 23rem),
+        #10241c;
+    box-shadow: 0 34px 80px rgba(9, 31, 21, .16);
+}
+
+.lxh2-story__intro h2 {
+    margin-top: 8px;
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: clamp(42px, 5.4vw, 74px);
+    font-weight: 500;
+    line-height: .9;
+    letter-spacing: -.055em;
+}
+
+.lxh2-story__intro > p:not(.lxcv1-kicker) {
+    max-width: 480px;
+    margin-top: 24px;
+    color: rgba(255, 255, 255, .66);
+    font-size: 13px;
+    line-height: 1.75;
+}
+
+.lxh2-story__intro > a {
+    display: inline-block;
+    margin-top: 25px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, .55);
+    font-size: 11px;
+    font-weight: 850;
+}
+
+.lxh2-story__cards {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    align-items: end;
+}
+
+.lxh2-story-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #254238;
+}
+
+.lxh2-story-card--1,
+.lxh2-story-card--3 {
+    transform: translateY(24px);
+}
+
+.lxh2-story-card img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transition: transform .6s cubic-bezier(.2, .75, .2, 1);
+}
+
+.lxh2-story-card:hover img {
+    transform: scale(1.025);
+}
+
+.lxh2-story-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 56%, rgba(4, 13, 8, .72));
+}
+
+.lxh2-story-card span {
+    position: absolute;
+    z-index: 2;
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    display: grid;
+    gap: 3px;
+}
+
+.lxh2-story-card small {
+    font-size: 7px;
+    font-weight: 850;
+    letter-spacing: .1em;
+}
+
+.lxh2-story-card strong {
+    overflow: hidden;
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: 22px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lxh2-trust {
+    display: grid;
+    grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr);
+    gap: clamp(36px, 6vw, 90px);
+    padding-top: clamp(28px, 4vw, 54px);
+    border-top: 1px solid var(--lxh2-line);
+}
+
+.lxh2-trust__title h2 {
+    margin-top: 8px;
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: clamp(38px, 4.5vw, 62px);
+    font-weight: 500;
+    line-height: .94;
+    letter-spacing: -.045em;
+}
+
+.lxh2-trust__items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--lxh2-line);
+    border-left: 1px solid var(--lxh2-line);
+}
+
+.lxh2-trust__items article {
+    min-height: 154px;
+    display: grid;
+    align-content: start;
+    gap: 7px;
+    padding: 22px;
+    border-right: 1px solid var(--lxh2-line);
+    border-bottom: 1px solid var(--lxh2-line);
+}
+
+.lxh2-trust__items span {
+    color: var(--lxh2-coral);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .12em;
+}
+
+.lxh2-trust__items strong {
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.lxh2-trust__items p {
+    color: #6e7873;
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+@media (max-width: 1100px) {
+    .lxh2-hero {
+        grid-template-columns: minmax(0, .9fr) minmax(440px, 1.1fr);
+    }
+
+    .lxh2-hero__copy h1 {
+        font-size: clamp(58px, 7vw, 84px);
+    }
+
+    .lxh2-pulse__rail {
+        grid-auto-columns: minmax(260px, 38vw);
+    }
+
+    .lxh2-collection-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .lxh2-collection-card:first-child {
+        grid-column: span 2;
+        grid-row: auto;
+    }
+}
+
+@media (max-width: 820px) {
+    .lxh2-home {
+        gap: 74px;
+    }
+
+    .lxh2-hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        border-radius: 28px;
+    }
+
+    .lxh2-hero__copy {
+        padding: 50px 30px;
+    }
+
+    .lxh2-hero__copy h1 {
+        font-size: clamp(58px, 13vw, 84px);
+    }
+
+    .lxh2-hero__visual {
+        min-height: 650px;
+    }
+
+    .lxh2-section-head,
+    .lxh2-section-head--compact {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .lxh2-section-head--compact > p {
+        max-width: 560px;
+    }
+
+    .lxh2-pulse__rail {
+        grid-auto-columns: minmax(280px, 72vw);
+    }
+
+    .lxh2-story,
+    .lxh2-trust {
+        grid-template-columns: 1fr;
+    }
+
+    .lxh2-story__intro {
+        max-width: 680px;
+    }
+}
+
+@media (max-width: 620px) {
+    .lxh2-home {
+        gap: 62px;
+        padding-bottom: 100px;
+    }
+
+    .lxh2-hero {
+        margin-inline: -2px;
+        border-radius: 24px;
+    }
+
+    .lxh2-hero__copy {
+        padding: 45px 21px 36px;
+    }
+
+    .lxh2-hero__copy h1 {
+        font-size: clamp(52px, 16vw, 72px);
+        line-height: .84;
+    }
+
+    .lxh2-hero__lead {
+        margin-top: 22px !important;
+    }
+
+    .lxh2-hero__truth {
+        margin-top: 34px;
+    }
+
+    .lxh2-hero__truth span {
+        padding-right: 8px;
+    }
+
+    .lxh2-hero__truth span + span {
+        padding-left: 8px;
+    }
+
+    .lxh2-hero__truth strong {
+        font-size: 10px;
+    }
+
+    .lxh2-hero__visual {
+        min-height: 560px;
+    }
+
+    .lxh2-hero__support {
+        width: 104px;
+        border-width: 4px;
+    }
+
+    .lxh2-hero__support--1 {
+        top: 14px;
+        right: 14px;
+    }
+
+    .lxh2-hero__support--2 {
+        top: 120px;
+        right: 29px;
+    }
+
+    .lxh2-hero__signal {
+        top: 16px;
+        left: 14px;
+        width: 62px;
+        height: 62px;
+    }
+
+    .lxh2-hero__caption {
+        right: 20px;
+        bottom: 22px;
+        left: 20px;
+    }
+
+    .lxh2-hero__caption strong {
+        font-size: 34px;
+    }
+
+    .lxh2-section-head h2 {
+        font-size: 42px;
+    }
+
+    .lxh2-pulse__rail {
+        margin-inline: -12px;
+        padding-inline: 12px;
+        grid-auto-columns: minmax(272px, 84vw);
+    }
+
+    .lxh2-pulse-card > a {
+        grid-template-columns: 105px minmax(0, 1fr);
+    }
+
+    .lxh2-collection-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 230px;
+    }
+
+    .lxh2-collection-card:first-child {
+        grid-column: auto;
+    }
+
+    .lxh2-collection-card strong {
+        font-size: 34px;
+    }
+
+    .lxh2-product-grid {
+        gap-block: 30px;
+    }
+
+    .lxh2-story {
+        padding: 38px 18px 48px;
+        border-radius: 25px;
+    }
+
+    .lxh2-story__intro h2 {
+        font-size: 48px;
+    }
+
+    .lxh2-story__cards {
+        gap: 7px;
+    }
+
+    .lxh2-story-card--1,
+    .lxh2-story-card--3 {
+        transform: translateY(14px);
+    }
+
+    .lxh2-story-card span {
+        right: 9px;
+        bottom: 10px;
+        left: 9px;
+    }
+
+    .lxh2-story-card strong {
+        font-size: 16px;
+    }
+
+    .lxh2-story-card small {
+        display: none;
+    }
+
+    .lxh2-trust__items {
+        grid-template-columns: 1fr;
+    }
+
+    .lxh2-trust__items article {
+        min-height: 132px;
+    }
+}
+
+@media (max-width: 390px) {
+    .lxh2-hero__truth small {
+        font-size: 7px;
+    }
+
+    .lxh2-pulse__rail {
+        grid-auto-columns: 88vw;
+    }
+
+    .lxh2-pulse-card > a {
+        grid-template-columns: 96px minmax(0, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lxh2-home *,
+    .lxh2-home *::before,
+    .lxh2-home *::after {
+        animation: none !important;
+        transition-duration: .01ms !important;
+    }
+}
+/* AI_PATCH_LINXEN_HOME_EDITORIAL_COMMERCE_V2_CSS_END */
