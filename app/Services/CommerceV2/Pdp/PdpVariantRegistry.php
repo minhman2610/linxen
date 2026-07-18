@@ -133,6 +133,38 @@ final class PdpVariantRegistry
                 ],
                 'enabled' => true,
             ],
+            /* AI_PATCH_LINXEN_PDP_LUXE_CLARITY_V1 */
+            'luxe_clarity_v1' => [
+                'key' => 'luxe_clarity_v1',
+                'label' => 'Luxe Clarity V1',
+                'version' => '1.0.0',
+                'renderer' => 'sectioned',
+                'view' => 'commerce_v2.pdp.page',
+                'layout' => 'luxe_clarity_v1',
+                'view_model_version' => PdpViewModelBuilder::VERSION,
+                'sections' => [
+                    'luxe_hero_purchase',
+                    'luxe_product_study',
+                ],
+                'assets' => [
+                    'styles' => [
+                        'commerce-v2/pdp-sales-experience.css?v=3',
+                        'commerce-v2/pdp/v1/core.css?v=1',
+                        'commerce-v2/pdp/v1/variants/luxe-clarity-v1.css?v=1',
+                    ],
+                    'scripts' => [
+                        'commerce-v2/pdp/v1/variants/luxe-clarity-v1.js?v=1',
+                    ],
+                ],
+                'art_direction' => [
+                    'concept' => 'legacy_luxe_reframed',
+                    'journey' => 'gallery_product_info_variants_quantity_cart_then_product_study',
+                    'mobile_navigation' => 'fixed_five_item_single_row',
+                    'product_study_source' => 'exact_color_product_clarity',
+                    'hidden_sections' => 'all_non_product_study_sections',
+                ],
+                'enabled' => true,
+            ],
             /* AI_PATCH_LINXEN_PDP_STUDIO_CLARITY_V1 */
             'studio_clarity_v1' => [
                 'key' => 'studio_clarity_v1',

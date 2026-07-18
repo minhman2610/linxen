@@ -133,6 +133,28 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                 'provider_mutation_none' => true,
             ];
 
+            /* AI_PATCH_LINXEN_PDP_LUXE_CLARITY_SMOKE_V1 */
+            if ($variantKey === 'luxe_clarity_v1') {
+                $checks = array_merge($checks, [
+                    'luxe_quantity_contract' => str_contains(
+                        $html,
+                        'data-lxl-quantity'
+                    ),
+                    'luxe_product_study_contract' => str_contains(
+                        $html,
+                        'data-lxl-product-study'
+                    ),
+                    'luxe_bottom_navigation_contract' => str_contains(
+                        $html,
+                        'data-lxl-bottom-nav'
+                    ),
+                    'luxe_exact_color_study_contract' => str_contains(
+                        $html,
+                        'data-lxl-study-data'
+                    ),
+                ]);
+            }
+
             foreach ($checks as $code => $passed) {
                 $this->line(
                     strtoupper($code)
@@ -221,6 +243,8 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                     'sellable' => true,
                     'cover_url' => data_get($media, '0.url'),
                     'media' => $media,
+                    'clarity_media' => $media,
+                    'clarity_media_exact_color' => true,
                     'sizes' => [
                         [
                             'size' => 'S',

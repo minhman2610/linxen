@@ -8,6 +8,12 @@ final class PdpViewModelBuilder
 {
     public const VERSION = 'linxen_pdp_view_model_v1';
 
+    /* AI_PATCH_LINXEN_PDP_PRODUCT_STUDY_BUILDER_V1 */
+    public function __construct(
+        protected PdpProductStudyBuilder $productStudyBuilder
+    ) {
+    }
+
     public function build(array $product): array
     {
         $colors = collect((array) data_get($product, 'colors', []))
@@ -77,6 +83,9 @@ final class PdpViewModelBuilder
             ))
             ->values()
             ->all();
+
+        $productStudyByColor = $this->productStudyBuilder
+            ->build($colors->all());
 
         return [
             'version' => self::VERSION,
@@ -190,7 +199,8 @@ final class PdpViewModelBuilder
                         )),
                     ])
                     ->values()
-                    ->all(),                'production_truth' => $productionTruth,
+                    ->all(),                'product_study_by_color' => $productStudyByColor,
+                'production_truth' => $productionTruth,
                 'cover_url' => (string) data_get(
                     $product,
                     'cover_url'
