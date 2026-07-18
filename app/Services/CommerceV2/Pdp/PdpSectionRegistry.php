@@ -215,6 +215,17 @@ final class PdpSectionRegistry
                 'required' => ['identity.id'],
                 'empty_behavior' => 'render',
             ],
+            /* AI_PATCH_LINXEN_PDP_STUDIO_CLARITY_SECTIONS_V1 */
+            'clarity_hero_purchase' => [
+                'view' => 'commerce_v2.pdp.clarity.hero-purchase',
+                'required' => ['identity.id', 'commerce.colors'],
+                'empty_behavior' => 'render',
+            ],
+            'clarity_product_angles' => [
+                'view' => 'commerce_v2.pdp.clarity.product-angles',
+                'required' => ['identity.id'],
+                'empty_behavior' => 'render',
+            ],
         ];
     }
 

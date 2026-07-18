@@ -168,7 +168,29 @@ final class PdpViewModelBuilder
                     ])
                     ->values()
                     ->all(),
-                'production_truth' => $productionTruth,
+                /* AI_PATCH_LINXEN_PDP_CLARITY_VIEW_MODEL_V1 */
+                'product_clarity_by_color' => $colors
+                    ->map(fn ($color) => [
+                        'color_id' => (string) data_get(
+                            $color,
+                            'id'
+                        ),
+                        'color_code' => (string) data_get(
+                            $color,
+                            'code'
+                        ),
+                        'color_label' => (string) data_get(
+                            $color,
+                            'label'
+                        ),
+                        'items' => array_values((array) data_get(
+                            $color,
+                            'clarity_media',
+                            []
+                        )),
+                    ])
+                    ->values()
+                    ->all(),                'production_truth' => $productionTruth,
                 'cover_url' => (string) data_get(
                     $product,
                     'cover_url'

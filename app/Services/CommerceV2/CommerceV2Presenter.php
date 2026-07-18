@@ -152,6 +152,16 @@ class CommerceV2Presenter
                 $set,
                 'color_id'
             )
+        );        /* AI_PATCH_LINXEN_PDP_CLARITY_MEDIA_PRESENTER_V1 */
+        $claritySets = collect((array) data_get(
+            $pdp,
+            'clarity_sets_by_color',
+            []
+        ))->keyBy(
+            fn ($set) => (string) data_get(
+                $set,
+                'color_id'
+            )
         );
         $fallbackMedia = collect((array) data_get(
             $product,
@@ -171,6 +181,7 @@ class CommerceV2Presenter
         ))
             ->map(function ($color) use (
                 $sets,
+                $claritySets,
                 $fallbackMedia
             ) {
                 $sizes = collect((array) data_get(
@@ -219,7 +230,22 @@ class CommerceV2Presenter
                     ->values()
                     ->all();
                 $colorId = (string) data_get($color, 'id');
-                $set = (array) $sets->get($colorId, []);
+                $set = (array) $sets->get($colorId, []);                $claritySet = (array) $claritySets->get(
+                    $colorId,
+                    []
+                );
+                $clarityMedia = collect((array) data_get(
+                    $claritySet,
+                    'items',
+                    []
+                ))
+                    ->map(fn ($item) => $this->presentMedia(
+                        $item
+                    ))
+                    ->filter(fn ($item) => $item['url'] !== '')
+                    ->take(8)
+                    ->values()
+                    ->all();
                 $media = collect((array) data_get(
                     $set,
                     'items',
@@ -290,6 +316,20 @@ class CommerceV2Presenter
                         ?: data_get($color, 'cover.url')
                     ),
                     'media' => $media,
+                    'clarity_media' => $clarityMedia,
+                    'clarity_media_count' => count(
+                        $clarityMedia
+                    ),
+                    'clarity_media_source_count' => (int) data_get(
+                        $claritySet,
+                        'source_count',
+                        count($clarityMedia)
+                    ),
+                    'clarity_media_exact_color' => (bool) data_get(
+                        $claritySet,
+                        'exact_color_only',
+                        true
+                    ),
                     'media_count' => count($media),
                     'media_source_count' => (int) data_get(
                         $set,

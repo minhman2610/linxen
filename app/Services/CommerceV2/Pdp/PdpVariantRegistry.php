@@ -133,6 +133,37 @@ final class PdpVariantRegistry
                 ],
                 'enabled' => true,
             ],
+            /* AI_PATCH_LINXEN_PDP_STUDIO_CLARITY_V1 */
+            'studio_clarity_v1' => [
+                'key' => 'studio_clarity_v1',
+                'label' => 'Studio Clarity V1',
+                'version' => '1.0.0',
+                'renderer' => 'sectioned',
+                'view' => 'commerce_v2.pdp.page',
+                'layout' => 'studio_clarity_v1',
+                'view_model_version' => PdpViewModelBuilder::VERSION,
+                'sections' => [
+                    'clarity_hero_purchase',
+                    'clarity_product_angles',
+                ],
+                'assets' => [
+                    'styles' => [
+                        'commerce-v2/pdp-sales-experience.css?v=3',
+                        'commerce-v2/pdp/v1/core.css?v=1',
+                        'commerce-v2/pdp/v1/variants/studio-clarity-v1.css?v=1',
+                    ],
+                    'scripts' => [
+                        'commerce-v2/pdp/v1/variants/studio-clarity-v1.js?v=1',
+                    ],
+                ],
+                'art_direction' => [
+                    'concept' => 'product_clarity_commerce',
+                    'journey' => 'gallery_purchase_then_exact_angle_story',
+                    'mobile_navigation' => 'fixed_graphite_commerce_dock',
+                    'hidden_sections' => 'all_non_product_clarity_sections',
+                ],
+                'enabled' => true,
+            ],
         ];
     }
 
