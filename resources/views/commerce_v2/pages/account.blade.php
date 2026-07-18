@@ -3,6 +3,14 @@
 @section('robots', 'noindex,nofollow')
 
 @section('content')
+{{-- AI_PATCH_LINXEN_LUXE_COMMERCE_THEME_V1_PAGE_SWITCH --}}
+@if(
+    app(\App\Services\CommerceV2\CommerceThemePreviewService::class)
+        ->active(session())
+    === \App\Services\CommerceV2\CommerceThemePreviewService::THEME
+)
+@include('commerce_v2.themes.luxe_commerce_v1.pages.account')
+@else
 <section class="lxv2-page-head">
     <p class="lxv2-eyebrow">Tài khoản</p>
     <h1>Tài khoản LIN XÉN</h1>
@@ -141,5 +149,6 @@
             <p>Chưa có địa chỉ nhận hàng.</p>
         @endforelse
     </section>
+@endif
 @endif
 @endsection

@@ -1,6 +1,14 @@
 @extends('commerce_v2.layouts.app')
 
 @section('content')
+{{-- AI_PATCH_LINXEN_LUXE_COMMERCE_THEME_V1_PAGE_SWITCH --}}
+@if(
+    app(\App\Services\CommerceV2\CommerceThemePreviewService::class)
+        ->active(session())
+    === \App\Services\CommerceV2\CommerceThemePreviewService::THEME
+)
+@include('commerce_v2.themes.luxe_commerce_v1.pages.home')
+@else
 <section class="lxv2-hero">
     <div class="lxv2-hero__content">
         <p class="lxv2-eyebrow">LIN XÉN · STOREFRONT V2</p>
@@ -61,4 +69,5 @@
     <article><strong>Ảnh đã duyệt</strong><span>Chỉ sử dụng media được phép bán hàng.</span></article>
     <article><strong>Chọn đúng SKU</strong><span>Màu và size gắn với SKU bán chính xác.</span></article>
 </section>
+@endif
 @endsection

@@ -8,6 +8,7 @@ use App\Http\Controllers\CommerceV2\CheckoutController;
 use App\Http\Controllers\CommerceV2\DiscoverController;
 use App\Http\Controllers\CommerceV2\OrderController;
 use App\Http\Controllers\CommerceV2\PdpSizeAdviceController;
+use App\Http\Controllers\CommerceV2\CommerceThemePreviewController;
 use Illuminate\Support\Facades\Route;
 
 $prefix = trim(
@@ -25,6 +26,30 @@ Route::get('/go/{token}', AttributionRedirectController::class)
 Route::prefix($prefix)
     ->name('commerce.v2.')
     ->group(function () {
+        /* AI_PATCH_LINXEN_LUXE_COMMERCE_THEME_V1_ROUTES_START */
+        Route::get(
+            '/preview/theme/luxe-commerce-v1/{target}',
+            [
+                CommerceThemePreviewController::class,
+                'activate',
+            ]
+        )
+            ->where(
+                'target',
+                'home|shop|search|discover|cart|checkout|account|orders'
+            )
+            ->middleware('signed')
+            ->name('theme.preview');
+
+        Route::get(
+            '/preview/theme/exit',
+            [
+                CommerceThemePreviewController::class,
+                'clear',
+            ]
+        )->name('theme.preview.exit');
+        /* AI_PATCH_LINXEN_LUXE_COMMERCE_THEME_V1_ROUTES_END */
+
         Route::get('/', [
             CatalogPageController::class,
             'home',
