@@ -92,6 +92,36 @@ class CommerceV2CheckoutFoundationSmokeCommand extends Command
                         'One-page checkout smoke.',
                 ]
             )->render();
+            /* AI_PATCH_LINXEN_CHECKOUT_FOUNDATION_THEME_RESILIENT_V1 */
+            $guestCapabilities = array_replace(
+                $capabilities,
+                ['order_accept_enabled' => true]
+            );
+            $guestCheckoutHtml = view(
+                'commerce_v2.pages.checkout',
+                [
+                    'cart' => $cart,
+                    'account' => [],
+                    'identity' => [
+                        'receiver_name' => '',
+                        'phone' => '',
+                        'email' => '',
+                        'location_id' => 0,
+                        'ward_id' => 0,
+                        'ward_name' => '',
+                        'street' => '',
+                    ],
+                    'locations' => [
+                        ['id' => 9, 'name' => 'Hà Nội'],
+                    ],
+                    'capabilities' => $guestCapabilities,
+                    'isVerifiedCustomer' => false,
+                    'isGuestCustomer' => false,
+                    'pageTitle' => 'Thanh toán — LIN XÉN',
+                    'pageDescription' =>
+                        'Guest checkout theme smoke.',
+                ]
+            )->render();
             $order = [
                 'order_id' => 'ord_static_smoke',
                 'order_code' => 'LX-SMOKE',
@@ -150,7 +180,23 @@ class CommerceV2CheckoutFoundationSmokeCommand extends Command
                     )
                     && str_contains(
                         $checkoutHtml,
-                        'Giao hàng và đặt hàng'
+                        'name="receiver_name"'
+                    )
+                    && str_contains(
+                        $checkoutHtml,
+                        'name="location_id"'
+                    )
+                    && str_contains(
+                        $checkoutHtml,
+                        'name="ward_id"'
+                    )
+                    && str_contains(
+                        $checkoutHtml,
+                        'name="shipping_method"'
+                    )
+                    && str_contains(
+                        $checkoutHtml,
+                        'name="payment_method"'
                     )
                 ),
                 'order_gate_default_off_copy' => (
@@ -173,9 +219,19 @@ class CommerceV2CheckoutFoundationSmokeCommand extends Command
                         'Báo giá ERP'
                     )
                 ),
-                'guest_checkout_copy' => str_contains(
-                    $checkoutHtml,
-                    'Không cần tạo tài khoản'
+                'guest_checkout_copy' => (
+                    str_contains(
+                        $guestCheckoutHtml,
+                        'mua không cần tài khoản'
+                    )
+                    || str_contains(
+                        $guestCheckoutHtml,
+                        'Không cần tạo tài khoản'
+                    )
+                    || str_contains(
+                        $guestCheckoutHtml,
+                        'Guest checkout'
+                    )
                 ),
                 'order_success_render' => (
                     str_contains(

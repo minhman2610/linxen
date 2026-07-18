@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="vi">
 <head>
+    {{-- AI_PATCH_LINXEN_LUXE_COMMERCE_DEFAULT_THEME_V1 --}}
     @php
         $commerceTheme = app(
             \App\Services\CommerceV2\CommerceThemePreviewService::class
@@ -15,7 +16,7 @@
 
     <title>{{ $pageTitle ?? 'LIN XÉN' }}</title>
     <meta name="description" content="{{ $pageDescription ?? 'Váy thiết kế LIN XÉN.' }}">
-    <meta name="robots" content="@yield('robots', $luxeCommercePreview ? 'noindex,nofollow,noarchive' : 'index,follow')">
+    <meta name="robots" content="@yield('robots', 'index,follow')">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <meta property="og:type" content="@yield('og_type', 'website')">
@@ -41,7 +42,6 @@
 
     @if($luxeCommercePreview)
         @include('commerce_v2.themes.luxe_commerce_v1.shell.header')
-        @include('commerce_v2.themes.luxe_commerce_v1.shell.preview-bar')
     @else
         <header class="lxv2-header">
             <div class="lxv2-header__inner">
@@ -108,7 +108,12 @@
 
     @if($luxeCommercePreview)
         @include('commerce_v2.themes.luxe_commerce_v1.shell.footer')
-        @include('commerce_v2.themes.luxe_commerce_v1.shell.bottom-nav')
+        @unless(
+            request()->routeIs('commerce.v2.product')
+            || request()->routeIs('commerce.v2.product.preview')
+        )
+            @include('commerce_v2.themes.luxe_commerce_v1.shell.bottom-nav')
+        @endunless
     @else
         <footer class="lxv2-footer">
             <div>

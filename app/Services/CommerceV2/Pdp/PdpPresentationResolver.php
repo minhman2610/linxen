@@ -7,7 +7,8 @@ use Throwable;
 
 final class PdpPresentationResolver
 {
-    public const VERSION = 'linxen_pdp_presentation_resolver_v1';
+    public const VERSION = 'linxen_pdp_presentation_resolver_v1_1';
+    public const DEFAULT_VARIANT = 'luxe_clarity_v1';
 
     public function __construct(
         protected PdpVariantRegistry $registry
@@ -23,26 +24,13 @@ final class PdpPresentationResolver
             $this->fallbackRuntime(),
             (array) data_get($viewModel, 'presentation', [])
         );
-        $source = 'runtime_active_variant';
+        $source = 'storefront_default_variant';
         $requested = trim((string) $forcedVariant);
 
         if ($requested !== '') {
             $source = 'signed_preview';
-        } elseif (
-            (string) data_get($runtime, 'assignment_mode')
-            === 'experiment'
-        ) {
-            $requested = $this->experimentVariant(
-                $request,
-                $runtime
-            );
-            $source = 'experiment_assignment';
         } else {
-            $requested = (string) data_get(
-                $runtime,
-                'active_variant',
-                'classic_sales_v1'
-            );
+            $requested = self::DEFAULT_VARIANT;
         }
 
         $fallback = (string) data_get(
@@ -170,12 +158,13 @@ final class PdpPresentationResolver
     {
         return [
             'version' => 'linxen_pdp_presentation_v1',
-            'active_variant' => 'classic_sales_v1',
+            'active_variant' => self::DEFAULT_VARIANT,
             'fallback_variant' => 'classic_sales_v1',
             'assignment_mode' => 'fixed',
             'preview_enabled' => true,
             'variants' => [
                 'classic_sales_v1' => ['enabled' => true],
+                'luxe_clarity_v1' => ['enabled' => true],
                 'editorial_guided_v1' => ['enabled' => true],
             ],
             'experiment' => [

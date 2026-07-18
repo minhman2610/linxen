@@ -16,7 +16,7 @@ final class CommerceV2LuxeCommerceThemeSmokeCommand extends Command
         'commerce-v2:luxe-commerce-theme-smoke';
 
     protected $description =
-        'Static render and contract smoke for Luxe Commerce site-wide preview theme.';
+        'Static render and contract smoke for the default Luxe Commerce site-wide theme.';
 
     public function handle(
         CommerceThemePreviewService $preview
@@ -26,19 +26,14 @@ final class CommerceV2LuxeCommerceThemeSmokeCommand extends Command
                 'luxe-commerce-smoke',
                 new ArraySessionHandler(120)
             );
-            $preview->activate(
-                $session,
-                CommerceThemePreviewService::THEME,
-                time() + 600
-            );
-            $previewActive = $preview->active($session)
+            $defaultThemeActive = $preview->active($session)
                 === CommerceThemePreviewService::THEME;
             $preview->clear($session);
-            $previewCleared = $preview->active($session)
-                === null;
-            $previewManagerCompatible = $preview->active(
+            $defaultThemeSurvivesClear = $preview->active($session)
+                === CommerceThemePreviewService::THEME;
+            $sessionManagerCompatible = $preview->active(
                 app('session')
-            ) === null;
+            ) === CommerceThemePreviewService::THEME;
 
             $views = [
                 'commerce_v2.themes.luxe_commerce_v1.shell.header',
@@ -212,10 +207,11 @@ final class CommerceV2LuxeCommerceThemeSmokeCommand extends Command
                         'commerce.v2.theme.preview.exit'
                     )
                 ),
-                'preview_session_contract' => (
-                    $previewActive
-                    && $previewCleared
-                    && $previewManagerCompatible
+                'default_theme_contract' => (
+                    $defaultThemeActive
+                    && $defaultThemeSurvivesClear
+                    && $sessionManagerCompatible
+                    && $preview->isDefault()
                 ),
                 'views_exist' => $viewsExist,
                 'theme_css_exists' => is_file(public_path(
@@ -278,7 +274,7 @@ final class CommerceV2LuxeCommerceThemeSmokeCommand extends Command
                         'LX-SMOKE'
                     )
                 ),
-                'live_theme_unchanged' => true,
+                'default_theme_live' => true,
                 'order_mutation_none' => true,
                 'provider_mutation_none' => true,
             ];
