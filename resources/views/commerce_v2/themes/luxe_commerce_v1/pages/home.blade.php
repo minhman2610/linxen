@@ -135,6 +135,47 @@
         </div>
     </section>
 
+    @if($storyProducts->isNotEmpty())
+        <section
+            class="lxh2-video-preview"
+            data-lxcv1-reveal
+            data-lxh2-video-preview
+        >
+            <header class="lxh2-section-head lxh2-section-head--video">
+                <div>
+                    <p class="lxcv1-kicker">LIN XÉN IMAGE STORIES</p>
+                    <h2>Vuốt để tìm<br>thiết kế hợp anh.</h2>
+                </div>
+                <a href="{{ route('commerce.v2.video') }}">Mở Stories →</a>
+            </header>
+
+            <div class="lxh2-video-preview__rail" aria-label="Xem trước LIN XÉN Image Stories">
+                @foreach($storyProducts as $index => $product)
+                    <a
+                        class="lxh2-video-preview__card"
+                        href="{{ route('commerce.v2.video', ['start' => $index + 1]) }}"
+                        aria-label="Mở story {{ data_get($product, 'name') }}"
+                    >
+                        <img
+                            src="{{ data_get($product, 'cover_url') }}"
+                            alt="{{ data_get($product, 'cover_alt', data_get($product, 'name')) }}"
+                            width="540"
+                            height="960"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        <span class="lxh2-video-preview__play" aria-hidden="true">▶</span>
+                        <span class="lxh2-video-preview__copy">
+                            <small>{{ data_get($product, 'code') }}</small>
+                            <strong>{{ data_get($product, 'short_name') ?: data_get($product, 'name') }}</strong>
+                            <b>{{ number_format((float) data_get($product, 'price_min'), 0, ',', '.') }}₫</b>
+                        </span>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     @if($pulseProducts->isNotEmpty())
         <section
             class="lxh2-pulse"

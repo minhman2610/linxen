@@ -8,6 +8,7 @@
         )->active(session());
         $luxeCommercePreview = $commerceTheme
             === \App\Services\CommerceV2\CommerceThemePreviewService::THEME;
+        $isVideoExperience = request()->routeIs('commerce.v2.video');
     @endphp
 
     <meta charset="utf-8">
@@ -30,18 +31,20 @@
 
     <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=5">
     @if($luxeCommercePreview)
-        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=1">
+        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=2">
     @endif
     @stack('head')
 </head>
 <body
-    class="lxv2-body {{ $luxeCommercePreview ? 'lxv2-theme--luxe-commerce-v1' : '' }}"
+    class="lxv2-body {{ $luxeCommercePreview ? 'lxv2-theme--luxe-commerce-v1' : '' }} {{ $isVideoExperience ? 'lxv2-page--video' : '' }}"
     data-commerce-theme="{{ $commerceTheme ?: 'live_default' }}"
 >
     <a class="lxv2-skip" href="#main-content">Bỏ qua điều hướng</a>
 
     @if($luxeCommercePreview)
-        @include('commerce_v2.themes.luxe_commerce_v1.shell.header')
+        @unless($isVideoExperience)
+            @include('commerce_v2.themes.luxe_commerce_v1.shell.header')
+        @endunless
     @else
         <header class="lxv2-header">
             <div class="lxv2-header__inner">
@@ -107,7 +110,9 @@
     </main>
 
     @if($luxeCommercePreview)
-        @include('commerce_v2.themes.luxe_commerce_v1.shell.footer')
+        @unless($isVideoExperience)
+            @include('commerce_v2.themes.luxe_commerce_v1.shell.footer')
+        @endunless
         @unless(
             request()->routeIs('commerce.v2.product')
             || request()->routeIs('commerce.v2.product.preview')
@@ -115,21 +120,23 @@
             @include('commerce_v2.themes.luxe_commerce_v1.shell.bottom-nav')
         @endunless
     @else
-        <footer class="lxv2-footer">
-            <div>
-                <strong>{{ config('commerce_v2.brand_name', 'LIN XÉN') }}</strong>
-                <p>Thiết kế dành cho những khoảnh khắc anh muốn mình thật đẹp.</p>
-            </div>
-            <div class="lxv2-footer__links">
-                <a href="{{ route('commerce.v2.shop') }}">Sản phẩm</a>
-                <a href="{{ route('commerce.v2.discover') }}">Khám phá</a>
-                <a href="{{ route('commerce.v2.orders.index') }}">Đơn hàng</a>
-                <a href="{{ route('commerce.v2.search') }}">Tìm kiếm</a>
-                @if(config('commerce_v2.support_url'))
-                    <a href="{{ config('commerce_v2.support_url') }}" rel="nofollow">Hỗ trợ</a>
-                @endif
-            </div>
-        </footer>
+        @unless($isVideoExperience)
+            <footer class="lxv2-footer">
+                <div>
+                    <strong>{{ config('commerce_v2.brand_name', 'LIN XÉN') }}</strong>
+                    <p>Thiết kế dành cho những khoảnh khắc anh muốn mình thật đẹp.</p>
+                </div>
+                <div class="lxv2-footer__links">
+                    <a href="{{ route('commerce.v2.shop') }}">Sản phẩm</a>
+                    <a href="{{ route('commerce.v2.discover') }}">Khám phá</a>
+                    <a href="{{ route('commerce.v2.orders.index') }}">Đơn hàng</a>
+                    <a href="{{ route('commerce.v2.search') }}">Tìm kiếm</a>
+                    @if(config('commerce_v2.support_url'))
+                        <a href="{{ config('commerce_v2.support_url') }}" rel="nofollow">Hỗ trợ</a>
+                    @endif
+                </div>
+            </footer>
+        @endunless
 
         <nav class="lxv2-bottom-nav" aria-label="Điều hướng di động">
             <a href="{{ route('commerce.v2.home') }}" @class(['active' => request()->routeIs('commerce.v2.home')])>
@@ -138,8 +145,8 @@
             <a href="{{ route('commerce.v2.shop') }}" @class(['active' => request()->routeIs('commerce.v2.shop')])>
                 <span>◇</span><small>Sản phẩm</small>
             </a>
-            <a href="{{ route('commerce.v2.discover') }}" @class(['active' => request()->routeIs('commerce.v2.discover')])>
-                <span>✦</span><small>Khám phá</small>
+            <a href="{{ route('commerce.v2.video') }}" @class(['active' => request()->routeIs('commerce.v2.video')])>
+                <span>▷</span><small>Video</small>
             </a>
             <a href="{{ route('commerce.v2.cart.index') }}" @class(['active' => request()->routeIs('commerce.v2.cart.*')])>
                 <span>□</span><small>Giỏ hàng</small>
@@ -152,7 +159,7 @@
 
     <script src="{{ asset('commerce-v2/commerce.js') }}?v=5" defer></script>
     @if($luxeCommercePreview)
-        <script src="{{ asset('commerce-v2/themes/luxe-commerce-v1.js') }}?v=1" defer></script>
+        <script src="{{ asset('commerce-v2/themes/luxe-commerce-v1.js') }}?v=2" defer></script>
     @endif
     @stack('scripts')
 </body>

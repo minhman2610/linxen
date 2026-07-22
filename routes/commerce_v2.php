@@ -5,10 +5,11 @@ use App\Http\Controllers\CommerceV2\AttributionRedirectController;
 use App\Http\Controllers\CommerceV2\CartController;
 use App\Http\Controllers\CommerceV2\CatalogPageController;
 use App\Http\Controllers\CommerceV2\CheckoutController;
+use App\Http\Controllers\CommerceV2\CommerceThemePreviewController;
 use App\Http\Controllers\CommerceV2\DiscoverController;
 use App\Http\Controllers\CommerceV2\OrderController;
 use App\Http\Controllers\CommerceV2\PdpSizeAdviceController;
-use App\Http\Controllers\CommerceV2\CommerceThemePreviewController;
+use App\Http\Controllers\CommerceV2\VideoController;
 use Illuminate\Support\Facades\Route;
 
 $prefix = trim(
@@ -69,6 +70,11 @@ Route::prefix($prefix)
             DiscoverController::class,
             'index',
         ])->name('discover');
+
+        Route::get('/video', [
+            VideoController::class,
+            'index',
+        ])->name('video');
 
         Route::get('/collections/{slug}', [
             CatalogPageController::class,

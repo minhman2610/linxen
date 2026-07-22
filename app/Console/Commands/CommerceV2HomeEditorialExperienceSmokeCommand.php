@@ -115,6 +115,11 @@ final class CommerceV2HomeEditorialExperienceSmokeCommand extends Command
                     str_contains($html, 'data-lxh2-editorial-story')
                     && str_contains($html, 'LIN XÉN POINT OF VIEW')
                 ),
+                'image_stories_preview' => (
+                    str_contains($html, 'data-lxh2-video-preview')
+                    && str_contains($html, '/v2/video')
+                    && str_contains($html, 'IMAGE STORIES')
+                ),
                 'trust_contract' => (
                     str_contains($html, 'data-lxh2-trust')
                     && str_contains($html, 'exact sellable SKU')

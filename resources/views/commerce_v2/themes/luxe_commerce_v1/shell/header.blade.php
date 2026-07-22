@@ -16,6 +16,7 @@
             <a href="{{ route('commerce.v2.home') }}" @class(['is-active' => request()->routeIs('commerce.v2.home')])>Trang chủ</a>
             <a href="{{ route('commerce.v2.shop') }}" @class(['is-active' => request()->routeIs('commerce.v2.shop') || request()->routeIs('commerce.v2.collection')])>Sản phẩm</a>
             <a href="{{ route('commerce.v2.discover') }}" @class(['is-active' => request()->routeIs('commerce.v2.discover')])>Khám phá</a>
+            <a href="{{ route('commerce.v2.video') }}" @class(['is-active' => request()->routeIs('commerce.v2.video')])>Video</a>
         </nav>
 
         <form class="lxcv1-header-search" method="get" action="{{ route('commerce.v2.search') }}">
