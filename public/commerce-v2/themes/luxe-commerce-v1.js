@@ -629,6 +629,189 @@
 
     initProductCards();
 
+    const reelRoot = document.createElement('section');
+    reelRoot.className = 'lxreel';
+    reelRoot.setAttribute('aria-hidden', 'true');
+    reelRoot.setAttribute('aria-label', 'Xem nhanh sản phẩm LIN XÉN');
+    reelRoot.setAttribute('role', 'dialog');
+    reelRoot.setAttribute('aria-modal', 'true');
+    reelRoot.innerHTML = '<div class="lxreel__scroller" data-lxreel-scroller></div>';
+    document.body.appendChild(reelRoot);
+
+    const reelScroller = reelRoot.querySelector('[data-lxreel-scroller]');
+    let reelObserver = null;
+    let reelPreviouslyFocused = null;
+
+    const getReelEntries = () => Array.from(
+        body.querySelectorAll('[data-lxreel-product]')
+    ).map((card) => {
+        const image = card.querySelector('[data-lxcv1-product-image]');
+        const color = card.querySelector('[data-lxcv1-color-label]');
+
+        return {
+            image: image?.currentSrc || image?.src || '',
+            imageAlt: image?.alt || card.dataset.lxreelName || '',
+            name: card.dataset.lxreelName || '',
+            originalPrice: card.dataset.lxreelOriginalPrice || '',
+            price: card.dataset.lxreelPrice || '',
+            url: card.dataset.lxreelUrl || '',
+            color: color?.textContent?.trim() || '',
+        };
+    }).filter((entry) => entry.image && entry.url && entry.name);
+
+    const closeReel = () => {
+        reelObserver?.disconnect();
+        reelObserver = null;
+        reelRoot.classList.remove('is-open');
+        reelRoot.setAttribute('aria-hidden', 'true');
+        reelScroller.replaceChildren();
+        body.classList.remove('lxreel-open');
+        reelPreviouslyFocused?.focus({ preventScroll: true });
+        reelPreviouslyFocused = null;
+    };
+
+    const makeReelSlide = (entry, index) => {
+        const slide = document.createElement('article');
+        slide.className = 'lxreel__slide';
+        slide.dataset.lxreelSlide = String(index);
+
+        const media = document.createElement('figure');
+        media.className = 'lxreel__media';
+        const image = new Image();
+        image.src = entry.image;
+        image.alt = entry.imageAlt;
+        image.decoding = 'async';
+        image.loading = index === 0 ? 'eager' : 'lazy';
+        media.appendChild(image);
+
+        const details = document.createElement('div');
+        details.className = 'lxreel__details';
+
+        const eyebrow = document.createElement('p');
+        eyebrow.className = 'lxreel__eyebrow';
+        eyebrow.textContent = entry.color
+            ? `LIN XÉN · ${entry.color}`
+            : 'LIN XÉN · Quick look';
+
+        const title = document.createElement('h1');
+        title.textContent = entry.name;
+
+        const priceRow = document.createElement('div');
+        priceRow.className = 'lxreel__price-row';
+        const price = document.createElement('strong');
+        price.textContent = entry.price;
+        priceRow.appendChild(price);
+        if (entry.originalPrice) {
+            const originalPrice = document.createElement('del');
+            originalPrice.textContent = entry.originalPrice;
+            priceRow.appendChild(originalPrice);
+        }
+
+        const hint = document.createElement('p');
+        hint.className = 'lxreel__hint';
+        hint.textContent = index === 0
+            ? 'Vuốt lên để xem thiết kế tiếp theo.'
+            : 'Vuốt để tiếp tục khám phá các thiết kế khác.';
+
+        const actions = document.createElement('div');
+        actions.className = 'lxreel__actions';
+        const close = document.createElement('button');
+        close.className = 'lxreel__close';
+        close.type = 'button';
+        close.textContent = 'Đóng';
+        close.dataset.lxreelClose = 'true';
+        const detailsLink = document.createElement('a');
+        detailsLink.className = 'lxreel__details-link';
+        detailsLink.href = entry.url;
+        detailsLink.textContent = 'Xem chi tiết';
+        actions.append(close, detailsLink);
+        details.append(eyebrow, title, priceRow, hint, actions);
+        slide.append(media, details);
+
+        return slide;
+    };
+
+    const openReel = (selectedIndex) => {
+        const entries = getReelEntries();
+        if (!entries.length || !reelScroller) {
+            return;
+        }
+
+        reelPreviouslyFocused = document.activeElement;
+        reelScroller.replaceChildren(
+            ...entries.map(makeReelSlide)
+        );
+        reelRoot.classList.add('is-open');
+        reelRoot.setAttribute('aria-hidden', 'false');
+        body.classList.add('lxreel-open');
+
+        const slides = Array.from(reelScroller.querySelectorAll(
+            '[data-lxreel-slide]'
+        ));
+        const safeIndex = Math.max(0, Math.min(selectedIndex, slides.length - 1));
+        reelScroller.scrollTop = slides[safeIndex]?.offsetTop || 0;
+        slides[safeIndex]?.classList.add('is-active');
+        slides[safeIndex]?.querySelector('[data-lxreel-close]')?.focus({
+            preventScroll: true,
+        });
+
+        if ('IntersectionObserver' in window) {
+            reelObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    entry.target.classList.toggle(
+                        'is-active',
+                        entry.isIntersecting && entry.intersectionRatio >= .62
+                    );
+                });
+            }, {
+                root: reelScroller,
+                threshold: [.25, .62, .9],
+            });
+            slides.forEach((slide) => reelObserver.observe(slide));
+        }
+    };
+
+    body.addEventListener('click', (event) => {
+        const productLink = event.target.closest(
+            '[data-lxreel-product] a[href]'
+        );
+        if (
+            !productLink
+            || event.defaultPrevented
+            || event.button !== 0
+            || event.metaKey
+            || event.ctrlKey
+            || event.shiftKey
+            || event.altKey
+        ) {
+            return;
+        }
+
+        const card = productLink.closest('[data-lxreel-product]');
+        const cards = Array.from(
+            body.querySelectorAll('[data-lxreel-product]')
+        );
+        const index = cards.indexOf(card);
+        if (index < 0) {
+            return;
+        }
+
+        event.preventDefault();
+        openReel(index);
+    });
+
+    reelRoot.addEventListener('click', (event) => {
+        if (event.target.closest('[data-lxreel-close]')) {
+            closeReel();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && reelRoot.classList.contains('is-open')) {
+            closeReel();
+        }
+    });
+
     const homeFeed = body.querySelector('[data-lxhome-feed]');
 
     if (homeFeed) {
