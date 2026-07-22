@@ -329,7 +329,7 @@ class CommerceV2Presenter
                     ->take(8)
                     ->values()
                     ->all();
-                $media = collect((array) data_get(
+                $selectedMedia = collect((array) data_get(
                     $set,
                     'items',
                     []
@@ -343,12 +343,36 @@ class CommerceV2Presenter
                     ->all();
 
                 /*
+                 * The purchase gallery is deliberately narrow: it shows only
+                 * approved Sales Inbox media. Product-clairty and opening
+                 * creatives remain available further down the PDP as visual
+                 * product-study references, never as a substitute gallery.
+                 */
+                $media = collect($selectedMedia)
+                    ->filter(fn ($item) => $this->isSalesInboxMedia(
+                        (array) $item
+                    ))
+                    ->values()
+                    ->all();
+                $studyMedia = collect($clarityMedia)
+                    ->concat(collect($selectedMedia)->filter(
+                        fn ($item) => $this->isProductStudyMedia(
+                            (array) $item
+                        )
+                    ))
+                    ->filter(fn ($item) => $item['url'] !== '')
+                    ->unique('url')
+                    ->take(12)
+                    ->values()
+                    ->all();
+
+                /*
                  * Never substitute media from a different color. The product
                  * fallback is only allowed when the ERP extension is absent,
                  * preserving backward compatibility during staged deploy.
                  */
                 if ($sets->isEmpty()) {
-                    $media = collect((array) data_get(
+                    $selectedMedia = collect((array) data_get(
                         $color,
                         'media',
                         []
@@ -357,12 +381,36 @@ class CommerceV2Presenter
                             $item
                         ))
                         ->filter(fn ($item) => $item['url'] !== '')
+                        ->values()
+                        ->all();
+
+                    $media = collect($selectedMedia)
+                        ->filter(fn ($item) => $this->isSalesInboxMedia(
+                            (array) $item
+                        ))
                         ->take(6)
+                        ->values()
+                        ->all();
+                    $studyMedia = collect($clarityMedia)
+                        ->concat(collect($selectedMedia)->filter(
+                            fn ($item) => $this->isProductStudyMedia(
+                                (array) $item
+                            )
+                        ))
+                        ->filter(fn ($item) => $item['url'] !== '')
+                        ->unique('url')
+                        ->take(12)
                         ->values()
                         ->all();
 
                     if ($media === []) {
-                        $media = $fallbackMedia;
+                        $media = collect($fallbackMedia)
+                            ->filter(fn ($item) => $this->isSalesInboxMedia(
+                                (array) $item
+                            ))
+                            ->take(6)
+                            ->values()
+                            ->all();
                     }
                 }
 
@@ -394,12 +442,11 @@ class CommerceV2Presenter
                         'sellable',
                         false
                     ),
-                    'cover_url' => (string) (
-                        data_get($set, 'cover.url')
-                        ?: data_get($color, 'cover.url')
-                    ),
+                    'cover_url' => (string) data_get($media, '0.url'),
                     'media' => $media,
                     'clarity_media' => $clarityMedia,
+                    'study_media' => $studyMedia,
+                    'study_media_count' => count($studyMedia),
                     'clarity_media_count' => count(
                         $clarityMedia
                     ),
@@ -730,6 +777,33 @@ class CommerceV2Presenter
                 'color.name'
             ),
         ];
+    }
+
+    protected function isSalesInboxMedia(array $media): bool
+    {
+        return strtoupper(trim((string) data_get(
+            $media,
+            'category_code',
+            data_get($media, 'category')
+        ))) === 'SALES_INBOX_SUPPORT_SINGLE';
+    }
+
+    protected function isProductStudyMedia(array $media): bool
+    {
+        return in_array(
+            strtoupper(trim((string) data_get(
+                $media,
+                'category_code',
+                data_get($media, 'category')
+            ))),
+            [
+                'OPENING_PRODUCT_CLARITY_SINGLE',
+                'PRODUCT_CLARITY_SUPPORT',
+                'OPENING_DEMAND_TRIGGER_SINGLE',
+                'OPENING_BALANCED_COMMERCIAL_SINGLE',
+            ],
+            true
+        );
     }
 
     public function collection(array $collection): array

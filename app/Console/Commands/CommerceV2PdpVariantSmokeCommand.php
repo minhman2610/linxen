@@ -152,6 +152,13 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                         $html,
                         'data-lxl-study-data'
                     ),
+                    'luxe_size_chart_contract' => str_contains(
+                        $html,
+                        'lxl-size-chart'
+                    ) && str_contains(
+                        $html,
+                        'Bảng thông số theo size'
+                    ),
                 ]);
             }
 
@@ -243,7 +250,8 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                     'sellable' => true,
                     'cover_url' => data_get($media, '0.url'),
                     'media' => $media,
-                    'clarity_media' => $media,
+                    'study_media' => $media,
+                    'study_media_count' => count($media),
                     'clarity_media_exact_color' => true,
                     'sizes' => [
                         [

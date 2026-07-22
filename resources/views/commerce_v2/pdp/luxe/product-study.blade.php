@@ -44,7 +44,12 @@
         ->values();
     $materialValue = static fn ($item): string => \Illuminate\Support\Str::squish(
         is_array($item)
-            ? (string) data_get($item, 'label', data_get($item, 'value', ''))
+            ? (string) (
+                data_get($item, 'family_name')
+                ?: data_get($item, 'name')
+                ?: data_get($item, 'label')
+                ?: data_get($item, 'value', '')
+            )
             : (string) $item
     );
     $materials = (array) data_get($pdp, 'product_truth.materials', []);
@@ -57,9 +62,38 @@
         ->filter()
         ->values();
     $materialSummary = \Illuminate\Support\Str::squish((string) (
-        data_get($materials, 'summary')
+        data_get($materials, 'layer_label')
         ?: data_get($materials, 'section.message')
     ));
+    $sizeChart = (array) data_get($pdp, 'fit.garment_size_chart', []);
+    $sizeOrder = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+    $chartSizes = collect((array) data_get($sizeChart, 'sizes', []))
+        ->map(fn ($size) => strtoupper(trim((string) $size)))
+        ->filter()
+        ->unique()
+        ->sortBy(fn ($size) => array_search($size, $sizeOrder, true) === false
+            ? 99
+            : array_search($size, $sizeOrder, true))
+        ->values();
+    $chartPoints = collect((array) data_get(
+        $sizeChart,
+        'points',
+        data_get($sizeChart, 'measurement_rows', [])
+    ))
+        ->filter(fn ($point) => trim((string) data_get($point, 'label')) !== '')
+        ->values();
+    $sizeHighlights = $chartPoints
+        ->sortBy(fn ($point) => array_search(
+            (string) data_get($point, 'code'),
+            ['bust', 'waist', 'hip', 'dress_length_from_shoulder', 'length'],
+            true
+        ) === false ? 99 : array_search(
+            (string) data_get($point, 'code'),
+            ['bust', 'waist', 'hip', 'dress_length_from_shoulder', 'length'],
+            true
+        ))
+        ->take(4)
+        ->values();
     $jsonFlags = JSON_HEX_TAG
         | JSON_HEX_APOS
         | JSON_HEX_AMP
@@ -83,7 +117,7 @@
                     {{ data_get($defaultStudy, 'color_label', 'Màu đang chọn') }}
                 </span>
                 <p>
-                    Ảnh trong phần này thuộc job Rõ sản phẩm hỗ trợ, đã được duyệt và chỉ hiển thị đúng màu đang xem.
+                    Ảnh đã duyệt theo đúng màu đang xem, giúp quan sát phom dáng và chi tiết thiết kế.
                 </p>
             </div>
         </header>
@@ -119,6 +153,74 @@
                             @endif
                         </div>
                     </article>
+                @endif
+            </section>
+        @endif
+
+        @if($chartSizes->isNotEmpty() && $chartPoints->isNotEmpty())
+            <section class="lxl-size-chart" aria-labelledby="lxlSizeChartTitle">
+                <header class="lxl-size-chart__header">
+                    <div>
+                        <p>Số đo thành phẩm</p>
+                        <h3 id="lxlSizeChartTitle">Bảng thông số theo size</h3>
+                    </div>
+                    <span>{{ data_get($sizeChart, 'measurement_type') === 'garment' ? 'Đơn vị cm' : 'Thông số theo Tech Pack' }}</span>
+                </header>
+
+                <div class="lxl-size-chart__cards" aria-label="Tóm tắt thông số theo size">
+                    @foreach($chartSizes as $size)
+                        <article class="lxl-size-chart__card">
+                            <strong>{{ $size }}</strong>
+                            <dl>
+                                @foreach($sizeHighlights as $point)
+                                    @php
+                                        $display = data_get($point, 'display_values.' . $size, data_get($point, 'values.' . $size));
+                                    @endphp
+                                    @if($display !== null && $display !== '')
+                                        <div>
+                                            <dt>{{ data_get($point, 'label') }}</dt>
+                                            <dd>{{ $display }}{{ data_get($point, 'unit') ? ' ' . data_get($point, 'unit') : '' }}</dd>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </dl>
+                        </article>
+                    @endforeach
+                </div>
+
+                <div class="lxl-size-chart__table-wrap" tabindex="0">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Thông số</th>
+                                @foreach($chartSizes as $size)
+                                    <th scope="col">{{ $size }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($chartPoints as $point)
+                                <tr>
+                                    <th scope="row">
+                                        {{ data_get($point, 'label') }}
+                                        @if(data_get($point, 'unit'))
+                                            <small>{{ data_get($point, 'unit') }}</small>
+                                        @endif
+                                    </th>
+                                    @foreach($chartSizes as $size)
+                                        @php
+                                            $display = data_get($point, 'display_values.' . $size, data_get($point, 'values.' . $size));
+                                        @endphp
+                                        <td>{{ $display ?? '—' }}</td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                @if(data_get($sizeChart, 'message'))
+                    <p class="lxl-size-chart__note">{{ data_get($sizeChart, 'message') }}</p>
                 @endif
             </section>
         @endif
@@ -169,7 +271,6 @@
                     <div class="lxl-study-card__copy">
                         <small>Góc nhìn sản phẩm</small>
                         <h3>{{ data_get($item, 'angle_label') }}</h3>
-                        <p>{{ data_get($item, 'angle_description') }}</p>
 
                         @if($alternates->isNotEmpty())
                             <div class="lxl-study-card__alternates" aria-label="Ảnh bổ sung cùng góc">
@@ -213,7 +314,7 @@
             <div>
                 <strong>Đang cập nhật ảnh chi tiết đúng màu</strong>
                 <p>
-                    Màu này chưa có đủ ảnh rõ sản phẩm đã duyệt. LIN XÉN không dùng ảnh của màu khác để thay thế.
+                    Màu này chưa có ảnh chi tiết đã duyệt. LIN XÉN không dùng ảnh của màu khác để thay thế.
                 </p>
             </div>
         </div>

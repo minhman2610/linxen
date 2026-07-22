@@ -3,7 +3,7 @@
         ->sum(fn ($line) => max(0, (int) data_get($line, 'quantity', 0)));
 @endphp
 
-<nav class="lxcv1-bottom-nav" aria-label="Điều hướng di động">
+<nav class="lxcv1-bottom-nav lxl-bottom-nav" data-lxl-bottom-nav aria-label="Điều hướng di động">
     <a href="{{ route('commerce.v2.home') }}" @class(['is-active' => request()->routeIs('commerce.v2.home')])>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7v9h-6v-6H9v6H3z"></path></svg>
         <span>Trang chủ</span>

@@ -109,13 +109,7 @@ if (root && productNode) {
             item?.angle_label || 'Góc nhìn sản phẩm'
         );
 
-        const description = document.createElement('p');
-        description.textContent = String(
-            item?.angle_description
-            || 'Một góc ảnh đã được duyệt để làm rõ sản phẩm.'
-        );
-
-        copy.append(kicker, title, description);
+        copy.append(kicker, title);
 
         const alternates = Array.isArray(item?.alternates)
             ? item.alternates.slice(0, 3)

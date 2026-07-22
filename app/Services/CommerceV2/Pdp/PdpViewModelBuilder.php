@@ -177,8 +177,8 @@ final class PdpViewModelBuilder
                     ])
                     ->values()
                     ->all(),
-                /* AI_PATCH_LINXEN_PDP_CLARITY_VIEW_MODEL_V1 */
-                'product_clarity_by_color' => $colors
+                /* AI_PATCH_LINXEN_PDP_PRODUCT_STUDY_MEDIA_V2 */
+                'product_study_media_by_color' => $colors
                     ->map(fn ($color) => [
                         'color_id' => (string) data_get(
                             $color,
@@ -194,7 +194,7 @@ final class PdpViewModelBuilder
                         ),
                         'items' => array_values((array) data_get(
                             $color,
-                            'clarity_media',
+                            'study_media',
                             []
                         )),
                     ])

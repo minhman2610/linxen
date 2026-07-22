@@ -27,8 +27,8 @@ final class PdpProductStudyBuilder
                     ),
                     'source_count' => (int) data_get(
                         $color,
-                        'clarity_media_source_count',
-                        count((array) data_get($color, 'clarity_media', []))
+                        'study_media_count',
+                        count((array) data_get($color, 'study_media', []))
                     ),
                     'items' => $items,
                     'item_count' => count($items),
@@ -40,7 +40,7 @@ final class PdpProductStudyBuilder
 
     protected function itemsForColor(array $color): array
     {
-        $rows = collect((array) data_get($color, 'clarity_media', []))
+        $rows = collect((array) data_get($color, 'study_media', []))
             ->filter(fn ($item) => trim((string) data_get($item, 'url')) !== '')
             ->unique(fn ($item) => trim((string) data_get($item, 'url')))
             ->values()
@@ -227,4 +227,3 @@ final class PdpProductStudyBuilder
         return compact('key', 'label', 'description', 'sequence');
     }
 }
-
