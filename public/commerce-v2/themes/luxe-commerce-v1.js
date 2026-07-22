@@ -647,6 +647,7 @@
     let reelMotionSlide = null;
     let reelVerticalGesture = null;
     let reelSuppressMediaClickUntil = 0;
+    let reelSuppressNavigationClickUntil = 0;
 
     const MAX_REEL_MEDIA = 6;
 
@@ -1176,16 +1177,23 @@
         cartStatus.setAttribute('aria-live', 'polite');
         commerce.append(addCart, cartStatus);
 
+        const selectors = document.createElement('div');
+        selectors.className = 'lxreel__selectors';
+        const colorSelection = document.createElement('div');
+        colorSelection.className = 'lxreel__selection lxreel__selection--color';
+        colorSelection.append(colorLabel, colorPicker);
+        const sizeSelection = document.createElement('div');
+        sizeSelection.className = 'lxreel__selection lxreel__selection--size';
+        sizeSelection.append(sizeLabel, sizeToggle);
+        selectors.append(colorSelection, sizeSelection);
+
         details.append(
             detailsTop,
             title,
             priceRow,
             galleryMeta,
             galleryThumbs,
-            colorLabel,
-            colorPicker,
-            sizeLabel,
-            sizeToggle,
+            selectors,
             sizePicker,
             commerce
         );
@@ -1294,16 +1302,9 @@
         }
     };
 
-    const isReelSwipeControl = (target) => {
-        if (target.closest('.lxreel__media-link')) {
-            return false;
-        }
-
-        return Boolean(target.closest(
-            'button, input, select, textarea, [role="button"], '
-            + '.lxreel__details h1 a, .lxreel__price-row a'
-        ));
-    };
+    const isReelSwipeControl = (target) => Boolean(target.closest(
+        'button, input, select, textarea, [role="button"]'
+    ));
 
     reelScroller.addEventListener('pointerdown', (event) => {
         if (
@@ -1338,6 +1339,7 @@
             && Math.abs(deltaY) > Math.abs(deltaX) * 1.25
         ) {
             reelSuppressMediaClickUntil = Date.now() + 450;
+            reelSuppressNavigationClickUntil = Date.now() + 450;
             snapReelByGesture(deltaY > 0 ? -1 : 1);
         }
     });
@@ -1368,6 +1370,13 @@
     });
 
     reelRoot.addEventListener('click', (event) => {
+        if (
+            event.target.closest('.lxreel__media-link, .lxreel__details h1 a, .lxreel__price-row a')
+            && Date.now() < reelSuppressNavigationClickUntil
+        ) {
+            event.preventDefault();
+            return;
+        }
         if (
             event.target.closest('.lxreel__media-link')
             && Date.now() < reelSuppressMediaClickUntil

@@ -5545,6 +5545,7 @@
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior-y: contain;
+    touch-action: pan-x;
     padding: 11px 18px calc(12px + env(safe-area-inset-bottom));
     border-top: 1px solid rgba(234, 213, 201, .9);
     background: #fffaf7;
@@ -5690,6 +5691,23 @@
     text-transform: uppercase;
 }
 
+.lxreel__selectors {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 10px;
+}
+
+.lxreel__selection {
+    min-width: 0;
+    display: grid;
+    gap: 3px;
+}
+
+.lxreel__selection--size {
+    justify-items: end;
+}
+
 .lxreel__color-picker {
     display: flex;
     gap: 7px;
@@ -5754,7 +5772,6 @@
 
 .lxreel__size-toggle {
     min-height: 34px;
-    justify-self: start;
     padding: 0 13px;
     border: 1px solid #d9543a;
     border-radius: 999px;
