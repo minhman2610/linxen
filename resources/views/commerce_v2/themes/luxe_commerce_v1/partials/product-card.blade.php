@@ -158,7 +158,7 @@
     data-lxreel-name="{{ data_get($product, 'name') }}"
     data-lxreel-price="{{ number_format((float) data_get($product, 'price_min'), 0, ',', '.') }}₫"
     data-lxreel-original-price="{{ data_get($product, 'has_sale') && data_get($product, 'original_min') > data_get($product, 'price_min') ? number_format((float) data_get($product, 'original_min'), 0, ',', '.').'₫' : '' }}"
-    data-lxreel-sale-inbox-media="{{ e($reelSalesInboxMediaJson ?: '[]') }}"
+    data-lxreel-sale-inbox-media="{{ $reelSalesInboxMediaJson ?: '[]' }}"
     @if($mediaOptions->count() > 1) data-lxcv1-auto-media @endif
 >
     <div class="lxcv1-product-card__media-shell">
