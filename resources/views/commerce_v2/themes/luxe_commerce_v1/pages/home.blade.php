@@ -19,6 +19,7 @@
     class="lxcv1-page lxh3-home"
     data-lxcv1-page="home"
     data-lxhome-experience="video-catalog-v1"
+    data-lxreel-cart-url="{{ route('commerce.v2.cart.items.store') }}"
 >
     <section class="lxh3-video-hero" aria-label="LIN XÉN video">
         <video

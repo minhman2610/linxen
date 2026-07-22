@@ -5,6 +5,7 @@ namespace App\Http\Controllers\CommerceV2;
 use App\Exceptions\CommerceV2\CommerceV2ClientException;
 use App\Http\Controllers\Controller;
 use App\Services\CommerceV2\SessionCartService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -40,7 +41,7 @@ class CartController extends Controller
         }
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
             'sellable_sku_id' => [
@@ -58,10 +59,25 @@ class CartController extends Controller
                 (int) ($data['quantity'] ?? 1)
             );
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'ok' => true,
+                    'cart_url' => route('commerce.v2.cart.index'),
+                    'message' => 'Đã thêm sản phẩm vào giỏ.',
+                ]);
+            }
+
             return redirect()
                 ->route('commerce.v2.cart.index')
                 ->with('success', 'Đã thêm sản phẩm vào giỏ.');
         } catch (CommerceV2ClientException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => $e->getMessage(),
+                ], max(400, min(599, $e->httpStatus)));
+            }
+
             return back()->with('error', $e->getMessage());
         }
     }

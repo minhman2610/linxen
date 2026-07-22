@@ -639,6 +639,8 @@
     document.body.appendChild(reelRoot);
 
     const reelScroller = reelRoot.querySelector('[data-lxreel-scroller]');
+    const reelCartUrl = body.querySelector('[data-lxreel-cart-url]')?.dataset
+        .lxreelCartUrl || '/v2/cart/items';
     let reelObserver = null;
     let reelPreviouslyFocused = null;
 
@@ -682,6 +684,7 @@
         return {
             activeColorIndex,
             activeMediaIndex: 0,
+            selectedSizeId: '',
             colors,
             imageAlt: image?.alt || card.dataset.lxreelName || '',
             name: card.dataset.lxreelName || '',
@@ -709,6 +712,68 @@
         ))
     ] || null;
 
+    const setReelCommerceMessage = (slide, message, isError = false) => {
+        const status = slide.querySelector('[data-lxreel-cart-status]');
+        if (!status) {
+            return;
+        }
+        status.textContent = message;
+        status.classList.toggle('is-error', isError);
+    };
+
+    const addReelItemToCart = async (entry, slide) => {
+        const color = selectedReelColor(entry);
+        const size = color?.sizes?.find((candidate) => (
+            candidate.sellable_sku_id === entry.selectedSizeId
+        ));
+        const button = slide.querySelector('[data-lxreel-add-cart]');
+        if (!size?.sellable_sku_id || !size.sellable) {
+            setReelCommerceMessage(slide, 'Vui lòng chọn size còn hàng.', true);
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = 'Đang kiểm tra tồn kho…';
+        setReelCommerceMessage(slide, '');
+        try {
+            const response = await window.fetch(reelCartUrl, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector(
+                        'meta[name="csrf-token"]'
+                    )?.content || '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    sellable_sku_id: size.sellable_sku_id,
+                    quantity: 1,
+                }),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload.ok !== true) {
+                throw new Error(payload.message || 'Chưa thể thêm vào giỏ.');
+            }
+
+            button.textContent = 'Đã thêm vào giỏ ✓';
+            setReelCommerceMessage(slide, payload.message || 'Đã thêm vào giỏ.');
+            window.setTimeout(() => refreshReelSlide(slide, entry, Number(
+                slide.dataset.lxreelSlide || 0
+            )), 1500);
+        } catch (error) {
+            setReelCommerceMessage(
+                slide,
+                error.message || 'Chưa thể thêm vào giỏ.',
+                true
+            );
+            refreshReelSlide(slide, entry, Number(
+                slide.dataset.lxreelSlide || 0
+            ));
+        }
+    };
+
     const refreshReelSlide = (slide, entry, index) => {
         const color = selectedReelColor(entry);
         if (!color) {
@@ -720,6 +785,9 @@
         const eyebrow = slide.querySelector('[data-lxreel-eyebrow]');
         const galleryCount = slide.querySelector('[data-lxreel-count]');
         const galleryThumbs = slide.querySelector('[data-lxreel-thumbs]');
+        const sizeLabel = slide.querySelector('[data-lxreel-size-label]');
+        const sizePicker = slide.querySelector('[data-lxreel-sizes]');
+        const addCart = slide.querySelector('[data-lxreel-add-cart]');
         const media = color.media.slice(0, 5);
 
         eyebrow.textContent = `LIN XÉN · ${color.label}`;
@@ -751,6 +819,7 @@
             button.addEventListener('click', () => {
                 entry.activeColorIndex = colorIndex;
                 entry.activeMediaIndex = 0;
+                entry.selectedSizeId = '';
                 refreshReelSlide(slide, entry, index);
             });
             return button;
@@ -795,6 +864,41 @@
         mediaTrack.scrollLeft = 0;
         mediaTrack.onscroll = updateGalleryPosition;
         updateGalleryPosition();
+
+        const sizes = Array.isArray(color.sizes) ? color.sizes : [];
+        const selectedSize = sizes.find((size) => (
+            size.sellable_sku_id === entry.selectedSizeId
+        ));
+        if (!selectedSize) {
+            entry.selectedSizeId = '';
+        }
+        sizePicker.hidden = sizes.length === 0;
+        addCart.hidden = sizes.length === 0;
+        sizePicker.replaceChildren(...sizes.map((size) => {
+            const button = document.createElement('button');
+            const available = Boolean(size.sellable && size.sellable_sku_id);
+            const selected = size.sellable_sku_id === entry.selectedSizeId;
+            button.type = 'button';
+            button.className = 'lxreel__size-option';
+            button.classList.toggle('is-active', selected);
+            button.classList.toggle('is-unavailable', !available);
+            button.disabled = !available;
+            button.setAttribute('aria-pressed', String(selected));
+            button.textContent = size.size || '—';
+            button.addEventListener('click', () => {
+                entry.selectedSizeId = size.sellable_sku_id;
+                refreshReelSlide(slide, entry, index);
+            });
+            return button;
+        }));
+        sizeLabel.textContent = sizes.length
+            ? 'Chọn size'
+            : 'Chọn size tại trang chi tiết';
+        addCart.disabled = !entry.selectedSizeId;
+        addCart.textContent = entry.selectedSizeId
+            ? `Thêm size ${selectedSize?.size || ''} vào giỏ`
+            : 'Chọn size để thêm giỏ';
+        addCart.onclick = () => addReelItemToCart(entry, slide);
     };
 
     const enrichReelEntry = async (entry, slide, index) => {
@@ -839,6 +943,11 @@
                         label: color.label || fallback?.label || 'Màu sản phẩm',
                         hex: color.hex || fallback?.hex || '#ead8cf',
                         media: media.length ? media : (fallback?.media || []),
+                        sizes: Array.isArray(color.sizes) ? color.sizes.map((size) => ({
+                            size: size.size || '',
+                            sellable: Boolean(size.sellable),
+                            sellable_sku_id: size.sellable_sku_id || '',
+                        })) : [],
                     };
                 }).filter((color) => color.media.length > 0)
                 : [];
@@ -853,6 +962,7 @@
                     )
                 ));
                 entry.activeMediaIndex = 0;
+                entry.selectedSizeId = '';
                 refreshReelSlide(slide, entry, index);
             }
         } catch (error) {
@@ -922,6 +1032,27 @@
         colorPicker.dataset.lxreelColors = 'true';
         colorPicker.setAttribute('aria-label', 'Chọn màu sản phẩm');
 
+        const sizeLabel = document.createElement('p');
+        sizeLabel.className = 'lxreel__size-label';
+        sizeLabel.dataset.lxreelSizeLabel = 'true';
+        const sizePicker = document.createElement('div');
+        sizePicker.className = 'lxreel__size-picker';
+        sizePicker.dataset.lxreelSizes = 'true';
+        sizePicker.setAttribute('aria-label', 'Chọn kích thước');
+
+        const commerce = document.createElement('div');
+        commerce.className = 'lxreel__commerce';
+        const addCart = document.createElement('button');
+        addCart.className = 'lxreel__add-cart';
+        addCart.type = 'button';
+        addCart.disabled = true;
+        addCart.dataset.lxreelAddCart = 'true';
+        const cartStatus = document.createElement('p');
+        cartStatus.className = 'lxreel__cart-status';
+        cartStatus.dataset.lxreelCartStatus = 'true';
+        cartStatus.setAttribute('aria-live', 'polite');
+        commerce.append(addCart, cartStatus);
+
         const actions = document.createElement('div');
         actions.className = 'lxreel__actions';
         const detailsLink = document.createElement('a');
@@ -937,6 +1068,9 @@
             galleryThumbs,
             colorLabel,
             colorPicker,
+            sizeLabel,
+            sizePicker,
+            commerce,
             actions
         );
         slide.append(media, details);

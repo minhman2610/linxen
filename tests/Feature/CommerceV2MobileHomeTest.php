@@ -36,8 +36,8 @@ final class CommerceV2MobileHomeTest extends TestCase
             ->assertSee('data-lxcv1-search-panel', false)
             ->assertSee('Váy BASIC mặc lên không cần suy nghĩ', false)
             ->assertSee('City Bloom', false)
-            ->assertSee('luxe-commerce-v1.css?v=8', false)
-            ->assertSee('luxe-commerce-v1.js?v=8', false)
+            ->assertSee('luxe-commerce-v1.css?v=9', false)
+            ->assertSee('luxe-commerce-v1.js?v=9', false)
             ->assertDontSee('data-lxhome-video-sound', false)
             ->assertDontSee('lxh3-video-hero__shade', false)
             ->assertDontSee('data-lxh2-editorial-story', false)
@@ -137,6 +137,50 @@ final class CommerceV2MobileHomeTest extends TestCase
             str_contains($request->url(), '/catalog/products?')
             && str_contains($request->url(), 'limit=8')
             && str_contains($request->url(), 'cursor=cursor-2')
+        ));
+    }
+
+    public function test_reel_cart_add_returns_json_after_erp_validation(): void
+    {
+        $this->configureCommerce();
+
+        Http::fake(fn (Request $request) => Http::response([
+            'ok' => true,
+            'data' => [
+                'items' => [[
+                    'sellable_sku_id' => 'sku_54369629',
+                    'valid' => true,
+                ]],
+            ],
+        ]));
+
+        $response = $this->postJson('/v2/cart/items', [
+            'sellable_sku_id' => 'sku_54369629',
+            'quantity' => 1,
+        ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('message', 'Đã thêm sản phẩm vào giỏ.')
+            ->assertJsonPath('cart_url', route('commerce.v2.cart.index'));
+
+        $this->assertSame([
+            [
+                'sellable_sku_id' => 'sku_54369629',
+                'quantity' => 1,
+            ],
+        ], session('commerce_v2.cart.items'));
+
+        Http::assertSent(fn (Request $request) => (
+            str_contains($request->url(), '/cart/validate')
+            && $request->method() === 'POST'
+            && $request->data() === [
+                'items' => [[
+                    'sellable_sku_id' => 'sku_54369629',
+                    'quantity' => 1,
+                ]],
+            ]
         ));
     }
 
