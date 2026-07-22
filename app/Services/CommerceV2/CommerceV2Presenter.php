@@ -56,6 +56,19 @@ class CommerceV2Presenter
             ])
             ->filter(fn ($item) => $item['url'] !== '')
             ->unique('url')
+            ->unique(function ($item) {
+                if ($item['color_id'] !== '') {
+                    return 'color:'.$item['color_id'];
+                }
+
+                $label = Str::lower(Str::ascii(trim($item['label'])));
+
+                if ($label !== '') {
+                    return 'label:'.$label;
+                }
+
+                return 'url:'.$item['url'];
+            })
             ->take(4)
             ->values()
             ->all();
@@ -101,6 +114,30 @@ class CommerceV2Presenter
                         []
                     )
                 ),
+                'size_options' => collect((array) data_get(
+                    $color,
+                    'size_options',
+                    []
+                ))
+                    ->map(fn ($option) => [
+                        'size' => strtoupper(trim((string) data_get(
+                            $option,
+                            'size'
+                        ))),
+                        'in_stock' => (bool) data_get(
+                            $option,
+                            'in_stock',
+                            false
+                        ),
+                        'available' => (float) data_get(
+                            $option,
+                            'available',
+                            data_get($option, 'available_qty', 0)
+                        ),
+                    ])
+                    ->filter(fn ($option) => $option['size'] !== '')
+                    ->values()
+                    ->all(),
             ])
             ->values()
             ->all();

@@ -35,6 +35,9 @@ final class CommerceV2MobileHomeTest extends TestCase
             ->assertSee('data-lxcv1-search-open', false)
             ->assertSee('data-lxcv1-search-panel', false)
             ->assertSee('Ảnh sản phẩm đã duyệt', false)
+            ->assertSee('The Lin Xén Edit', false)
+            ->assertSee('luxe-commerce-v1.css?v=5', false)
+            ->assertSee('luxe-commerce-v1.js?v=5', false)
             ->assertDontSee('data-lxhome-video-sound', false)
             ->assertDontSee('lxh3-video-hero__shade', false)
             ->assertDontSee('data-lxh2-editorial-story', false)
@@ -100,6 +103,27 @@ final class CommerceV2MobileHomeTest extends TestCase
             'lxcv1-product-card__sizes',
             (string) $response->json('html')
         );
+        foreach (['XS', 'S', 'M', 'L', 'XL'] as $size) {
+            $this->assertStringContainsString(
+                'data-size="'.$size.'"',
+                (string) $response->json('html')
+            );
+        }
+        $this->assertStringContainsString(
+            'is-unavailable',
+            (string) $response->json('html')
+        );
+        $this->assertStringContainsString(
+            'data-sizes="S,M,L"',
+            (string) $response->json('html')
+        );
+        $this->assertSame(
+            1,
+            substr_count(
+                (string) $response->json('html'),
+                'aria-label="Xem Đen"'
+            )
+        );
 
         Http::assertSent(fn (Request $request) => (
             str_contains($request->url(), '/catalog/products?')
@@ -140,6 +164,14 @@ final class CommerceV2MobileHomeTest extends TestCase
                     'color_label' => 'Đen',
                     'color_hex' => '#111111',
                 ], [
+                    'id' => "{$slug}-black-detail-inbox",
+                    'url' => "https://cdn.example.test/{$slug}-black-detail-inbox.jpg",
+                    'thumb_url' => "https://cdn.example.test/{$slug}-black-detail-inbox-thumb.webp",
+                    'job_category' => 'SALES_INBOX_SUPPORT_SINGLE',
+                    'color_id' => 'pvg_black',
+                    'color_label' => 'Đen',
+                    'color_hex' => '#111111',
+                ], [
                     'id' => "{$slug}-red-inbox",
                     'url' => "https://cdn.example.test/{$slug}-red-inbox.jpg",
                     'thumb_url' => "https://cdn.example.test/{$slug}-red-inbox-thumb.webp",
@@ -171,6 +203,27 @@ final class CommerceV2MobileHomeTest extends TestCase
                     'url' => "https://cdn.example.test/{$slug}.jpg",
                 ],
                 'available_sizes' => ['M', 'L'],
+                'size_options' => [[
+                    'size' => 'XS',
+                    'in_stock' => false,
+                    'available' => 0,
+                ], [
+                    'size' => 'S',
+                    'in_stock' => true,
+                    'available' => 1,
+                ], [
+                    'size' => 'M',
+                    'in_stock' => true,
+                    'available' => 2,
+                ], [
+                    'size' => 'L',
+                    'in_stock' => true,
+                    'available' => 1,
+                ], [
+                    'size' => 'XL',
+                    'in_stock' => false,
+                    'available' => 0,
+                ]],
             ], [
                 'id' => 'pvg_red',
                 'code' => 'RED',

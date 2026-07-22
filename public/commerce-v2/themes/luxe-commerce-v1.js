@@ -401,19 +401,80 @@
         }
     }
 
-    const visibleAutoCards = new Set();
+    const autoMediaTimers = new WeakMap();
+    let autoCardSequence = 0;
+
+    const stopAutoMedia = (card) => {
+        const timer = autoMediaTimers.get(card);
+        if (timer) {
+            window.clearTimeout(timer);
+            autoMediaTimers.delete(card);
+        }
+    };
+
+    const scheduleAutoMedia = (card, initial = false) => {
+        stopAutoMedia(card);
+
+        if (
+            reducedMotion
+            || card.dataset.lxcv1InViewport !== 'true'
+            || !card.lxcv1SelectNextMedia
+        ) {
+            return;
+        }
+
+        const sequence = Number(card.dataset.lxcv1AutoSequence || 0);
+        const manualUntil = Number(card.dataset.lxcv1ManualUntil || 0);
+        const manualDelay = Math.max(0, manualUntil - Date.now());
+        const viewportDelay = initial
+            ? 2400 + ((sequence % 4) * 620)
+            : 6200 + ((sequence % 3) * 480);
+        const delay = Math.max(viewportDelay, manualDelay + 180);
+
+        const timer = window.setTimeout(() => {
+            autoMediaTimers.delete(card);
+
+            if (
+                document.hidden
+                || card.dataset.lxcv1InViewport !== 'true'
+            ) {
+                scheduleAutoMedia(card, false);
+                return;
+            }
+
+            if (Number(card.dataset.lxcv1ManualUntil || 0) <= Date.now()) {
+                card.lxcv1SelectNextMedia();
+            }
+
+            scheduleAutoMedia(card, false);
+        }, delay);
+
+        autoMediaTimers.set(card, timer);
+    };
+
     const autoMediaObserver = 'IntersectionObserver' in window
         ? new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    visibleAutoCards.add(entry.target);
+                const card = entry.target;
+                if (entry.isIntersecting && entry.intersectionRatio >= .55) {
+                    card.dataset.lxcv1InViewport = 'true';
+                    card.querySelectorAll('[data-lxcv1-color-image]')
+                        .forEach((option) => {
+                            if (!option.dataset.image) {
+                                return;
+                            }
+                            const preload = new Image();
+                            preload.src = option.dataset.image;
+                        });
+                    scheduleAutoMedia(card, true);
                 } else {
-                    visibleAutoCards.delete(entry.target);
+                    card.dataset.lxcv1InViewport = 'false';
+                    stopAutoMedia(card);
                 }
             });
         }, {
-            threshold: .3,
-            rootMargin: '80px 0px',
+            threshold: [.3, .55, .8],
+            rootMargin: '0px 0px -8% 0px',
         })
         : null;
 
@@ -433,6 +494,9 @@
                 const options = Array.from(card.querySelectorAll(
                     '[data-lxcv1-color-image]'
                 ));
+                const sizeItems = Array.from(card.querySelectorAll(
+                    '[data-lxcv1-size]'
+                ));
 
                 if (!image || options.length === 0) {
                     card.dataset.lxcv1ColorReady = 'true';
@@ -440,6 +504,7 @@
                 }
 
                 image.dataset.baseAlt = image.alt;
+                card.dataset.lxcv1AutoSequence = String(autoCardSequence++);
 
                 let activeIndex = Math.max(
                     0,
@@ -447,6 +512,35 @@
                         (option) => option.getAttribute('aria-pressed') === 'true'
                     )
                 );
+                let imageSwapToken = 0;
+
+                const updateSizes = (option) => {
+                    const availableSizes = new Set(
+                        String(option.dataset.sizes || '')
+                            .split(',')
+                            .map((size) => size.trim().toUpperCase())
+                            .filter(Boolean)
+                    );
+
+                    sizeItems.forEach((sizeItem) => {
+                        const size = String(
+                            sizeItem.dataset.size || ''
+                        ).toUpperCase();
+                        const available = availableSizes.has(size);
+
+                        sizeItem.classList.toggle(
+                            'is-unavailable',
+                            !available
+                        );
+                        sizeItem.setAttribute(
+                            'aria-disabled',
+                            String(!available)
+                        );
+                        sizeItem.title = `Size ${size} ${
+                            available ? 'còn hàng' : 'đã hết'
+                        }`;
+                    });
+                };
 
                 const selectOption = (index, manual = false) => {
                     activeIndex = (
@@ -463,8 +557,34 @@
                         );
                     });
 
-                    if (option.dataset.image) {
-                        image.src = option.dataset.image;
+                    const nextImage = option.dataset.image || '';
+
+                    if (
+                        nextImage
+                        && image.getAttribute('src') !== nextImage
+                    ) {
+                        const token = ++imageSwapToken;
+                        const commitImage = () => {
+                            if (token !== imageSwapToken) {
+                                return;
+                            }
+
+                            image.src = nextImage;
+                            window.requestAnimationFrame(() => {
+                                window.requestAnimationFrame(() => {
+                                    card.classList.remove(
+                                        'is-media-changing'
+                                    );
+                                });
+                            });
+                        };
+
+                        if (reducedMotion) {
+                            commitImage();
+                        } else {
+                            card.classList.add('is-media-changing');
+                            window.setTimeout(commitImage, 150);
+                        }
                     }
                     if (option.dataset.label) {
                         image.alt = `${image.dataset.baseAlt} · ${option.dataset.label}`;
@@ -472,6 +592,7 @@
                             label.textContent = option.dataset.label;
                         }
                     }
+                    updateSizes(option);
 
                     card.dataset.lxcv1MediaIndex = String(activeIndex);
                     if (manual) {
@@ -484,6 +605,7 @@
                 options.forEach((option, index) => {
                     option.addEventListener('click', () => {
                         selectOption(index, true);
+                        scheduleAutoMedia(card, false);
                     });
                 });
 
@@ -497,35 +619,15 @@
                 ) {
                     if (autoMediaObserver) {
                         autoMediaObserver.observe(card);
-                    } else if (!reducedMotion) {
-                        visibleAutoCards.add(card);
                     }
                 }
 
+                updateSizes(options[activeIndex]);
                 card.dataset.lxcv1ColorReady = 'true';
             });
     };
 
     initProductCards();
-
-    if (!reducedMotion) {
-        window.setInterval(() => {
-            if (document.hidden) {
-                return;
-            }
-
-            visibleAutoCards.forEach((card) => {
-                if (
-                    Number(card.dataset.lxcv1ManualUntil || 0)
-                    > Date.now()
-                ) {
-                    return;
-                }
-
-                card.lxcv1SelectNextMedia?.();
-            });
-        }, 5200);
-    }
 
     const homeFeed = body.querySelector('[data-lxhome-feed]');
 

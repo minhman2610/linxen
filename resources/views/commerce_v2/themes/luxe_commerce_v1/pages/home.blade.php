@@ -46,7 +46,10 @@
         data-has-more="{{ $hasMoreProducts ? 'true' : 'false' }}"
     >
         <header class="lxh3-catalog__head">
-            <h1>Sản phẩm</h1>
+            <div>
+                <p>Curated for you</p>
+                <h1>The Lin Xén Edit</h1>
+            </div>
             <span data-lxhome-count>{{ $productCollection->count() }} thiết kế</span>
         </header>
 

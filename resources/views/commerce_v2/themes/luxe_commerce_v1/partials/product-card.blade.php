@@ -1,12 +1,77 @@
 @php
-    $colors = collect((array) data_get($product, 'colors', []))
+    $canonicalSizes = collect(['XS', 'S', 'M', 'L', 'XL']);
+    $normalizeColorLabel = fn ($value) => mb_strtolower(trim((string) $value));
+    $allColors = collect((array) data_get($product, 'colors', []))
+        ->values();
+    $availableSizesForColor = function ($color) use ($canonicalSizes) {
+        $sizeOptions = collect((array) data_get(
+            $color,
+            'size_options',
+            []
+        ));
+
+        if ($sizeOptions->isNotEmpty()) {
+            return $sizeOptions
+                ->filter(fn ($option) => (bool) data_get(
+                    $option,
+                    'in_stock',
+                    false
+                ))
+                ->map(fn ($option) => strtoupper(trim((string) data_get(
+                    $option,
+                    'size'
+                ))))
+                ->filter(fn ($size) => $canonicalSizes->contains($size))
+                ->unique()
+                ->values();
+        }
+
+        return collect((array) data_get($color, 'available_sizes', []))
+            ->map(fn ($size) => strtoupper(trim((string) $size)))
+            ->filter(fn ($size) => $canonicalSizes->contains($size))
+            ->unique()
+            ->values();
+    };
+    $colors = $allColors
         ->filter(fn ($color) => (bool) data_get($color, 'sellable'))
         ->values();
-    $sizes = $colors
-        ->flatMap(fn ($color) => (array) data_get($color, 'available_sizes', []))
-        ->filter()
+    $productAvailableSizes = $colors
+        ->flatMap(fn ($color) => $availableSizesForColor($color))
         ->unique()
         ->values();
+    $sizesByColorId = $allColors
+        ->filter(fn ($color) => (string) data_get($color, 'id') !== '')
+        ->mapWithKeys(fn ($color) => [
+            (string) data_get($color, 'id') => $availableSizesForColor(
+                $color
+            )->all(),
+        ]);
+    $sizesByColorLabel = $allColors
+        ->filter(fn ($color) => trim((string) data_get($color, 'label')) !== '')
+        ->mapWithKeys(fn ($color) => [
+            $normalizeColorLabel(data_get($color, 'label')) => $availableSizesForColor(
+                $color
+            )->all(),
+        ]);
+    $availableSizesFor = function ($option) use (
+        $normalizeColorLabel,
+        $productAvailableSizes,
+        $sizesByColorId,
+        $sizesByColorLabel
+    ) {
+        $colorId = (string) data_get($option, 'color_id');
+        $colorLabel = $normalizeColorLabel(data_get($option, 'label'));
+
+        return collect(
+            $sizesByColorId->get(
+                $colorId,
+                $sizesByColorLabel->get(
+                    $colorLabel,
+                    $productAvailableSizes->all()
+                )
+            )
+        );
+    };
     $strictListingMedia = request()->routeIs(
         'commerce.v2.home',
         'commerce.v2.home.products'
@@ -14,6 +79,11 @@
     $mediaOptions = collect((array) data_get($product, 'listing_media', []))
         ->filter(fn ($option) => (string) data_get($option, 'url') !== '')
         ->unique('url')
+        ->unique(fn ($option) => $normalizeColorLabel(
+            data_get($option, 'color_id')
+                ?: data_get($option, 'label')
+                ?: data_get($option, 'url')
+        ))
         ->take(4)
         ->values();
     if ($mediaOptions->isEmpty() && !$strictListingMedia) {
@@ -34,6 +104,9 @@
             ->values();
     }
     $defaultImage = (string) data_get($mediaOptions->first(), 'url');
+    $defaultAvailableSizes = $availableSizesFor(
+        (array) ($mediaOptions->first() ?? [])
+    );
     $eagerImage = (bool) ($eager ?? false);
 @endphp
 
@@ -104,6 +177,7 @@
             <div class="lxcv1-product-card__color-row">
                 <div class="lxcv1-product-card__colors" aria-label="Đổi ảnh theo màu">
                     @foreach($mediaOptions as $index => $option)
+                        @php($optionSizes = $availableSizesFor($option))
                         <button
                             type="button"
                             title="{{ data_get($option, 'label') }}"
@@ -114,6 +188,7 @@
                             data-lxcv1-color-image
                             data-image="{{ data_get($option, 'url') }}"
                             data-label="{{ data_get($option, 'label') }}"
+                            data-sizes="{{ $optionSizes->implode(',') }}"
                         ></button>
                     @endforeach
                 </div>
@@ -123,15 +198,20 @@
             </div>
         @endif
 
-        @if($sizes->isNotEmpty())
-            <div class="lxcv1-product-card__sizes" aria-label="Kích thước có sẵn">
-                <span>Kích thước</span>
-                <div>
-                    @foreach($sizes->take(5) as $size)
-                        <small>{{ $size }}</small>
-                    @endforeach
-                </div>
+        <div class="lxcv1-product-card__sizes" aria-label="Tình trạng kích thước theo màu">
+            <span>Kích thước</span>
+            <div>
+                @foreach($canonicalSizes as $size)
+                    @php($isAvailable = $defaultAvailableSizes->contains($size))
+                    <small
+                        data-lxcv1-size
+                        data-size="{{ $size }}"
+                        @class(['is-unavailable' => !$isAvailable])
+                        aria-disabled="{{ $isAvailable ? 'false' : 'true' }}"
+                        title="Size {{ $size }} {{ $isAvailable ? 'còn hàng' : 'đã hết' }}"
+                    >{{ $size }}</small>
+                @endforeach
             </div>
-        @endif
+        </div>
     </div>
 </article>
