@@ -47,8 +47,8 @@
     >
         <header class="lxh3-catalog__head">
             <div>
-                <p>Curated for you</p>
-                <h1>The Lin Xén Edit</h1>
+                <p>Bộ sưu tập Tháng 7</p>
+                <h1>City Bloom</h1>
             </div>
             <span data-lxhome-count>{{ $productCollection->count() }} thiết kế</span>
         </header>

@@ -5242,11 +5242,15 @@
 
 /* Final mobile catalogue cascade */
 
+.lxcv1-main--home {
+    padding-top: 0 !important;
+}
+
 .lxh3-ticker {
     border: 0;
     border-radius: 0;
-    color: #351811;
-    background: linear-gradient(90deg, #ffd34e, #ffb43f 52%, #ff8f5a);
+    color: #f3eee9;
+    background: #3b2a22;
     box-shadow: none;
 }
 
@@ -5255,7 +5259,8 @@
 }
 
 .lxh3-ticker i {
-    background: #f05234;
+    background: #e6bc85;
+    box-shadow: 0 0 0 3px rgba(230, 188, 133, .16);
 }
 
 .lxh3-product-table .lxcv1-product-card {
@@ -5333,6 +5338,51 @@
 }
 
 @media (max-width: 760px) {
+    .lxcv1-header__inner {
+        width: calc(100% - 20px);
+        min-height: 44px;
+        gap: 6px;
+    }
+
+    .lxcv1-menu-toggle,
+    .lxcv1-header-actions a,
+    .lxcv1-header-actions button {
+        width: 29px;
+        height: 29px;
+        border-radius: 9px;
+    }
+
+    .lxcv1-menu-toggle span {
+        width: 14px;
+    }
+
+    .lxcv1-header-actions {
+        gap: 4px;
+    }
+
+    .lxcv1-header-actions svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .lxcv1-brand strong {
+        font-size: 14px;
+        letter-spacing: .06em;
+    }
+
+    .lxh3-home {
+        gap: 16px;
+    }
+
+    .lxh3-ticker__track > div {
+        min-height: 34px;
+    }
+
+    .lxh3-ticker span {
+        padding-inline: 14px;
+        font-size: 9px;
+    }
+
     .lxh3-video-hero {
         width: 100vw;
         max-width: none;

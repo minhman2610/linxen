@@ -3,28 +3,28 @@
         <span>LX</span>
         <div>
             <strong>LIN XÉN</strong>
-            <p>Thiết kế hiện đại, dữ liệu mua hàng minh bạch và đúng sản phẩm.</p>
+            <p>Trung tâm váy dành cho phụ nữ hiện đại — nơi mỗi thiết kế tôn phom dáng, sự tự tin và phong cách riêng của bạn.</p>
         </div>
     </div>
 
     <div class="lxcv1-footer__columns">
         <div>
-            <small>Khám phá</small>
-            <a href="{{ route('commerce.v2.shop') }}">Tất cả sản phẩm</a>
-            <a href="{{ route('commerce.v2.discover') }}">Đề xuất</a>
-            <a href="{{ route('commerce.v2.search') }}">Tìm kiếm</a>
+            <small>Bộ sưu tập</small>
+            <a href="{{ route('commerce.v2.shop') }}">Thiết kế mới</a>
+            <a href="{{ route('commerce.v2.shop') }}">Váy cho mọi dịp</a>
+            <a href="{{ route('commerce.v2.discover') }}">Image Stories</a>
         </div>
         <div>
-            <small>Mua hàng</small>
+            <small>Hỗ trợ mua sắm</small>
             <a href="{{ route('commerce.v2.cart.index') }}">Giỏ hàng</a>
             <a href="{{ route('commerce.v2.orders.index') }}">Đơn hàng</a>
-            <a href="{{ route('commerce.v2.account.index') }}">Tài khoản</a>
+            <a href="{{ route('commerce.v2.account.index') }}">Tài khoản của tôi</a>
         </div>
         <div>
-            <small>Cam kết</small>
-            <span>Giá và tồn kho từ ERP</span>
-            <span>Thanh toán COD</span>
-            <span>Exact SKU theo màu và size</span>
+            <small>LIN XÉN cam kết</small>
+            <span>Thiết kế tôn nét riêng</span>
+            <span>Hình ảnh được chọn kỹ</span>
+            <span>Tư vấn chọn size chu đáo</span>
         </div>
     </div>
 </footer>

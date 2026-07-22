@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=5">
     @if($luxeCommercePreview)
-        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=5">
+        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=6">
     @endif
     @stack('head')
 </head>
@@ -90,7 +90,14 @@
         </div>
     @endif
 
-    <main id="main-content" class="lxv2-main">
+    <main
+        id="main-content"
+        @class([
+            'lxv2-main',
+            'lxcv1-main--home' => $luxeCommercePreview
+                && request()->routeIs('commerce.v2.home'),
+        ])
+    >
         @if(session('success'))
             <div class="lxv2-alert lxv2-alert--success">
                 {{ session('success') }}
