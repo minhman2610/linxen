@@ -5470,19 +5470,28 @@
 }
 
 .lxreel__slide {
-    min-height: 100dvh;
+    height: 100dvh;
+    min-height: 100svh;
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(300px, 54dvh) minmax(0, 1fr);
     scroll-snap-align: start;
     scroll-snap-stop: always;
     background: #fffaf7;
 }
 
 .lxreel__media {
-    min-height: 58dvh;
+    min-height: 0;
     margin: 0;
     overflow: hidden;
     background: #efe3dd;
+}
+
+.lxreel__media-link {
+    width: 100%;
+    height: 100%;
+    display: block;
+    color: inherit;
+    text-decoration: none;
 }
 
 .lxreel__media-track {
@@ -5528,10 +5537,18 @@
 
 .lxreel__details {
     display: grid;
-    gap: 8px;
-    padding: 13px 18px calc(14px + env(safe-area-inset-bottom));
+    gap: 6px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding: 11px 18px calc(12px + env(safe-area-inset-bottom));
     border-top: 1px solid rgba(234, 213, 201, .9);
     background: #fffaf7;
+    scrollbar-width: none;
+}
+
+.lxreel__details::-webkit-scrollbar {
+    display: none;
 }
 
 .lxreel__eyebrow {
@@ -5568,13 +5585,32 @@
 .lxreel__details h1 {
     margin: 0;
     font-family: "Iowan Old Style", Baskerville, Georgia, serif;
-    font-size: clamp(23px, 6vw, 31px);
+    font-size: clamp(21px, 5.8vw, 29px);
     font-weight: 500;
     line-height: 1.04;
 }
 
+.lxreel__details h1 a,
+.lxreel__price-row a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.lxreel__details h1 a:focus-visible,
+.lxreel__price-row a:focus-visible,
+.lxreel__media-link:focus-visible {
+    outline: 2px solid #d9543a;
+    outline-offset: 3px;
+}
+
 .lxreel__price-row {
     display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.lxreel__price-row a {
+    display: inline-flex;
     align-items: baseline;
     gap: 8px;
 }
@@ -5789,6 +5825,50 @@
     color: #fff;
     background: #d9543a;
     font-size: 15px;
+}
+
+@media (max-height: 760px) {
+    .lxreel__slide {
+        grid-template-rows: minmax(264px, 52dvh) minmax(0, 1fr);
+    }
+
+    .lxreel__details {
+        gap: 4px;
+        padding-top: 8px;
+        padding-bottom: calc(9px + env(safe-area-inset-bottom));
+    }
+
+    .lxreel__dismiss {
+        width: 27px;
+        height: 27px;
+        font-size: 18px;
+    }
+
+    .lxreel__details h1 {
+        font-size: clamp(19px, 5.5vw, 24px);
+    }
+
+    .lxreel__price-row strong {
+        font-size: 18px;
+    }
+
+    .lxreel__gallery-thumbs button {
+        width: 31px;
+        height: 40px;
+    }
+
+    .lxreel__color-option {
+        min-height: 28px;
+    }
+
+    .lxreel__size-option {
+        min-height: 29px;
+    }
+
+    .lxreel__add-cart,
+    .lxreel__details-link {
+        min-height: 38px;
+    }
 }
 
 .lxv2-theme--luxe-commerce-v1.lxreel-open {

@@ -643,6 +643,10 @@
         .lxreelCartUrl || '/v2/cart/items';
     let reelObserver = null;
     let reelPreviouslyFocused = null;
+    let reelMotionTimer = null;
+    let reelMotionSlide = null;
+
+    const MAX_REEL_MEDIA = 6;
 
     const colorKey = (value) => String(value || '')
         .trim()
@@ -684,6 +688,7 @@
         return {
             activeColorIndex,
             activeMediaIndex: 0,
+            motionPaused: false,
             selectedSizeId: '',
             colors,
             imageAlt: image?.alt || card.dataset.lxreelName || '',
@@ -697,6 +702,7 @@
     const closeReel = () => {
         reelObserver?.disconnect();
         reelObserver = null;
+        stopReelMotion();
         reelRoot.classList.remove('is-open');
         reelRoot.setAttribute('aria-hidden', 'true');
         reelScroller.replaceChildren();
@@ -711,6 +717,54 @@
             entry.colors.length - 1
         ))
     ] || null;
+
+    const stopReelMotion = () => {
+        if (reelMotionTimer) {
+            window.clearTimeout(reelMotionTimer);
+        }
+        reelMotionTimer = null;
+        reelMotionSlide = null;
+    };
+
+    const startReelMotion = (slide, entry) => {
+        stopReelMotion();
+        if (
+            !slide
+            || !entry
+            || reducedMotion
+            || entry.motionPaused
+            || !slide.classList.contains('is-active')
+        ) {
+            return;
+        }
+
+        const mediaTrack = slide.querySelector('[data-lxreel-media-track]');
+        const frameCount = mediaTrack?.children.length || 0;
+        if (!mediaTrack || frameCount < 2) {
+            return;
+        }
+
+        reelMotionSlide = slide;
+        const advance = () => {
+            if (
+                reelMotionSlide !== slide
+                || !slide.classList.contains('is-active')
+                || document.hidden
+            ) {
+                stopReelMotion();
+                return;
+            }
+
+            const nextIndex = (entry.activeMediaIndex + 1) % frameCount;
+            mediaTrack.scrollTo({
+                left: mediaTrack.clientWidth * nextIndex,
+                behavior: 'smooth',
+            });
+            reelMotionTimer = window.setTimeout(advance, 4400);
+        };
+
+        reelMotionTimer = window.setTimeout(advance, 4400);
+    };
 
     const setReelCommerceMessage = (slide, message, isError = false) => {
         const status = slide.querySelector('[data-lxreel-cart-status]');
@@ -788,7 +842,7 @@
         const sizeLabel = slide.querySelector('[data-lxreel-size-label]');
         const sizePicker = slide.querySelector('[data-lxreel-sizes]');
         const addCart = slide.querySelector('[data-lxreel-add-cart]');
-        const media = color.media.slice(0, 5);
+        const media = color.media.slice(0, MAX_REEL_MEDIA);
 
         eyebrow.textContent = `LIN XÉN · ${color.label}`;
         mediaTrack.replaceChildren(...media.map((item, mediaIndex) => {
@@ -819,6 +873,7 @@
             button.addEventListener('click', () => {
                 entry.activeColorIndex = colorIndex;
                 entry.activeMediaIndex = 0;
+                entry.motionPaused = false;
                 entry.selectedSizeId = '';
                 refreshReelSlide(slide, entry, index);
             });
@@ -854,6 +909,10 @@
             thumb.decoding = 'async';
             button.appendChild(thumb);
             button.addEventListener('click', () => {
+                entry.motionPaused = true;
+                if (reelMotionSlide === slide) {
+                    stopReelMotion();
+                }
                 mediaTrack.scrollTo({
                     left: mediaTrack.clientWidth * mediaIndex,
                     behavior: reducedMotion ? 'auto' : 'smooth',
@@ -863,6 +922,12 @@
         }));
         mediaTrack.scrollLeft = 0;
         mediaTrack.onscroll = updateGalleryPosition;
+        mediaTrack.onpointerdown = () => {
+            entry.motionPaused = true;
+            if (reelMotionSlide === slide) {
+                stopReelMotion();
+            }
+        };
         updateGalleryPosition();
 
         const sizes = Array.isArray(color.sizes) ? color.sizes : [];
@@ -899,6 +964,7 @@
             ? `Thêm size ${selectedSize?.size || ''} vào giỏ`
             : 'Chọn size để thêm giỏ';
         addCart.onclick = () => addReelItemToCart(entry, slide);
+        startReelMotion(slide, entry);
     };
 
     const enrichReelEntry = async (entry, slide, index) => {
@@ -933,10 +999,21 @@
                     const fallback = fallbackById.get(
                         color.id || colorKey(color.label)
                     ) || fallbackById.get(colorKey(color.label));
-                    const media = Array.isArray(color.media)
-                        ? color.media.filter((item) => item?.url)
-                            .slice(0, 5)
-                        : [];
+                    const clarityMedia = color.clarity_media_exact_color === false
+                        ? []
+                        : (Array.isArray(color.clarity_media)
+                            ? color.clarity_media
+                            : []);
+                    const media = [...clarityMedia, ...(
+                        Array.isArray(color.media) ? color.media : []
+                    )]
+                        .filter((item) => item?.url)
+                        .filter((item, mediaIndex, items) => (
+                            items.findIndex((candidate) => (
+                                candidate.url === item.url
+                            )) === mediaIndex
+                        ))
+                        .slice(0, MAX_REEL_MEDIA);
 
                     return {
                         id: color.id || '',
@@ -962,6 +1039,7 @@
                     )
                 ));
                 entry.activeMediaIndex = 0;
+                entry.motionPaused = false;
                 entry.selectedSizeId = '';
                 refreshReelSlide(slide, entry, index);
             }
@@ -977,10 +1055,18 @@
 
         const media = document.createElement('figure');
         media.className = 'lxreel__media';
+        const mediaLink = document.createElement('a');
+        mediaLink.className = 'lxreel__media-link';
+        mediaLink.href = entry.url;
+        mediaLink.setAttribute(
+            'aria-label',
+            `Xem đầy đủ ${entry.name}`
+        );
         const mediaTrack = document.createElement('div');
         mediaTrack.className = 'lxreel__media-track';
         mediaTrack.dataset.lxreelMediaTrack = 'true';
-        media.appendChild(mediaTrack);
+        mediaLink.appendChild(mediaTrack);
+        media.appendChild(mediaLink);
 
         const details = document.createElement('div');
         details.className = 'lxreel__details';
@@ -999,18 +1085,28 @@
         detailsTop.append(eyebrow, close);
 
         const title = document.createElement('h1');
-        title.textContent = entry.name;
+        const titleLink = document.createElement('a');
+        titleLink.href = entry.url;
+        titleLink.textContent = entry.name;
+        title.appendChild(titleLink);
 
         const priceRow = document.createElement('div');
         priceRow.className = 'lxreel__price-row';
+        const priceLink = document.createElement('a');
+        priceLink.href = entry.url;
+        priceLink.setAttribute(
+            'aria-label',
+            `Xem đầy đủ ${entry.name}, giá ${entry.price}`
+        );
         const price = document.createElement('strong');
         price.textContent = entry.price;
-        priceRow.appendChild(price);
+        priceLink.appendChild(price);
         if (entry.originalPrice) {
             const originalPrice = document.createElement('del');
             originalPrice.textContent = entry.originalPrice;
-            priceRow.appendChild(originalPrice);
+            priceLink.appendChild(originalPrice);
         }
+        priceRow.appendChild(priceLink);
 
         const galleryMeta = document.createElement('div');
         galleryMeta.className = 'lxreel__gallery-meta';
@@ -1080,13 +1176,13 @@
     };
 
     const openReel = (selectedIndex) => {
-        const entries = getReelEntries();
-        if (!entries.length || !reelScroller) {
+        const reelEntries = getReelEntries();
+        if (!reelEntries.length || !reelScroller) {
             return;
         }
 
         reelPreviouslyFocused = document.activeElement;
-        reelScroller.replaceChildren(...entries.map(makeReelSlide));
+        reelScroller.replaceChildren(...reelEntries.map(makeReelSlide));
         reelRoot.classList.add('is-open');
         reelRoot.setAttribute('aria-hidden', 'false');
         body.classList.add('lxreel-open');
@@ -1100,24 +1196,39 @@
         slides[safeIndex]?.querySelector('[data-lxreel-close]')?.focus({
             preventScroll: true,
         });
-        enrichReelEntry(entries[safeIndex], slides[safeIndex], safeIndex);
+        enrichReelEntry(
+            reelEntries[safeIndex],
+            slides[safeIndex],
+            safeIndex
+        );
+        startReelMotion(slides[safeIndex], reelEntries[safeIndex]);
 
         if ('IntersectionObserver' in window) {
-            reelObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    entry.target.classList.toggle(
+            reelObserver = new IntersectionObserver((observedEntries) => {
+                observedEntries.forEach((observedEntry) => {
+                    observedEntry.target.classList.toggle(
                         'is-active',
-                        entry.isIntersecting && entry.intersectionRatio >= .62
+                        observedEntry.isIntersecting
+                            && observedEntry.intersectionRatio >= .62
                     );
-                    if (entry.isIntersecting && entry.intersectionRatio >= .62) {
+                    if (
+                        observedEntry.isIntersecting
+                        && observedEntry.intersectionRatio >= .62
+                    ) {
                         const entryIndex = Number(
-                            entry.target.dataset.lxreelSlide
+                            observedEntry.target.dataset.lxreelSlide
                         );
                         enrichReelEntry(
-                            entries[entryIndex],
-                            entry.target,
+                            reelEntries[entryIndex],
+                            observedEntry.target,
                             entryIndex
                         );
+                        startReelMotion(
+                            observedEntry.target,
+                            reelEntries[entryIndex]
+                        );
+                    } else if (reelMotionSlide === observedEntry.target) {
+                        stopReelMotion();
                     }
                 });
             }, {
