@@ -191,6 +191,8 @@
                             @class(['is-active' => $index === 0])
                             style="--lxcv1-swatch:{{ data_get($option, 'hex') ?: '#ead8cf' }}"
                             data-lxcv1-color-image
+                            data-color-id="{{ data_get($option, 'color_id') }}"
+                            data-color-hex="{{ data_get($option, 'hex') ?: '#ead8cf' }}"
                             data-image="{{ data_get($option, 'url') }}"
                             data-label="{{ data_get($option, 'label') }}"
                             data-sizes="{{ $optionSizes->implode(',') }}"

@@ -642,22 +642,54 @@
     let reelObserver = null;
     let reelPreviouslyFocused = null;
 
+    const colorKey = (value) => String(value || '')
+        .trim()
+        .toLocaleLowerCase('vi');
+
     const getReelEntries = () => Array.from(
         body.querySelectorAll('[data-lxreel-product]')
     ).map((card) => {
         const image = card.querySelector('[data-lxcv1-product-image]');
-        const color = card.querySelector('[data-lxcv1-color-label]');
+        const colorLabel = card.querySelector('[data-lxcv1-color-label]');
+        const colors = Array.from(card.querySelectorAll(
+            '[data-lxcv1-color-image]'
+        )).map((option) => ({
+            id: option.dataset.colorId || '',
+            label: option.dataset.label || 'Màu sản phẩm',
+            hex: option.dataset.colorHex || '#ead8cf',
+            media: option.dataset.image ? [{
+                url: option.dataset.image,
+                thumb_url: option.dataset.image,
+            }] : [],
+        })).filter((color) => color.media.length > 0);
+        const currentLabel = colorKey(colorLabel?.textContent);
+        const activeColorIndex = Math.max(0, colors.findIndex(
+            (color) => colorKey(color.label) === currentLabel
+        ));
+
+        if (colors.length === 0 && (image?.currentSrc || image?.src)) {
+            colors.push({
+                id: '',
+                label: colorLabel?.textContent?.trim() || 'Màu sản phẩm',
+                hex: '#ead8cf',
+                media: [{
+                    url: image.currentSrc || image.src,
+                    thumb_url: image.currentSrc || image.src,
+                }],
+            });
+        }
 
         return {
-            image: image?.currentSrc || image?.src || '',
+            activeColorIndex,
+            activeMediaIndex: 0,
+            colors,
             imageAlt: image?.alt || card.dataset.lxreelName || '',
             name: card.dataset.lxreelName || '',
             originalPrice: card.dataset.lxreelOriginalPrice || '',
             price: card.dataset.lxreelPrice || '',
             url: card.dataset.lxreelUrl || '',
-            color: color?.textContent?.trim() || '',
         };
-    }).filter((entry) => entry.image && entry.url && entry.name);
+    }).filter((entry) => entry.colors.length && entry.url && entry.name);
 
     const closeReel = () => {
         reelObserver?.disconnect();
@@ -670,6 +702,164 @@
         reelPreviouslyFocused = null;
     };
 
+    const selectedReelColor = (entry) => entry.colors[
+        Math.max(0, Math.min(
+            entry.activeColorIndex,
+            entry.colors.length - 1
+        ))
+    ] || null;
+
+    const refreshReelSlide = (slide, entry, index) => {
+        const color = selectedReelColor(entry);
+        if (!color) {
+            return;
+        }
+
+        const mediaTrack = slide.querySelector('[data-lxreel-media-track]');
+        const colorPicker = slide.querySelector('[data-lxreel-colors]');
+        const eyebrow = slide.querySelector('[data-lxreel-eyebrow]');
+        const galleryCount = slide.querySelector('[data-lxreel-count]');
+        const galleryThumbs = slide.querySelector('[data-lxreel-thumbs]');
+        const media = color.media.slice(0, 5);
+
+        eyebrow.textContent = `LIN XÉN · ${color.label}`;
+        mediaTrack.replaceChildren(...media.map((item, mediaIndex) => {
+            const frame = document.createElement('figure');
+            frame.className = 'lxreel__media-frame';
+            const image = new Image();
+            image.src = item.url;
+            image.alt = `${entry.imageAlt} · ${color.label} · góc ${mediaIndex + 1}`;
+            image.decoding = 'async';
+            image.loading = index === 0 && mediaIndex === 0 ? 'eager' : 'lazy';
+            frame.appendChild(image);
+            return frame;
+        }));
+
+        colorPicker.replaceChildren(...entry.colors.map((candidate, colorIndex) => {
+            const button = document.createElement('button');
+            const selected = colorIndex === entry.activeColorIndex;
+            button.type = 'button';
+            button.className = 'lxreel__color-option';
+            button.classList.toggle('is-active', selected);
+            button.setAttribute('aria-pressed', String(selected));
+            button.setAttribute('aria-label', `Chọn màu ${candidate.label}`);
+            const dot = document.createElement('i');
+            dot.style.setProperty('--lxreel-swatch', candidate.hex || '#ead8cf');
+            const label = document.createElement('span');
+            label.textContent = candidate.label;
+            button.append(dot, label);
+            button.addEventListener('click', () => {
+                entry.activeColorIndex = colorIndex;
+                entry.activeMediaIndex = 0;
+                refreshReelSlide(slide, entry, index);
+            });
+            return button;
+        }));
+
+        const updateGalleryPosition = () => {
+            const viewportWidth = Math.max(1, mediaTrack.clientWidth);
+            entry.activeMediaIndex = Math.min(
+                media.length - 1,
+                Math.max(0, Math.round(mediaTrack.scrollLeft / viewportWidth))
+            );
+            galleryCount.textContent = `${String(entry.activeMediaIndex + 1).padStart(2, '0')} / ${String(media.length).padStart(2, '0')}`;
+            galleryThumbs.querySelectorAll('button').forEach((button, buttonIndex) => {
+                button.classList.toggle(
+                    'is-active',
+                    buttonIndex === entry.activeMediaIndex
+                );
+            });
+        };
+
+        galleryThumbs.replaceChildren(...media.map((item, mediaIndex) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.setAttribute(
+                'aria-label',
+                `Xem góc ${mediaIndex + 1} của màu ${color.label}`
+            );
+            const thumb = new Image();
+            thumb.src = item.thumb_url || item.url;
+            thumb.alt = '';
+            thumb.loading = 'lazy';
+            thumb.decoding = 'async';
+            button.appendChild(thumb);
+            button.addEventListener('click', () => {
+                mediaTrack.scrollTo({
+                    left: mediaTrack.clientWidth * mediaIndex,
+                    behavior: reducedMotion ? 'auto' : 'smooth',
+                });
+            });
+            return button;
+        }));
+        mediaTrack.scrollLeft = 0;
+        mediaTrack.onscroll = updateGalleryPosition;
+        updateGalleryPosition();
+    };
+
+    const enrichReelEntry = async (entry, slide, index) => {
+        if (entry.detailRequested) {
+            return;
+        }
+        entry.detailRequested = true;
+
+        try {
+            const response = await window.fetch(entry.url, {
+                credentials: 'same-origin',
+                headers: { Accept: 'text/html' },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const documentData = new DOMParser().parseFromString(
+                await response.text(),
+                'text/html'
+            );
+            const payload = documentData.querySelector(
+                '#lxv2ProductData'
+            )?.textContent;
+            const product = payload ? JSON.parse(payload) : null;
+            const fallbackById = new Map(entry.colors.map((color) => [
+                color.id || colorKey(color.label),
+                color,
+            ]));
+            const enrichedColors = Array.isArray(product?.colors)
+                ? product.colors.map((color) => {
+                    const fallback = fallbackById.get(
+                        color.id || colorKey(color.label)
+                    ) || fallbackById.get(colorKey(color.label));
+                    const media = Array.isArray(color.media)
+                        ? color.media.filter((item) => item?.url)
+                            .slice(0, 5)
+                        : [];
+
+                    return {
+                        id: color.id || '',
+                        label: color.label || fallback?.label || 'Màu sản phẩm',
+                        hex: color.hex || fallback?.hex || '#ead8cf',
+                        media: media.length ? media : (fallback?.media || []),
+                    };
+                }).filter((color) => color.media.length > 0)
+                : [];
+
+            if (enrichedColors.length) {
+                const priorColor = selectedReelColor(entry);
+                entry.colors = enrichedColors;
+                entry.activeColorIndex = Math.max(0, enrichedColors.findIndex(
+                    (color) => (
+                        color.id === priorColor?.id
+                        || colorKey(color.label) === colorKey(priorColor?.label)
+                    )
+                ));
+                entry.activeMediaIndex = 0;
+                refreshReelSlide(slide, entry, index);
+            }
+        } catch (error) {
+            // Keep the exact-color catalogue cover when detail media is unavailable.
+        }
+    };
+
     const makeReelSlide = (entry, index) => {
         const slide = document.createElement('article');
         slide.className = 'lxreel__slide';
@@ -677,21 +867,26 @@
 
         const media = document.createElement('figure');
         media.className = 'lxreel__media';
-        const image = new Image();
-        image.src = entry.image;
-        image.alt = entry.imageAlt;
-        image.decoding = 'async';
-        image.loading = index === 0 ? 'eager' : 'lazy';
-        media.appendChild(image);
+        const mediaTrack = document.createElement('div');
+        mediaTrack.className = 'lxreel__media-track';
+        mediaTrack.dataset.lxreelMediaTrack = 'true';
+        media.appendChild(mediaTrack);
 
         const details = document.createElement('div');
         details.className = 'lxreel__details';
 
+        const detailsTop = document.createElement('div');
+        detailsTop.className = 'lxreel__details-top';
         const eyebrow = document.createElement('p');
         eyebrow.className = 'lxreel__eyebrow';
-        eyebrow.textContent = entry.color
-            ? `LIN XÉN · ${entry.color}`
-            : 'LIN XÉN · Quick look';
+        eyebrow.dataset.lxreelEyebrow = 'true';
+        const close = document.createElement('button');
+        close.className = 'lxreel__dismiss';
+        close.type = 'button';
+        close.setAttribute('aria-label', 'Đóng xem nhanh');
+        close.dataset.lxreelClose = 'true';
+        close.innerHTML = '<span aria-hidden="true">×</span>';
+        detailsTop.append(eyebrow, close);
 
         const title = document.createElement('h1');
         title.textContent = entry.name;
@@ -707,26 +902,45 @@
             priceRow.appendChild(originalPrice);
         }
 
-        const hint = document.createElement('p');
-        hint.className = 'lxreel__hint';
-        hint.textContent = index === 0
-            ? 'Vuốt lên để xem thiết kế tiếp theo.'
-            : 'Vuốt để tiếp tục khám phá các thiết kế khác.';
+        const galleryMeta = document.createElement('div');
+        galleryMeta.className = 'lxreel__gallery-meta';
+        const galleryGuide = document.createElement('span');
+        galleryGuide.textContent = 'Vuốt ngang xem góc ảnh';
+        const galleryCount = document.createElement('strong');
+        galleryCount.dataset.lxreelCount = 'true';
+        galleryMeta.append(galleryGuide, galleryCount);
+
+        const galleryThumbs = document.createElement('div');
+        galleryThumbs.className = 'lxreel__gallery-thumbs';
+        galleryThumbs.dataset.lxreelThumbs = 'true';
+
+        const colorLabel = document.createElement('p');
+        colorLabel.className = 'lxreel__color-label';
+        colorLabel.textContent = 'Chọn màu';
+        const colorPicker = document.createElement('div');
+        colorPicker.className = 'lxreel__color-picker';
+        colorPicker.dataset.lxreelColors = 'true';
+        colorPicker.setAttribute('aria-label', 'Chọn màu sản phẩm');
 
         const actions = document.createElement('div');
         actions.className = 'lxreel__actions';
-        const close = document.createElement('button');
-        close.className = 'lxreel__close';
-        close.type = 'button';
-        close.textContent = 'Đóng';
-        close.dataset.lxreelClose = 'true';
         const detailsLink = document.createElement('a');
         detailsLink.className = 'lxreel__details-link';
         detailsLink.href = entry.url;
-        detailsLink.textContent = 'Xem chi tiết';
-        actions.append(close, detailsLink);
-        details.append(eyebrow, title, priceRow, hint, actions);
+        detailsLink.innerHTML = '<span>Khám phá thiết kế</span><b aria-hidden="true">→</b>';
+        actions.append(detailsLink);
+        details.append(
+            detailsTop,
+            title,
+            priceRow,
+            galleryMeta,
+            galleryThumbs,
+            colorLabel,
+            colorPicker,
+            actions
+        );
         slide.append(media, details);
+        refreshReelSlide(slide, entry, index);
 
         return slide;
     };
@@ -738,9 +952,7 @@
         }
 
         reelPreviouslyFocused = document.activeElement;
-        reelScroller.replaceChildren(
-            ...entries.map(makeReelSlide)
-        );
+        reelScroller.replaceChildren(...entries.map(makeReelSlide));
         reelRoot.classList.add('is-open');
         reelRoot.setAttribute('aria-hidden', 'false');
         body.classList.add('lxreel-open');
@@ -754,6 +966,7 @@
         slides[safeIndex]?.querySelector('[data-lxreel-close]')?.focus({
             preventScroll: true,
         });
+        enrichReelEntry(entries[safeIndex], slides[safeIndex], safeIndex);
 
         if ('IntersectionObserver' in window) {
             reelObserver = new IntersectionObserver((entries) => {
@@ -762,6 +975,16 @@
                         'is-active',
                         entry.isIntersecting && entry.intersectionRatio >= .62
                     );
+                    if (entry.isIntersecting && entry.intersectionRatio >= .62) {
+                        const entryIndex = Number(
+                            entry.target.dataset.lxreelSlide
+                        );
+                        enrichReelEntry(
+                            entries[entryIndex],
+                            entry.target,
+                            entryIndex
+                        );
+                    }
                 });
             }, {
                 root: reelScroller,

@@ -36,8 +36,8 @@ final class CommerceV2MobileHomeTest extends TestCase
             ->assertSee('data-lxcv1-search-panel', false)
             ->assertSee('Váy BASIC mặc lên không cần suy nghĩ', false)
             ->assertSee('City Bloom', false)
-            ->assertSee('luxe-commerce-v1.css?v=7', false)
-            ->assertSee('luxe-commerce-v1.js?v=7', false)
+            ->assertSee('luxe-commerce-v1.css?v=8', false)
+            ->assertSee('luxe-commerce-v1.js?v=8', false)
             ->assertDontSee('data-lxhome-video-sound', false)
             ->assertDontSee('lxh3-video-hero__shade', false)
             ->assertDontSee('data-lxh2-editorial-story', false)
@@ -81,6 +81,10 @@ final class CommerceV2MobileHomeTest extends TestCase
         );
         $this->assertStringContainsString(
             'data-lxreel-product',
+            (string) $response->json('html')
+        );
+        $this->assertStringContainsString(
+            'data-color-id=',
             (string) $response->json('html')
         );
         $this->assertStringContainsString(
@@ -140,6 +144,7 @@ final class CommerceV2MobileHomeTest extends TestCase
     {
         config([
             'commerce_v2.base_url' => 'https://commerce.example.test/api',
+            'commerce_v2.cache_store' => 'array',
             'commerce_v2.site' => 'linxen',
             'commerce_v2.token' => 'testing-token',
         ]);

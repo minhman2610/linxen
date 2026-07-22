@@ -5485,6 +5485,28 @@
     background: #efe3dd;
 }
 
+.lxreel__media-track {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.lxreel__media-track::-webkit-scrollbar {
+    display: none;
+}
+
+.lxreel__media-frame {
+    width: 100%;
+    min-width: 100%;
+    height: 100%;
+    margin: 0;
+    scroll-snap-align: start;
+}
+
 .lxreel__media img {
     width: 100%;
     height: 100%;
@@ -5506,8 +5528,8 @@
 
 .lxreel__details {
     display: grid;
-    gap: 9px;
-    padding: 17px 18px calc(17px + env(safe-area-inset-bottom));
+    gap: 8px;
+    padding: 13px 18px calc(14px + env(safe-area-inset-bottom));
     border-top: 1px solid rgba(234, 213, 201, .9);
     background: #fffaf7;
 }
@@ -5519,6 +5541,28 @@
     font-weight: 900;
     letter-spacing: .12em;
     text-transform: uppercase;
+}
+
+.lxreel__details-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.lxreel__dismiss {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    flex: none;
+    padding: 0;
+    border: 1px solid #e8cdc0;
+    border-radius: 50%;
+    color: #70493d;
+    background: #fff;
+    font-size: 20px;
+    line-height: 1;
 }
 
 .lxreel__details h1 {
@@ -5546,41 +5590,133 @@
     font-size: 12px;
 }
 
-.lxreel__hint {
-    margin: 0;
-    color: #85675c;
+.lxreel__gallery-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: #86665b;
+    font-size: 9px;
+    font-weight: 750;
+}
+
+.lxreel__gallery-meta strong {
+    color: #b53a27;
     font-size: 10px;
-    line-height: 1.45;
+    letter-spacing: .08em;
+}
+
+.lxreel__gallery-thumbs {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    padding-bottom: 1px;
+    scrollbar-width: none;
+}
+
+.lxreel__gallery-thumbs::-webkit-scrollbar {
+    display: none;
+}
+
+.lxreel__gallery-thumbs button {
+    width: 37px;
+    height: 48px;
+    flex: none;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: #f1e4dd;
+    opacity: .62;
+}
+
+.lxreel__gallery-thumbs button.is-active {
+    border-color: #d9543a;
+    opacity: 1;
+}
+
+.lxreel__gallery-thumbs img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lxreel__color-label {
+    margin: 2px 0 -1px;
+    color: #8b6c60;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.lxreel__color-picker {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    padding-bottom: 1px;
+    scrollbar-width: none;
+}
+
+.lxreel__color-picker::-webkit-scrollbar {
+    display: none;
+}
+
+.lxreel__color-option {
+    min-height: 31px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    padding: 0 10px;
+    border: 1px solid #ecd6ca;
+    border-radius: 999px;
+    color: #624438;
+    background: #fff;
+    font-size: 10px;
+    font-weight: 780;
+}
+
+.lxreel__color-option.is-active {
+    border-color: #d9543a;
+    color: #a53422;
+    background: #fff1eb;
+}
+
+.lxreel__color-option i {
+    width: 11px;
+    height: 11px;
+    display: block;
+    border: 1px solid rgba(33, 20, 16, .16);
+    border-radius: 50%;
+    background: var(--lxreel-swatch, #ead8cf);
 }
 
 .lxreel__actions {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 8px;
     margin-top: 2px;
 }
 
-.lxreel__close,
 .lxreel__details-link {
-    min-height: 43px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3px 0 2px;
+    border-bottom: 1px solid #d9543a;
+    color: #b53a27;
     font-size: 11px;
     font-weight: 900;
 }
 
-.lxreel__close {
-    min-width: 72px;
-    border: 1px solid #e8cdc0;
-    color: #53332a;
-    background: #fff;
-}
-
-.lxreel__details-link {
+.lxreel__details-link b {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
     color: #fff;
-    background: #e95032;
-    box-shadow: 0 10px 22px rgba(210, 67, 44, .2);
+    background: #d9543a;
+    font-size: 15px;
 }
 
 .lxv2-theme--luxe-commerce-v1.lxreel-open {
