@@ -63,6 +63,9 @@ class CartController extends Controller
                 return response()->json([
                     'ok' => true,
                     'cart_url' => route('commerce.v2.cart.index'),
+                    'cart_quantity_total' => collect(
+                        $this->cart->raw($request->session())
+                    )->sum('quantity'),
                     'message' => 'Đã thêm sản phẩm vào giỏ.',
                 ]);
             }

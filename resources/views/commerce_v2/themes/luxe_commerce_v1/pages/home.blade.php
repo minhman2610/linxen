@@ -64,9 +64,19 @@
                     ]
                 )
             @empty
-                <div class="lxcv1-empty" data-lxhome-empty>
-                    Đang chuẩn bị danh sách sản phẩm…
-                </div>
+                @for($skeletonIndex = 0; $skeletonIndex < 6; $skeletonIndex++)
+                    <article
+                        class="lxh3-product-skeleton"
+                        data-lxhome-skeleton
+                        aria-hidden="true"
+                    >
+                        <span class="lxh3-product-skeleton__media"></span>
+                        <span class="lxh3-product-skeleton__eyebrow"></span>
+                        <span class="lxh3-product-skeleton__title"></span>
+                        <span class="lxh3-product-skeleton__title lxh3-product-skeleton__title--short"></span>
+                        <span class="lxh3-product-skeleton__price"></span>
+                    </article>
+                @endfor
             @endforelse
         </div>
 

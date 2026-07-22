@@ -4972,6 +4972,58 @@
     gap: 34px 16px;
 }
 
+.lxh3-product-skeleton {
+    display: grid;
+    gap: 10px;
+    overflow: hidden;
+    padding: 0 0 15px;
+    border: 1px solid rgba(240, 211, 198, .84);
+    border-radius: 21px;
+    background: #fff;
+    box-shadow: 0 12px 34px rgba(21, 44, 35, .045);
+}
+
+.lxh3-product-skeleton span {
+    display: block;
+    margin-inline: 14px;
+    border-radius: 999px;
+    background: linear-gradient(100deg, #f5e9e3 25%, #fffaf7 42%, #f5e9e3 58%);
+    background-size: 260% 100%;
+    animation: lxh3-skeleton-shimmer 1.55s linear infinite;
+}
+
+.lxh3-product-skeleton__media {
+    aspect-ratio: 4 / 5;
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+
+.lxh3-product-skeleton__eyebrow {
+    width: 42%;
+    height: 9px;
+    margin-top: 4px !important;
+}
+
+.lxh3-product-skeleton__title {
+    width: 81%;
+    height: 13px;
+}
+
+.lxh3-product-skeleton__title--short {
+    width: 56%;
+    margin-top: -4px;
+}
+
+.lxh3-product-skeleton__price {
+    width: 36%;
+    height: 15px;
+    margin-top: 2px;
+}
+
+@keyframes lxh3-skeleton-shimmer {
+    to { background-position: -160% 0; }
+}
+
 .lxh3-product-table .lxcv1-product-card {
     overflow: hidden;
     border: 1px solid rgba(209, 219, 213, .92);
@@ -5093,6 +5145,37 @@
     background: #fff;
     font-size: 10px;
     font-weight: 850;
+}
+
+.lxcv1-header-actions [data-lxcv1-cart-link],
+.lxcv1-bottom-nav [data-lxcv1-cart-link] {
+    position: relative;
+}
+
+.lxcv1-cart-badge {
+    position: absolute;
+    z-index: 2;
+    top: -5px;
+    right: -5px;
+    min-width: 17px;
+    height: 17px;
+    display: grid;
+    place-items: center;
+    padding: 0 4px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--lxcv1-coral);
+    box-shadow: 0 3px 8px rgba(162, 47, 28, .24);
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.lxcv1-cart-badge--bottom {
+    top: 2px;
+    right: calc(50% - 20px);
 }
 
 @media (max-width: 1120px) {
@@ -5572,17 +5655,90 @@
     gap: 12px;
 }
 
+.lxreel__top-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.lxreel__cart-link,
 .lxreel__dismiss {
     width: 30px;
     height: 30px;
     display: grid;
     place-items: center;
+    position: relative;
     flex: none;
     padding: 0;
     border: 1px solid #e8cdc0;
     border-radius: 50%;
     color: #70493d;
     background: #fff;
+}
+
+.lxreel__cart-link svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.lxreel__cart-link span {
+    position: absolute;
+    top: -6px;
+    right: -7px;
+    min-width: 17px;
+    height: 17px;
+    display: grid;
+    place-items: center;
+    padding: 0 4px;
+    border: 2px solid #fffaf7;
+    border-radius: 999px;
+    color: #fff;
+    background: #d9543a;
+    box-shadow: 0 3px 8px rgba(181, 58, 39, .24);
+    font-size: 8px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.lxreel__cart-link.is-cart-pulse {
+    animation: lxreel-cart-pulse .72s cubic-bezier(.2, .85, .24, 1);
+}
+
+@keyframes lxreel-cart-pulse {
+    0%, 100% { transform: scale(1); }
+    45% { transform: scale(1.24) rotate(-7deg); }
+    70% { transform: scale(.94) rotate(3deg); }
+}
+
+.lxreel__flying-product {
+    position: fixed;
+    z-index: 1300;
+    width: 68px;
+    height: 84px;
+    pointer-events: none;
+    border: 2px solid rgba(255, 255, 255, .94);
+    border-radius: 14px;
+    object-fit: cover;
+    box-shadow: 0 12px 28px rgba(68, 30, 19, .22);
+    animation: lxreel-fly-to-cart .68s cubic-bezier(.2, .86, .24, 1) forwards;
+}
+
+@keyframes lxreel-fly-to-cart {
+    0% { opacity: .96; transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+    60% { opacity: .92; }
+    100% {
+        opacity: 0;
+        transform: translate3d(var(--lxreel-fly-x), var(--lxreel-fly-y), 0) scale(.24) rotate(13deg);
+    }
+}
+
+.lxreel__dismiss {
+    color: #70493d;
     font-size: 20px;
     line-height: 1;
 }
@@ -5934,6 +6090,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .lxh3-product-skeleton span,
     .lxreel__slide.is-active .lxreel__media img {
         animation: none;
         transform: none;

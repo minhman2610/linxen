@@ -641,6 +641,8 @@
     const reelScroller = reelRoot.querySelector('[data-lxreel-scroller]');
     const reelCartUrl = body.querySelector('[data-lxreel-cart-url]')?.dataset
         .lxreelCartUrl || '/v2/cart/items';
+    const reelCartHref = body.querySelector('[data-lxcv1-cart-link]')?.href
+        || '/v2/cart';
     let reelObserver = null;
     let reelPreviouslyFocused = null;
     let reelMotionTimer = null;
@@ -829,6 +831,58 @@
         status.classList.toggle('is-error', isError);
     };
 
+    const setReelCartQuantity = (quantity) => {
+        const safeQuantity = Math.max(0, Number(quantity) || 0);
+        document.querySelectorAll(
+            '[data-lxcv1-cart-count], [data-lxreel-cart-count]'
+        ).forEach((badge) => {
+            badge.textContent = String(safeQuantity);
+            badge.hidden = safeQuantity < 1;
+        });
+    };
+
+    const animateReelItemToCart = (slide) => {
+        if (reducedMotion) {
+            return;
+        }
+
+        const source = slide.querySelector(
+            '.lxreel__media-frame.is-active img'
+        );
+        const target = slide.querySelector('[data-lxreel-cart-link]');
+        if (!source || !target) {
+            return;
+        }
+
+        const sourceRect = source.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        if (!sourceRect.width || !targetRect.width) {
+            return;
+        }
+
+        const flyingImage = new Image();
+        flyingImage.className = 'lxreel__flying-product';
+        flyingImage.src = source.currentSrc || source.src;
+        flyingImage.alt = '';
+        flyingImage.setAttribute('aria-hidden', 'true');
+        flyingImage.style.setProperty('--lxreel-fly-x', `${
+            targetRect.left + targetRect.width / 2 - sourceRect.left - 22
+        }px`);
+        flyingImage.style.setProperty('--lxreel-fly-y', `${
+            targetRect.top + targetRect.height / 2 - sourceRect.top - 28
+        }px`);
+        flyingImage.style.left = `${sourceRect.left + sourceRect.width / 2 - 34}px`;
+        flyingImage.style.top = `${sourceRect.top + sourceRect.height / 2 - 42}px`;
+        document.body.appendChild(flyingImage);
+        target.classList.remove('is-cart-pulse');
+        void target.offsetWidth;
+        target.classList.add('is-cart-pulse');
+        window.setTimeout(() => target.classList.remove('is-cart-pulse'), 720);
+        flyingImage.addEventListener('animationend', () => flyingImage.remove(), {
+            once: true,
+        });
+    };
+
     const addReelItemToCart = async (entry, slide) => {
         const color = selectedReelColor(entry);
         const size = color?.sizes?.find((candidate) => (
@@ -865,6 +919,8 @@
                 throw new Error(payload.message || 'Chưa thể thêm vào giỏ.');
             }
 
+            setReelCartQuantity(payload.cart_quantity_total);
+            animateReelItemToCart(slide);
             button.textContent = 'Đã thêm vào giỏ ✓';
             setReelCommerceMessage(slide, payload.message || 'Đã thêm vào giỏ.');
             window.setTimeout(() => refreshReelSlide(slide, entry, Number(
@@ -1104,8 +1160,16 @@
         close.setAttribute('aria-label', 'Đóng xem nhanh');
         close.dataset.lxreelClose = 'true';
         close.innerHTML = '<span aria-hidden="true">×</span>';
-        detailsTop.append(eyebrow, close);
-
+        const reelActions = document.createElement('div');
+        reelActions.className = 'lxreel__top-actions';
+        const reelCartLink = document.createElement('a');
+        reelCartLink.className = 'lxreel__cart-link';
+        reelCartLink.href = reelCartHref;
+        reelCartLink.dataset.lxreelCartLink = 'true';
+        reelCartLink.setAttribute('aria-label', 'Mở giỏ hàng');
+        reelCartLink.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1 13H6L5 7Z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg><span data-lxreel-cart-count hidden>0</span>';
+        reelActions.append(reelCartLink, close);
+        detailsTop.append(eyebrow, reelActions);
         const title = document.createElement('h1');
         const titleLink = document.createElement('a');
         titleLink.href = entry.url;
@@ -1217,6 +1281,9 @@
 
         reelPreviouslyFocused = document.activeElement;
         reelScroller.replaceChildren(...reelEntries.map(makeReelSlide));
+        setReelCartQuantity(
+            body.querySelector('[data-lxcv1-cart-count]')?.textContent || 0
+        );
         reelRoot.classList.add('is-open');
         reelRoot.setAttribute('aria-hidden', 'false');
         body.classList.add('lxreel-open');
@@ -1303,7 +1370,7 @@
     };
 
     const isReelSwipeControl = (target) => Boolean(target.closest(
-        'button, input, select, textarea, [role="button"]'
+        'button, input, select, textarea, [role="button"], .lxreel__cart-link'
     ));
 
     reelScroller.addEventListener('pointerdown', (event) => {
@@ -1431,8 +1498,14 @@
                 return;
             }
 
+            const hasLoadingSkeleton = Boolean(grid?.querySelector(
+                '[data-lxhome-skeleton]'
+            ));
             loading = true;
             loadButton?.setAttribute('disabled', 'disabled');
+            if (hasLoadingSkeleton) {
+                loadButton.hidden = true;
+            }
             if (loaderText) {
                 loaderText.textContent = 'Đang tải sản phẩm…';
             }
@@ -1461,7 +1534,8 @@
                 const payload = await response.json();
                 const batch = document.createElement('template');
                 batch.innerHTML = payload.html || '';
-                grid.querySelector('[data-lxhome-empty]')?.remove();
+                grid.querySelectorAll('[data-lxhome-empty], [data-lxhome-skeleton]')
+                    .forEach((node) => node.remove());
                 grid.appendChild(batch.content);
                 initProductCards(grid);
 
@@ -1489,6 +1563,9 @@
             } finally {
                 loading = false;
                 loadButton?.removeAttribute('disabled');
+                if (hasLoadingSkeleton) {
+                    loadButton.hidden = false;
+                }
                 if (hasMore && loaderText) {
                     loaderText.textContent = 'Cuộn để tải thêm';
                 }

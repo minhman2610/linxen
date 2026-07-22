@@ -1,3 +1,8 @@
+@php
+    $lxcv1CartQuantity = collect((array) session('commerce_v2.cart.items', []))
+        ->sum(fn ($line) => max(0, (int) data_get($line, 'quantity', 0)));
+@endphp
+
 <header class="lxcv1-header" data-lxcv1-header>
     @unless(request()->routeIs('commerce.v2.home'))
         <div class="lxcv1-header__notice">
@@ -51,11 +56,20 @@
                     <path d="M4 21a8 8 0 0 1 16 0"></path>
                 </svg>
             </a>
-            <a href="{{ route('commerce.v2.cart.index') }}" aria-label="Giỏ hàng">
+            <a
+                href="{{ route('commerce.v2.cart.index') }}"
+                aria-label="Giỏ hàng"
+                data-lxcv1-cart-link
+            >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M5 7h14l-1 13H6L5 7Z"></path>
                     <path d="M9 7a3 3 0 0 1 6 0"></path>
                 </svg>
+                <span
+                    class="lxcv1-cart-badge"
+                    data-lxcv1-cart-count
+                    @if($lxcv1CartQuantity < 1) hidden @endif
+                >{{ $lxcv1CartQuantity }}</span>
             </a>
         </div>
     </div>

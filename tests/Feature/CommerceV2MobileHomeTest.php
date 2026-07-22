@@ -36,8 +36,9 @@ final class CommerceV2MobileHomeTest extends TestCase
             ->assertSee('data-lxcv1-search-panel', false)
             ->assertSee('Váy BASIC mặc lên không cần suy nghĩ', false)
             ->assertSee('City Bloom', false)
-            ->assertSee('luxe-commerce-v1.css?v=13', false)
-            ->assertSee('luxe-commerce-v1.js?v=13', false)
+            ->assertSee('luxe-commerce-v1.css?v=14', false)
+            ->assertSee('luxe-commerce-v1.js?v=14', false)
+            ->assertSee('lxh3-product-skeleton', false)
             ->assertDontSee('data-lxhome-video-sound', false)
             ->assertDontSee('lxh3-video-hero__shade', false)
             ->assertDontSee('data-lxh2-editorial-story', false)
@@ -175,6 +176,7 @@ final class CommerceV2MobileHomeTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ok', true)
             ->assertJsonPath('message', 'Đã thêm sản phẩm vào giỏ.')
+            ->assertJsonPath('cart_quantity_total', 1)
             ->assertJsonPath('cart_url', route('commerce.v2.cart.index'));
 
         $this->assertSame([
