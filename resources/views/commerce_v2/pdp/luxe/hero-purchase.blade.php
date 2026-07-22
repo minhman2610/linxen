@@ -74,41 +74,7 @@
                         fetchpriority="high"
                         decoding="async"
                     >
-                    <figcaption class="lxl-gallery__caption">
-                        <span data-lxpdp-image-role>
-                            {{ data_get($heroMedia, 'role') === 'hero'
-                                ? 'Ảnh chính'
-                                : 'Hình ảnh sản phẩm' }}
-                        </span>
-                        <span data-lxpdp-image-counter>
-                            {{ $defaultMedia->isNotEmpty()
-                                ? '1 / '.$defaultMedia->count()
-                                : '' }}
-                        </span>
-                    </figcaption>
                 </figure>
-
-                <button
-                    type="button"
-                    class="lxpdp-gallery__nav lxpdp-gallery__nav--prev lxl-gallery__nav lxl-gallery__nav--prev"
-                    data-lxpdp-gallery-prev
-                    aria-label="Ảnh trước"
-                >
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="m15 18-6-6 6-6"/>
-                    </svg>
-                </button>
-
-                <button
-                    type="button"
-                    class="lxpdp-gallery__nav lxpdp-gallery__nav--next lxl-gallery__nav lxl-gallery__nav--next"
-                    data-lxpdp-gallery-next
-                    aria-label="Ảnh tiếp theo"
-                >
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="m9 18 6-6-6-6"/>
-                    </svg>
-                </button>
             </div>
 
             <div
@@ -379,44 +345,4 @@
     </aside>
 </div>
 
-<nav class="lxl-bottom-nav" data-lxl-bottom-nav aria-label="Điều hướng nhanh">
-    <a href="{{ route('commerce.v2.home') }}">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m3 11 9-7 9 7v9h-6v-6H9v6H3z"/>
-        </svg>
-        <span>Trang chủ</span>
-    </a>
-    <a href="{{ route('commerce.v2.search') }}">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="11" cy="11" r="6"/>
-            <path d="m16 16 4 4"/>
-        </svg>
-        <span>Tìm kiếm</span>
-    </a>
-    <a
-        href="{{ route('commerce.v2.shop') }}"
-        class="is-active"
-        aria-current="page"
-    >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 4h8l2 4v12H6V8z"/>
-            <path d="M9 8a3 3 0 0 0 6 0"/>
-        </svg>
-        <span>Sản phẩm</span>
-    </a>
-    <a href="{{ route('commerce.v2.account.index') }}">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M4 21a8 8 0 0 1 16 0"/>
-        </svg>
-        <span>Tài khoản</span>
-    </a>
-    <a href="{{ route('commerce.v2.cart.index') }}">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 7h14l-1 13H6z"/>
-            <path d="M9 7a3 3 0 0 1 6 0"/>
-        </svg>
-        <span>Giỏ hàng</span>
-    </a>
-</nav>
-
+@include('commerce_v2.themes.luxe_commerce_v1.shell.bottom-nav')

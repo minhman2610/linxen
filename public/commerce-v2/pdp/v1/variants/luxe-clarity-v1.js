@@ -96,10 +96,7 @@ if (root && productNode) {
         image.loading = index === 0 ? 'eager' : 'lazy';
         image.decoding = 'async';
 
-        const number = document.createElement('span');
-        number.textContent = String(index + 1).padStart(2, '0');
-
-        figure.append(image, number);
+        figure.appendChild(image);
 
         const copy = document.createElement('div');
         copy.className = 'lxl-study-card__copy';
@@ -357,4 +354,3 @@ if (root && productNode) {
         }
     ));
 }
-

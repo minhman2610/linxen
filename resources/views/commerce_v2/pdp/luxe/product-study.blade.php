@@ -20,6 +20,46 @@
     $defaultItems = collect(
         (array) data_get($defaultStudy, 'items', [])
     )->values();
+    $factItem = static function ($item): array {
+        return [
+            'label' => \Illuminate\Support\Str::squish((string) data_get(
+                $item,
+                'label',
+                data_get($item, 'key', '')
+            )),
+            'value' => \Illuminate\Support\Str::squish((string) data_get(
+                $item,
+                'value',
+                data_get($item, 'display_value', '')
+            )),
+        ];
+    };
+    $facts = collect((array) data_get($pdp, 'product_truth.design.items', []))
+        ->concat((array) data_get($pdp, 'fit.fit_items', []))
+        ->concat((array) data_get($pdp, 'product_truth.raw_specs', []))
+        ->map($factItem)
+        ->filter(fn ($item) => $item['label'] !== '' && $item['value'] !== '')
+        ->unique('label')
+        ->take(8)
+        ->values();
+    $materialValue = static fn ($item): string => \Illuminate\Support\Str::squish(
+        is_array($item)
+            ? (string) data_get($item, 'label', data_get($item, 'value', ''))
+            : (string) $item
+    );
+    $materials = (array) data_get($pdp, 'product_truth.materials', []);
+    $mainMaterials = collect((array) data_get($materials, 'main', []))
+        ->map($materialValue)
+        ->filter()
+        ->values();
+    $liningMaterials = collect((array) data_get($materials, 'lining', []))
+        ->map($materialValue)
+        ->filter()
+        ->values();
+    $materialSummary = \Illuminate\Support\Str::squish((string) (
+        data_get($materials, 'summary')
+        ?: data_get($materials, 'section.message')
+    ));
     $jsonFlags = JSON_HEX_TAG
         | JSON_HEX_APOS
         | JSON_HEX_AMP
@@ -43,10 +83,45 @@
                     {{ data_get($defaultStudy, 'color_label', 'Màu đang chọn') }}
                 </span>
                 <p>
-                    Các ảnh dưới đây thuộc bộ ảnh rõ sản phẩm đã được duyệt và chỉ hiển thị đúng màu đang xem.
+                    Ảnh trong phần này thuộc job Rõ sản phẩm hỗ trợ, đã được duyệt và chỉ hiển thị đúng màu đang xem.
                 </p>
             </div>
         </header>
+
+        @if($facts->isNotEmpty() || $mainMaterials->isNotEmpty() || $liningMaterials->isNotEmpty() || $materialSummary !== '')
+            <section class="lxl-knowledge" aria-label="Thông số và chất liệu">
+                @if($facts->isNotEmpty())
+                    <article class="lxl-knowledge__card">
+                        <p>Thông số thiết kế</p>
+                        <dl>
+                            @foreach($facts as $fact)
+                                <div>
+                                    <dt>{{ $fact['label'] }}</dt>
+                                    <dd>{{ $fact['value'] }}</dd>
+                                </div>
+                            @endforeach
+                        </dl>
+                    </article>
+                @endif
+
+                @if($mainMaterials->isNotEmpty() || $liningMaterials->isNotEmpty() || $materialSummary !== '')
+                    <article class="lxl-knowledge__card lxl-knowledge__card--materials">
+                        <p>Chất liệu</p>
+                        @if($materialSummary !== '')
+                            <strong>{{ $materialSummary }}</strong>
+                        @endif
+                        <div>
+                            @if($mainMaterials->isNotEmpty())
+                                <span><small>Chất liệu chính</small>{{ $mainMaterials->implode(' · ') }}</span>
+                            @endif
+                            @if($liningMaterials->isNotEmpty())
+                                <span><small>Lót</small>{{ $liningMaterials->implode(' · ') }}</span>
+                            @endif
+                        </div>
+                    </article>
+                @endif
+            </section>
+        @endif
 
         <nav
             class="lxl-study__nav"
@@ -89,7 +164,6 @@
                             loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
                             decoding="async"
                         >
-                        <span>{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
                     </figure>
 
                     <div class="lxl-study-card__copy">
@@ -147,4 +221,3 @@
 
     <script type="application/json" data-lxl-study-data>{!! json_encode($studies->all(), $jsonFlags) !!}</script>
 </div>
-
