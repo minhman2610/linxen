@@ -10,6 +10,7 @@ use App\Services\CommerceV2\Pdp\PdpPageComposer;
 use App\Services\CommerceV2\Pdp\PdpPresentationResolver;
 use App\Services\CommerceV2\Pdp\PdpViewModelBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -23,15 +24,12 @@ class CatalogPageController extends Controller
         protected PdpViewModelBuilder $pdpViewModelBuilder,
         protected PdpPresentationResolver $pdpPresentationResolver,
         protected PdpPageComposer $pdpPageComposer
-    ) {
-    }
+    ) {}
 
     public function home(Request $request): View|Response
     {
         try {
-            /* AI_PATCH_LINXEN_HOME_EDITORIAL_COMMERCE_V2 */
             $listing = $this->client->listing(12);
-            $collections = $this->client->collections();
 
             return view('commerce_v2.pages.home', [
                 'products' => $this->presentProducts(
@@ -41,12 +39,10 @@ class CatalogPageController extends Controller
                         []
                     )
                 ),
-                'collections' => $this->presentCollections(
-                    (array) data_get(
-                        $collections,
-                        'data.items',
-                        []
-                    )
+                'pagination' => (array) data_get(
+                    $listing,
+                    'meta.pagination',
+                    []
                 ),
                 'cacheStatus' => data_get(
                     $listing,
@@ -57,6 +53,49 @@ class CatalogPageController extends Controller
             ]);
         } catch (CommerceV2ClientException $e) {
             return $this->errorView($e);
+        }
+    }
+
+    public function homeProducts(Request $request): JsonResponse
+    {
+        try {
+            $listing = $this->client->listing(
+                12,
+                $request->query('cursor')
+            );
+            $products = $this->presentProducts(
+                (array) data_get(
+                    $listing,
+                    'data.items',
+                    []
+                )
+            );
+            $pagination = (array) data_get(
+                $listing,
+                'meta.pagination',
+                []
+            );
+
+            return response()->json([
+                'html' => view(
+                    'commerce_v2.themes.luxe_commerce_v1.partials.home-product-batch',
+                    compact('products')
+                )->render(),
+                'has_more' => (bool) data_get(
+                    $pagination,
+                    'has_more',
+                    false
+                ),
+                'next_cursor' => (string) data_get(
+                    $pagination,
+                    'next_cursor',
+                    ''
+                ),
+            ]);
+        } catch (CommerceV2ClientException $e) {
+            return response()->json([
+                'message' => 'Không thể tải thêm sản phẩm lúc này.',
+            ], max(400, min(599, $e->httpStatus)));
         }
     }
 
@@ -135,10 +174,10 @@ class CatalogPageController extends Controller
                 'presentation' => $presentation,
                 'pdpPresentation' => $presentation,
                 'cacheStatus' => data_get($result, '_storefront_cache'),
-                'pageTitle' => $product['name'] . ' — LIN XÉN',
+                'pageTitle' => $product['name'].' — LIN XÉN',
                 'pageDescription' => $this->presenter->safeSeoDescription(
                     $product['description'],
-                    'Xem màu, kích thước, giá và tồn kho của ' . $product['name'] . '.'
+                    'Xem màu, kích thước, giá và tồn kho của '.$product['name'].'.'
                 ),
                 'ogImage' => $product['cover_url'],
             ];
@@ -157,6 +196,7 @@ class CatalogPageController extends Controller
             return $this->errorView($e);
         } catch (Throwable $e) {
             report($e);
+
             return $this->errorView(new CommerceV2ClientException(
                 'Trang sản phẩm đang được cập nhật.',
                 500,
@@ -166,6 +206,7 @@ class CatalogPageController extends Controller
             ));
         }
     }
+
     public function search(Request $request): View|Response
     {
         $query = Str::squish(
@@ -207,8 +248,8 @@ class CatalogPageController extends Controller
                     $result,
                     '_storefront_cache'
                 ),
-                'pageTitle' => 'Tìm “' . $query . '” — LIN XÉN',
-                'pageDescription' => 'Kết quả tìm kiếm sản phẩm LIN XÉN cho từ khóa ' . $query . '.',
+                'pageTitle' => 'Tìm “'.$query.'” — LIN XÉN',
+                'pageDescription' => 'Kết quả tìm kiếm sản phẩm LIN XÉN cho từ khóa '.$query.'.',
             ]);
         } catch (CommerceV2ClientException $e) {
             if (
@@ -273,14 +314,14 @@ class CatalogPageController extends Controller
                 'pageTitle' => (
                     $collection['seo_title']
                     ?: $collection['name']
-                ) . ' — LIN XÉN',
+                ).' — LIN XÉN',
                 'pageDescription' => $this->presenter
                     ->safeSeoDescription(
                         $collection['seo_description']
                             ?: $collection['description'],
                         'Bộ sưu tập '
-                            . $collection['name']
-                            . ' của LIN XÉN.'
+                            .$collection['name']
+                            .' của LIN XÉN.'
                     ),
                 'ogImage' => $collection['hero_image'],
             ]);
@@ -342,6 +383,7 @@ class CatalogPageController extends Controller
             | JSON_THROW_ON_ERROR
         );
     }
+
     protected function errorView(
         CommerceV2ClientException $e
     ): Response {

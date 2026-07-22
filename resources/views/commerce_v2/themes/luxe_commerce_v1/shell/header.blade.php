@@ -1,9 +1,22 @@
 <header class="lxcv1-header" data-lxcv1-header>
-    <div class="lxcv1-header__notice">
-        Giá, màu, size và tồn kho được xác nhận từ hệ thống chính thức.
-    </div>
+    @unless(request()->routeIs('commerce.v2.home'))
+        <div class="lxcv1-header__notice">
+            Giá, màu, size và tồn kho được xác nhận từ hệ thống chính thức.
+        </div>
+    @endunless
 
     <div class="lxcv1-header__inner">
+        <button
+            class="lxcv1-menu-toggle"
+            type="button"
+            aria-label="Mở menu"
+            aria-controls="lxcv1MobileDrawer"
+            aria-expanded="false"
+            data-lxcv1-drawer-open
+        >
+            <span></span><span></span><span></span>
+        </button>
+
         <a class="lxcv1-brand" href="{{ route('commerce.v2.home') }}" aria-label="LIN XÉN">
             <span class="lxcv1-brand__monogram">LX</span>
             <span>
@@ -50,3 +63,38 @@
         </div>
     </div>
 </header>
+
+<button
+    class="lxcv1-drawer-backdrop"
+    type="button"
+    aria-label="Đóng menu"
+    tabindex="-1"
+    data-lxcv1-drawer-backdrop
+></button>
+
+<aside
+    id="lxcv1MobileDrawer"
+    class="lxcv1-drawer"
+    aria-hidden="true"
+    aria-label="Menu LIN XÉN"
+    data-lxcv1-drawer
+>
+    <header>
+        <a href="{{ route('commerce.v2.home') }}">
+            <span>LX</span>
+            <strong>LIN XÉN</strong>
+        </a>
+        <button type="button" aria-label="Đóng menu" data-lxcv1-drawer-close>×</button>
+    </header>
+
+    <nav aria-label="Điều hướng mobile">
+        <a href="{{ route('commerce.v2.home') }}">Trang chủ <span>01</span></a>
+        <a href="{{ route('commerce.v2.shop') }}">Sản phẩm <span>02</span></a>
+        <a href="{{ route('commerce.v2.video') }}">Image Stories <span>03</span></a>
+        <a href="{{ route('commerce.v2.search') }}">Tìm kiếm <span>04</span></a>
+        <a href="{{ route('commerce.v2.cart.index') }}">Giỏ hàng <span>05</span></a>
+        <a href="{{ route('commerce.v2.account.index') }}">Tài khoản <span>06</span></a>
+    </nav>
+
+    <p>Modern womenswear · LIN XÉN</p>
+</aside>

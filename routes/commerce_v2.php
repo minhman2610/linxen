@@ -56,6 +56,11 @@ Route::prefix($prefix)
             'home',
         ])->name('home');
 
+        Route::get('/home/products', [
+            CatalogPageController::class,
+            'homeProducts',
+        ])->name('home.products');
+
         Route::get('/shop', [
             CatalogPageController::class,
             'shop',

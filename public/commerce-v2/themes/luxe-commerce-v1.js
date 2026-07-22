@@ -303,6 +303,283 @@
         });
     }
 
+    const drawer = body.querySelector('[data-lxcv1-drawer]');
+    const drawerOpen = body.querySelector('[data-lxcv1-drawer-open]');
+    const drawerBackdrop = body.querySelector(
+        '[data-lxcv1-drawer-backdrop]'
+    );
+
+    const setDrawer = (open) => {
+        if (!drawer) {
+            return;
+        }
+
+        drawer.classList.toggle('is-open', open);
+        drawerBackdrop?.classList.toggle('is-open', open);
+        body.classList.toggle('lxcv1-drawer-open', open);
+        drawer.setAttribute('aria-hidden', String(!open));
+        drawerOpen?.setAttribute('aria-expanded', String(open));
+
+        if (open) {
+            drawer.querySelector('a, button')?.focus();
+        } else {
+            drawerOpen?.focus({ preventScroll: true });
+        }
+    };
+
+    drawerOpen?.addEventListener('click', () => setDrawer(true));
+    drawerBackdrop?.addEventListener('click', () => setDrawer(false));
+    drawer?.querySelector('[data-lxcv1-drawer-close]')
+        ?.addEventListener('click', () => setDrawer(false));
+    drawer?.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => setDrawer(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && drawer?.classList.contains('is-open')) {
+            setDrawer(false);
+        }
+    });
+
+    const heroVideo = body.querySelector('[data-lxhome-hero-video]');
+    const soundButton = body.querySelector('[data-lxhome-video-sound]');
+
+    soundButton?.addEventListener('click', async () => {
+        if (!heroVideo) {
+            return;
+        }
+
+        heroVideo.muted = !heroVideo.muted;
+        soundButton.setAttribute(
+            'aria-pressed',
+            String(!heroVideo.muted)
+        );
+        soundButton.setAttribute(
+            'aria-label',
+            heroVideo.muted
+                ? 'Bật âm thanh video'
+                : 'Tắt âm thanh video'
+        );
+
+        const label = soundButton.querySelector(
+            '[data-lxhome-sound-icon]'
+        );
+        if (label) {
+            label.textContent = heroVideo.muted
+                ? 'Âm thanh tắt'
+                : 'Âm thanh bật';
+        }
+
+        try {
+            await heroVideo.play();
+        } catch (error) {
+            heroVideo.muted = true;
+            soundButton.setAttribute('aria-pressed', 'false');
+            if (label) {
+                label.textContent = 'Âm thanh tắt';
+            }
+        }
+    });
+
+    const initProductCards = (scope = body) => {
+        scope.querySelectorAll('[data-lxcv1-product-card]')
+            .forEach((card) => {
+                if (card.dataset.lxcv1ColorReady === 'true') {
+                    return;
+                }
+
+                const image = card.querySelector(
+                    '[data-lxcv1-product-image]'
+                );
+                const label = card.querySelector(
+                    '[data-lxcv1-color-label]'
+                );
+                const options = Array.from(card.querySelectorAll(
+                    '[data-lxcv1-color-image]'
+                ));
+
+                if (!image || options.length === 0) {
+                    card.dataset.lxcv1ColorReady = 'true';
+                    return;
+                }
+
+                let activeIndex = Math.max(
+                    0,
+                    options.findIndex(
+                        (option) => option.getAttribute('aria-pressed') === 'true'
+                    )
+                );
+
+                const selectOption = (index) => {
+                    activeIndex = (
+                        index + options.length
+                    ) % options.length;
+                    const option = options[activeIndex];
+
+                    options.forEach((candidate, candidateIndex) => {
+                        const selected = candidateIndex === activeIndex;
+                        candidate.classList.toggle('is-active', selected);
+                        candidate.setAttribute(
+                            'aria-pressed',
+                            String(selected)
+                        );
+                    });
+
+                    if (option.dataset.image) {
+                        image.src = option.dataset.image;
+                    }
+                    if (option.dataset.label) {
+                        image.alt = `${image.alt.split(' · ')[0]} · ${option.dataset.label}`;
+                        if (label) {
+                            label.textContent = option.dataset.label;
+                        }
+                    }
+                };
+
+                options.forEach((option, index) => {
+                    option.addEventListener('click', () => {
+                        selectOption(index);
+                    });
+                });
+
+                card.querySelectorAll('[data-lxcv1-color-step]')
+                    .forEach((button) => {
+                        button.addEventListener('click', () => {
+                            selectOption(
+                                activeIndex + Number(
+                                    button.dataset.lxcv1ColorStep || 0
+                                )
+                            );
+                        });
+                    });
+
+                card.dataset.lxcv1ColorReady = 'true';
+            });
+    };
+
+    initProductCards();
+
+    const homeFeed = body.querySelector('[data-lxhome-feed]');
+
+    if (homeFeed) {
+        const grid = homeFeed.querySelector('[data-lxhome-grid]');
+        const sentinel = homeFeed.querySelector('[data-lxhome-sentinel]');
+        const loadButton = homeFeed.querySelector('[data-lxhome-load-more]');
+        const loaderText = homeFeed.querySelector(
+            '[data-lxhome-loader-text]'
+        );
+        const endMessage = homeFeed.querySelector('[data-lxhome-end]');
+        const count = homeFeed.querySelector('[data-lxhome-count]');
+        let nextCursor = homeFeed.dataset.nextCursor || '';
+        let hasMore = homeFeed.dataset.hasMore === 'true';
+        let loading = false;
+
+        const completeFeed = () => {
+            hasMore = false;
+            homeFeed.dataset.hasMore = 'false';
+            if (sentinel) {
+                sentinel.hidden = true;
+            }
+            if (endMessage) {
+                endMessage.hidden = false;
+            }
+        };
+
+        const loadNextPage = async () => {
+            if (
+                loading
+                || !hasMore
+                || !grid
+                || !homeFeed.dataset.endpoint
+            ) {
+                return;
+            }
+
+            loading = true;
+            loadButton?.setAttribute('disabled', 'disabled');
+            if (loaderText) {
+                loaderText.textContent = 'Đang tải sản phẩm…';
+            }
+
+            try {
+                const endpoint = new URL(
+                    homeFeed.dataset.endpoint,
+                    window.location.origin
+                );
+                if (nextCursor) {
+                    endpoint.searchParams.set('cursor', nextCursor);
+                }
+
+                const response = await window.fetch(endpoint, {
+                    credentials: 'same-origin',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const payload = await response.json();
+                const batch = document.createElement('template');
+                batch.innerHTML = payload.html || '';
+                grid.appendChild(batch.content);
+                initProductCards(grid);
+
+                nextCursor = payload.next_cursor || '';
+                hasMore = payload.has_more === true;
+                homeFeed.dataset.nextCursor = nextCursor;
+                homeFeed.dataset.hasMore = String(hasMore);
+
+                if (count) {
+                    count.textContent = `${grid.querySelectorAll(
+                        '[data-lxcv1-product-card]'
+                    ).length} thiết kế`;
+                }
+
+                if (!hasMore) {
+                    completeFeed();
+                }
+            } catch (error) {
+                if (loaderText) {
+                    loaderText.textContent = 'Tải chưa thành công';
+                }
+                if (loadButton) {
+                    loadButton.textContent = 'Thử lại';
+                }
+            } finally {
+                loading = false;
+                loadButton?.removeAttribute('disabled');
+                if (hasMore && loaderText) {
+                    loaderText.textContent = 'Cuộn để tải thêm';
+                }
+            }
+        };
+
+        loadButton?.addEventListener('click', loadNextPage);
+
+        if (
+            hasMore
+            && sentinel
+            && 'IntersectionObserver' in window
+        ) {
+            const feedObserver = new IntersectionObserver(
+                (entries) => {
+                    if (entries.some((entry) => entry.isIntersecting)) {
+                        loadNextPage();
+                    }
+                },
+                {
+                    rootMargin: '700px 0px',
+                    threshold: .01,
+                }
+            );
+            feedObserver.observe(sentinel);
+        }
+    }
+
     body.dispatchEvent(new CustomEvent(
         'linxen:commerce:luxe-theme-ready',
         {

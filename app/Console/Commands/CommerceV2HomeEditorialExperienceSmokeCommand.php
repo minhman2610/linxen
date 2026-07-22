@@ -12,7 +12,7 @@ final class CommerceV2HomeEditorialExperienceSmokeCommand extends Command
         'commerce-v2:home-editorial-experience-smoke';
 
     protected $description =
-        'Static render smoke for the canonical Luxe Commerce editorial homepage.';
+        'Static render smoke for the Luxe Commerce video catalogue homepage.';
 
     public function handle(): int
     {
@@ -55,34 +55,22 @@ final class CommerceV2HomeEditorialExperienceSmokeCommand extends Command
                     'https://example.test/lamonte.jpg'
                 ),
             ])->all();
-            $collections = [[
-                'slug' => 'new',
-                'url' => route(
-                    'commerce.v2.collection',
-                    ['slug' => 'new']
-                ),
-                'name' => 'Thiết kế mới',
-                'description' => 'Những thiết kế vừa được cập nhật.',
-                'hero_image' => 'https://example.test/new.jpg',
-            ], [
-                'slug' => 'daily',
-                'url' => route(
-                    'commerce.v2.collection',
-                    ['slug' => 'daily']
-                ),
-                'name' => 'Dễ mặc hằng ngày',
-                'description' => 'Nhẹ nhàng cho nhịp sống hiện đại.',
-                'hero_image' => '',
-            ]];
+            $pagination = [
+                'has_more' => true,
+                'next_cursor' => 'next-page',
+            ];
 
             $view =
                 'commerce_v2.themes.luxe_commerce_v1.pages.home';
             $html = view(
                 $view,
-                compact('products', 'collections')
+                compact('products', 'pagination')
             )->render();
             $css = (string) file_get_contents(public_path(
                 'commerce-v2/themes/luxe-commerce-v1.css'
+            ));
+            $javascript = (string) file_get_contents(public_path(
+                'commerce-v2/themes/luxe-commerce-v1.js'
             ));
             $controller = (string) file_get_contents(app_path(
                 'Http/Controllers/CommerceV2/CatalogPageController.php'
@@ -90,59 +78,64 @@ final class CommerceV2HomeEditorialExperienceSmokeCommand extends Command
 
             $checks = [
                 'home_view_exists' => View::exists($view),
-                'editorial_hero' => (
+                'video_hero' => (
                     str_contains(
                         $html,
-                        'data-lxcv1-home-experience="editorial-commerce-v2"'
+                        'data-lxhome-experience="video-catalog-v1"'
                     )
-                    && str_contains($html, 'Mặc đẹp')
-                    && str_contains($html, 'elisa.jpg')
+                    && str_contains($html, 'herovideo1.mp4')
+                    && str_contains($html, 'autoplay')
+                    && str_contains($html, 'playsinline')
                 ),
-                'commercial_rail' => (
-                    str_contains($html, 'data-lxh2-commercial-rail')
-                    && str_contains($html, 'piera.jpg')
+                'ticker_contract' => (
+                    str_contains($html, 'lxh3-ticker__track')
+                    && str_contains($html, 'Chọn đúng màu')
                 ),
-                'canonical_collections' => (
-                    str_contains($html, 'data-lxh2-collection-journey')
-                    && str_contains($html, 'Thiết kế mới')
-                    && str_contains($html, '/v2/collections/new')
-                ),
-                'product_grid_contract' => (
-                    str_contains($html, 'data-lxcv1-product-grid')
+                'catalog_contract' => (
+                    str_contains($html, 'data-lxhome-grid')
                     && str_contains($html, 'RS260616002')
+                    && str_contains($html, 'loading="eager"')
                 ),
-                'editorial_story' => (
-                    str_contains($html, 'data-lxh2-editorial-story')
-                    && str_contains($html, 'LIN XÉN POINT OF VIEW')
+                'color_image_contract' => (
+                    str_contains($html, 'data-lxcv1-color-image')
+                    && str_contains($html, 'elisa-alt.jpg')
+                    && str_contains($html, 'data-lxcv1-color-step')
                 ),
-                'image_stories_preview' => (
-                    str_contains($html, 'data-lxh2-video-preview')
-                    && str_contains($html, '/v2/video')
-                    && str_contains($html, 'IMAGE STORIES')
+                'infinite_feed_contract' => (
+                    str_contains($html, 'data-lxhome-sentinel')
+                    && str_contains($html, 'next-page')
+                    && str_contains($javascript, 'IntersectionObserver')
+                    && str_contains($javascript, 'loadNextPage')
                 ),
-                'trust_contract' => (
-                    str_contains($html, 'data-lxh2-trust')
-                    && str_contains($html, 'exact sellable SKU')
+                'minimal_home_contract' => (
+                    ! str_contains($html, 'data-lxh2-commercial-rail')
+                    && ! str_contains($html, 'data-lxh2-collection-journey')
+                    && ! str_contains($html, 'data-lxh2-editorial-story')
+                    && ! str_contains($html, 'data-lxh2-trust')
                 ),
                 'no_fake_urgency' => (
                     ! str_contains(strtolower($html), 'countdown')
                     && ! str_contains($html, 'FLASH SALE')
                 ),
                 'home_css_contract' => (
-                    str_contains(
-                        $css,
-                        'AI_PATCH_LINXEN_HOME_EDITORIAL_COMMERCE_V2_CSS_START'
-                    )
-                    && str_contains($css, '.lxh2-hero')
+                    str_contains($css, '.lxh3-video-hero')
+                    && str_contains($css, '.lxh3-product-table')
+                    && str_contains($css, '.lxcv1-drawer')
                 ),
                 'home_listing_depth' => (
                     str_contains(
                         $controller,
-                        'AI_PATCH_LINXEN_HOME_EDITORIAL_COMMERCE_V2'
-                    )
-                    && str_contains(
-                        $controller,
                         '$this->client->listing(12)'
+                    )
+                    && str_contains($controller, 'homeProducts')
+                    && ! str_contains(
+                        substr(
+                            $controller,
+                            strpos($controller, 'public function home('),
+                            strpos($controller, 'public function homeProducts(')
+                                - strpos($controller, 'public function home(')
+                        ),
+                        '$this->client->collections()'
                     )
                 ),
                 'order_mutation_none' => true,
@@ -152,15 +145,15 @@ final class CommerceV2HomeEditorialExperienceSmokeCommand extends Command
             foreach ($checks as $code => $passed) {
                 $this->line(
                     strtoupper($code)
-                    . '='
-                    . ($passed ? 'PASS' : 'FAIL')
+                    .'='
+                    .($passed ? 'PASS' : 'FAIL')
                 );
             }
 
             $ok = ! in_array(false, $checks, true);
             $this->line(
-                'LUXE_COMMERCE_HOME_V2_SMOKE='
-                . ($ok ? 'PASS' : 'FAIL')
+                'LUXE_COMMERCE_HOME_VIDEO_CATALOG_SMOKE='
+                .($ok ? 'PASS' : 'FAIL')
             );
 
             return $ok ? self::SUCCESS : self::FAILURE;
@@ -209,6 +202,15 @@ final class CommerceV2HomeEditorialExperienceSmokeCommand extends Command
                 'available' => 8,
                 'cover_url' => $cover,
                 'available_sizes' => ['M', 'L'],
+            ], [
+                'id' => 'pvg_2',
+                'code' => 'ALT',
+                'label' => 'Màu khác',
+                'hex' => '#a16a54',
+                'sellable' => true,
+                'available' => 5,
+                'cover_url' => str_replace('.jpg', '-alt.jpg', $cover),
+                'available_sizes' => ['S', 'M'],
             ]],
         ];
     }
