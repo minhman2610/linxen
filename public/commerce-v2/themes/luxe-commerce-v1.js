@@ -341,45 +341,81 @@
         }
     });
 
-    const heroVideo = body.querySelector('[data-lxhome-hero-video]');
-    const soundButton = body.querySelector('[data-lxhome-video-sound]');
+    const searchPanel = body.querySelector('[data-lxcv1-search-panel]');
+    const searchOpen = body.querySelector('[data-lxcv1-search-open]');
+    const searchInput = body.querySelector('[data-lxcv1-search-input]');
+    const siteHeader = body.querySelector('[data-lxcv1-header]');
 
-    soundButton?.addEventListener('click', async () => {
-        if (!heroVideo) {
+    const setSearch = (open) => {
+        if (!searchPanel) {
             return;
         }
 
-        heroVideo.muted = !heroVideo.muted;
-        soundButton.setAttribute(
-            'aria-pressed',
-            String(!heroVideo.muted)
-        );
-        soundButton.setAttribute(
-            'aria-label',
-            heroVideo.muted
-                ? 'Bật âm thanh video'
-                : 'Tắt âm thanh video'
-        );
+        searchPanel.classList.toggle('is-open', open);
+        searchPanel.setAttribute('aria-hidden', String(!open));
+        searchOpen?.setAttribute('aria-expanded', String(open));
 
-        const label = soundButton.querySelector(
-            '[data-lxhome-sound-icon]'
-        );
-        if (label) {
-            label.textContent = heroVideo.muted
-                ? 'Âm thanh tắt'
-                : 'Âm thanh bật';
+        if (open) {
+            searchPanel.style.setProperty(
+                '--lxcv1-search-top',
+                `${Math.max(0, siteHeader?.getBoundingClientRect().bottom || 0)}px`
+            );
+            window.requestAnimationFrame(() => searchInput?.focus());
+        } else {
+            searchOpen?.focus({ preventScroll: true });
         }
+    };
 
-        try {
-            await heroVideo.play();
-        } catch (error) {
-            heroVideo.muted = true;
-            soundButton.setAttribute('aria-pressed', 'false');
-            if (label) {
-                label.textContent = 'Âm thanh tắt';
-            }
+    searchOpen?.addEventListener('click', () => setSearch(true));
+    searchPanel?.querySelector('[data-lxcv1-search-close]')
+        ?.addEventListener('click', () => setSearch(false));
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && searchPanel?.classList.contains('is-open')) {
+            setSearch(false);
         }
     });
+
+    const heroVideo = body.querySelector('[data-lxhome-hero-video]');
+
+    if (heroVideo) {
+        const loadHeroVideo = () => {
+            if (heroVideo.dataset.loaded === 'true') {
+                return;
+            }
+
+            const source = heroVideo.querySelector('source[data-src]');
+            if (!source?.dataset.src) {
+                return;
+            }
+
+            source.src = source.dataset.src;
+            heroVideo.dataset.loaded = 'true';
+            heroVideo.load();
+            heroVideo.play().catch(() => {});
+        };
+
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadHeroVideo, { timeout: 1600 });
+        } else {
+            window.setTimeout(loadHeroVideo, 700);
+        }
+    }
+
+    const visibleAutoCards = new Set();
+    const autoMediaObserver = 'IntersectionObserver' in window
+        ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    visibleAutoCards.add(entry.target);
+                } else {
+                    visibleAutoCards.delete(entry.target);
+                }
+            });
+        }, {
+            threshold: .3,
+            rootMargin: '80px 0px',
+        })
+        : null;
 
     const initProductCards = (scope = body) => {
         scope.querySelectorAll('[data-lxcv1-product-card]')
@@ -403,6 +439,8 @@
                     return;
                 }
 
+                image.dataset.baseAlt = image.alt;
+
                 let activeIndex = Math.max(
                     0,
                     options.findIndex(
@@ -410,7 +448,7 @@
                     )
                 );
 
-                const selectOption = (index) => {
+                const selectOption = (index, manual = false) => {
                     activeIndex = (
                         index + options.length
                     ) % options.length;
@@ -429,35 +467,65 @@
                         image.src = option.dataset.image;
                     }
                     if (option.dataset.label) {
-                        image.alt = `${image.alt.split(' · ')[0]} · ${option.dataset.label}`;
+                        image.alt = `${image.dataset.baseAlt} · ${option.dataset.label}`;
                         if (label) {
                             label.textContent = option.dataset.label;
                         }
+                    }
+
+                    card.dataset.lxcv1MediaIndex = String(activeIndex);
+                    if (manual) {
+                        card.dataset.lxcv1ManualUntil = String(
+                            Date.now() + 12000
+                        );
                     }
                 };
 
                 options.forEach((option, index) => {
                     option.addEventListener('click', () => {
-                        selectOption(index);
+                        selectOption(index, true);
                     });
                 });
 
-                card.querySelectorAll('[data-lxcv1-color-step]')
-                    .forEach((button) => {
-                        button.addEventListener('click', () => {
-                            selectOption(
-                                activeIndex + Number(
-                                    button.dataset.lxcv1ColorStep || 0
-                                )
-                            );
-                        });
-                    });
+                card.lxcv1SelectNextMedia = () => {
+                    selectOption(activeIndex + 1);
+                };
+
+                if (
+                    options.length > 1
+                    && card.hasAttribute('data-lxcv1-auto-media')
+                ) {
+                    if (autoMediaObserver) {
+                        autoMediaObserver.observe(card);
+                    } else if (!reducedMotion) {
+                        visibleAutoCards.add(card);
+                    }
+                }
 
                 card.dataset.lxcv1ColorReady = 'true';
             });
     };
 
     initProductCards();
+
+    if (!reducedMotion) {
+        window.setInterval(() => {
+            if (document.hidden) {
+                return;
+            }
+
+            visibleAutoCards.forEach((card) => {
+                if (
+                    Number(card.dataset.lxcv1ManualUntil || 0)
+                    > Date.now()
+                ) {
+                    return;
+                }
+
+                card.lxcv1SelectNextMedia?.();
+            });
+        }, 5200);
+    }
 
     const homeFeed = body.querySelector('[data-lxhome-feed]');
 
@@ -525,6 +593,7 @@
                 const payload = await response.json();
                 const batch = document.createElement('template');
                 batch.innerHTML = payload.html || '';
+                grid.querySelector('[data-lxhome-empty]')?.remove();
                 grid.appendChild(batch.content);
                 initProductCards(grid);
 
@@ -577,6 +646,14 @@
                 }
             );
             feedObserver.observe(sentinel);
+        }
+
+        if (
+            hasMore
+            && grid
+            && !grid.querySelector('[data-lxcv1-product-card]')
+        ) {
+            loadNextPage();
         }
     }
 

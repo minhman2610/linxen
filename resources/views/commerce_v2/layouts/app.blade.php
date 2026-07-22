@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=5">
     @if($luxeCommercePreview)
-        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=3">
+        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=4">
     @endif
     @stack('head')
 </head>
@@ -43,6 +43,9 @@
 
     @if($luxeCommercePreview)
         @unless($isVideoExperience)
+            @if(request()->routeIs('commerce.v2.home'))
+                @include('commerce_v2.themes.luxe_commerce_v1.partials.home-ticker')
+            @endif
             @include('commerce_v2.themes.luxe_commerce_v1.shell.header')
         @endunless
     @else
@@ -159,7 +162,7 @@
 
     <script src="{{ asset('commerce-v2/commerce.js') }}?v=5" defer></script>
     @if($luxeCommercePreview)
-        <script src="{{ asset('commerce-v2/themes/luxe-commerce-v1.js') }}?v=3" defer></script>
+        <script src="{{ asset('commerce-v2/themes/luxe-commerce-v1.js') }}?v=4" defer></script>
     @endif
     @stack('scripts')
 </body>

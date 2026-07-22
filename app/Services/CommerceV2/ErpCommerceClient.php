@@ -14,14 +14,16 @@ class ErpCommerceClient
 {
     public function listing(
         int $limit = 8,
-        ?string $cursor = null
+        ?string $cursor = null,
+        ?int $freshSeconds = null
     ): array {
         return $this->get(
             '/catalog/products',
             array_filter([
                 'limit' => max(1, min(12, $limit)),
                 'cursor' => $cursor,
-            ], fn ($value) => $value !== null && $value !== '')
+            ], fn ($value) => $value !== null && $value !== ''),
+            $freshSeconds
         );
     }
 

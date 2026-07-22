@@ -26,42 +26,26 @@ class CatalogPageController extends Controller
         protected PdpPageComposer $pdpPageComposer
     ) {}
 
-    public function home(Request $request): View|Response
+    public function home(Request $request): View
     {
-        try {
-            $listing = $this->client->listing(12);
-
-            return view('commerce_v2.pages.home', [
-                'products' => $this->presentProducts(
-                    (array) data_get(
-                        $listing,
-                        'data.items',
-                        []
-                    )
-                ),
-                'pagination' => (array) data_get(
-                    $listing,
-                    'meta.pagination',
-                    []
-                ),
-                'cacheStatus' => data_get(
-                    $listing,
-                    '_storefront_cache'
-                ),
-                'pageTitle' => 'LIN XÉN — Váy thiết kế cho nhịp sống hiện đại',
-                'pageDescription' => 'Khám phá thiết kế LIN XÉN qua hình ảnh đã duyệt, màu sắc, kích thước, giá và tồn kho từ hệ thống chính thức.',
-            ]);
-        } catch (CommerceV2ClientException $e) {
-            return $this->errorView($e);
-        }
+        return view('commerce_v2.pages.home', [
+            'products' => [],
+            'pagination' => [
+                'has_more' => true,
+                'next_cursor' => null,
+            ],
+            'pageTitle' => 'LIN XÉN — Váy thiết kế cho nhịp sống hiện đại',
+            'pageDescription' => 'Khám phá thiết kế LIN XÉN qua hình ảnh đã duyệt, màu sắc, kích thước, giá và tồn kho từ hệ thống chính thức.',
+        ]);
     }
 
     public function homeProducts(Request $request): JsonResponse
     {
         try {
             $listing = $this->client->listing(
-                12,
-                $request->query('cursor')
+                8,
+                $request->query('cursor'),
+                120
             );
             $products = $this->presentProducts(
                 (array) data_get(

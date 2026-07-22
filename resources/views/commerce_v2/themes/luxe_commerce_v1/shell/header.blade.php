@@ -32,22 +32,19 @@
             <a href="{{ route('commerce.v2.video') }}" @class(['is-active' => request()->routeIs('commerce.v2.video')])>Video</a>
         </nav>
 
-        <form class="lxcv1-header-search" method="get" action="{{ route('commerce.v2.search') }}">
-            <label class="sr-only" for="lxcv1HeaderSearch">Tìm sản phẩm</label>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="11" cy="11" r="6"></circle>
-                <path d="m16 16 4 4"></path>
-            </svg>
-            <input
-                id="lxcv1HeaderSearch"
-                name="q"
-                value="{{ request('q') }}"
-                placeholder="Tìm tên, mã RS hoặc SKU"
-                autocomplete="off"
-            >
-        </form>
-
         <div class="lxcv1-header-actions">
+            <button
+                type="button"
+                aria-label="Mở tìm kiếm"
+                aria-controls="lxcv1SearchPanel"
+                aria-expanded="false"
+                data-lxcv1-search-open
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="6"></circle>
+                    <path d="m16 16 4 4"></path>
+                </svg>
+            </button>
             <a href="{{ route('commerce.v2.account.index') }}" aria-label="Tài khoản">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="12" cy="8" r="4"></circle>
@@ -63,6 +60,31 @@
         </div>
     </div>
 </header>
+
+<div
+    id="lxcv1SearchPanel"
+    class="lxcv1-search-panel"
+    aria-hidden="true"
+    data-lxcv1-search-panel
+>
+    <form method="get" action="{{ route('commerce.v2.search') }}" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m16 16 4 4"></path>
+        </svg>
+        <label class="sr-only" for="lxcv1HeaderSearch">Tìm sản phẩm</label>
+        <input
+            id="lxcv1HeaderSearch"
+            name="q"
+            value="{{ request('q') }}"
+            placeholder="Tìm tên, mã RS hoặc SKU"
+            autocomplete="off"
+            data-lxcv1-search-input
+        >
+        <button type="submit">Tìm</button>
+        <button type="button" aria-label="Đóng tìm kiếm" data-lxcv1-search-close>×</button>
+    </form>
+</div>
 
 <button
     class="lxcv1-drawer-backdrop"

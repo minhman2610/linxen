@@ -20,54 +20,21 @@
     data-lxcv1-page="home"
     data-lxhome-experience="video-catalog-v1"
 >
-    <section class="lxh3-ticker" aria-label="Thông tin mua hàng">
-        <div class="lxh3-ticker__track">
-            @foreach([false, true] as $duplicate)
-                <div @if($duplicate) aria-hidden="true" @endif>
-                    <span>Ảnh sản phẩm đã duyệt</span>
-                    <i aria-hidden="true"></i>
-                    <span>Giá và tồn kho từ hệ thống chính thức</span>
-                    <i aria-hidden="true"></i>
-                    <span>Chọn đúng màu · đúng size · đúng SKU</span>
-                    <i aria-hidden="true"></i>
-                    <span>Giao hàng toàn quốc</span>
-                    <i aria-hidden="true"></i>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
     <section class="lxh3-video-hero" aria-label="LIN XÉN video">
         <video
-            autoplay
             muted
             loop
             playsinline
-            preload="metadata"
+            preload="none"
             poster="{{ asset('themes/luxe/assets/images/home/hero-poster.webp') }}"
             data-lxhome-hero-video
+            aria-label="Bộ sưu tập LIN XÉN"
         >
             <source
-                src="{{ asset('themes/luxe/assets/images/home/herovideo1.mp4') }}"
+                data-src="{{ asset('themes/luxe/assets/images/home/herovideo1.mp4') }}"
                 type="video/mp4"
             >
         </video>
-
-        <div class="lxh3-video-hero__shade" aria-hidden="true"></div>
-        <div class="lxh3-video-hero__mark">
-            <small>LIN XÉN · DAILY FORM</small>
-            <strong>Thiết kế cho nhịp sống hiện đại.</strong>
-            <a href="#lxh3-products">Xem sản phẩm</a>
-        </div>
-        <button
-            class="lxh3-video-hero__sound"
-            type="button"
-            data-lxhome-video-sound
-            aria-label="Bật âm thanh video"
-            aria-pressed="false"
-        >
-            <span data-lxhome-sound-icon>Âm thanh tắt</span>
-        </button>
     </section>
 
     <section
@@ -89,12 +56,12 @@
                     'commerce_v2.themes.luxe_commerce_v1.partials.product-card',
                     [
                         'product' => $product,
-                        'eager' => $loop->index < 4,
+                        'eager' => $loop->index < 2,
                     ]
                 )
             @empty
-                <div class="lxcv1-empty">
-                    Sản phẩm đang được cập nhật.
+                <div class="lxcv1-empty" data-lxhome-empty>
+                    Đang chuẩn bị danh sách sản phẩm…
                 </div>
             @endforelse
         </div>

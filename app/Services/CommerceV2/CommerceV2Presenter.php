@@ -23,6 +23,43 @@ class CommerceV2Presenter
             'price',
             []
         );
+        $usesListingMediaPolicy = array_key_exists(
+            'listing_media',
+            $product
+        );
+        $listingMedia = collect((array) data_get(
+            $product,
+            'listing_media.items',
+            []
+        ))
+            ->map(fn ($item, $index) => [
+                'id' => (string) data_get($item, 'id'),
+                'url' => (string) (
+                    data_get($item, 'thumb_url')
+                    ?: data_get($item, 'url')
+                ),
+                'full_url' => (string) data_get($item, 'url'),
+                'label' => (string) (
+                    data_get($item, 'color_label')
+                    ?: data_get($item, 'label')
+                    ?: 'Ảnh '.($index + 1)
+                ),
+                'hex' => (string) (
+                    data_get($item, 'color_hex')
+                    ?: '#ead8cf'
+                ),
+                'color_id' => (string) data_get($item, 'color_id'),
+                'job_category' => (string) data_get(
+                    $item,
+                    'job_category'
+                ),
+            ])
+            ->filter(fn ($item) => $item['url'] !== '')
+            ->unique('url')
+            ->take(4)
+            ->values()
+            ->all();
+        $listingCover = (array) ($listingMedia[0] ?? []);
         $colors = collect((array) data_get(
             $product,
             'colors',
@@ -54,9 +91,9 @@ class CommerceV2Presenter
                 ),
                 'cover_url' => (string) data_get(
                     $color,
-                    'cover.url',
+                    'cover.thumb_url',
                     ''
-                ),
+                ) ?: (string) data_get($color, 'cover.url', ''),
                 'available_sizes' => array_values(
                     (array) data_get(
                         $color,
@@ -88,8 +125,16 @@ class CommerceV2Presenter
                 'short_name'
             ),
             'cover_url' => (string) (
-                data_get($cover, 'url')
-                ?: data_get($cover, 'thumb_url')
+                $usesListingMediaPolicy
+                    ? data_get($listingCover, 'url')
+                    : (
+                        data_get($cover, 'url')
+                        ?: data_get($cover, 'thumb_url')
+                    )
+            ),
+            'cover_full_url' => (string) (
+                data_get($listingCover, 'full_url')
+                ?: data_get($cover, 'url')
             ),
             'cover_alt' => (string) data_get(
                 $product,
@@ -130,6 +175,15 @@ class CommerceV2Presenter
                 $product,
                 'availability.in_stock',
                 false
+            ),
+            'listing_media' => $listingMedia,
+            'listing_media_policy' => (string) data_get(
+                $product,
+                'listing_media.policy'
+            ),
+            'listing_media_category' => (string) data_get(
+                $product,
+                'listing_media.selected_job_category'
             ),
             'colors' => $colors,
         ];
@@ -230,7 +284,8 @@ class CommerceV2Presenter
                     ->values()
                     ->all();
                 $colorId = (string) data_get($color, 'id');
-                $set = (array) $sets->get($colorId, []);                $claritySet = (array) $claritySets->get(
+                $set = (array) $sets->get($colorId, []);
+                $claritySet = (array) $claritySets->get(
                     $colorId,
                     []
                 );
@@ -696,7 +751,7 @@ class CommerceV2Presenter
             0,
             ',',
             '.'
-        ) . '₫';
+        ).'₫';
     }
 
     public function normalizeProductReference(
@@ -708,7 +763,7 @@ class CommerceV2Presenter
             preg_match('/-rs-(\d+)$/i', $slug, $matches)
             === 1
         ) {
-            return 'rs_' . $matches[1];
+            return 'rs_'.$matches[1];
         }
 
         return $slug;
