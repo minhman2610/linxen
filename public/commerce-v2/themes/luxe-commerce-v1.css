@@ -5746,6 +5746,12 @@
     gap: 7px;
 }
 
+.lxreel__size-label[hidden],
+.lxreel__size-picker[hidden],
+.lxreel__commerce[hidden] {
+    display: none !important;
+}
+
 .lxreel__size-toggle {
     min-height: 34px;
     justify-self: start;

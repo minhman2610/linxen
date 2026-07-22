@@ -1294,8 +1294,22 @@
         }
     };
 
+    const isReelSwipeControl = (target) => {
+        if (target.closest('.lxreel__media-link')) {
+            return false;
+        }
+
+        return Boolean(target.closest(
+            'button, input, select, textarea, [role="button"], '
+            + '.lxreel__details h1 a, .lxreel__price-row a'
+        ));
+    };
+
     reelScroller.addEventListener('pointerdown', (event) => {
-        if (!event.target.closest('.lxreel__media')) {
+        if (
+            !event.target.closest('[data-lxreel-slide]')
+            || isReelSwipeControl(event.target)
+        ) {
             reelVerticalGesture = null;
             return;
         }
@@ -1320,7 +1334,7 @@
 
         if (
             nativeScrollDistance < 24
-            && Math.abs(deltaY) > 72
+            && Math.abs(deltaY) > 46
             && Math.abs(deltaY) > Math.abs(deltaX) * 1.25
         ) {
             reelSuppressMediaClickUntil = Date.now() + 450;

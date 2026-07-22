@@ -45,7 +45,7 @@ Route::domain('linxen.vn')
         | 🏠 HOME
         |--------------------------------------------------------------------------
         */
-        Route::get('/', [PageController::class, 'home'])
+        Route::redirect('/', '/v2')
             ->name('linxen.home');
 
         /*
