@@ -76,8 +76,13 @@
         'commerce.v2.home',
         'commerce.v2.home.products'
     );
+    $isSalesInboxMedia = fn ($option) => str_contains(
+        strtoupper((string) data_get($option, 'job_category')),
+        'SALES_INBOX'
+    );
     $mediaOptions = collect((array) data_get($product, 'listing_media', []))
         ->filter(fn ($option) => (string) data_get($option, 'url') !== '')
+        ->filter($isSalesInboxMedia)
         ->unique('url')
         ->unique(fn ($option) => $normalizeColorLabel(
             data_get($option, 'color_id')
@@ -103,6 +108,41 @@
             ->take(4)
             ->values();
     }
+    $reelSalesInboxMedia = collect((array) data_get(
+        $product,
+        'listing_media',
+        []
+    ))
+        ->filter(fn ($option) => (string) data_get($option, 'url') !== '')
+        ->filter($isSalesInboxMedia)
+        ->map(fn ($option) => [
+            'color_id' => (string) data_get($option, 'color_id'),
+            'label' => (string) data_get($option, 'label', 'Màu sản phẩm'),
+            'hex' => (string) data_get($option, 'hex', '#ead8cf'),
+            'url' => (string) (
+                data_get($option, 'full_url')
+                ?: data_get($option, 'url')
+            ),
+            'thumb_url' => (string) data_get($option, 'url'),
+            'job_category' => (string) data_get(
+                $option,
+                'job_category'
+            ),
+        ])
+        ->filter(fn ($option) => $option['url'] !== '')
+        ->unique('url')
+        ->take(24)
+        ->values()
+        ->all();
+    $reelSalesInboxMediaJson = json_encode(
+        $reelSalesInboxMedia,
+        JSON_HEX_TAG
+        | JSON_HEX_APOS
+        | JSON_HEX_AMP
+        | JSON_HEX_QUOT
+        | JSON_UNESCAPED_SLASHES
+        | JSON_UNESCAPED_UNICODE
+    );
     $defaultImage = (string) data_get($mediaOptions->first(), 'url');
     $defaultAvailableSizes = $availableSizesFor(
         (array) ($mediaOptions->first() ?? [])
@@ -118,6 +158,7 @@
     data-lxreel-name="{{ data_get($product, 'name') }}"
     data-lxreel-price="{{ number_format((float) data_get($product, 'price_min'), 0, ',', '.') }}₫"
     data-lxreel-original-price="{{ data_get($product, 'has_sale') && data_get($product, 'original_min') > data_get($product, 'price_min') ? number_format((float) data_get($product, 'original_min'), 0, ',', '.').'₫' : '' }}"
+    data-lxreel-sale-inbox-media="{{ e($reelSalesInboxMediaJson ?: '[]') }}"
     @if($mediaOptions->count() > 1) data-lxcv1-auto-media @endif
 >
     <div class="lxcv1-product-card__media-shell">
@@ -194,6 +235,7 @@
                             data-color-id="{{ data_get($option, 'color_id') }}"
                             data-color-hex="{{ data_get($option, 'hex') ?: '#ead8cf' }}"
                             data-image="{{ data_get($option, 'url') }}"
+                            data-job-category="{{ data_get($option, 'job_category') }}"
                             data-label="{{ data_get($option, 'label') }}"
                             data-sizes="{{ $optionSizes->implode(',') }}"
                         ></button>

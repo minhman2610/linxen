@@ -5462,6 +5462,7 @@
     overflow-y: auto;
     overscroll-behavior-y: contain;
     scroll-snap-type: y mandatory;
+    touch-action: pan-y;
     scrollbar-width: none;
 }
 
@@ -5473,7 +5474,7 @@
     height: 100dvh;
     min-height: 100svh;
     display: grid;
-    grid-template-rows: minmax(300px, 54dvh) minmax(0, 1fr);
+    grid-template-rows: minmax(320px, 64dvh) minmax(0, 1fr);
     scroll-snap-align: start;
     scroll-snap-stop: always;
     background: #fffaf7;
@@ -5497,23 +5498,26 @@
 .lxreel__media-track {
     width: 100%;
     height: 100%;
-    display: flex;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-}
-
-.lxreel__media-track::-webkit-scrollbar {
-    display: none;
+    position: relative;
+    overflow: hidden;
 }
 
 .lxreel__media-frame {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    min-width: 100%;
     height: 100%;
     margin: 0;
-    scroll-snap-align: start;
+    opacity: 0;
+    transform: scale(1.025);
+    transition: opacity .82s ease, transform 1.2s cubic-bezier(.2, .75, .25, 1);
+    pointer-events: none;
+}
+
+.lxreel__media-frame.is-active {
+    z-index: 1;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .lxreel__media img {
@@ -5525,7 +5529,7 @@
     transition: transform 1.25s cubic-bezier(.2, .75, .25, 1), filter .6s ease;
 }
 
-.lxreel__slide.is-active .lxreel__media img {
+.lxreel__slide.is-active .lxreel__media-frame.is-active img {
     animation: lxreel-image-drift 9s ease-in-out both;
 }
 
@@ -5537,7 +5541,7 @@
 
 .lxreel__details {
     display: grid;
-    gap: 6px;
+    gap: 5px;
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior-y: contain;
@@ -5655,8 +5659,8 @@
 }
 
 .lxreel__gallery-thumbs button {
-    width: 37px;
-    height: 48px;
+    width: 31px;
+    height: 40px;
     flex: none;
     overflow: hidden;
     padding: 0;
@@ -5740,6 +5744,18 @@
 .lxreel__size-picker {
     display: flex;
     gap: 7px;
+}
+
+.lxreel__size-toggle {
+    min-height: 34px;
+    justify-self: start;
+    padding: 0 13px;
+    border: 1px solid #d9543a;
+    border-radius: 999px;
+    color: #a53422;
+    background: #fff1eb;
+    font-size: 10px;
+    font-weight: 900;
 }
 
 .lxreel__size-option {
@@ -5829,7 +5845,7 @@
 
 @media (max-height: 760px) {
     .lxreel__slide {
-        grid-template-rows: minmax(264px, 52dvh) minmax(0, 1fr);
+        grid-template-rows: minmax(296px, 60dvh) minmax(0, 1fr);
     }
 
     .lxreel__details {
@@ -5852,11 +5868,6 @@
         font-size: 18px;
     }
 
-    .lxreel__gallery-thumbs button {
-        width: 31px;
-        height: 40px;
-    }
-
     .lxreel__color-option {
         min-height: 28px;
     }
@@ -5865,8 +5876,7 @@
         min-height: 29px;
     }
 
-    .lxreel__add-cart,
-    .lxreel__details-link {
+    .lxreel__add-cart {
         min-height: 38px;
     }
 }

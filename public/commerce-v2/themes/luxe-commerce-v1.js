@@ -645,6 +645,8 @@
     let reelPreviouslyFocused = null;
     let reelMotionTimer = null;
     let reelMotionSlide = null;
+    let reelVerticalGesture = null;
+    let reelSuppressMediaClickUntil = 0;
 
     const MAX_REEL_MEDIA = 6;
 
@@ -652,43 +654,62 @@
         .trim()
         .toLocaleLowerCase('vi');
 
+    const isSalesInboxMedia = (value) => String(value || '')
+        .toUpperCase()
+        .includes('SALES_INBOX');
+
+    const salesInboxColorsFromCard = (card) => {
+        let items = [];
+        try {
+            items = JSON.parse(card.dataset.lxreelSaleInboxMedia || '[]');
+        } catch (error) {
+            items = [];
+        }
+
+        const colors = new Map();
+        items.filter((item) => (
+            item?.url && isSalesInboxMedia(item.job_category)
+        )).forEach((item) => {
+            const key = item.color_id || colorKey(item.label) || item.url;
+            const color = colors.get(key) || {
+                id: item.color_id || '',
+                label: item.label || 'Màu sản phẩm',
+                hex: item.hex || '#ead8cf',
+                media: [],
+            };
+
+            if (!color.media.some((media) => media.url === item.url)) {
+                color.media.push({
+                    url: item.url,
+                    thumb_url: item.thumb_url || item.url,
+                });
+            }
+            colors.set(key, color);
+        });
+
+        return Array.from(colors.values()).map((color) => ({
+            ...color,
+            media: color.media.slice(0, MAX_REEL_MEDIA),
+        })).filter((color) => color.media.length > 0);
+    };
+
     const getReelEntries = () => Array.from(
         body.querySelectorAll('[data-lxreel-product]')
     ).map((card) => {
         const image = card.querySelector('[data-lxcv1-product-image]');
         const colorLabel = card.querySelector('[data-lxcv1-color-label]');
-        const colors = Array.from(card.querySelectorAll(
-            '[data-lxcv1-color-image]'
-        )).map((option) => ({
-            id: option.dataset.colorId || '',
-            label: option.dataset.label || 'Màu sản phẩm',
-            hex: option.dataset.colorHex || '#ead8cf',
-            media: option.dataset.image ? [{
-                url: option.dataset.image,
-                thumb_url: option.dataset.image,
-            }] : [],
-        })).filter((color) => color.media.length > 0);
+        const colors = salesInboxColorsFromCard(card);
         const currentLabel = colorKey(colorLabel?.textContent);
         const activeColorIndex = Math.max(0, colors.findIndex(
             (color) => colorKey(color.label) === currentLabel
         ));
 
-        if (colors.length === 0 && (image?.currentSrc || image?.src)) {
-            colors.push({
-                id: '',
-                label: colorLabel?.textContent?.trim() || 'Màu sản phẩm',
-                hex: '#ead8cf',
-                media: [{
-                    url: image.currentSrc || image.src,
-                    thumb_url: image.currentSrc || image.src,
-                }],
-            });
-        }
-
         return {
             activeColorIndex,
             activeMediaIndex: 0,
+            card,
             motionPaused: false,
+            sizePickerOpen: false,
             selectedSizeId: '',
             colors,
             imageAlt: image?.alt || card.dataset.lxreelName || '',
@@ -717,6 +738,41 @@
             entry.colors.length - 1
         ))
     ] || null;
+
+    const showReelMediaFrame = (slide, entry, requestedIndex) => {
+        const frames = Array.from(slide.querySelectorAll(
+            '[data-lxreel-media-frame]'
+        ));
+        if (!frames.length) {
+            return;
+        }
+
+        entry.activeMediaIndex = Math.max(0, Math.min(
+            requestedIndex,
+            frames.length - 1
+        ));
+        frames.forEach((frame, frameIndex) => {
+            frame.classList.toggle(
+                'is-active',
+                frameIndex === entry.activeMediaIndex
+            );
+        });
+
+        const galleryCount = slide.querySelector('[data-lxreel-count]');
+        if (galleryCount) {
+            galleryCount.textContent = `${String(
+                entry.activeMediaIndex + 1
+            ).padStart(2, '0')} / ${String(frames.length).padStart(2, '0')}`;
+        }
+        slide.querySelectorAll('[data-lxreel-thumbs] button').forEach(
+            (button, buttonIndex) => {
+                button.classList.toggle(
+                    'is-active',
+                    buttonIndex === entry.activeMediaIndex
+                );
+            }
+        );
+    };
 
     const stopReelMotion = () => {
         if (reelMotionTimer) {
@@ -756,10 +812,7 @@
             }
 
             const nextIndex = (entry.activeMediaIndex + 1) % frameCount;
-            mediaTrack.scrollTo({
-                left: mediaTrack.clientWidth * nextIndex,
-                behavior: 'smooth',
-            });
+            showReelMediaFrame(slide, entry, nextIndex);
             reelMotionTimer = window.setTimeout(advance, 4400);
         };
 
@@ -840,7 +893,9 @@
         const galleryCount = slide.querySelector('[data-lxreel-count]');
         const galleryThumbs = slide.querySelector('[data-lxreel-thumbs]');
         const sizeLabel = slide.querySelector('[data-lxreel-size-label]');
+        const sizeToggle = slide.querySelector('[data-lxreel-size-toggle]');
         const sizePicker = slide.querySelector('[data-lxreel-sizes]');
+        const commerce = slide.querySelector('[data-lxreel-commerce]');
         const addCart = slide.querySelector('[data-lxreel-add-cart]');
         const media = color.media.slice(0, MAX_REEL_MEDIA);
 
@@ -848,6 +903,8 @@
         mediaTrack.replaceChildren(...media.map((item, mediaIndex) => {
             const frame = document.createElement('figure');
             frame.className = 'lxreel__media-frame';
+            frame.dataset.lxreelMediaFrame = 'true';
+            frame.classList.toggle('is-active', mediaIndex === 0);
             const image = new Image();
             image.src = item.url;
             image.alt = `${entry.imageAlt} · ${color.label} · góc ${mediaIndex + 1}`;
@@ -874,26 +931,12 @@
                 entry.activeColorIndex = colorIndex;
                 entry.activeMediaIndex = 0;
                 entry.motionPaused = false;
+                entry.sizePickerOpen = false;
                 entry.selectedSizeId = '';
                 refreshReelSlide(slide, entry, index);
             });
             return button;
         }));
-
-        const updateGalleryPosition = () => {
-            const viewportWidth = Math.max(1, mediaTrack.clientWidth);
-            entry.activeMediaIndex = Math.min(
-                media.length - 1,
-                Math.max(0, Math.round(mediaTrack.scrollLeft / viewportWidth))
-            );
-            galleryCount.textContent = `${String(entry.activeMediaIndex + 1).padStart(2, '0')} / ${String(media.length).padStart(2, '0')}`;
-            galleryThumbs.querySelectorAll('button').forEach((button, buttonIndex) => {
-                button.classList.toggle(
-                    'is-active',
-                    buttonIndex === entry.activeMediaIndex
-                );
-            });
-        };
 
         galleryThumbs.replaceChildren(...media.map((item, mediaIndex) => {
             const button = document.createElement('button');
@@ -913,22 +956,11 @@
                 if (reelMotionSlide === slide) {
                     stopReelMotion();
                 }
-                mediaTrack.scrollTo({
-                    left: mediaTrack.clientWidth * mediaIndex,
-                    behavior: reducedMotion ? 'auto' : 'smooth',
-                });
+                showReelMediaFrame(slide, entry, mediaIndex);
             });
             return button;
         }));
-        mediaTrack.scrollLeft = 0;
-        mediaTrack.onscroll = updateGalleryPosition;
-        mediaTrack.onpointerdown = () => {
-            entry.motionPaused = true;
-            if (reelMotionSlide === slide) {
-                stopReelMotion();
-            }
-        };
-        updateGalleryPosition();
+        showReelMediaFrame(slide, entry, 0);
 
         const sizes = Array.isArray(color.sizes) ? color.sizes : [];
         const selectedSize = sizes.find((size) => (
@@ -937,8 +969,22 @@
         if (!selectedSize) {
             entry.selectedSizeId = '';
         }
-        sizePicker.hidden = sizes.length === 0;
-        addCart.hidden = sizes.length === 0;
+        const canSelectSize = sizes.length > 0;
+        sizeLabel.hidden = true;
+        sizeToggle.hidden = !canSelectSize;
+        sizeToggle.setAttribute('aria-expanded', String(
+            canSelectSize && entry.sizePickerOpen
+        ));
+        sizeToggle.textContent = selectedSize
+            ? `Size ${selectedSize.size || ''}`
+            : 'Chọn size';
+        sizeToggle.onclick = () => {
+            entry.sizePickerOpen = !entry.sizePickerOpen;
+            refreshReelSlide(slide, entry, index);
+        };
+        sizePicker.hidden = !canSelectSize || !entry.sizePickerOpen;
+        commerce.hidden = !canSelectSize || !entry.sizePickerOpen;
+        addCart.hidden = !canSelectSize || !entry.sizePickerOpen;
         sizePicker.replaceChildren(...sizes.map((size) => {
             const button = document.createElement('button');
             const available = Boolean(size.sellable && size.sellable_sku_id);
@@ -990,61 +1036,36 @@
                 '#lxv2ProductData'
             )?.textContent;
             const product = payload ? JSON.parse(payload) : null;
-            const fallbackById = new Map(entry.colors.map((color) => [
-                color.id || colorKey(color.label),
-                color,
+            const detailColors = new Map((Array.isArray(product?.colors)
+                ? product.colors
+                : []).flatMap((color) => [
+                [color.id, color],
+                [colorKey(color.label), color],
             ]));
-            const enrichedColors = Array.isArray(product?.colors)
-                ? product.colors.map((color) => {
-                    const fallback = fallbackById.get(
-                        color.id || colorKey(color.label)
-                    ) || fallbackById.get(colorKey(color.label));
-                    const clarityMedia = color.clarity_media_exact_color === false
-                        ? []
-                        : (Array.isArray(color.clarity_media)
-                            ? color.clarity_media
-                            : []);
-                    const media = [...clarityMedia, ...(
-                        Array.isArray(color.media) ? color.media : []
-                    )]
-                        .filter((item) => item?.url)
-                        .filter((item, mediaIndex, items) => (
-                            items.findIndex((candidate) => (
-                                candidate.url === item.url
-                            )) === mediaIndex
-                        ))
-                        .slice(0, MAX_REEL_MEDIA);
+            const enrichedColors = entry.colors.map((color) => {
+                const detail = detailColors.get(color.id)
+                    || detailColors.get(colorKey(color.label));
 
-                    return {
-                        id: color.id || '',
-                        label: color.label || fallback?.label || 'Màu sản phẩm',
-                        hex: color.hex || fallback?.hex || '#ead8cf',
-                        media: media.length ? media : (fallback?.media || []),
-                        sizes: Array.isArray(color.sizes) ? color.sizes.map((size) => ({
-                            size: size.size || '',
-                            sellable: Boolean(size.sellable),
-                            sellable_sku_id: size.sellable_sku_id || '',
-                        })) : [],
-                    };
-                }).filter((color) => color.media.length > 0)
-                : [];
+                return {
+                    ...color,
+                    sizes: Array.isArray(detail?.sizes) ? detail.sizes.map((size) => ({
+                        size: size.size || '',
+                        sellable: Boolean(size.sellable),
+                        sellable_sku_id: size.sellable_sku_id || '',
+                    })) : [],
+                };
+            });
 
             if (enrichedColors.length) {
-                const priorColor = selectedReelColor(entry);
                 entry.colors = enrichedColors;
-                entry.activeColorIndex = Math.max(0, enrichedColors.findIndex(
-                    (color) => (
-                        color.id === priorColor?.id
-                        || colorKey(color.label) === colorKey(priorColor?.label)
-                    )
-                ));
                 entry.activeMediaIndex = 0;
                 entry.motionPaused = false;
+                entry.sizePickerOpen = false;
                 entry.selectedSizeId = '';
                 refreshReelSlide(slide, entry, index);
             }
         } catch (error) {
-            // Keep the exact-color catalogue cover when detail media is unavailable.
+            // Keep sale inbox media even when product commerce details are unavailable.
         }
     };
 
@@ -1111,7 +1132,7 @@
         const galleryMeta = document.createElement('div');
         galleryMeta.className = 'lxreel__gallery-meta';
         const galleryGuide = document.createElement('span');
-        galleryGuide.textContent = 'Vuốt ngang xem góc ảnh';
+        galleryGuide.textContent = 'Bộ ảnh sản phẩm';
         const galleryCount = document.createElement('strong');
         galleryCount.dataset.lxreelCount = 'true';
         galleryMeta.append(galleryGuide, galleryCount);
@@ -1131,6 +1152,11 @@
         const sizeLabel = document.createElement('p');
         sizeLabel.className = 'lxreel__size-label';
         sizeLabel.dataset.lxreelSizeLabel = 'true';
+        const sizeToggle = document.createElement('button');
+        sizeToggle.className = 'lxreel__size-toggle';
+        sizeToggle.type = 'button';
+        sizeToggle.dataset.lxreelSizeToggle = 'true';
+        sizeToggle.setAttribute('aria-expanded', 'false');
         const sizePicker = document.createElement('div');
         sizePicker.className = 'lxreel__size-picker';
         sizePicker.dataset.lxreelSizes = 'true';
@@ -1138,6 +1164,7 @@
 
         const commerce = document.createElement('div');
         commerce.className = 'lxreel__commerce';
+        commerce.dataset.lxreelCommerce = 'true';
         const addCart = document.createElement('button');
         addCart.className = 'lxreel__add-cart';
         addCart.type = 'button';
@@ -1149,13 +1176,6 @@
         cartStatus.setAttribute('aria-live', 'polite');
         commerce.append(addCart, cartStatus);
 
-        const actions = document.createElement('div');
-        actions.className = 'lxreel__actions';
-        const detailsLink = document.createElement('a');
-        detailsLink.className = 'lxreel__details-link';
-        detailsLink.href = entry.url;
-        detailsLink.innerHTML = '<span>Khám phá thiết kế</span><b aria-hidden="true">→</b>';
-        actions.append(detailsLink);
         details.append(
             detailsTop,
             title,
@@ -1165,9 +1185,9 @@
             colorLabel,
             colorPicker,
             sizeLabel,
+            sizeToggle,
             sizePicker,
-            commerce,
-            actions
+            commerce
         );
         slide.append(media, details);
         refreshReelSlide(slide, entry, index);
@@ -1175,9 +1195,15 @@
         return slide;
     };
 
-    const openReel = (selectedIndex) => {
+    const openReel = (selectedCard) => {
         const reelEntries = getReelEntries();
         if (!reelEntries.length || !reelScroller) {
+            return;
+        }
+        const requestedIndex = reelEntries.findIndex(
+            (entry) => entry.card === selectedCard
+        );
+        if (requestedIndex < 0) {
             return;
         }
 
@@ -1190,7 +1216,10 @@
         const slides = Array.from(reelScroller.querySelectorAll(
             '[data-lxreel-slide]'
         ));
-        const safeIndex = Math.max(0, Math.min(selectedIndex, slides.length - 1));
+        const safeIndex = Math.max(0, Math.min(
+            requestedIndex,
+            slides.length - 1
+        ));
         reelScroller.scrollTop = slides[safeIndex]?.offsetTop || 0;
         slides[safeIndex]?.classList.add('is-active');
         slides[safeIndex]?.querySelector('[data-lxreel-close]')?.focus({
@@ -1239,6 +1268,70 @@
         }
     };
 
+    const snapReelByGesture = (direction) => {
+        const slides = Array.from(reelScroller.querySelectorAll(
+            '[data-lxreel-slide]'
+        ));
+        if (!slides.length) {
+            return;
+        }
+
+        const currentIndex = slides.reduce((closestIndex, slide, index) => (
+            Math.abs(slide.offsetTop - reelScroller.scrollTop)
+                < Math.abs(
+                    slides[closestIndex].offsetTop - reelScroller.scrollTop
+                ) ? index : closestIndex
+        ), 0);
+        const nextIndex = Math.max(0, Math.min(
+            slides.length - 1,
+            currentIndex + direction
+        ));
+        if (nextIndex !== currentIndex) {
+            reelScroller.scrollTo({
+                top: slides[nextIndex].offsetTop,
+                behavior: reducedMotion ? 'auto' : 'smooth',
+            });
+        }
+    };
+
+    reelScroller.addEventListener('pointerdown', (event) => {
+        if (!event.target.closest('.lxreel__media')) {
+            reelVerticalGesture = null;
+            return;
+        }
+        reelVerticalGesture = {
+            x: event.clientX,
+            y: event.clientY,
+            scrollTop: reelScroller.scrollTop,
+        };
+    });
+
+    reelScroller.addEventListener('pointerup', (event) => {
+        if (!reelVerticalGesture) {
+            return;
+        }
+
+        const deltaX = event.clientX - reelVerticalGesture.x;
+        const deltaY = event.clientY - reelVerticalGesture.y;
+        const nativeScrollDistance = Math.abs(
+            reelScroller.scrollTop - reelVerticalGesture.scrollTop
+        );
+        reelVerticalGesture = null;
+
+        if (
+            nativeScrollDistance < 24
+            && Math.abs(deltaY) > 72
+            && Math.abs(deltaY) > Math.abs(deltaX) * 1.25
+        ) {
+            reelSuppressMediaClickUntil = Date.now() + 450;
+            snapReelByGesture(deltaY > 0 ? -1 : 1);
+        }
+    });
+
+    reelScroller.addEventListener('pointercancel', () => {
+        reelVerticalGesture = null;
+    });
+
     body.addEventListener('click', (event) => {
         const productLink = event.target.closest(
             '[data-lxreel-product] a[href]'
@@ -1256,19 +1349,18 @@
         }
 
         const card = productLink.closest('[data-lxreel-product]');
-        const cards = Array.from(
-            body.querySelectorAll('[data-lxreel-product]')
-        );
-        const index = cards.indexOf(card);
-        if (index < 0) {
-            return;
-        }
-
         event.preventDefault();
-        openReel(index);
+        openReel(card);
     });
 
     reelRoot.addEventListener('click', (event) => {
+        if (
+            event.target.closest('.lxreel__media-link')
+            && Date.now() < reelSuppressMediaClickUntil
+        ) {
+            event.preventDefault();
+            return;
+        }
         if (event.target.closest('[data-lxreel-close]')) {
             closeReel();
         }

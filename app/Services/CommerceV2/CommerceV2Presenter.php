@@ -55,21 +55,12 @@ class CommerceV2Presenter
                 ),
             ])
             ->filter(fn ($item) => $item['url'] !== '')
+            ->filter(fn ($item) => str_contains(
+                strtoupper($item['job_category']),
+                'SALES_INBOX'
+            ))
             ->unique('url')
-            ->unique(function ($item) {
-                if ($item['color_id'] !== '') {
-                    return 'color:'.$item['color_id'];
-                }
-
-                $label = Str::lower(Str::ascii(trim($item['label'])));
-
-                if ($label !== '') {
-                    return 'label:'.$label;
-                }
-
-                return 'url:'.$item['url'];
-            })
-            ->take(4)
+            ->take(24)
             ->values()
             ->all();
         $listingCover = (array) ($listingMedia[0] ?? []);

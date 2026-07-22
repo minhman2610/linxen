@@ -36,8 +36,8 @@ final class CommerceV2MobileHomeTest extends TestCase
             ->assertSee('data-lxcv1-search-panel', false)
             ->assertSee('Váy BASIC mặc lên không cần suy nghĩ', false)
             ->assertSee('City Bloom', false)
-            ->assertSee('luxe-commerce-v1.css?v=10', false)
-            ->assertSee('luxe-commerce-v1.js?v=10', false)
+            ->assertSee('luxe-commerce-v1.css?v=11', false)
+            ->assertSee('luxe-commerce-v1.js?v=11', false)
             ->assertDontSee('data-lxhome-video-sound', false)
             ->assertDontSee('lxh3-video-hero__shade', false)
             ->assertDontSee('data-lxh2-editorial-story', false)
@@ -81,6 +81,18 @@ final class CommerceV2MobileHomeTest extends TestCase
         );
         $this->assertStringContainsString(
             'data-lxreel-product',
+            (string) $response->json('html')
+        );
+        $this->assertStringContainsString(
+            'data-lxreel-sale-inbox-media=',
+            (string) $response->json('html')
+        );
+        $this->assertStringContainsString(
+            'xyra-black-detail-inbox.jpg',
+            (string) $response->json('html')
+        );
+        $this->assertStringNotContainsString(
+            'xyra-clarity-support.jpg',
             (string) $response->json('html')
         );
         $this->assertStringContainsString(
@@ -232,6 +244,14 @@ final class CommerceV2MobileHomeTest extends TestCase
                     'color_id' => 'pvg_red',
                     'color_label' => 'Đỏ',
                     'color_hex' => '#8f1f2b',
+                ], [
+                    'id' => "{$slug}-clarity-support",
+                    'url' => "https://cdn.example.test/{$slug}-clarity-support.jpg",
+                    'thumb_url' => "https://cdn.example.test/{$slug}-clarity-support-thumb.webp",
+                    'job_category' => 'PRODUCT_CLARITY_SUPPORT',
+                    'color_id' => 'pvg_black',
+                    'color_label' => 'Đen',
+                    'color_hex' => '#111111',
                 ]],
             ],
             'price' => [
