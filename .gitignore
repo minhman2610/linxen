@@ -31,3 +31,9 @@ Thumbs.db
 # SSL private keys
 /lxsh/*.key
 /lxsh/**/*.key
+
+# Operational TLS material must remain outside this repository.
+/ssl/*.key
+/ssl/*.crt
+/lxsh/*.crt
+/lxsh/*.pem
