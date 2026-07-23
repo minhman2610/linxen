@@ -130,7 +130,7 @@
 @endphp
 
 <div
-    class="lxl-study"
+    class="lxl-study {{ $relatedProducts->isNotEmpty() ? 'has-related' : '' }}"
     data-lxl-product-study
 >
     <div class="lxl-study__shell">
@@ -345,7 +345,7 @@
                     </figure>
 
                     <div class="lxl-study-card__copy">
-                        <small>Góc nhìn sản phẩm</small>
+                        <small>Góc ảnh sản phẩm</small>
                         <h3>{{ data_get($item, 'angle_label') }}</h3>
 
                     </div>
@@ -374,10 +374,13 @@
 
         @if($relatedProducts->isNotEmpty())
             <section class="lxl-related" aria-labelledby="lxlRelatedTitle">
-                <header>
-                    <p>Cùng nhịp thiết kế</p>
-                    <h3 id="lxlRelatedTitle">Có thể bạn sẽ thích</h3>
-                </header>
+                <div class="lxl-related__heading">
+                    <header>
+                        <p>Cùng nhịp thiết kế</p>
+                        <h3 id="lxlRelatedTitle">Có thể bạn sẽ thích</h3>
+                    </header>
+                    <a href="{{ route('commerce.v2.shop') }}">Xem thêm váy <span aria-hidden="true">→</span></a>
+                </div>
                 <div class="lxl-related__grid">
                     @foreach($relatedProducts as $related)
                         <a href="{{ data_get($related, 'url') }}">

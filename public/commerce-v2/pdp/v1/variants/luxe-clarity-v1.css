@@ -739,6 +739,10 @@ body.lx-pdp-luxe-clarity .lxv2-main {
     padding: clamp(72px, 8vw, 118px) 0 clamp(90px, 10vw, 150px);
 }
 
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study.has-related {
+    padding-bottom: clamp(38px, 5vw, 66px);
+}
+
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study__shell {
     width: min(1320px, calc(100% - 40px));
     margin-inline: auto;
@@ -1146,17 +1150,45 @@ body.lx-pdp-luxe-clarity .lxv2-main {
 /* Related products are a light, visual continuation of the product story. */
 
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related {
-    margin-top: 52px;
-    padding-top: 34px;
-    border-top: 1px solid var(--lxl-line);
+    margin-top: 30px;
+    padding: clamp(20px, 3vw, 32px);
+    border: 1px solid rgba(215, 199, 191, .72);
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(255, 252, 248, .96), rgba(255, 244, 238, .9));
+    box-shadow: 0 16px 36px rgba(149, 86, 109, .08);
 }
 
-.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related header {
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related__heading {
     display: flex;
     align-items: end;
     justify-content: space-between;
     gap: 20px;
     margin-bottom: 18px;
+}
+
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related__heading > a {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px;
+    border: 1px solid rgba(181, 91, 120, .2);
+    border-radius: 999px;
+    color: #a04d67;
+    background: rgba(255, 255, 255, .76);
+    font-size: 11px;
+    font-weight: 850;
+    text-decoration: none;
+}
+
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related__heading > a span {
+    font-size: 15px;
+    line-height: .8;
+    transition: transform .2s ease;
+}
+
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related__heading > a:hover span {
+    transform: translateX(3px);
 }
 
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related header p {
@@ -1648,8 +1680,20 @@ body.lx-pdp-luxe-clarity .lxv2-main {
     }
 
     .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related {
-        margin-top: 38px;
-        padding-top: 28px;
+        margin-top: 22px;
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related__heading {
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related__heading > a {
+        padding: 8px 10px;
+        font-size: 10px;
     }
 
     .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related__grid {

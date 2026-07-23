@@ -94,7 +94,7 @@ final class PdpProductStudyBuilder
         return Str::squish((string) (
             data_get($media, 'angle_label')
             ?: data_get($media, 'shot_angle_label')
-            ?: 'Ảnh đã duyệt'
+            ?: 'Góc nhìn sản phẩm'
         ));
     }
 
