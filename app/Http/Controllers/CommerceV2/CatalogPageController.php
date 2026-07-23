@@ -43,7 +43,7 @@ class CatalogPageController extends Controller
     {
         try {
             $listing = $this->client->listing(
-                8,
+                12,
                 $request->query('cursor'),
                 120
             );

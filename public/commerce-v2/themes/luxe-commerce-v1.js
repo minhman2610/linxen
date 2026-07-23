@@ -1657,6 +1657,19 @@
         let hasMore = homeFeed.dataset.hasMore === 'true';
         let loading = false;
         let initialLoadFailed = false;
+        let warmPagesRemaining = 1;
+        let warmLoadQueued = false;
+
+        const canWarmFeed = () => {
+            const connection = navigator.connection
+                || navigator.mozConnection
+                || navigator.webkitConnection;
+
+            return !connection?.saveData
+                && !['slow-2g', '2g'].includes(
+                    String(connection?.effectiveType || '')
+                );
+        };
 
         const clearInitialFeedback = () => {
             grid?.querySelectorAll('[data-lxhome-load-error]')
@@ -1704,6 +1717,40 @@
             }
             if (endMessage) {
                 endMessage.hidden = false;
+            }
+        };
+
+        const queueWarmPage = () => {
+            if (
+                warmLoadQueued
+                || warmPagesRemaining < 1
+                || !hasMore
+                || initialLoadFailed
+                || !canWarmFeed()
+            ) {
+                return;
+            }
+
+            warmLoadQueued = true;
+            const warm = () => {
+                warmLoadQueued = false;
+
+                if (
+                    warmPagesRemaining < 1
+                    || !hasMore
+                    || initialLoadFailed
+                ) {
+                    return;
+                }
+
+                warmPagesRemaining -= 1;
+                loadNextPage();
+            };
+
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(warm, { timeout: 1800 });
+            } else {
+                window.setTimeout(warm, 420);
             }
         };
 
@@ -1778,6 +1825,8 @@
 
                 if (!hasMore) {
                     completeFeed();
+                } else if (isInitialLoad) {
+                    queueWarmPage();
                 }
             } catch (error) {
                 if (loaderText) {
@@ -1820,7 +1869,7 @@
                     }
                 },
                 {
-                    rootMargin: '700px 0px',
+                    rootMargin: '1600px 0px',
                     threshold: .01,
                 }
             );

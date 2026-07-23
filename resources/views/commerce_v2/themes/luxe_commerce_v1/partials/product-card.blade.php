@@ -131,7 +131,7 @@
         ])
         ->filter(fn ($option) => $option['url'] !== '')
         ->unique('url')
-        ->take(24)
+        ->take(8)
         ->values()
         ->all();
     $reelSalesInboxMediaJson = json_encode(
