@@ -351,8 +351,8 @@
                     <path d="m9 12 2 2 4-4"/>
                 </svg>
                 <span>
-                    <strong>SKU được xác nhận</strong>
-                    <small>Giá và tồn kho từ ERP</small>
+                    <strong>Thông tin minh bạch</strong>
+                    <small>Giá và tình trạng sẵn hàng được cập nhật</small>
                 </span>
             </div>
         </div>

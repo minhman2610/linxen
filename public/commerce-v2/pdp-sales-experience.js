@@ -28,6 +28,7 @@
     const emptyGalleryCopy = root.querySelector(
         '[data-lxl-gallery-empty-copy]'
     );
+    const emptyGallerySwatch = emptyGallery?.querySelector('span');
     const thumbs = root.querySelector('[data-lxpdp-thumbs]');
     const counter = root.querySelector('[data-lxpdp-image-counter]');
     const roleLabel = root.querySelector('[data-lxpdp-image-role]');
@@ -104,6 +105,13 @@
     };
 
     const renderImage = (index) => {
+        if (emptyGallerySwatch) {
+            emptyGallerySwatch.style.setProperty(
+                '--lxl-swatch',
+                state.color?.hex || '#ead8cf'
+            );
+        }
+
         if (!state.images.length || !mainImage) {
             if (mainImage) {
                 mainImage.removeAttribute('src');

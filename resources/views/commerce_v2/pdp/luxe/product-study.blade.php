@@ -56,10 +56,12 @@
     $mainMaterials = collect((array) data_get($materials, 'main', []))
         ->map($materialValue)
         ->filter()
+        ->unique(fn (string $material) => \Illuminate\Support\Str::lower($material))
         ->values();
     $liningMaterials = collect((array) data_get($materials, 'lining', []))
         ->map($materialValue)
         ->filter()
+        ->unique(fn (string $material) => \Illuminate\Support\Str::lower($material))
         ->values();
     $materialSummary = \Illuminate\Support\Str::squish((string) (
         data_get($materials, 'layer_label')

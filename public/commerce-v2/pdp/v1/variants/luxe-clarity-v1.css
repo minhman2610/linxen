@@ -185,6 +185,18 @@ body.lx-pdp-luxe-clarity .lxv2-main {
     text-align: center;
 }
 
+/*
+ * These states are toggled as a shopper changes colour. The component needs
+ * an explicit hidden rule because its display mode is defined above; otherwise
+ * the browser's default [hidden] style loses the cascade and an old message
+ * can remain over the newly selected colour image.
+ */
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-gallery__empty-state[hidden],
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-gallery__notice[hidden],
+.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study__empty[hidden] {
+    display: none !important;
+}
+
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-gallery__empty-state > span {
     width: 76px;
     height: 76px;
