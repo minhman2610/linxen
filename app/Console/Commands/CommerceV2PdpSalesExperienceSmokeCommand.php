@@ -58,6 +58,14 @@ class CommerceV2PdpSalesExperienceSmokeCommand extends Command
                 $product,
                 'colors.0.media.0.category_code'
             ) === 'SALES_INBOX_SUPPORT_SINGLE',
+            'purchase_gallery_sales_inbox_only' => collect(
+                (array) data_get($product, 'colors.0.media', [])
+            )->every(
+                fn (array $media) => data_get(
+                    $media,
+                    'category_code'
+                ) === 'SALES_INBOX_SUPPORT_SINGLE'
+            ),
             'no_cross_color_fallback' => data_get(
                 $product,
                 'colors.1.media',
@@ -169,6 +177,23 @@ class CommerceV2PdpSalesExperienceSmokeCommand extends Command
                 ],
             ])
             ->all();
+
+        $mediaWithAuxiliaryClarity = [
+            ...$media,
+            [
+                'id' => 'media_clarity_1',
+                'url' => 'https://example.test/camila-cream-clarity.webp',
+                'thumb_url' => 'https://example.test/camila-cream-clarity-thumb.webp',
+                'role' => 'detail',
+                'category_code' => 'OPENING_PRODUCT_CLARITY_SINGLE',
+                'selection_tier' => 1,
+                'color' => [
+                    'code' => 'cream',
+                    'name' => 'Kem',
+                    'key' => 'cream',
+                ],
+            ],
+        ];
 
         return [
             'id' => 'rs_4451',
@@ -296,7 +321,7 @@ class CommerceV2PdpSalesExperienceSmokeCommand extends Command
                             'best_selection_tier' => 1,
                             'fallback_reason' => null,
                             'cover' => $media[0],
-                            'items' => $media,
+                            'items' => $mediaWithAuxiliaryClarity,
                         ],
                         [
                             'color_id' => 'pvg_1892',

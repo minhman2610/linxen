@@ -345,9 +345,7 @@
                     </figure>
 
                     <div class="lxl-study-card__copy">
-                        <small>Góc ảnh sản phẩm</small>
                         <h3>{{ data_get($item, 'angle_label') }}</h3>
-
                     </div>
                 </article>
             @endforeach

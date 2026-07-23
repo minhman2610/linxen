@@ -1349,26 +1349,19 @@ body.lx-pdp-luxe-clarity:has(.lxl-study.has-related) .lxv2-main {
 
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study-card__copy {
     display: grid;
-    align-content: center;
-    gap: 8px;
-    padding: clamp(28px, 4vw, 58px);
-}
-
-.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study-card__copy > small {
-    color: var(--lxl-jade);
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .14em;
-    text-transform: uppercase;
+    align-content: start;
+    padding: clamp(22px, 3vw, 34px);
 }
 
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study-card__copy h3 {
     margin: 0;
-    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
-    font-size: clamp(28px, 3vw, 44px);
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -.035em;
+    color: var(--lxl-jade-dark);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .14em;
+    line-height: 1.35;
+    text-transform: uppercase;
 }
 
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study-card__copy > p {
@@ -1690,11 +1683,11 @@ body.lx-pdp-luxe-clarity:has(.lxl-study.has-related) .lxv2-main {
     }
 
     .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study-card__copy {
-        padding: 24px 20px 27px;
+        padding: 18px 20px 20px;
     }
 
     .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study-card__copy h3 {
-        font-size: 31px;
+        font-size: 10px;
     }
 
     .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-related {

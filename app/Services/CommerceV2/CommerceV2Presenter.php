@@ -355,9 +355,7 @@ class CommerceV2Presenter
                     ->all();
 
                 $media = collect($selectedMedia)
-                    ->concat($clarityMedia)
-                    ->filter(fn ($item) => $item['url'] !== '')
-                    ->unique(fn ($item) => $this->mediaIdentity(
+                    ->filter(fn ($item) => $this->isSalesInboxMedia(
                         (array) $item
                     ))
                     ->take(6)
@@ -399,6 +397,9 @@ class CommerceV2Presenter
                         ->all();
 
                     $media = collect($selectedMedia)
+                        ->filter(fn ($item) => $this->isSalesInboxMedia(
+                            (array) $item
+                        ))
                         ->take(6)
                         ->values()
                         ->all();
@@ -416,6 +417,9 @@ class CommerceV2Presenter
 
                     if ($media === []) {
                         $media = collect($fallbackMedia)
+                            ->filter(fn ($item) => $this->isSalesInboxMedia(
+                                (array) $item
+                            ))
                             ->take(6)
                             ->values()
                             ->all();
