@@ -102,7 +102,7 @@ if (root && productNode) {
         copy.className = 'lxl-study-card__copy';
 
         const kicker = document.createElement('small');
-        kicker.textContent = 'Góc nhìn sản phẩm';
+        kicker.textContent = 'Góc ảnh sản phẩm';
 
         const title = document.createElement('h3');
         title.textContent = String(

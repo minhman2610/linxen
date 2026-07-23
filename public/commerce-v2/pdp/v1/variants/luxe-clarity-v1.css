@@ -1451,6 +1451,11 @@ body.lx-pdp-luxe-clarity .lxv2-main {
         padding-bottom: calc(80px + env(safe-area-inset-bottom));
     }
 
+    body:has(.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study.has-related) .lxv2-main,
+    body.lx-pdp-luxe-clarity:has(.lxl-study.has-related) .lxv2-main {
+        padding-bottom: 28px;
+    }
+
     body:has(.lxpdp[data-pdp-variant="luxe_clarity_v1"]) .lxv2-footer,
     body.lx-pdp-luxe-clarity .lxv2-footer {
         margin-bottom: calc(72px + env(safe-area-inset-bottom));
@@ -1463,6 +1468,10 @@ body.lx-pdp-luxe-clarity .lxv2-main {
 
     .lxpdp[data-pdp-variant="luxe_clarity_v1"] {
         padding-bottom: 84px;
+    }
+
+    .lxpdp[data-pdp-variant="luxe_clarity_v1"]:has(.lxl-study.has-related) {
+        padding-bottom: 28px;
     }
 
     .lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxpdp-preview-banner {
