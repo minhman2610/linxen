@@ -1656,6 +1656,45 @@
         let nextCursor = homeFeed.dataset.nextCursor || '';
         let hasMore = homeFeed.dataset.hasMore === 'true';
         let loading = false;
+        let initialLoadFailed = false;
+
+        const clearInitialFeedback = () => {
+            grid?.querySelectorAll('[data-lxhome-load-error]')
+                .forEach((node) => node.remove());
+        };
+
+        const showInitialLoadError = () => {
+            if (!grid || grid.querySelector('[data-lxhome-load-error]')) {
+                return;
+            }
+
+            grid.querySelectorAll('[data-lxhome-skeleton]')
+                .forEach((node) => node.remove());
+
+            const notice = document.createElement('article');
+            notice.className = 'lxh3-feed-error';
+            notice.dataset.lxhomeLoadError = 'true';
+            notice.setAttribute('role', 'status');
+
+            const copy = document.createElement('div');
+            const title = document.createElement('strong');
+            const message = document.createElement('p');
+            title.textContent = 'Danh mục đang được làm mới';
+            message.textContent = 'Kết nối sản phẩm tạm thời gián đoạn. Bạn có thể thử lại ngay.';
+            copy.append(title, message);
+
+            const retry = document.createElement('button');
+            retry.type = 'button';
+            retry.textContent = 'Thử tải lại';
+            retry.addEventListener('click', () => {
+                initialLoadFailed = false;
+                sentinel && (sentinel.hidden = false);
+                loadNextPage();
+            });
+
+            notice.append(copy, retry);
+            grid.appendChild(notice);
+        };
 
         const completeFeed = () => {
             hasMore = false;
@@ -1681,7 +1720,11 @@
             const hasLoadingSkeleton = Boolean(grid?.querySelector(
                 '[data-lxhome-skeleton]'
             ));
+            const isInitialLoad = !grid?.querySelector(
+                '[data-lxcv1-product-card]'
+            );
             loading = true;
+            clearInitialFeedback();
             loadButton?.setAttribute('disabled', 'disabled');
             if (hasLoadingSkeleton) {
                 loadButton.hidden = true;
@@ -1714,10 +1757,13 @@
                 const payload = await response.json();
                 const batch = document.createElement('template');
                 batch.innerHTML = payload.html || '';
-                grid.querySelectorAll('[data-lxhome-empty], [data-lxhome-skeleton]')
+                grid.querySelectorAll(
+                    '[data-lxhome-empty], [data-lxhome-skeleton], [data-lxhome-load-error]'
+                )
                     .forEach((node) => node.remove());
                 grid.appendChild(batch.content);
                 initProductCards(grid);
+                initialLoadFailed = false;
 
                 nextCursor = payload.next_cursor || '';
                 hasMore = payload.has_more === true;
@@ -1740,10 +1786,15 @@
                 if (loadButton) {
                     loadButton.textContent = 'Thử lại';
                 }
+                if (isInitialLoad) {
+                    initialLoadFailed = true;
+                    sentinel && (sentinel.hidden = true);
+                    showInitialLoadError();
+                }
             } finally {
                 loading = false;
                 loadButton?.removeAttribute('disabled');
-                if (hasLoadingSkeleton) {
+                if (hasLoadingSkeleton && !initialLoadFailed) {
                     loadButton.hidden = false;
                 }
                 if (hasMore && loaderText) {
@@ -1761,7 +1812,10 @@
         ) {
             const feedObserver = new IntersectionObserver(
                 (entries) => {
-                    if (entries.some((entry) => entry.isIntersecting)) {
+                    if (
+                        !initialLoadFailed
+                        && entries.some((entry) => entry.isIntersecting)
+                    ) {
                         loadNextPage();
                     }
                 },

@@ -5712,6 +5712,56 @@
     margin-top: 2px;
 }
 
+.lxh3-feed-error {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    min-height: 150px;
+    padding: 24px;
+    border: 1px solid rgba(239, 180, 152, .8);
+    border-radius: 21px;
+    color: #3c2b2b;
+    background:
+        radial-gradient(circle at top right, rgba(255, 221, 201, .64), transparent 44%),
+        #fffaf7;
+    box-shadow: 0 12px 34px rgba(111, 62, 39, .07);
+}
+
+.lxh3-feed-error strong,
+.lxh3-feed-error p {
+    display: block;
+}
+
+.lxh3-feed-error strong {
+    font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.lxh3-feed-error p {
+    max-width: 430px;
+    margin: 7px 0 0;
+    color: var(--lxcv1-muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.lxh3-feed-error button {
+    flex: none;
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--lxcv1-coral);
+    box-shadow: 0 9px 18px rgba(189, 82, 45, .2);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 850;
+}
+
 @keyframes lxh3-skeleton-shimmer {
     to { background-position: -160% 0; }
 }
@@ -5887,6 +5937,14 @@
 
     .lxh3-product-table {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lxh3-feed-error {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 0;
+        padding: 20px;
     }
 }
 
