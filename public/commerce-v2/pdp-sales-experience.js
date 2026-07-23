@@ -57,7 +57,7 @@
         size: null,
         images: [],
         imageIndex: 0,
-        touchStartX: null,
+        gesture: null,
     };
 
     const normalize = (value) => String(value || '')
@@ -375,28 +375,48 @@
         renderImage(next);
     });
 
-    stageFigure?.addEventListener('touchstart', (event) => {
-        state.touchStartX = event.touches[0]?.clientX ?? null;
-    }, {passive: true});
-
-    stageFigure?.addEventListener('touchend', (event) => {
-        if (state.touchStartX === null || state.images.length < 2) {
+    const changeImageFromSwipe = (deltaX, deltaY) => {
+        if (
+            state.images.length < 2
+            || Math.abs(deltaX) < 44
+            || Math.abs(deltaX) <= Math.abs(deltaY)
+        ) {
             return;
         }
 
-        const endX = event.changedTouches[0]?.clientX ?? state.touchStartX;
-        const delta = endX - state.touchStartX;
-        state.touchStartX = null;
-
-        if (Math.abs(delta) < 45) {
-            return;
-        }
-
-        if (delta < 0) {
+        if (deltaX < 0) {
             nextButton?.click();
         } else {
             previousButton?.click();
         }
+    };
+
+    stageFigure?.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse') {
+            return;
+        }
+
+        state.gesture = {
+            id: event.pointerId,
+            x: event.clientX,
+            y: event.clientY,
+        };
+    }, {passive: true});
+
+    stageFigure?.addEventListener('pointerup', (event) => {
+        if (state.gesture?.id !== event.pointerId) {
+            return;
+        }
+
+        changeImageFromSwipe(
+            event.clientX - state.gesture.x,
+            event.clientY - state.gesture.y
+        );
+        state.gesture = null;
+    }, {passive: true});
+
+    stageFigure?.addEventListener('pointercancel', () => {
+        state.gesture = null;
     }, {passive: true});
 
     mobileSubmit?.addEventListener('click', () => {

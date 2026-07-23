@@ -1,4 +1,4 @@
-import '../core.js';
+import '../core.js?v=2';
 
 const root = document.querySelector('[data-pdp-variant="luxe_clarity_v1"]');
 const productNode = document.getElementById('lxv2ProductData');
@@ -75,6 +75,12 @@ if (root && productNode) {
         index,
         colorLabel
     ) => {
+        const angleLabel = String(item?.angle_label || '').trim();
+
+        if (!angleLabel) {
+            return null;
+        }
+
         const article = document.createElement('article');
         article.className = `lxl-study-card lxl-study-card--${(index % 4) + 1}`;
         article.dataset.lxlStudyItem = String(index);
@@ -91,7 +97,7 @@ if (root && productNode) {
         image.alt = [
             product.name || 'Sản phẩm',
             colorLabel || '',
-            item?.angle_label || 'Góc nhìn sản phẩm',
+            angleLabel,
         ].filter(Boolean).join(' — ');
         image.loading = index === 0 ? 'eager' : 'lazy';
         image.decoding = 'async';
@@ -102,9 +108,7 @@ if (root && productNode) {
         copy.className = 'lxl-study-card__copy';
 
         const title = document.createElement('h3');
-        title.textContent = String(
-            item?.angle_label || 'Góc nhìn sản phẩm'
-        );
+        title.textContent = angleLabel;
 
         copy.appendChild(title);
 
@@ -200,10 +204,23 @@ if (root && productNode) {
         }
 
         const cards = document.createDocumentFragment();
+        let cardCount = 0;
         items.forEach((item, index) => {
             const card = makeStudyCard(item, index, label);
-            cards.appendChild(card);
+            if (card) {
+                cards.appendChild(card);
+                cardCount += 1;
+            }
         });
+
+        if (!cardCount) {
+            list.hidden = true;
+            if (nav) {
+                nav.hidden = true;
+            }
+            empty.hidden = false;
+            return;
+        }
 
         list.appendChild(cards);
         list.hidden = false;

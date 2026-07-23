@@ -66,6 +66,7 @@ final class PdpProductStudyBuilder
                     'source_count' => 1,
                 ];
             })
+            ->filter(fn (array $item) => $item['angle_label'] !== '')
             ->values()
             ->all();
     }
@@ -94,7 +95,6 @@ final class PdpProductStudyBuilder
         return Str::squish((string) (
             data_get($media, 'angle_label')
             ?: data_get($media, 'shot_angle_label')
-            ?: 'Góc nhìn sản phẩm'
         ));
     }
 

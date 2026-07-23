@@ -374,22 +374,31 @@
             <section class="lxl-related" aria-labelledby="lxlRelatedTitle">
                 <div class="lxl-related__heading">
                     <header>
-                        <p>Cùng nhịp thiết kế</p>
+                        <p>LIN XÉN EDIT</p>
                         <h3 id="lxlRelatedTitle">Có thể bạn sẽ thích</h3>
                     </header>
-                    <a href="{{ route('commerce.v2.shop') }}">Xem thêm váy <span aria-hidden="true">→</span></a>
+                    <a href="{{ route('commerce.v2.shop') }}">Khám phá thêm <span aria-hidden="true">→</span></a>
                 </div>
                 <div class="lxl-related__grid">
-                    @foreach($relatedProducts as $related)
-                        <a href="{{ data_get($related, 'url') }}">
-                            <img
-                                src="{{ data_get($related, 'cover_url') }}"
-                                alt="{{ data_get($related, 'name') }}"
-                                loading="lazy"
-                                decoding="async"
-                            >
-                            <span>{{ data_get($related, 'name') }}</span>
-                            <strong>{{ number_format((float) data_get($related, 'price_min'), 0, ',', '.') }}₫</strong>
+                    @foreach($relatedProducts as $index => $related)
+                        <a
+                            class="lxl-related__card {{ $index === 0 ? 'is-featured' : '' }}"
+                            href="{{ data_get($related, 'url') }}"
+                        >
+                            <figure>
+                                <img
+                                    src="{{ data_get($related, 'cover_url') }}"
+                                    alt="{{ data_get($related, 'name') }}"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            </figure>
+                            <div class="lxl-related__copy">
+                                <small>{{ $index === 0 ? 'Lựa chọn cùng mood' : 'LIN XÉN EDIT' }}</small>
+                                <span>{{ data_get($related, 'name') }}</span>
+                                <strong>{{ number_format((float) data_get($related, 'price_min'), 0, ',', '.') }}₫</strong>
+                                <em>Khám phá thiết kế <b aria-hidden="true">↗</b></em>
+                            </div>
                         </a>
                     @endforeach
                 </div>
