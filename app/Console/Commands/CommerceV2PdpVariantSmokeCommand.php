@@ -152,6 +152,23 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                         $html,
                         'data-lxl-study-data'
                     ),
+                    'luxe_v350_angle_contract' => data_get(
+                        $viewModel,
+                        'media.product_study_by_color.0.angle_contract'
+                    ) === 'v350_shared_media_shot_angles'
+                        && data_get(
+                            $viewModel,
+                            'media.product_study_by_color.0.items.0.angle_key'
+                        ) === 'lifestyle'
+                        && data_get(
+                            $viewModel,
+                            'media.product_study_by_color.0.items.0.angle_label'
+                        ) === 'Ảnh thử phom do ERP duyệt'
+                        && count((array) data_get(
+                            $viewModel,
+                            'media.product_study_by_color.0.items',
+                            []
+                        )) === 2,
                     'luxe_size_chart_contract' => str_contains(
                         $html,
                         'lxl-size-chart'
@@ -209,6 +226,8 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                 'role' => 'hero',
                 'category_code' => 'SALES_INBOX_SUPPORT_SINGLE',
                 'shot_angle' => 'front_3_4',
+                'angle_key' => 'lifestyle',
+                'angle_label' => 'Ảnh thử phom do ERP duyệt',
                 'selection_tier' => 1,
             ],
             [
@@ -218,7 +237,19 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                 'role' => 'back',
                 'category_code' => 'PRODUCTION_SAMPLE_REAL',
                 'shot_angle' => 'back',
+                'angle_key' => 'back',
+                'angle_label' => 'Mặt sau do ERP duyệt',
                 'selection_tier' => 2,
+            ],
+            [
+                'id' => 'media_board_reference',
+                'url' => 'https://example.test/elisa-board.jpg',
+                'asset_kind' => 'BOARD_SOURCE',
+                'category_code' => 'GARMENT_TECHNICAL_FIT_TRUTH',
+                'shot_angle' => 'front',
+                'angle_key' => 'front',
+                'angle_label' => 'Không được dùng trên storefront',
+                'selection_tier' => 3,
             ],
         ];
 

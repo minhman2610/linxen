@@ -23,56 +23,13 @@
             ->values();
     }
 
-    $angleLabel = function (array $item): string {
-        $blob = \Illuminate\Support\Str::upper(trim(
-            (string) data_get($item, 'shot_angle')
-            .' '
-            .(string) data_get($item, 'role')
-        ));
-
-        return match (true) {
-            \Illuminate\Support\Str::contains($blob, ['FRONT_3Q', 'FRONT 3Q', 'FRONT THREE', '3/4 FRONT'])
-                => 'Góc trước 3/4',
-            \Illuminate\Support\Str::contains($blob, ['BACK_3Q', 'BACK 3Q', '3/4 BACK'])
-                => 'Góc sau 3/4',
-            \Illuminate\Support\Str::contains($blob, ['LEFT_SIDE', 'SIDE_LEFT', 'LEFT PROFILE'])
-                => 'Góc nghiêng trái',
-            \Illuminate\Support\Str::contains($blob, ['RIGHT_SIDE', 'SIDE_RIGHT', 'RIGHT PROFILE'])
-                => 'Góc nghiêng phải',
-            \Illuminate\Support\Str::contains($blob, ['FULL_FRONT', 'PRODUCT_FRONT', 'FRONT'])
-                => 'Mặt trước',
-            \Illuminate\Support\Str::contains($blob, ['FULL_BACK', 'PRODUCT_BACK', 'BACK'])
-                => 'Mặt sau',
-            \Illuminate\Support\Str::contains($blob, ['SIDE', 'PROFILE'])
-                => 'Góc nghiêng',
-            \Illuminate\Support\Str::contains($blob, ['DETAIL', 'CLOSE', 'MACRO'])
-                => 'Chi tiết sản phẩm',
-            \Illuminate\Support\Str::contains($blob, ['LIFESTYLE', 'MODEL'])
-                => 'Trên người mẫu',
-            default => match ((string) data_get($item, 'role')) {
-                'front' => 'Mặt trước',
-                'back' => 'Mặt sau',
-                'side' => 'Góc nghiêng',
-                'detail' => 'Chi tiết sản phẩm',
-                'lifestyle' => 'Trên người mẫu',
-                default => 'Góc nhìn sản phẩm',
-            },
-        };
-    };
-
-    $angleDescription = function (string $label): string {
-        return match ($label) {
-            'Mặt trước' => 'Quan sát toàn bộ đường nét và tỷ lệ phía trước.',
-            'Mặt sau' => 'Kiểm tra phom lưng, khóa và độ rơi của sản phẩm.',
-            'Góc trước 3/4' => 'Cảm nhận độ nổi khối và cách phom ôm cơ thể.',
-            'Góc sau 3/4' => 'Xem rõ chuyển tiếp từ lưng sang hông và gấu.',
-            'Góc nghiêng trái', 'Góc nghiêng phải', 'Góc nghiêng'
-                => 'Đánh giá độ dày, chiều sâu và đường cong của phom.',
-            'Chi tiết sản phẩm' => 'Nhìn gần chất liệu và điểm nhấn thiết kế.',
-            'Trên người mẫu' => 'Hình dung tỷ lệ sản phẩm khi mặc thực tế.',
-            default => 'Một góc nhìn đã được chọn để làm rõ sản phẩm.',
-        };
-    };
+    $angleLabel = static fn (array $item): string => \Illuminate\Support\Str::squish(
+        (string) (
+            data_get($item, 'angle_label')
+            ?: data_get($item, 'shot_angle_label')
+            ?: 'Ảnh đã duyệt'
+        )
+    );
 @endphp
 
 <div
@@ -119,7 +76,6 @@
             @foreach($clarityItems as $index => $item)
                 @php
                     $label = $angleLabel((array) $item);
-                    $description = $angleDescription($label);
                 @endphp
                 <figure
                     class="lxc-angle-card lxc-angle-card--{{ min($index + 1, 8) }}"
@@ -137,7 +93,7 @@
                     <figcaption>
                         <small>Góc nhìn</small>
                         <h3>{{ $label }}</h3>
-                        <p>{{ $description }}</p>
+                        <p>Góc ảnh đã được ERP duyệt cho màu bạn đang xem.</p>
                     </figcaption>
                 </figure>
             @endforeach

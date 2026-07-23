@@ -334,17 +334,12 @@ final class PdpViewModelBuilder
     {
         $blob = Str::upper(implode(' ', [
             (string) data_get($media, 'category_code'),
-            (string) data_get($media, 'role'),
             (string) data_get($media, 'support_role'),
-            (string) data_get($media, 'shot_angle'),
         ]));
 
         return Str::contains($blob, [
             'PRODUCTION_SAMPLE',
-            'PRODUCT_FRONT',
-            'PRODUCT_BACK',
-            'PRODUCT_SIDE',
-            'DETAIL',
+            'PRODUCT_CLARITY',
         ]);
     }
 }

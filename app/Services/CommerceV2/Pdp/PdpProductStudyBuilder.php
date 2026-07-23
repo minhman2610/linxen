@@ -6,7 +6,9 @@ use Illuminate\Support\Str;
 
 final class PdpProductStudyBuilder
 {
-    public const VERSION = 'linxen_pdp_product_study_v1';
+    public const VERSION = 'linxen_pdp_product_study_v2';
+
+    public const SHARED_MEDIA_ANGLE_CONTRACT = 'v350_shared_media_shot_angles';
 
     public function build(array $colors): array
     {
@@ -17,6 +19,7 @@ final class PdpProductStudyBuilder
 
                 return [
                     'version' => self::VERSION,
+                    'angle_contract' => self::SHARED_MEDIA_ANGLE_CONTRACT,
                     'color_id' => (string) data_get($color, 'id'),
                     'color_code' => (string) data_get($color, 'code'),
                     'color_label' => (string) data_get($color, 'label'),
@@ -40,55 +43,25 @@ final class PdpProductStudyBuilder
 
     protected function itemsForColor(array $color): array
     {
-        $rows = collect((array) data_get($color, 'study_media', []))
-            ->filter(fn ($item) => trim((string) data_get($item, 'url')) !== '')
-            ->unique(fn ($item) => trim((string) data_get($item, 'url')))
-            ->values()
-            ->map(function ($item, int $index) {
-                $item = (array) $item;
-                $semantic = $this->semantic($item);
-                $key = $semantic['key'];
-
-                if ($key === 'view') {
-                    $key .= '_' . str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT);
-                }
-
-                return [
-                    'angle_key' => $key,
-                    'angle_label' => $semantic['label'],
-                    'angle_description' => $semantic['description'],
-                    'sequence' => $semantic['sequence'],
-                    'source_index' => $index,
-                    'media' => $item,
-                ];
-            })
-            ->sortBy(fn ($row) => sprintf(
-                '%03d-%03d-%03d',
-                (int) data_get($row, 'sequence', 99),
-                (int) data_get($row, 'media.selection_tier', 99),
-                (int) data_get($row, 'source_index', 0)
-            ))
-            ->values();
-
         /*
-         * Every approved image receives its own full-width moment. Grouping
-         * alternate angles behind a thumbnail forced customers to choose what
-         * to see and made model photography feel incomplete on mobile.
+         * ERP owns both the image angle and display label. Keep its source
+         * ordering, deduplicate only by stable media identity, and never
+         * promote an unlabelled asset to a synthetic hero/angle.
          */
-        return $rows
+        return collect((array) data_get($color, 'study_media', []))
+            ->filter(fn ($media) => trim((string) data_get($media, 'url')) !== '')
+            ->filter(fn ($media) => $this->isApprovedSingleAsset((array) $media))
+            ->unique(fn ($media) => $this->mediaIdentity((array) $media))
             ->values()
-            ->map(function ($row) {
-                $row = (array) $row;
+            ->map(function ($media, int $index) {
+                $media = (array) $media;
 
                 return [
-                    'angle_key' => (string) data_get($row, 'angle_key'),
-                    'angle_label' => (string) data_get($row, 'angle_label'),
-                    'angle_description' => (string) data_get(
-                        $row,
-                        'angle_description'
-                    ),
-                    'sequence' => (int) data_get($row, 'sequence', 99),
-                    'hero' => (array) data_get($row, 'media', []),
+                    'angle_key' => $this->angleKey($media),
+                    'angle_label' => $this->angleLabel($media),
+                    'angle_description' => '',
+                    'sequence' => $index,
+                    'hero' => $media,
                     'alternates' => [],
                     'source_count' => 1,
                 ];
@@ -97,132 +70,62 @@ final class PdpProductStudyBuilder
             ->all();
     }
 
-    protected function semantic(array $media): array
+    protected function mediaIdentity(array $media): string
     {
-        $blob = Str::upper(Str::squish(implode(' ', [
-            (string) data_get($media, 'shot_angle'),
-            (string) data_get($media, 'role'),
+        return Str::squish((string) (
+            data_get($media, 'media_identity')
+            ?: data_get($media, 'id')
+            ?: data_get($media, 'media_id')
+            ?: data_get($media, 'asset_id')
+            ?: data_get($media, 'url')
+        ));
+    }
+
+    protected function angleKey(array $media): string
+    {
+        return Str::squish((string) (
+            data_get($media, 'angle_key')
+            ?: data_get($media, 'shot_angle')
+        ));
+    }
+
+    protected function angleLabel(array $media): string
+    {
+        return Str::squish((string) (
+            data_get($media, 'angle_label')
+            ?: data_get($media, 'shot_angle_label')
+            ?: 'Ảnh đã duyệt'
+        ));
+    }
+
+    protected function isApprovedSingleAsset(array $media): bool
+    {
+        $approval = Str::upper(Str::squish((string) data_get(
+            $media,
+            'approval_status'
+        )));
+        $assetSignals = Str::upper(Str::squish(implode(' ', [
+            (string) data_get($media, 'asset_kind'),
+            (string) data_get($media, 'media_kind'),
+            (string) data_get($media, 'artifact_type'),
+            (string) data_get($media, 'source_type'),
             (string) data_get($media, 'category_code'),
         ])));
 
-        if (Str::contains($blob, [
-            'FRONT_3Q',
-            'FRONT 3Q',
-            'FRONT_3_4',
-            'FRONT 3/4',
-            '3/4 FRONT',
-            'THREE_QUARTER_FRONT',
-        ])) {
-            return $this->definition(
-                'front_three_quarter',
-                'Góc trước 3/4',
-                'Quan sát độ nổi khối, đường eo và cách phom chuyển từ thân trước sang thân bên.',
-                20
-            );
+        if (
+            array_key_exists('is_approved', $media)
+            && $media['is_approved'] !== null
+            && ! $media['is_approved']
+        ) {
+            return false;
         }
 
-        if (Str::contains($blob, [
-            'BACK_3Q',
-            'BACK 3Q',
-            'BACK_3_4',
-            'BACK 3/4',
-            '3/4 BACK',
-            'THREE_QUARTER_BACK',
-        ])) {
-            return $this->definition(
-                'back_three_quarter',
-                'Góc sau 3/4',
-                'Nhìn rõ chuyển tiếp từ lưng, hông đến gấu váy ở góc chéo.',
-                50
-            );
-        }
-
-        if (Str::contains($blob, [
-            'FULL_FRONT',
-            'PRODUCT_FRONT',
-            'FRONT_VIEW',
-            'FRONT',
-        ])) {
-            return $this->definition(
-                'front',
-                'Mặt trước',
-                'Toàn cảnh phom dáng, tỷ lệ và các chi tiết chính ở mặt trước.',
-                10
-            );
-        }
-
-        if (Str::contains($blob, [
-            'FULL_BACK',
-            'PRODUCT_BACK',
-            'BACK_VIEW',
-            'BACK',
-        ])) {
-            return $this->definition(
-                'back',
-                'Mặt sau',
-                'Kiểm tra phom lưng, khóa và độ rơi của sản phẩm từ phía sau.',
-                40
-            );
-        }
-
-        if (Str::contains($blob, [
-            'LEFT_SIDE',
-            'RIGHT_SIDE',
-            'PRODUCT_SIDE',
-            'SIDE_VIEW',
-            'PROFILE',
-            'SIDE',
-        ])) {
-            return $this->definition(
-                'side',
-                'Góc nghiêng',
-                'Đánh giá chiều sâu, độ dày và đường cong tự nhiên của phom.',
-                30
-            );
-        }
-
-        if (Str::contains($blob, [
-            'DETAIL',
-            'CLOSE_UP',
-            'CLOSEUP',
-            'MACRO',
-            'TEXTURE',
-        ])) {
-            return $this->definition(
-                'detail',
-                'Chi tiết thiết kế',
-                'Nhìn gần chất liệu, đường may và điểm nhấn quan trọng của sản phẩm.',
-                60
-            );
-        }
-
-        if (Str::contains($blob, [
-            'LIFESTYLE',
-            'ON_MODEL',
-            'MODEL',
-        ])) {
-            return $this->definition(
-                'on_model',
-                'Trên người mẫu',
-                'Hình dung tỷ lệ và chuyển động của sản phẩm khi mặc.',
-                70
-            );
-        }
-
-        return $this->definition(
-            'view',
-            'Góc nhìn sản phẩm',
-            'Một góc ảnh đã được duyệt để làm rõ sản phẩm.',
-            90
-        );
-    }
-
-    protected function definition(
-        string $key,
-        string $label,
-        string $description,
-        int $sequence
-    ): array {
-        return compact('key', 'label', 'description', 'sequence');
+        return ! in_array($approval, ['DRAFT', 'PENDING', 'REJECTED'], true)
+            && ! Str::contains($assetSignals, [
+                'BOARD',
+                'GARMENT_TECHNICAL_FIT_TRUTH',
+                'FIT_PROXY',
+                'REFERENCE',
+            ]);
     }
 }

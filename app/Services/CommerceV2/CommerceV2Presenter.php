@@ -32,6 +32,9 @@ class CommerceV2Presenter
             'listing_media.items',
             []
         ))
+            ->filter(fn ($item) => $this->isStorefrontEligibleMedia(
+                (array) $item
+            ))
             ->map(fn ($item, $index) => [
                 'id' => (string) data_get($item, 'id'),
                 'url' => (string) (
@@ -252,6 +255,9 @@ class CommerceV2Presenter
         ))
             ->map(fn ($item) => $this->presentMedia($item))
             ->filter(fn ($item) => $item['url'] !== '')
+            ->filter(fn ($item) => $this->isStorefrontEligibleMedia(
+                (array) $item
+            ))
             ->take(6)
             ->values()
             ->all();
@@ -326,6 +332,9 @@ class CommerceV2Presenter
                         $item
                     ))
                     ->filter(fn ($item) => $item['url'] !== '')
+                    ->filter(fn ($item) => $this->isStorefrontEligibleMedia(
+                        (array) $item
+                    ))
                     ->take(8)
                     ->values()
                     ->all();
@@ -338,6 +347,9 @@ class CommerceV2Presenter
                         $item
                     ))
                     ->filter(fn ($item) => $item['url'] !== '')
+                    ->filter(fn ($item) => $this->isStorefrontEligibleMedia(
+                        (array) $item
+                    ))
                     ->take(6)
                     ->values()
                     ->all();
@@ -361,7 +373,9 @@ class CommerceV2Presenter
                         )
                     ))
                     ->filter(fn ($item) => $item['url'] !== '')
-                    ->unique('url')
+                    ->unique(fn ($item) => $this->mediaIdentity(
+                        (array) $item
+                    ))
                     ->take(12)
                     ->values()
                     ->all();
@@ -381,6 +395,9 @@ class CommerceV2Presenter
                             $item
                         ))
                         ->filter(fn ($item) => $item['url'] !== '')
+                        ->filter(fn ($item) => $this->isStorefrontEligibleMedia(
+                            (array) $item
+                        ))
                         ->values()
                         ->all();
 
@@ -735,6 +752,13 @@ class CommerceV2Presenter
     {
         return [
             'id' => (string) data_get($item, 'id'),
+            'media_identity' => (string) (
+                data_get($item, 'media_identity')
+                ?: data_get($item, 'id')
+                ?: data_get($item, 'media_id')
+                ?: data_get($item, 'asset_id')
+                ?: data_get($item, 'url')
+            ),
             'url' => (string) data_get($item, 'url'),
             'thumb_url' => (string) (
                 data_get($item, 'thumb_url')
@@ -758,6 +782,26 @@ class CommerceV2Presenter
                 $item,
                 'shot_angle',
                 data_get($item, 'shot')
+            ),
+            'angle_key' => (string) data_get(
+                $item,
+                'angle_key',
+                data_get($item, 'shot_angle', data_get($item, 'shot'))
+            ),
+            'angle_label' => (string) data_get(
+                $item,
+                'angle_label',
+                data_get($item, 'shot_angle_label')
+            ),
+            'approval_status' => (string) data_get(
+                $item,
+                'approval_status'
+            ),
+            'is_approved' => data_get($item, 'is_approved'),
+            'asset_kind' => (string) data_get(
+                $item,
+                'asset_kind',
+                data_get($item, 'media_kind')
             ),
             'selection_tier' => (int) data_get(
                 $item,
@@ -786,6 +830,49 @@ class CommerceV2Presenter
             'category_code',
             data_get($media, 'category')
         ))) === 'SALES_INBOX_SUPPORT_SINGLE';
+    }
+
+    protected function mediaIdentity(array $media): string
+    {
+        return Str::squish((string) (
+            data_get($media, 'media_identity')
+            ?: data_get($media, 'id')
+            ?: data_get($media, 'media_id')
+            ?: data_get($media, 'asset_id')
+            ?: data_get($media, 'url')
+        ));
+    }
+
+    /**
+     * V350 media contract: a board, technical fit proxy, or explicitly
+     * unapproved asset is a generation/review reference, never storefront
+     * content. Legacy payloads without these optional fields remain valid.
+     */
+    protected function isStorefrontEligibleMedia(array $media): bool
+    {
+        $approval = Str::upper(Str::squish((string) data_get(
+            $media,
+            'approval_status'
+        )));
+        $assetSignals = Str::upper(Str::squish(implode(' ', [
+            (string) data_get($media, 'asset_kind'),
+            (string) data_get($media, 'media_kind'),
+            (string) data_get($media, 'artifact_type'),
+            (string) data_get($media, 'source_type'),
+            (string) data_get($media, 'category_code', data_get($media, 'category')),
+        ])));
+
+        if (array_key_exists('is_approved', $media) && data_get($media, 'is_approved') === false) {
+            return false;
+        }
+
+        return ! in_array($approval, ['DRAFT', 'PENDING', 'REJECTED'], true)
+            && ! Str::contains($assetSignals, [
+                'BOARD',
+                'GARMENT_TECHNICAL_FIT_TRUTH',
+                'FIT_PROXY',
+                'REFERENCE',
+            ]);
     }
 
     protected function isProductStudyMedia(array $media): bool

@@ -7,14 +7,9 @@
         ->filter(fn ($item) => data_get($item, 'url'))
         ->take(6)
         ->values();
-    $roleLabels = [
-        'hero' => 'Tổng thể',
-        'front' => 'Mặt trước',
-        'side' => 'Góc nghiêng',
-        'back' => 'Mặt sau',
-        'detail' => 'Chi tiết',
-        'lifestyle' => 'Trên người mẫu',
-    ];
+    $angleLabel = static fn ($item): string => \Illuminate\Support\Str::squish(
+        (string) (data_get($item, 'angle_label') ?: data_get($item, 'shot_angle_label') ?: 'Ảnh đã duyệt')
+    );
 @endphp
 
 @if($campaign->isNotEmpty() || $truth->isNotEmpty())
@@ -41,7 +36,7 @@
             @foreach($campaign as $index => $item)
                 <figure class="lxs-media-grid__item lxs-media-grid__item--{{ ($index % 5) + 1 }}">
                     <img src="{{ data_get($item, 'url') }}" alt="{{ data_get($pdp, 'identity.name') }}" loading="lazy" decoding="async">
-                    <figcaption>{{ $roleLabels[data_get($item, 'role')] ?? 'Hình ảnh sản phẩm' }}</figcaption>
+                    <figcaption>{{ $angleLabel($item) }}</figcaption>
                 </figure>
             @endforeach
         </div>
@@ -52,7 +47,7 @@
             @foreach($truth as $index => $item)
                 <figure class="lxs-media-grid__item lxs-media-grid__item--{{ ($index % 5) + 1 }}">
                     <img src="{{ data_get($item, 'url') }}" alt="{{ data_get($pdp, 'identity.name') }} - ảnh thực tế" loading="lazy" decoding="async">
-                    <figcaption>{{ $roleLabels[data_get($item, 'role')] ?? 'Ảnh sản phẩm thực tế' }}</figcaption>
+                    <figcaption>{{ $angleLabel($item) }}</figcaption>
                 </figure>
             @endforeach
         </div>

@@ -8,14 +8,9 @@
             ->values();
     }
     $media = $media->take(5);
-    $roleLabels = [
-        'hero' => 'Tổng thể',
-        'front' => 'Mặt trước',
-        'side' => 'Góc nghiêng',
-        'back' => 'Mặt sau',
-        'detail' => 'Chi tiết đường cắt',
-        'lifestyle' => 'Trên người mẫu',
-    ];
+    $angleLabel = static fn ($item): string => \Illuminate\Support\Str::squish(
+        (string) (data_get($item, 'angle_label') ?: data_get($item, 'shot_angle_label') ?: 'Ảnh đã duyệt')
+    );
 @endphp
 
 @if($media->isNotEmpty())
@@ -30,15 +25,15 @@
 
         <div class="lxa-mosaic">
             @foreach($media as $index => $item)
-                @php $role = (string) data_get($item, 'role'); @endphp
+                @php $label = $angleLabel($item); @endphp
                 <figure class="lxa-mosaic__item lxa-mosaic__item--{{ $index + 1 }}">
                     <img
                         src="{{ data_get($item, 'url') }}"
-                        alt="{{ data_get($identity, 'name') }} — {{ $roleLabels[$role] ?? 'Chi tiết sản phẩm' }}"
+                        alt="{{ data_get($identity, 'name') }} — {{ $label }}"
                         loading="lazy"
                         decoding="async"
                     >
-                    <figcaption>{{ $roleLabels[$role] ?? (data_get($item, 'shot_angle') ?: 'Chi tiết sản phẩm') }}</figcaption>
+                    <figcaption>{{ $label }}</figcaption>
                 </figure>
             @endforeach
         </div>
