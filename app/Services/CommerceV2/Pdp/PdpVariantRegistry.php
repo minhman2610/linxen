@@ -150,10 +150,10 @@ final class PdpVariantRegistry
                     'styles' => [
                         'commerce-v2/pdp-sales-experience.css?v=3',
                         'commerce-v2/pdp/v1/core.css?v=1',
-                        'commerce-v2/pdp/v1/variants/luxe-clarity-v1.css?v=11',
+                        'commerce-v2/pdp/v1/variants/luxe-clarity-v1.css?v=12',
                     ],
                     'scripts' => [
-                        'commerce-v2/pdp/v1/variants/luxe-clarity-v1.js?v=7',
+                        'commerce-v2/pdp/v1/variants/luxe-clarity-v1.js?v=8',
                     ],
                 ],
                 'art_direction' => [

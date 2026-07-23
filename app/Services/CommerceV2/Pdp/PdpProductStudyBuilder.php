@@ -16,6 +16,7 @@ final class PdpProductStudyBuilder
             ->map(function ($color) {
                 $color = (array) $color;
                 $items = $this->itemsForColor($color);
+                $inspirationItems = $this->inspirationItemsForColor($color);
 
                 return [
                     'version' => self::VERSION,
@@ -35,6 +36,8 @@ final class PdpProductStudyBuilder
                     ),
                     'items' => $items,
                     'item_count' => count($items),
+                    'inspiration_items' => $inspirationItems,
+                    'inspiration_item_count' => count($inspirationItems),
                 ];
             })
             ->values()
@@ -80,6 +83,26 @@ final class PdpProductStudyBuilder
             ?: data_get($media, 'asset_id')
             ?: data_get($media, 'url')
         ));
+    }
+
+    /**
+     * This remains a separate, customer-facing inspiration layer.
+     * It keeps the exact-colour, approved ERP selection order and is never
+     * promoted into the reviewed product-angle sequence above.
+     */
+    protected function inspirationItemsForColor(array $color): array
+    {
+        return collect((array) data_get(
+            $color,
+            'demand_stimulation_media',
+            []
+        ))
+            ->filter(fn ($media) => trim((string) data_get($media, 'url')) !== '')
+            ->filter(fn ($media) => $this->isApprovedSingleAsset((array) $media))
+            ->unique(fn ($media) => $this->mediaIdentity((array) $media))
+            ->map(fn ($media) => (array) $media)
+            ->values()
+            ->all();
     }
 
     protected function angleKey(array $media): string

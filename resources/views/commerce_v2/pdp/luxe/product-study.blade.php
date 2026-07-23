@@ -20,6 +20,9 @@
     $defaultItems = collect(
         (array) data_get($defaultStudy, 'items', [])
     )->values();
+    $defaultInspirationItems = collect(
+        (array) data_get($defaultStudy, 'inspiration_items', [])
+    )->values();
     $factItem = static function ($item): array {
         return [
             'label' => \Illuminate\Support\Str::squish((string) data_get(
@@ -352,10 +355,33 @@
         </div>
 
         <div
+            class="lxl-study__inspiration"
+            data-lxl-study-inspiration
+            @if($defaultInspirationItems->isEmpty()) hidden @endif
+        >
+            <div class="lxl-study__inspiration-head">
+                <p>Gợi ý phong cách</p>
+                <span>Hình ảnh cùng màu để bạn cảm nhận thiết kế trong nhịp sống.</span>
+            </div>
+            <div class="lxl-study__inspiration-grid">
+                @foreach($defaultInspirationItems as $index => $item)
+                    <figure>
+                        <img
+                            src="{{ data_get($item, 'url') }}"
+                            alt="{{ data_get($identity, 'name') }} — {{ data_get($defaultStudy, 'color_label') }}"
+                            loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                            decoding="async"
+                        >
+                    </figure>
+                @endforeach
+            </div>
+        </div>
+
+        <div
             class="lxl-study__empty"
             data-lxl-study-empty
             role="status"
-            @if($defaultItems->isNotEmpty()) hidden @endif
+            @if($defaultItems->isNotEmpty() || $defaultInspirationItems->isNotEmpty()) hidden @endif
         >
             <svg viewBox="0 0 48 48" aria-hidden="true">
                 <path d="M8 11h32v26H8z"/>

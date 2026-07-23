@@ -262,6 +262,13 @@ class CommerceV2Presenter
                 'color_id'
             )
         );
+        $demandStimulationSets = collect((array) data_get(
+            $pdp,
+            'demand_stimulation_sets_by_color',
+            []
+        ))->keyBy(
+            fn ($set) => (string) data_get($set, 'color_id')
+        );
         $fallbackMedia = collect((array) data_get(
             $product,
             'media.items',
@@ -284,6 +291,7 @@ class CommerceV2Presenter
             ->map(function ($color) use (
                 $sets,
                 $claritySets,
+                $demandStimulationSets,
                 $fallbackMedia
             ) {
                 $sizes = collect((array) data_get(
@@ -337,6 +345,8 @@ class CommerceV2Presenter
                     $colorId,
                     []
                 );
+                $demandStimulationSet = (array) $demandStimulationSets
+                    ->get($colorId, []);
                 $clarityMedia = collect((array) data_get(
                     $claritySet,
                     'items',
@@ -350,6 +360,22 @@ class CommerceV2Presenter
                         (array) $item
                     ))
                     ->take(8)
+                    ->values()
+                    ->all();
+                $demandStimulationMedia = collect((array) data_get(
+                    $demandStimulationSet,
+                    'items',
+                    []
+                ))
+                    ->map(fn ($item) => $this->presentMedia($item))
+                    ->filter(fn ($item) => $item['url'] !== '')
+                    ->filter(fn ($item) => $this->isStorefrontEligibleMedia(
+                        (array) $item
+                    ))
+                    ->unique(fn ($item) => $this->mediaIdentity(
+                        (array) $item
+                    ))
+                    ->take(6)
                     ->values()
                     ->all();
                 $selectedMedia = collect((array) data_get(
@@ -471,6 +497,10 @@ class CommerceV2Presenter
                     'cover_url' => (string) data_get($media, '0.url'),
                     'media' => $media,
                     'clarity_media' => $clarityMedia,
+                    'demand_stimulation_media' => $demandStimulationMedia,
+                    'demand_stimulation_media_count' => count(
+                        $demandStimulationMedia
+                    ),
                     'study_media' => $studyMedia,
                     'study_media_count' => count($studyMedia),
                     'clarity_media_count' => count(

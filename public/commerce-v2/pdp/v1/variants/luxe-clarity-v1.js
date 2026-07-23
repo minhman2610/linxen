@@ -167,19 +167,63 @@ if (root && productNode) {
         return article;
     };
 
+    const renderInspiration = (container, items, colorLabel) => {
+        const heading = document.createElement('div');
+        heading.className = 'lxl-study__inspiration-head';
+
+        const title = document.createElement('p');
+        title.textContent = 'Gợi ý phong cách';
+
+        const description = document.createElement('span');
+        description.textContent = 'Hình ảnh cùng màu để bạn cảm nhận thiết kế trong nhịp sống.';
+
+        heading.append(title, description);
+
+        const grid = document.createElement('div');
+        grid.className = 'lxl-study__inspiration-grid';
+
+        items.forEach((item, index) => {
+            const url = String(item?.url || item?.thumb_url || '');
+
+            if (!url) {
+                return;
+            }
+
+            const figure = document.createElement('figure');
+            const image = document.createElement('img');
+            image.src = url;
+            image.alt = [
+                product.name || 'Sản phẩm',
+                colorLabel || '',
+            ].filter(Boolean).join(' — ');
+            image.loading = index === 0 ? 'eager' : 'lazy';
+            image.decoding = 'async';
+            figure.appendChild(image);
+            grid.appendChild(figure);
+        });
+
+        container.replaceChildren(heading, grid);
+    };
+
     const renderStudy = (color) => {
         const list = root.querySelector('[data-lxl-study-list]');
         const nav = root.querySelector('[data-lxl-study-nav]');
+        const inspiration = root.querySelector(
+            '[data-lxl-study-inspiration]'
+        );
         const empty = root.querySelector('[data-lxl-study-empty]');
         const colorLabel = root.querySelector('[data-lxl-study-color]');
 
-        if (!list || !empty) {
+        if (!list || !inspiration || !empty) {
             return;
         }
 
         const study = studyForColor(color);
         const items = Array.isArray(study?.items)
             ? study.items
+            : [];
+        const inspirationItems = Array.isArray(study?.inspiration_items)
+            ? study.inspiration_items
             : [];
         const label = String(
             study?.color_label
@@ -193,13 +237,23 @@ if (root && productNode) {
 
         list.replaceChildren();
         nav?.replaceChildren();
+        inspiration.replaceChildren();
+
+        const hasInspiration = inspirationItems.length > 0;
+
+        if (hasInspiration) {
+            renderInspiration(inspiration, inspirationItems, label);
+            inspiration.hidden = false;
+        } else {
+            inspiration.hidden = true;
+        }
 
         if (!items.length) {
             list.hidden = true;
             if (nav) {
                 nav.hidden = true;
             }
-            empty.hidden = false;
+            empty.hidden = hasInspiration;
             return;
         }
 
@@ -218,7 +272,7 @@ if (root && productNode) {
             if (nav) {
                 nav.hidden = true;
             }
-            empty.hidden = false;
+            empty.hidden = hasInspiration;
             return;
         }
 
