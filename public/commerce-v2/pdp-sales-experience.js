@@ -392,10 +392,6 @@
     };
 
     stageFigure?.addEventListener('pointerdown', (event) => {
-        if (event.pointerType === 'mouse') {
-            return;
-        }
-
         state.gesture = {
             id: event.pointerId,
             x: event.clientX,

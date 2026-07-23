@@ -1,4 +1,4 @@
-import '/commerce-v2/pdp-sales-experience.js?v=4';
+import '/commerce-v2/pdp-sales-experience.js?v=5';
 
 const root = document.querySelector('[data-pdp-engine]');
 
