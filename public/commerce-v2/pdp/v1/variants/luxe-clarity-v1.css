@@ -60,6 +60,15 @@ body.lx-pdp-luxe-clarity .lxv2-main {
     padding-top: 12px;
 }
 
+body:has(.lxpdp[data-pdp-variant="luxe_clarity_v1"] .lxl-study.has-related) .lxv2-main,
+body.lx-pdp-luxe-clarity:has(.lxl-study.has-related) .lxv2-main {
+    padding-bottom: 34px;
+}
+
+.lxpdp[data-pdp-variant="luxe_clarity_v1"]:has(.lxl-study.has-related) {
+    padding-bottom: 34px;
+}
+
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] *,
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] *::before,
 .lxpdp[data-pdp-variant="luxe_clarity_v1"] *::after {
