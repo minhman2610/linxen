@@ -97,6 +97,22 @@
         ))
         ->take(4)
         ->values();
+    $sizeRecommendations = collect((array) data_get(
+        $pdp,
+        'fit.advisor_evidence.basic.recommendations',
+        []
+    ))
+        ->filter(fn ($recommendation) => trim((string) data_get($recommendation, 'size')) !== '')
+        ->sortBy(fn ($recommendation) => array_search(
+            strtoupper(trim((string) data_get($recommendation, 'size'))),
+            $sizeOrder,
+            true
+        ) === false ? 99 : array_search(
+            strtoupper(trim((string) data_get($recommendation, 'size'))),
+            $sizeOrder,
+            true
+        ))
+        ->values();
     $relatedProducts = collect((array) data_get(
         $pdp,
         'discovery.related_products',
@@ -198,6 +214,41 @@
                         </article>
                     @endforeach
                 </div>
+
+                @if($sizeRecommendations->isNotEmpty())
+                    <section class="lxl-size-chart__advice" aria-labelledby="lxlSizeAdviceTitle">
+                        <header>
+                            <div>
+                                <p>Gợi ý nhanh</p>
+                                <h4 id="lxlSizeAdviceTitle">Chọn size theo chiều cao &amp; cân nặng</h4>
+                            </div>
+                            <span>Để tham khảo</span>
+                        </header>
+                        <div class="lxl-size-chart__advice-grid">
+                            @foreach($sizeRecommendations as $recommendation)
+                                <article>
+                                    <strong>Size {{ data_get($recommendation, 'size') }}</strong>
+                                    <dl>
+                                        <div>
+                                            <dt>Chiều cao</dt>
+                                            <dd>{{ data_get($recommendation, 'height_range', '—') }} cm</dd>
+                                        </div>
+                                        <div>
+                                            <dt>Cân nặng</dt>
+                                            <dd>{{ data_get($recommendation, 'weight_range', '—') }} kg</dd>
+                                        </div>
+                                    </dl>
+                                    @if(data_get($recommendation, 'body_summary'))
+                                        <p>{{ data_get($recommendation, 'body_summary') }}</p>
+                                    @endif
+                                </article>
+                            @endforeach
+                        </div>
+                        <button type="button" data-lxpdp-size-advisor-open>
+                            Nhập số đo để nhận gợi ý chính xác hơn
+                        </button>
+                    </section>
+                @endif
 
                 <div class="lxl-size-chart__table-wrap" tabindex="0">
                     <table>

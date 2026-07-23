@@ -354,16 +354,13 @@ class CommerceV2Presenter
                     ->values()
                     ->all();
 
-                /*
-                 * The purchase gallery is deliberately narrow: it shows only
-                 * approved Sales Inbox media. Product-clairty and opening
-                 * creatives remain available further down the PDP as visual
-                 * product-study references, never as a substitute gallery.
-                 */
                 $media = collect($selectedMedia)
-                    ->filter(fn ($item) => $this->isSalesInboxMedia(
+                    ->concat($clarityMedia)
+                    ->filter(fn ($item) => $item['url'] !== '')
+                    ->unique(fn ($item) => $this->mediaIdentity(
                         (array) $item
                     ))
+                    ->take(6)
                     ->values()
                     ->all();
                 $studyMedia = collect($clarityMedia)
@@ -402,9 +399,6 @@ class CommerceV2Presenter
                         ->all();
 
                     $media = collect($selectedMedia)
-                        ->filter(fn ($item) => $this->isSalesInboxMedia(
-                            (array) $item
-                        ))
                         ->take(6)
                         ->values()
                         ->all();
@@ -422,9 +416,6 @@ class CommerceV2Presenter
 
                     if ($media === []) {
                         $media = collect($fallbackMedia)
-                            ->filter(fn ($item) => $this->isSalesInboxMedia(
-                                (array) $item
-                            ))
                             ->take(6)
                             ->values()
                             ->all();
@@ -657,6 +648,11 @@ class CommerceV2Presenter
                     $sizeAdvisor,
                     'disclaimer',
                     ''
+                ),
+                'advisor_evidence' => (array) data_get(
+                    $sizeAdvisor,
+                    'advisor_evidence',
+                    []
                 ),
                 'endpoint_url' => route(
                     'commerce.v2.product.size_advice',

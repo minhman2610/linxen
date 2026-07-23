@@ -213,6 +213,11 @@ final class PdpViewModelBuilder
             ],
             'fit' => [
                 'advisor' => $sizeAdvisor,
+                'advisor_evidence' => (array) data_get(
+                    $sizeAdvisor,
+                    'advisor_evidence',
+                    []
+                ),
                 'garment_size_chart' => (array) data_get(
                     $sizeAdvisor,
                     'size_chart',

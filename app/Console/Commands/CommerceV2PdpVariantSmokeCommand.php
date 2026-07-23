@@ -176,6 +176,13 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                         $html,
                         'Bảng thông số theo size'
                     ),
+                    'luxe_height_weight_advice_contract' => str_contains(
+                        $html,
+                        'Chọn size theo chiều cao &amp; cân nặng'
+                    ) && str_contains(
+                        $html,
+                        'Nhập số đo để nhận gợi ý chính xác hơn'
+                    ),
                 ]);
             }
 
@@ -352,6 +359,24 @@ class CommerceV2PdpVariantSmokeCommand extends Command
                 'source_label' => 'Bảng chung + Tech Pack TP260620002',
                 'endpoint_url' => '/v2/p/rs_4477/size-advice',
                 'disclaimer' => 'Gợi ý tham khảo.',
+                'advisor_evidence' => [
+                    'basic' => [
+                        'recommendations' => [
+                            [
+                                'size' => 'S',
+                                'height_range' => '150–160',
+                                'weight_range' => '42–48',
+                                'body_summary' => 'Ngực ~82cm · Eo ~62cm',
+                            ],
+                            [
+                                'size' => 'M',
+                                'height_range' => '158–168',
+                                'weight_range' => '48–56',
+                                'body_summary' => 'Ngực ~86cm · Eo ~66cm',
+                            ],
+                        ],
+                    ],
+                ],
                 'size_chart' => [
                     'status' => 'structured',
                     'structured' => true,
