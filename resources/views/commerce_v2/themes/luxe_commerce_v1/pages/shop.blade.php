@@ -115,7 +115,9 @@
                                                 <span>Tất cả</span>
                                             </label>
                                             @foreach((array) data_get($facet, 'options', []) as $option)
-                                                @php($optionKey = (string) data_get($option, 'key'))
+                                                @php
+                                                    $optionKey = (string) data_get($option, 'key');
+                                                @endphp
                                                 @if($optionKey !== '')
                                                     <label class="lxcv1-filter-dna-option">
                                                         <input
