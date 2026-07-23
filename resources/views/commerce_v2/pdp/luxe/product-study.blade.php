@@ -65,6 +65,7 @@
         data_get($materials, 'layer_label')
         ?: data_get($materials, 'section.message')
     ));
+    $materialSummary = str_ireplace(' theo BOM', '', $materialSummary);
     $sizeChart = (array) data_get($pdp, 'fit.garment_size_chart', []);
     $sizeOrder = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
     $chartSizes = collect((array) data_get($sizeChart, 'sizes', []))
@@ -94,6 +95,14 @@
         ))
         ->take(4)
         ->values();
+    $relatedProducts = collect((array) data_get(
+        $pdp,
+        'discovery.related_products',
+        []
+    ))
+        ->filter(fn ($item) => data_get($item, 'url') && data_get($item, 'cover_url'))
+        ->take(4)
+        ->values();
     $jsonFlags = JSON_HEX_TAG
         | JSON_HEX_APOS
         | JSON_HEX_AMP
@@ -109,24 +118,24 @@
     <div class="lxl-study__shell">
         <header class="lxl-study__header">
             <div>
-                <p class="lxl-study__eyebrow">Chi tiết sản phẩm</p>
-                <h2>Nhìn rõ sản phẩm trước khi chọn</h2>
+                <p class="lxl-study__eyebrow">Cảm nhận thiết kế</p>
+                <h2>Đẹp ở từng góc nhìn</h2>
             </div>
             <div class="lxl-study__intro">
                 <span data-lxl-study-color>
                     {{ data_get($defaultStudy, 'color_label', 'Màu đang chọn') }}
                 </span>
                 <p>
-                    Ảnh đã duyệt theo đúng màu đang xem, giúp quan sát phom dáng và chi tiết thiết kế.
+                    Cùng ngắm phom dáng, chất liệu và những chi tiết khiến thiết kế này trở nên khác biệt.
                 </p>
             </div>
         </header>
 
         @if($facts->isNotEmpty() || $mainMaterials->isNotEmpty() || $liningMaterials->isNotEmpty() || $materialSummary !== '')
-            <section class="lxl-knowledge" aria-label="Thông số và chất liệu">
+            <section class="lxl-knowledge" aria-label="Điểm nhấn thiết kế và chất liệu">
                 @if($facts->isNotEmpty())
                     <article class="lxl-knowledge__card">
-                        <p>Thông số thiết kế</p>
+                        <p>Điểm nhấn thiết kế</p>
                         <dl>
                             @foreach($facts as $fact)
                                 <div>
@@ -140,16 +149,16 @@
 
                 @if($mainMaterials->isNotEmpty() || $liningMaterials->isNotEmpty() || $materialSummary !== '')
                     <article class="lxl-knowledge__card lxl-knowledge__card--materials">
-                        <p>Chất liệu</p>
+                        <p>Chất liệu & cảm giác mặc</p>
                         @if($materialSummary !== '')
                             <strong>{{ $materialSummary }}</strong>
                         @endif
                         <div>
                             @if($mainMaterials->isNotEmpty())
-                                <span><small>Chất liệu chính</small>{{ $mainMaterials->implode(' · ') }}</span>
+                                <span><small>Vải chính</small>{{ $mainMaterials->implode(' · ') }}</span>
                             @endif
                             @if($liningMaterials->isNotEmpty())
-                                <span><small>Lót</small>{{ $liningMaterials->implode(' · ') }}</span>
+                                <span><small>Lớp lót</small>{{ $liningMaterials->implode(' · ') }}</span>
                             @endif
                         </div>
                     </article>
@@ -161,10 +170,10 @@
             <section class="lxl-size-chart" aria-labelledby="lxlSizeChartTitle">
                 <header class="lxl-size-chart__header">
                     <div>
-                        <p>Số đo thành phẩm</p>
+                        <p>Chọn size thật dễ</p>
                         <h3 id="lxlSizeChartTitle">Bảng thông số theo size</h3>
                     </div>
-                    <span>{{ data_get($sizeChart, 'measurement_type') === 'garment' ? 'Đơn vị cm' : 'Thông số theo Tech Pack' }}</span>
+                    <span>{{ data_get($sizeChart, 'measurement_type') === 'garment' ? 'Đơn vị cm' : 'Thông số sản phẩm' }}</span>
                 </header>
 
                 <div class="lxl-size-chart__cards" aria-label="Tóm tắt thông số theo size">
@@ -219,8 +228,27 @@
                     </table>
                 </div>
 
+                <div class="lxl-size-chart__mobile-details" aria-label="Thông số đầy đủ theo từng size">
+                    @foreach($chartSizes as $size)
+                        <article>
+                            <strong>Size {{ $size }}</strong>
+                            <dl>
+                                @foreach($chartPoints as $point)
+                                    @php
+                                        $display = data_get($point, 'display_values.' . $size, data_get($point, 'values.' . $size));
+                                    @endphp
+                                    <div>
+                                        <dt>{{ data_get($point, 'label') }}</dt>
+                                        <dd>{{ $display ?? '—' }}{{ data_get($point, 'unit') ? ' ' . data_get($point, 'unit') : '' }}</dd>
+                                    </div>
+                                @endforeach
+                            </dl>
+                        </article>
+                    @endforeach
+                </div>
+
                 @if(data_get($sizeChart, 'message'))
-                    <p class="lxl-size-chart__note">{{ data_get($sizeChart, 'message') }}</p>
+                    <p class="lxl-size-chart__note">Số đo là kích thước thành phẩm; hãy so sánh với một chiếc váy bạn đang mặc vừa để chọn size thoải mái nhất.</p>
                 @endif
             </section>
         @endif
@@ -229,7 +257,7 @@
             class="lxl-study__nav"
             data-lxl-study-nav
             aria-label="Các góc ảnh sản phẩm"
-            @if($defaultItems->isEmpty()) hidden @endif
+            hidden
         >
             @foreach($defaultItems as $index => $item)
                 <button
@@ -249,12 +277,7 @@
             @if($defaultItems->isEmpty()) hidden @endif
         >
             @foreach($defaultItems as $index => $item)
-                @php
-                    $hero = (array) data_get($item, 'hero', []);
-                    $alternates = collect(
-                        (array) data_get($item, 'alternates', [])
-                    )->take(3);
-                @endphp
+                        @php $hero = (array) data_get($item, 'hero', []); @endphp
                 <article
                     class="lxl-study-card lxl-study-card--{{ ($index % 4) + 1 }}"
                     data-lxl-study-item="{{ $index }}"
@@ -272,29 +295,6 @@
                         <small>Góc nhìn sản phẩm</small>
                         <h3>{{ data_get($item, 'angle_label') }}</h3>
 
-                        @if($alternates->isNotEmpty())
-                            <div class="lxl-study-card__alternates" aria-label="Ảnh bổ sung cùng góc">
-                                @foreach($alternates as $alternate)
-                                    <a
-                                        href="{{ data_get($alternate, 'url') }}"
-                                        target="_blank"
-                                        rel="noopener"
-                                        aria-label="Mở ảnh bổ sung {{ data_get($item, 'angle_label') }}"
-                                    >
-                                        <img
-                                            src="{{ data_get(
-                                                $alternate,
-                                                'thumb_url',
-                                                data_get($alternate, 'url')
-                                            ) }}"
-                                            alt=""
-                                            loading="lazy"
-                                            decoding="async"
-                                        >
-                                    </a>
-                                @endforeach
-                            </div>
-                        @endif
                     </div>
                 </article>
             @endforeach
@@ -312,12 +312,35 @@
                 <path d="m12 33 8-8 6 5 5-4 5 7"/>
             </svg>
             <div>
-                <strong>Đang cập nhật ảnh chi tiết đúng màu</strong>
+                <strong>Hình ảnh màu này đang được hoàn thiện</strong>
                 <p>
-                    Màu này chưa có ảnh chi tiết đã duyệt. LIN XÉN không dùng ảnh của màu khác để thay thế.
+                    LIN XÉN không dùng ảnh của màu khác để thay thế, để bạn luôn xem đúng những gì mình chọn.
                 </p>
             </div>
         </div>
+
+        @if($relatedProducts->isNotEmpty())
+            <section class="lxl-related" aria-labelledby="lxlRelatedTitle">
+                <header>
+                    <p>Cùng nhịp thiết kế</p>
+                    <h3 id="lxlRelatedTitle">Có thể bạn sẽ thích</h3>
+                </header>
+                <div class="lxl-related__grid">
+                    @foreach($relatedProducts as $related)
+                        <a href="{{ data_get($related, 'url') }}">
+                            <img
+                                src="{{ data_get($related, 'cover_url') }}"
+                                alt="{{ data_get($related, 'name') }}"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                            <span>{{ data_get($related, 'name') }}</span>
+                            <strong>{{ number_format((float) data_get($related, 'price_min'), 0, ',', '.') }}₫</strong>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
     </div>
 
     <script type="application/json" data-lxl-study-data>{!! json_encode($studies->all(), $jsonFlags) !!}</script>

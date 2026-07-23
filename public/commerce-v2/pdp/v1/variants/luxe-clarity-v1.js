@@ -172,7 +172,7 @@ if (root && productNode) {
         const empty = root.querySelector('[data-lxl-study-empty]');
         const colorLabel = root.querySelector('[data-lxl-study-color]');
 
-        if (!list || !nav || !empty) {
+        if (!list || !empty) {
             return;
         }
 
@@ -191,53 +191,28 @@ if (root && productNode) {
         }
 
         list.replaceChildren();
-        nav.replaceChildren();
+        nav?.replaceChildren();
 
         if (!items.length) {
             list.hidden = true;
-            nav.hidden = true;
+            if (nav) {
+                nav.hidden = true;
+            }
             empty.hidden = false;
             return;
         }
 
         const cards = document.createDocumentFragment();
-        const chips = document.createDocumentFragment();
-
         items.forEach((item, index) => {
             const card = makeStudyCard(item, index, label);
             cards.appendChild(card);
-
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.dataset.lxlStudyJump = String(index);
-            button.setAttribute(
-                'aria-label',
-                `Đi tới ${item?.angle_label || 'góc ảnh'}`
-            );
-
-            const number = document.createElement('span');
-            number.textContent = String(index + 1).padStart(2, '0');
-
-            button.append(
-                number,
-                document.createTextNode(
-                    String(item?.angle_label || 'Góc ảnh')
-                )
-            );
-            button.addEventListener('click', () => {
-                card.scrollIntoView({
-                    behavior: reducedMotion ? 'auto' : 'smooth',
-                    block: 'center',
-                });
-            });
-
-            chips.appendChild(button);
         });
 
         list.appendChild(cards);
-        nav.appendChild(chips);
         list.hidden = false;
-        nav.hidden = false;
+        if (nav) {
+            nav.hidden = true;
+        }
         empty.hidden = true;
     };
 

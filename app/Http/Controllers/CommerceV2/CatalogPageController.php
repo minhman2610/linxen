@@ -146,6 +146,10 @@ class CatalogPageController extends Controller
                 throw new CommerceV2ClientException('Sản phẩm chưa sẵn sàng.', 404, 'storefront_product_not_ready');
             }
 
+            $product['related_products'] = $this->relatedProducts(
+                $product
+            );
+
             $viewModel = $this->pdpViewModelBuilder->build($product);
             $presentation = $this->pdpPageComposer->compose(
                 $this->pdpPresentationResolver->resolve($request, $viewModel, $forcedVariant),
@@ -326,6 +330,52 @@ class CatalogPageController extends Controller
             ))
             ->values()
             ->all();
+    }
+
+    /**
+     * Keep PDP discovery useful while the ERP has no explicit product-DNA
+     * relation for a given product. Upstream curated matches always win;
+     * otherwise we show a small, current selection from the sellable catalog.
+     */
+    protected function relatedProducts(array $product): array
+    {
+        $currentId = (string) data_get($product, 'id');
+        $currentSlug = (string) data_get($product, 'slug');
+        $curated = $this->presentProducts((array) data_get(
+            $product,
+            'related_products',
+            []
+        ));
+
+        if ($curated !== []) {
+            return collect($curated)
+                ->reject(fn ($item) => (
+                    (string) data_get($item, 'id') === $currentId
+                    || (string) data_get($item, 'slug') === $currentSlug
+                ))
+                ->take(4)
+                ->values()
+                ->all();
+        }
+
+        try {
+            $listing = $this->client->listing(12, null, 120);
+
+            return collect($this->presentProducts((array) data_get(
+                $listing,
+                'data.items',
+                []
+            )))
+                ->reject(fn ($item) => (
+                    (string) data_get($item, 'id') === $currentId
+                    || (string) data_get($item, 'slug') === $currentSlug
+                ))
+                ->take(4)
+                ->values()
+                ->all();
+        } catch (CommerceV2ClientException) {
+            return [];
+        }
     }
 
     protected function presentCollections(

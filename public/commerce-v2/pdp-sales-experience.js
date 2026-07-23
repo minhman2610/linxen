@@ -21,6 +21,13 @@
     const defaultColorId = String(product.default_color_id || '');
     const mainImage = root.querySelector('[data-lxpdp-main-image]');
     const stageFigure = root.querySelector('.lxpdp-gallery__figure');
+    const emptyGallery = root.querySelector('[data-lxl-gallery-empty]');
+    const emptyGalleryTitle = root.querySelector(
+        '[data-lxl-gallery-empty-title]'
+    );
+    const emptyGalleryCopy = root.querySelector(
+        '[data-lxl-gallery-empty-copy]'
+    );
     const thumbs = root.querySelector('[data-lxpdp-thumbs]');
     const counter = root.querySelector('[data-lxpdp-image-counter]');
     const roleLabel = root.querySelector('[data-lxpdp-image-role]');
@@ -106,6 +113,17 @@
             }
             stageFigure?.classList.remove('is-loading');
             stageFigure?.classList.add('is-empty');
+            if (emptyGallery) {
+                emptyGallery.hidden = false;
+            }
+            if (emptyGalleryTitle) {
+                emptyGalleryTitle.textContent = state.color?.label
+                    ? `Ảnh màu ${state.color.label} đang được hoàn thiện`
+                    : 'Ảnh màu này đang được hoàn thiện';
+            }
+            if (emptyGalleryCopy) {
+                emptyGalleryCopy.textContent = 'Bạn vẫn có thể xem thông tin, chọn size và đặt hàng. LIN XÉN không dùng ảnh của màu khác để thay thế.';
+            }
             if (counter) {
                 counter.textContent = '';
             }
@@ -121,6 +139,9 @@
         }
 
         stageFigure?.classList.remove('is-empty');
+        if (emptyGallery) {
+            emptyGallery.hidden = true;
+        }
 
         state.imageIndex = Math.max(
             0,

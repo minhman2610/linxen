@@ -70,30 +70,29 @@ final class PdpProductStudyBuilder
             ))
             ->values();
 
+        /*
+         * Every approved image receives its own full-width moment. Grouping
+         * alternate angles behind a thumbnail forced customers to choose what
+         * to see and made model photography feel incomplete on mobile.
+         */
         return $rows
-            ->groupBy('angle_key')
-            ->map(function ($group) {
-                $first = (array) $group->first();
+            ->values()
+            ->map(function ($row) {
+                $row = (array) $row;
 
                 return [
-                    'angle_key' => (string) data_get($first, 'angle_key'),
-                    'angle_label' => (string) data_get($first, 'angle_label'),
+                    'angle_key' => (string) data_get($row, 'angle_key'),
+                    'angle_label' => (string) data_get($row, 'angle_label'),
                     'angle_description' => (string) data_get(
-                        $first,
+                        $row,
                         'angle_description'
                     ),
-                    'sequence' => (int) data_get($first, 'sequence', 99),
-                    'hero' => (array) data_get($first, 'media', []),
-                    'alternates' => $group
-                        ->slice(1)
-                        ->pluck('media')
-                        ->map(fn ($item) => (array) $item)
-                        ->values()
-                        ->all(),
-                    'source_count' => $group->count(),
+                    'sequence' => (int) data_get($row, 'sequence', 99),
+                    'hero' => (array) data_get($row, 'media', []),
+                    'alternates' => [],
+                    'source_count' => 1,
                 ];
             })
-            ->sortBy('sequence')
             ->values()
             ->all();
     }

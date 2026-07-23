@@ -1,5 +1,9 @@
 @php
-    $lxcv1CartQuantity = collect((array) session('commerce_v2.cart.items', []))
+    $lxcv1CartLines = request()->hasSession()
+        ? app(\App\Services\CommerceV2\SessionCartService::class)
+            ->raw(request()->session())
+        : (array) session('commerce_v2.cart.items', []);
+    $lxcv1CartQuantity = collect($lxcv1CartLines)
         ->sum(fn ($line) => max(0, (int) data_get($line, 'quantity', 0)));
 @endphp
 

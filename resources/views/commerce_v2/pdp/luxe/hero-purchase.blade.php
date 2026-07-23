@@ -60,20 +60,34 @@
             aria-label="Hình ảnh sản phẩm"
         >
             <div class="lxpdp-gallery__stage lxl-gallery__stage">
-                <figure class="lxpdp-gallery__figure lxl-gallery__figure">
+                <figure class="lxpdp-gallery__figure lxl-gallery__figure {{ $defaultMedia->isEmpty() ? 'is-empty' : '' }}">
                     <img
                         data-lxpdp-main-image
-                        src="{{ data_get(
-                            $heroMedia,
-                            'url',
-                            data_get($pdp, 'media.cover_url')
-                        ) }}"
+                        @if(data_get($heroMedia, 'url'))
+                            src="{{ data_get($heroMedia, 'url') }}"
+                        @endif
                         alt="{{ data_get($identity, 'name') }} - {{ data_get($defaultColor, 'label') }}"
                         width="1080"
                         height="1350"
                         fetchpriority="high"
                         decoding="async"
                     >
+                    <div
+                        class="lxl-gallery__empty-state"
+                        data-lxl-gallery-empty
+                        @if($defaultMedia->isNotEmpty()) hidden @endif
+                    >
+                        <span
+                            aria-hidden="true"
+                            style="--lxl-swatch:{{ data_get($defaultColor, 'hex') ?: '#ead8cf' }}"
+                        ></span>
+                        <strong data-lxl-gallery-empty-title>
+                            Ảnh màu {{ data_get($defaultColor, 'label', 'này') }} đang được hoàn thiện
+                        </strong>
+                        <p data-lxl-gallery-empty-copy>
+                            Bạn vẫn có thể xem thông tin, chọn size và đặt hàng. LIN XÉN không dùng ảnh của màu khác để thay thế.
+                        </p>
+                    </div>
                 </figure>
             </div>
 
@@ -113,7 +127,7 @@
                 data-lxpdp-gallery-notice
                 @if($defaultMedia->isNotEmpty()) hidden @endif
             >
-                Màu này chưa có bộ ảnh đã duyệt. LIN XÉN không dùng ảnh của màu khác để minh họa.
+                Màu này chưa có ảnh riêng. LIN XÉN giữ trải nghiệm trung thực và không thay bằng ảnh của màu khác.
             </p>
         </div>
     </div>
