@@ -15,13 +15,19 @@ class ErpCommerceClient
     public function listing(
         int $limit = 8,
         ?string $cursor = null,
-        ?int $freshSeconds = null
+        ?int $freshSeconds = null,
+        array $filters = []
     ): array {
         return $this->get(
             '/catalog/products',
             array_filter([
                 'limit' => max(1, min(12, $limit)),
                 'cursor' => $cursor,
+                'product_type' => data_get($filters, 'product_type'),
+                'usage' => data_get($filters, 'usage'),
+                'silhouette' => data_get($filters, 'silhouette'),
+                'length' => data_get($filters, 'length'),
+                'neckline' => data_get($filters, 'neckline'),
             ], fn ($value) => $value !== null && $value !== ''),
             $freshSeconds
         );

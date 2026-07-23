@@ -86,9 +86,12 @@ class CatalogPageController extends Controller
     public function shop(Request $request): View|Response
     {
         try {
+            $dnaFilters = $this->shopFilters($request);
             $listing = $this->client->listing(
                 $this->limit($request),
-                $request->query('cursor')
+                $request->query('cursor'),
+                null,
+                $dnaFilters
             );
             $collections = [];
 
@@ -117,6 +120,12 @@ class CatalogPageController extends Controller
                     []
                 ),
                 'collections' => $collections,
+                'dnaFacets' => (array) data_get(
+                    $listing,
+                    'data.filters',
+                    []
+                ),
+                'activeDnaFilters' => $dnaFilters,
                 'cacheStatus' => data_get(
                     $listing,
                     '_storefront_cache'
@@ -414,6 +423,20 @@ class CatalogPageController extends Controller
                 (int) $request->query('limit', 8)
             )
         );
+    }
+
+    protected function shopFilters(Request $request): array
+    {
+        return collect($request->only([
+            'product_type',
+            'usage',
+            'silhouette',
+            'length',
+            'neckline',
+        ]))
+            ->map(fn ($value) => trim((string) $value))
+            ->filter()
+            ->all();
     }
 
     protected function productPayloadJson(

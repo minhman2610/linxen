@@ -83,7 +83,65 @@
                 </button>
             </header>
 
-            <form class="lxcv1-shop-filters" id="lxcv1ShopFilters" data-lxcv1-shop-filters hidden>
+            <form
+                class="lxcv1-shop-filters"
+                id="lxcv1ShopFilters"
+                data-lxcv1-shop-filters
+                method="get"
+                action="{{ route('commerce.v2.shop') }}"
+                hidden
+            >
+                @if(!empty($dnaFacets))
+                    <div class="lxcv1-shop-filter-group lxcv1-shop-filter-group--dna">
+                        <span>Chọn theo DNA thiết kế</span>
+                        <div class="lxcv1-filter-dna-list">
+                            @foreach($dnaFacets as $facet)
+                                @php
+                                    $facetKey = (string) data_get($facet, 'key');
+                                    $facetLabel = (string) data_get($facet, 'label');
+                                    $activeValue = (string) data_get($activeDnaFilters ?? [], $facetKey);
+                                @endphp
+                                @if($facetKey !== '')
+                                    <fieldset class="lxcv1-filter-dna-group">
+                                        <legend>{{ $facetLabel }}</legend>
+                                        <div>
+                                            <label class="lxcv1-filter-dna-option">
+                                                <input
+                                                    type="radio"
+                                                    name="{{ $facetKey }}"
+                                                    value=""
+                                                    @checked($activeValue === '')
+                                                >
+                                                <span>Tất cả</span>
+                                            </label>
+                                            @foreach((array) data_get($facet, 'options', []) as $option)
+                                                @php($optionKey = (string) data_get($option, 'key'))
+                                                @if($optionKey !== '')
+                                                    <label class="lxcv1-filter-dna-option">
+                                                        <input
+                                                            type="radio"
+                                                            name="{{ $facetKey }}"
+                                                            value="{{ $optionKey }}"
+                                                            @checked($activeValue === $optionKey)
+                                                        >
+                                                        <span>{{ data_get($option, 'label') }}</span>
+                                                    </label>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </fieldset>
+                                @endif
+                            @endforeach
+                        </div>
+                        <div class="lxcv1-filter-dna-actions">
+                            <button class="lxcv1-filter-dna-apply" type="submit">Tìm thiết kế phù hợp</button>
+                            @if(!empty($activeDnaFilters))
+                                <a href="{{ route('commerce.v2.shop') }}">Xóa lọc DNA</a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
                 <div class="lxcv1-shop-filter-group">
                     <span>Trạng thái</span>
                     <label class="lxcv1-filter-option">
@@ -143,7 +201,23 @@
                 <button type="button" data-lxcv1-shop-filter-reset>Đặt lại bộ lọc</button>
             </div>
 
-            @include('commerce_v2.partials.pagination', ['pagination' => $pagination ?? []])
+            @if(!empty($pagination['has_more']) && !empty($pagination['next_cursor']))
+                @php
+                    $nextQuery = array_filter(array_merge(
+                        request()->query(),
+                        ['cursor' => $pagination['next_cursor']]
+                    ));
+                @endphp
+                <div
+                    class="lxcv1-shop-load-more"
+                    data-lxcv1-shop-load-more
+                    data-next-url="{{ route('commerce.v2.shop', $nextQuery) }}"
+                >
+                    <span class="lxcv1-shop-load-more__spinner" aria-hidden="true"></span>
+                    <p>Đang chuẩn bị thêm thiết kế cho bạn…</p>
+                    <a href="{{ route('commerce.v2.shop', $nextQuery) }}">Xem thêm sản phẩm</a>
+                </div>
+            @endif
         </div>
     </section>
 </div>

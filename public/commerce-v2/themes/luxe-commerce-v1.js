@@ -59,7 +59,7 @@
         const emptyState = shop.querySelector(
             '[data-lxcv1-shop-filter-empty]'
         );
-        const cards = Array.from(shop.querySelectorAll(
+        let cards = Array.from(shop.querySelectorAll(
             '[data-lxcv1-product-card]'
         ));
 
@@ -149,6 +149,79 @@
         );
 
         applyFilters();
+
+        const loadMore = shop.querySelector(
+            '[data-lxcv1-shop-load-more]'
+        );
+        const productGrid = shop.querySelector(
+            '[data-lxcv1-product-grid]'
+        );
+        let isLoadingMore = false;
+
+        const loadNextPage = async () => {
+            const nextUrl = loadMore?.dataset.nextUrl;
+
+            if (!nextUrl || isLoadingMore || !productGrid) {
+                return;
+            }
+
+            isLoadingMore = true;
+            loadMore.classList.add('is-loading');
+
+            try {
+                const response = await window.fetch(nextUrl, {
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('catalog_page_unavailable');
+                }
+
+                const documentNext = new DOMParser().parseFromString(
+                    await response.text(),
+                    'text/html'
+                );
+                const nextCards = Array.from(documentNext.querySelectorAll(
+                    '[data-lxcv1-product-card]'
+                ));
+                const nextLoadMore = documentNext.querySelector(
+                    '[data-lxcv1-shop-load-more]'
+                );
+
+                nextCards.forEach((card) => productGrid.appendChild(card));
+                cards = Array.from(shop.querySelectorAll(
+                    '[data-lxcv1-product-card]'
+                ));
+                applyFilters();
+
+                if (nextLoadMore?.dataset.nextUrl) {
+                    loadMore.dataset.nextUrl = nextLoadMore.dataset.nextUrl;
+                    loadMore.classList.remove('is-loading');
+                } else {
+                    loadMore.remove();
+                }
+            } catch (error) {
+                delete loadMore.dataset.nextUrl;
+                loadMore.classList.add('has-error');
+            } finally {
+                isLoadingMore = false;
+            }
+        };
+
+        if (loadMore && 'IntersectionObserver' in window) {
+            const loadObserver = new IntersectionObserver((entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    loadNextPage();
+                }
+            }, {
+                rootMargin: '420px 0px',
+            });
+
+            loadObserver.observe(loadMore);
+        }
     }
 
     const reveal = Array.from(

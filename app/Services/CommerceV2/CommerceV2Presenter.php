@@ -207,6 +207,20 @@ class CommerceV2Presenter
                 'availability.in_stock',
                 false
             ),
+            'taxonomy' => collect((array) data_get(
+                $product,
+                'taxonomy',
+                []
+            ))
+                ->map(fn ($term) => [
+                    'key' => (string) data_get($term, 'key'),
+                    'label' => (string) data_get($term, 'label'),
+                ])
+                ->filter(fn ($term) => (
+                    $term['key'] !== ''
+                    && $term['label'] !== ''
+                ))
+                ->all(),
             'listing_media' => $listingMedia,
             'listing_media_policy' => (string) data_get(
                 $product,
