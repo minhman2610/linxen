@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" href="{{ asset('commerce-v2/commerce.css') }}?v=5">
     @if($luxeCommercePreview)
-        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=14">
+        <link rel="stylesheet" href="{{ asset('commerce-v2/themes/luxe-commerce-v1.css') }}?v=15">
     @endif
     @stack('head')
 </head>
@@ -169,7 +169,7 @@
 
     <script src="{{ asset('commerce-v2/commerce.js') }}?v=5" defer></script>
     @if($luxeCommercePreview)
-        <script src="{{ asset('commerce-v2/themes/luxe-commerce-v1.js') }}?v=14" defer></script>
+        <script src="{{ asset('commerce-v2/themes/luxe-commerce-v1.js') }}?v=15" defer></script>
     @endif
     @stack('scripts')
 </body>

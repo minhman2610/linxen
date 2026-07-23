@@ -44,6 +44,113 @@
         });
     });
 
+    const shop = body.querySelector('[data-lxcv1-shop]');
+
+    if (shop) {
+        const filterForm = shop.querySelector(
+            '[data-lxcv1-shop-filters]'
+        );
+        const filterToggle = shop.querySelector(
+            '[data-lxcv1-shop-filter-toggle]'
+        );
+        const filterCount = shop.querySelector(
+            '[data-lxcv1-shop-count]'
+        );
+        const emptyState = shop.querySelector(
+            '[data-lxcv1-shop-filter-empty]'
+        );
+        const cards = Array.from(shop.querySelectorAll(
+            '[data-lxcv1-product-card]'
+        ));
+
+        const valuesFor = (selector) => Array.from(
+            filterForm?.querySelectorAll(selector) || []
+        )
+            .filter((input) => input.checked)
+            .map((input) => String(input.value || ''))
+            .filter(Boolean);
+
+        const splitValues = (value) => String(value || '')
+            .split('|')
+            .map((item) => item.trim())
+            .filter(Boolean);
+
+        const applyFilters = () => {
+            if (!filterForm) {
+                return;
+            }
+
+            const stockOnly = filterForm.querySelector(
+                '[data-lxcv1-filter-stock]'
+            )?.checked;
+            const sizes = valuesFor('[data-lxcv1-filter-size]');
+            const colors = valuesFor('[data-lxcv1-filter-color]');
+            let visible = 0;
+
+            cards.forEach((card) => {
+                const matchesStock = !stockOnly
+                    || card.dataset.lxcv1ProductStock === '1';
+                const cardSizes = splitValues(
+                    card.dataset.lxcv1ProductSizes
+                );
+                const cardColors = splitValues(
+                    card.dataset.lxcv1ProductColors
+                );
+                const matchesSize = sizes.length === 0
+                    || sizes.some((size) => cardSizes.includes(size));
+                const matchesColor = colors.length === 0
+                    || colors.some((color) => cardColors.includes(color));
+                const visibleCard = matchesStock
+                    && matchesSize
+                    && matchesColor;
+
+                card.hidden = !visibleCard;
+                if (visibleCard) {
+                    visible += 1;
+                }
+            });
+
+            if (filterCount) {
+                filterCount.textContent = `${visible} thiết kế đang hiển thị`;
+            }
+            if (emptyState) {
+                emptyState.hidden = visible > 0;
+            }
+        };
+
+        const resetFilters = () => {
+            if (!filterForm) {
+                return;
+            }
+
+            window.setTimeout(applyFilters, 0);
+        };
+
+        filterToggle?.addEventListener('click', () => {
+            if (!filterForm) {
+                return;
+            }
+
+            const willOpen = filterForm.hidden;
+            filterForm.hidden = !willOpen;
+            filterToggle.setAttribute(
+                'aria-expanded',
+                willOpen ? 'true' : 'false'
+            );
+        });
+
+        filterForm?.addEventListener('change', applyFilters);
+        filterForm?.addEventListener('reset', resetFilters);
+        shop.querySelectorAll('[data-lxcv1-shop-filter-reset]').forEach(
+            (button) => button.addEventListener('click', () => {
+                filterForm?.reset();
+                resetFilters();
+            })
+        );
+
+        applyFilters();
+    }
+
     const reveal = Array.from(
         body.querySelectorAll('[data-lxcv1-reveal]')
     );

@@ -27,6 +27,9 @@ class CartController extends Controller
 
             return view('commerce_v2.pages.cart', [
                 'cart' => $cart,
+                'cartRescue' => $this->cart->rescueState(
+                    $request->session()
+                ),
                 'pageTitle' => 'Giỏ hàng — LIN XÉN',
                 'pageDescription' => 'Giá và tồn được kiểm tra lại từ ERP.',
             ]);
@@ -35,6 +38,7 @@ class CartController extends Controller
 
             return view('commerce_v2.pages.cart', [
                 'cart' => ['items' => [], 'summary' => []],
+                'cartRescue' => [],
                 'cartError' => 'Không thể kiểm tra giỏ hàng lúc này.',
                 'pageTitle' => 'Giỏ hàng — LIN XÉN',
             ]);

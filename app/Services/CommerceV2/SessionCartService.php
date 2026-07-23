@@ -8,8 +8,10 @@ use Illuminate\Contracts\Session\Session;
 class SessionCartService
 {
     public const SESSION_KEY = 'commerce_v2.cart.items';
+    public const META_KEY = 'commerce_v2.cart.meta';
     public const MAX_ITEMS = 20;
     public const MAX_QUANTITY = 20;
+    public const RESCUE_AFTER_MINUTES = 45;
 
     public function __construct(
         protected ErpCommerceClient $client
@@ -188,10 +190,32 @@ class SessionCartService
     {
         $session->forget([
             self::SESSION_KEY,
+            self::META_KEY,
             CheckoutQuoteSessionService::QUOTE_KEY,
             OnePageCheckoutSessionService::PIPELINE_KEY,
         ]);
         $session->save();
+    }
+
+    public function rescueState(Session $session): array
+    {
+        if ($this->raw($session) === []) {
+            return [
+                'is_stale' => false,
+                'age_minutes' => 0,
+            ];
+        }
+
+        $meta = (array) $session->get(self::META_KEY, []);
+        $startedAt = max(0, (int) data_get($meta, 'started_at', 0));
+        $ageMinutes = $startedAt > 0
+            ? max(0, (int) floor((now()->timestamp - $startedAt) / 60))
+            : 0;
+
+        return [
+            'is_stale' => $ageMinutes >= self::RESCUE_AFTER_MINUTES,
+            'age_minutes' => $ageMinutes,
+        ];
     }
 
     public function validated(Session $session): array
@@ -222,9 +246,26 @@ class SessionCartService
         Session $session,
         array $items
     ): void {
+        $items = array_values($items);
+
+        if ($items === []) {
+            $session->forget(self::META_KEY);
+        } else {
+            $meta = (array) $session->get(self::META_KEY, []);
+            $now = now()->timestamp;
+
+            $session->put(self::META_KEY, [
+                'started_at' => max(
+                    0,
+                    (int) data_get($meta, 'started_at', 0)
+                ) ?: $now,
+                'updated_at' => $now,
+            ]);
+        }
+
         $session->put(
             self::SESSION_KEY,
-            array_values($items)
+            $items
         );
         $session->forget([
             CheckoutQuoteSessionService::QUOTE_KEY,

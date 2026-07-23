@@ -90,6 +90,18 @@ class CatalogPageController extends Controller
                 $this->limit($request),
                 $request->query('cursor')
             );
+            $collections = [];
+
+            try {
+                $collections = $this->presentCollections((array) data_get(
+                    $this->client->collections(),
+                    'data.items',
+                    []
+                ));
+            } catch (CommerceV2ClientException) {
+                // Catalog discovery remains available if the optional
+                // collection navigation is temporarily unavailable.
+            }
 
             return view('commerce_v2.pages.shop', [
                 'products' => $this->presentProducts(
@@ -104,6 +116,7 @@ class CatalogPageController extends Controller
                     'meta.pagination',
                     []
                 ),
+                'collections' => $collections,
                 'cacheStatus' => data_get(
                     $listing,
                     '_storefront_cache'

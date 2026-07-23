@@ -7,10 +7,10 @@
     <section class="lxcv1-checkout-heading">
         <div>
             <p class="lxcv1-kicker">GIỎ HÀNG</p>
-            <h1>Sản phẩm đã chọn</h1>
-            <p>Giá và tồn kho được ERP kiểm tra lại mỗi lần mở trang.</p>
+            <h1>Giỏ hàng của bạn</h1>
+            <p>Hãy chọn thời điểm phù hợp để hoàn tất. Giá và tồn kho luôn được kiểm tra lại trước thanh toán.</p>
         </div>
-        <span>{{ (int) data_get($summary, 'quantity_total', 0) }} sản phẩm</span>
+        <span>{{ (int) data_get($summary, 'quantity_total', 0) }} đã chọn</span>
     </section>
 
     @if(!empty($cartError))
@@ -27,6 +27,25 @@
             </a>
         </section>
     @else
+        <section @class([
+            'lxcv1-cart-rescue',
+            'is-stale' => (bool) data_get($cartRescue ?? [], 'is_stale'),
+        ])>
+            <div class="lxcv1-cart-rescue__icon" aria-hidden="true">✦</div>
+            <div>
+                @if(data_get($cartRescue ?? [], 'is_stale'))
+                    <p class="lxcv1-kicker">GIỎ HÀNG VẪN Ở ĐÂY</p>
+                    <h2>Bạn có thể hoàn tất đơn ngay khi sẵn sàng</h2>
+                    <p>Giỏ đã được để lại một thời gian. Hãy kiểm tra lại màu, size và tồn kho trước khi thanh toán để có lựa chọn phù hợp nhất.</p>
+                @else
+                    <p class="lxcv1-kicker">MUA SẮM AN TÂM</p>
+                    <h2>Kiểm tra lại trước khi hoàn tất</h2>
+                    <p>LIN XÉN sẽ đối chiếu giá và tồn kho mới nhất khi bạn tiếp tục đến bước thanh toán.</p>
+                @endif
+            </div>
+            <a href="#lxcv1-cart-checkout">Xem tóm tắt <span aria-hidden="true">↓</span></a>
+        </section>
+
         <section class="lxcv1-cart-layout">
             <div class="lxcv1-cart-items">
                 @foreach($items as $item)
@@ -98,9 +117,9 @@
                 @endforeach
             </div>
 
-            <aside class="lxcv1-cart-summary">
+            <aside class="lxcv1-cart-summary" id="lxcv1-cart-checkout">
                 <p class="lxcv1-kicker">TÓM TẮT</p>
-                <h2>Đơn hàng của bạn</h2>
+                <h2>Sẵn sàng để tiếp tục</h2>
 
                 <dl>
                     <div>
@@ -117,7 +136,10 @@
                     </div>
                 </dl>
 
-                <p>Phí giao hàng và tổng COD được ERP xác nhận ở bước thanh toán.</p>
+                <div class="lxcv1-cart-summary__promise">
+                    <span aria-hidden="true">✓</span>
+                    <p>Phí giao hàng và tổng COD được ERP xác nhận ở bước thanh toán.</p>
+                </div>
 
                 @if(data_get($summary, 'valid') === true)
                     <a class="lxcv1-button lxcv1-button--dark lxcv1-button--wide" href="{{ route('commerce.v2.checkout.index') }}">
